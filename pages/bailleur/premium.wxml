@@ -12,9 +12,10 @@
       <view class="dark-subscription-card">
         <view class="subs-header-row">
           <view class="subs-badge">
-            <text class="star-icon">★</text> Premium mensuel
+            <text class="star-icon">★</text>
+            <text class="subs-badge-text">Premium mensuel</text>
           </view>
-          <view class="subs-status-pill">Actif</view>
+          <text class="subs-status-green">Actif</text>
         </view>
 
         <text class="valid-until-label">Valable jusqu'au</text>
@@ -31,19 +32,19 @@
           </view>
         </view>
 
-        <!-- Stats 2 col -->
+        <!-- Stats 2 col inside darker rounded cards -->
         <view class="subs-stats-row">
-          <view class="subs-stat-col">
+          <view class="subs-stat-box">
             <text class="stat-big-number">379</text>
             <text class="stat-big-desc">vues ce mois</text>
           </view>
-          <view class="subs-stat-col">
+          <view class="subs-stat-box">
             <text class="stat-big-number">4</text>
             <text class="stat-big-desc">demandes de visite</text>
           </view>
         </view>
 
-        <button class="btn-renew-subs">
+        <button class="btn-renew-subs" bindtap="onPayAction">
           Renouveler mon abonnement
         </button>
       </view>
@@ -73,39 +74,86 @@
               </view>
 
               <!-- Price -->
-              <view class="option-price-box">
-                <text class="option-price-num">{{ item.price }}</text>
-                <text class="option-currency">F</text>
-              </view>
+              <text class="option-price-label">{{ item.priceLabel }}</text>
             </view>
           </block>
         </view>
 
-        <!-- Action Button -->
+        <!-- Action Button Rose -->
         <button class="btn-continue-pay" bindtap="onPayAction">
-          Continuer — {{ selectedPrice }} F
+          Continuer — {{ selectedPriceLabel }}
         </button>
       </view>
 
-      <!-- Section Loyers reçus -->
-      <view class="loyers-received-section">
-        <text class="section-subheading">Loyers reçus</text>
-        <view class="receipt-summary-card">
-          <view class="receipt-row">
-            <view class="receipt-info">
-              <text class="receipt-title">Chambre salon · Icotaf</text>
-              <text class="receipt-date">Payé le 5 oct. via Orange Money</text>
-            </view>
-            <text class="receipt-amount">+65 000 F</text>
+      <!-- Section Loyers reçus (Carte Blanche avec barre verte et blocs mensuels) -->
+      <view class="loyers-recus-section">
+        <text class="section-big-title">Loyers reçus</text>
+        
+        <view class="loyers-summary-card">
+          <view class="loyers-top-info-row">
+            <text class="loyers-month-label">Octobre 2026</text>
+            <text class="loyers-expected-label">sur 385 000 F attendus</text>
           </view>
-          <view class="receipt-divider"></view>
-          <view class="receipt-row">
-            <view class="receipt-info">
-              <text class="receipt-title">Appartement F2 · Technopole</text>
-              <text class="receipt-date">Payé le 3 oct. via Orange Money</text>
-            </view>
-            <text class="receipt-amount">+140 000 F</text>
+
+          <text class="loyers-main-amount">205 000 F</text>
+
+          <!-- Barre de progression verte -->
+          <view class="loyers-prog-track">
+            <view class="loyers-prog-fill" style="width: 53.2%;"></view>
           </view>
+
+          <!-- 3 Blocs Mensuels -->
+          <view class="monthly-blocks-row">
+            <!-- Bloc Août -->
+            <view class="month-block-col">
+              <view class="month-bar-block bar-grey"></view>
+              <text class="month-label-text">Août · 160 000</text>
+            </view>
+
+            <!-- Bloc Septembre -->
+            <view class="month-block-col">
+              <view class="month-bar-block bar-grey"></view>
+              <text class="month-label-text">Sept. · 205 000</text>
+            </view>
+
+            <!-- Bloc Octobre -->
+            <view class="month-block-col">
+              <view class="month-bar-block bar-green"></view>
+              <text class="month-label-text month-label-active">Oct. · 205 000</text>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <!-- Section Historique des paiements -->
+      <view class="history-payments-section">
+        <text class="section-big-title">Historique des paiements</text>
+        
+        <view class="history-payments-card">
+          <block wx:for="{{ paiementsHistorique }}" wx:key="id">
+            <view class="payment-row">
+              <!-- Pastille icône - ou + -->
+              <view class="pay-icon-circle {{ item.type === 'debit' ? 'circle-minus' : 'circle-plus' }}">
+                <text class="pay-icon-symbol">{{ item.type === 'debit' ? '−' : '+' }}</text>
+              </view>
+
+              <!-- Détails -->
+              <view class="pay-details-col">
+                <text class="pay-title">{{ item.title }}</text>
+                <text class="pay-meta">{{ item.meta }}</text>
+              </view>
+
+              <!-- Montant -->
+              <text class="pay-amount {{ item.amountClass }}">{{ item.amount }}</text>
+            </view>
+            <view wx:if="{{ index < paiementsHistorique.length - 1 }}" class="payment-divider"></view>
+          </block>
+        </view>
+
+        <!-- Lien Télécharger les reçus -->
+        <view class="download-receipts-link" bindtap="onDownloadRecus">
+          <text class="download-icon">📥</text>
+          <text class="download-text">Télécharger les reçus</text>
         </view>
       </view>
 

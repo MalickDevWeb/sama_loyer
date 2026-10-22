@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Page Premium et Revenus Bailleur - SAMA LOGEMENT (Page 14 Claude/PDF)
+   Page Premium et Revenus Bailleur - SAMA LOGEMENT (Page 14 exact Claude/PDF)
    ========================================================================== */
 
 .premium-page {
@@ -64,21 +64,22 @@
   padding: 8rpx 20rpx;
   border-radius: 20rpx;
   background-color: #C8235F;
+}
+
+.star-icon {
+  font-size: 24rpx;
+  color: #FFFFFF;
+}
+
+.subs-badge-text {
   font-size: 22rpx;
   font-weight: 700;
   color: #FFFFFF;
 }
 
-.star-icon {
+.subs-status-green {
   font-size: 24rpx;
-}
-
-.subs-status-pill {
-  font-size: 22rpx;
   font-weight: 700;
-  padding: 6rpx 18rpx;
-  border-radius: 16rpx;
-  background-color: rgba(255, 255, 255, 0.15);
   color: #00E676;
 }
 
@@ -123,27 +124,28 @@
   border-radius: 5rpx;
 }
 
-/* Stats 2 cols */
+/* Stats 2 cols inside darker cards */
 .subs-stats-row {
   display: flex;
-  gap: 20rpx;
+  gap: 16rpx;
   margin-bottom: 28rpx;
-  background-color: rgba(255, 255, 255, 0.08);
-  border-radius: 20rpx;
-  padding: 20rpx;
 }
 
-.subs-stat-col {
+.subs-stat-box {
   flex: 1;
+  background-color: #17284F;
+  border-radius: 20rpx;
+  padding: 22rpx 20rpx;
   display: flex;
   flex-direction: column;
 }
 
 .stat-big-number {
-  font-size: 40rpx;
+  font-size: 44rpx;
   font-weight: 800;
   color: #FFFFFF;
   margin-bottom: 4rpx;
+  line-height: 1.1;
 }
 
 .stat-big-desc {
@@ -153,15 +155,15 @@
 
 .btn-renew-subs {
   width: 100%;
-  height: 84rpx;
-  border-radius: 42rpx;
+  height: 88rpx;
+  border-radius: 44rpx;
   background-color: #FFFFFF;
   color: #0F1E3D;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 26rpx;
-  font-weight: 700;
+  font-size: 28rpx;
+  font-weight: 800;
   border: none;
 }
 
@@ -172,7 +174,7 @@
 
 .boost-section-title {
   display: block;
-  font-size: 32rpx;
+  font-size: 34rpx;
   font-weight: 800;
   color: #0F1E3D;
   margin-bottom: 6rpx;
@@ -195,17 +197,18 @@
 .boost-option-card {
   background-color: #FFFFFF;
   border-radius: 24rpx;
-  padding: 26rpx 24rpx;
+  padding: 28rpx 24rpx;
   border: 2rpx solid #ECEFF2;
   display: flex;
   align-items: center;
+  justify-content: space-between;
   box-shadow: 0 2rpx 10rpx rgba(15, 30, 61, 0.03);
   transition: all 0.2s ease;
 }
 
 .boost-card--selected {
   border-color: #C8235F;
-  background-color: #FCF7F9;
+  background-color: #FFFFFF;
 }
 
 .radio-indicator {
@@ -249,22 +252,10 @@
   color: #5B6475;
 }
 
-.option-price-box {
-  display: flex;
-  align-items: baseline;
-  gap: 4rpx;
-}
-
-.option-price-num {
-  font-size: 32rpx;
+.option-price-label {
+  font-size: 28rpx;
   font-weight: 800;
   color: #0F1E3D;
-}
-
-.option-currency {
-  font-size: 24rpx;
-  color: #5B6475;
-  font-weight: 700;
 }
 
 .btn-continue-pay {
@@ -276,65 +267,223 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 30rpx;
-  font-weight: 700;
+  font-size: 32rpx;
+  font-weight: 800;
   border: none;
   box-shadow: 0 6rpx 20rpx rgba(200, 35, 95, 0.25);
 }
 
-/* Loyers reçus */
-.loyers-received-section {
-  margin-top: 20rpx;
-}
-
-.section-subheading {
+/* Common Section Titles */
+.section-big-title {
   display: block;
-  font-size: 30rpx;
+  font-size: 34rpx;
   font-weight: 800;
   color: #0F1E3D;
-  margin-bottom: 16rpx;
+  margin-bottom: 20rpx;
 }
 
-.receipt-summary-card {
+/* Section Loyers Reçus */
+.loyers-recus-section {
+  margin-bottom: 36rpx;
+}
+
+.loyers-summary-card {
   background-color: #FFFFFF;
-  border-radius: 20rpx;
+  border-radius: 28rpx;
+  padding: 32rpx 28rpx;
   border: 1rpx solid #ECEFF2;
-  padding: 24rpx;
+  box-shadow: 0 4rpx 16rpx rgba(15, 30, 61, 0.04);
 }
 
-.receipt-row {
+.loyers-top-info-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  font-size: 24rpx;
+  color: #5B6475;
+  margin-bottom: 8rpx;
 }
 
-.receipt-info {
+.loyers-month-label {
+  color: #5B6475;
+  font-size: 24rpx;
+}
+
+.loyers-expected-label {
+  color: #5B6475;
+  font-size: 24rpx;
+}
+
+.loyers-main-amount {
+  display: block;
+  font-size: 52rpx;
+  font-weight: 900;
+  color: #0F1E3D;
+  margin-bottom: 18rpx;
+  line-height: 1.1;
+}
+
+.loyers-prog-track {
+  width: 100%;
+  height: 12rpx;
+  background-color: #E2E8F0;
+  border-radius: 6rpx;
+  overflow: hidden;
+  margin-bottom: 28rpx;
+}
+
+.loyers-prog-fill {
+  height: 100%;
+  background-color: #0F6038;
+  border-radius: 6rpx;
+}
+
+.monthly-blocks-row {
+  display: flex;
+  gap: 16rpx;
+}
+
+.month-block-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10rpx;
+}
+
+.month-bar-block {
+  width: 100%;
+  height: 68rpx;
+  border-radius: 14rpx;
+}
+
+.bar-grey {
+  background-color: #D9E0EB;
+}
+
+.bar-green {
+  background-color: #0F6038;
+}
+
+.month-label-text {
+  font-size: 20rpx;
+  color: #5B6475;
+  font-weight: 600;
+  text-align: center;
+}
+
+.month-label-active {
+  color: #0F1E3D;
+  font-weight: 800;
+}
+
+/* Section Historique des paiements */
+.history-payments-section {
+  margin-bottom: 24rpx;
+}
+
+.history-payments-card {
+  background-color: #FFFFFF;
+  border-radius: 28rpx;
+  border: 1rpx solid #ECEFF2;
+  box-shadow: 0 4rpx 16rpx rgba(15, 30, 61, 0.04);
+  padding: 6rpx 28rpx;
+  margin-bottom: 20rpx;
+}
+
+.payment-row {
+  display: flex;
+  align-items: center;
+  padding: 24rpx 0;
+}
+
+.pay-icon-circle {
+  width: 68rpx;
+  height: 68rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 20rpx;
+  flex-shrink: 0;
+}
+
+.circle-minus {
+  background-color: #FDE8EE;
+}
+
+.circle-minus .pay-icon-symbol {
+  color: #C8235F;
+  font-size: 32rpx;
+  font-weight: 800;
+  line-height: 1;
+  margin-top: -4rpx;
+}
+
+.circle-plus {
+  background-color: #EAF7EE;
+}
+
+.circle-plus .pay-icon-symbol {
+  color: #007C3D;
+  font-size: 32rpx;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.pay-details-col {
+  flex: 1;
   display: flex;
   flex-direction: column;
 }
 
-.receipt-title {
-  font-size: 26rpx;
-  font-weight: 700;
+.pay-title {
+  font-size: 28rpx;
+  font-weight: 800;
   color: #0F1E3D;
   margin-bottom: 4rpx;
 }
 
-.receipt-date {
+.pay-meta {
   font-size: 22rpx;
   color: #8C96A6;
 }
 
-.receipt-amount {
+.pay-amount {
   font-size: 28rpx;
   font-weight: 800;
+}
+
+.amount-debit {
+  color: #0F1E3D;
+}
+
+.amount-credit {
   color: #007C3D;
 }
 
-.receipt-divider {
+.payment-divider {
   height: 1rpx;
   background-color: #F0F2F5;
-  margin: 18rpx 0;
+}
+
+.download-receipts-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12rpx;
+  padding: 24rpx 0 12rpx;
+}
+
+.download-icon {
+  font-size: 28rpx;
+  color: #5B6475;
+}
+
+.download-text {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: #5B6475;
 }
 
 .scroll-spacer {

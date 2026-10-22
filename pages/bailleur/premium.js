@@ -2,28 +2,62 @@ Page({
   data: {
     statusBarHeight: 44,
     selectedOption: 'boost30',
-    selectedPrice: '15 000',
+    selectedPriceLabel: '[PRIX] F',
     boostOptions: [
       {
         id: 'boost7',
         title: 'Boost 7 jours',
         sub: '1 annonce en haut des recherches',
-        price: '5 000',
+        priceLabel: '[PRIX] F',
         badge: ''
       },
       {
         id: 'boost30',
         title: 'Boost 30 jours',
         sub: '1 annonce · le plus choisi',
-        price: '15 000',
-        badge: 'Le plus choisi'
+        priceLabel: '[PRIX] F',
+        badge: 'le plus choisi'
       },
       {
         id: 'renew',
         title: 'Renouveler Premium',
         sub: '1 mois · 3 annonces mises en avant',
-        price: '25 000',
+        priceLabel: '[PRIX] F',
         badge: ''
+      }
+    ],
+    paiementsHistorique: [
+      {
+        id: 'p1',
+        type: 'debit',
+        title: 'Premium mensuel',
+        meta: '15 oct. 2026 · Wave',
+        amount: '- [PRIX] F',
+        amountClass: 'amount-debit'
+      },
+      {
+        id: 'p2',
+        type: 'credit',
+        title: 'Loyer · Maison Pikine Nord',
+        meta: '5 oct. 2026 · Orange Money',
+        amount: '+ 160 000 F',
+        amountClass: 'amount-credit'
+      },
+      {
+        id: 'p3',
+        type: 'credit',
+        title: 'Loyer · Chambre Thiaroye',
+        meta: '3 oct. 2026 · Wave',
+        amount: '+ 45 000 F',
+        amountClass: 'amount-credit'
+      },
+      {
+        id: 'p4',
+        type: 'debit',
+        title: 'Boost 7 jours · Studio',
+        meta: '28 sept. 2026 · Wave',
+        amount: '- [PRIX] F',
+        amountClass: 'amount-debit'
       }
     ]
   },
@@ -45,34 +79,44 @@ Page({
 
   onSelectOption(e) {
     const id = e.currentTarget.dataset.id;
-    const option = this.data.boostOptions.find(o => o.id === id);
-    if (option) {
-      this.setData({
-        selectedOption: id,
-        selectedPrice: option.price
-      });
-    }
+    this.setData({
+      selectedOption: id
+    });
   },
 
   onPayAction() {
-    wx.showLoading({ title: 'Orange Money...' });
+    wx.showActionSheet({
+      itemList: ['Payer avec Orange Money', 'Payer avec Wave'],
+      success: (res) => {
+        const moyen = res.tapIndex === 0 ? 'Orange Money' : 'Wave';
+        wx.showLoading({ title: `Connexion ${moyen}...` });
+        setTimeout(() => {
+          wx.hideLoading();
+          wx.showToast({
+            title: 'Paiement confirmé !',
+            icon: 'success'
+          });
+        }, 800);
+      }
+    });
+  },
+
+  onDownloadRecus() {
+    wx.showLoading({ title: 'Génération du PDF...' });
     setTimeout(() => {
       wx.hideLoading();
       wx.showModal({
-        title: 'Paiement sécurisé Orange Money',
-        content: `Confirmer le règlement de ${this.data.selectedPrice} FCFA pour activer votre option ?`,
-        confirmText: 'Payer',
-        confirmColor: '#C8235F',
-        cancelText: 'Annuler',
+        title: 'Reçus générés 📄',
+        content: 'Vos reçus officiels certifiés pour la période ont été préparés.',
+        confirmText: 'Ouvrir',
+        confirmColor: '#0F1E3D',
+        cancelText: 'Fermer',
         success: (res) => {
           if (res.confirm) {
-            wx.showToast({
-              title: 'Option activée avec succès !',
-              icon: 'success'
-            });
+            wx.showToast({ title: 'Reçu téléchargé', icon: 'success' });
           }
         }
       });
-    }, 400);
+    }, 700);
   }
 });
