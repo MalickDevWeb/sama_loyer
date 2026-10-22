@@ -1,6 +1,8 @@
 import { getLogementById } from '../../../utils/mocks/logements';
-import { buildContratEntree } from '../../../utils/mocks/contrats';
+import { buildContratEntree, buildQuittance } from '../../../utils/mocks/contrats';
 import { addStoredRentedHome } from '../../../utils/helpers/store';
+import { storage } from '../../../utils/storage.js';
+import { STORAGE_KEYS } from '../../../utils/constants/index';
 
 function fmt(n) {
   return String(n || 0).replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
@@ -259,14 +261,44 @@ Page({
       try {
         const l = this.data.logement;
         const fullL = getLogementById(l.id) || l;
+        const profile = storage.get(STORAGE_KEYS.USER_PROFILE, null) || {};
         addStoredRentedHome(fullL, newPaid, {
-          locataireName: 'Moussa Ndiaye',
-          phone: '77 123 45 67'
+          locataireName: profile.fullName || 'Awa Diop',
+          phone: profile.phone || '+221 77 123 45 12'
         });
       } catch (e) {
         console.warn('[Entree] addStoredRentedHome error:', e);
       }
     });
+  },
+
+  onViewReceipt(e) {
+    const idx = Number(e.currentTarget.dataset.index) || 0;
+    const r = this.data.receipts[idx];
+    if (!r) return;
+    const profile = storage.get(STORAGE_KEYS.USER_PROFILE, null) || {
+      fullName: 'Awa Diop',
+      phone: '+221 77 123 45 12'
+    };
+    const l = this.data.logement;
+    const quittance = buildQuittance(
+      { id: l.id, name: l.title, place: l.place, owner: l.bailleur, rent: this.total },
+      { label: r.label, amount: this.payNow || this.total, ref: `REC-ENTREE-${Math.floor(1000 + Math.random() * 9000)}` },
+      profile
+    );
+    this.setData({ quittance });
+  },
+
+  onCloseReceipt() {
+    this.setData({ quittance: null });
+  },
+
+  onDownloadReceipt() {
+    wx.showLoading({ title: 'Génération PDF...' });
+    setTimeout(() => {
+      wx.hideLoading();
+      this.say('Quittance officielle d’entrée téléchargée');
+    }, 600);
   },
 
   onMxClose() {

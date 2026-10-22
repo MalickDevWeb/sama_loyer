@@ -469,3 +469,202 @@ page {
 .loy__receipt .sl-mx-amount {
   font-size: 52rpx;
 }
+
+/* ============================================================================
+   SAMA LOYER — Modal Quittance de Loyer Officielle Certifiée
+   ============================================================================ */
+.loy__quittance-modal {
+  max-width: 660rpx;
+  width: 92%;
+  padding: 32rpx;
+  border-radius: 40rpx;
+  background: #FFFFFF;
+  box-shadow: 0 20rpx 60rpx rgba(15, 30, 61, 0.35);
+}
+
+.loy__quittance-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 20rpx;
+  border-bottom: 2rpx solid #E8EBF2;
+}
+
+.loy__quittance-repub {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+}
+
+.loy__repub-flag {
+  font-size: 32rpx;
+}
+
+.loy__repub-txt {
+  font-size: 22rpx;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  color: #0F1E3D;
+}
+
+.loy__quittance-close {
+  width: 56rpx;
+  height: 56rpx;
+  border-radius: 28rpx;
+  background: #F1F4F9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.loy__quittance-body {
+  padding: 24rpx 0 16rpx 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.loy__quittance-badge {
+  display: inline-block;
+  padding: 6rpx 18rpx;
+  border-radius: 12rpx;
+  background: #0F1E3D;
+  color: #FFFFFF;
+  font-size: 20rpx;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  margin-bottom: 8rpx;
+}
+
+.loy__quittance-ref {
+  font-size: 30rpx;
+  font-weight: 800;
+  color: #0F1E3D;
+}
+
+.loy__quittance-date {
+  font-size: 22rpx;
+  color: #7A8294;
+  margin-top: 2rpx;
+  margin-bottom: 20rpx;
+}
+
+.loy__quittance-seal {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  padding: 10rpx 24rpx;
+  border-radius: 30rpx;
+  background: #EAF7EE;
+  border: 2rpx solid #C4EED0;
+  margin-bottom: 24rpx;
+}
+
+.loy__seal-txt {
+  font-size: 22rpx;
+  font-weight: 800;
+  color: #11643F;
+  letter-spacing: 0.02em;
+}
+
+.loy__quittance-amount-box {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 24rpx;
+  border-radius: 24rpx;
+  background: #F8F9FD;
+  border: 2rpx solid #E2E6F0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 24rpx;
+}
+
+.loy__amount-label {
+  font-size: 20rpx;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  color: #7A8294;
+}
+
+.loy__amount-val {
+  font-size: 50rpx;
+  font-weight: 900;
+  color: #C8235F;
+  margin: 6rpx 0;
+  letter-spacing: -0.02em;
+}
+
+.loy__amount-period {
+  font-size: 24rpx;
+  font-weight: 700;
+  color: #0F1E3D;
+}
+
+.loy__quittance-grid {
+  width: 100%;
+  box-sizing: border-box;
+  border-radius: 20rpx;
+  border: 2rpx solid #EAECEF;
+  background: #FFFFFF;
+  overflow: hidden;
+  margin-bottom: 20rpx;
+}
+
+.loy__q-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18rpx 20rpx;
+  border-bottom: 2rpx solid #F1F3F7;
+  font-size: 24rpx;
+}
+
+.loy__q-row:last-child {
+  border-bottom: 0;
+}
+
+.loy__q-row--total {
+  background: #FBFBFD;
+}
+
+.loy__q-lbl {
+  color: #7A8294;
+  font-weight: 600;
+}
+
+.loy__q-val {
+  color: #0F1E3D;
+  font-weight: 700;
+  text-align: right;
+  max-width: 60%;
+}
+
+.loy__q-val--code {
+  font-family: monospace;
+  color: #11643F;
+  font-weight: 800;
+}
+
+.loy__quittance-legal {
+  font-size: 20rpx;
+  line-height: 1.45;
+  color: #7A8294;
+  text-align: center;
+  padding: 0 10rpx;
+}
+
+.loy__quittance-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+  margin-top: 20rpx;
+}
+
+.loy__q-btn {
+  width: 100%;
+  height: 92rpx;
+  line-height: 92rpx;
+  border-radius: 26rpx;
+  font-size: 28rpx;
+}

@@ -1,4 +1,5 @@
 import { RENT_MONTH, PROBLEM_CATEGORIES } from '../../../utils/mocks/loyers';
+import { buildQuittance } from '../../../utils/mocks/contrats';
 import { getStoredRentedHomes, recordRentPayment } from '../../../utils/helpers/store';
 import { storage } from '../../../utils/storage.js';
 import { STORAGE_KEYS } from '../../../utils/constants/index';
@@ -169,27 +170,45 @@ Page({
     setTabBarVisible(true);
   },
 
-  // --- Reçus ------------------------------------------------------------------
+  // --- Reçus & Quittances ----------------------------------------------------
   onViewReceipt(e) {
     const r = this.data.history[Number(e.currentTarget.dataset.index) || 0];
     if (!r) return;
     setTabBarVisible(false);
-    this.setData({ receipt: r });
+    const cur = this.currentHome();
+    const profile = storage.get(STORAGE_KEYS.USER_PROFILE, null) || {
+      fullName: 'Awa Diop',
+      phone: '+221 77 123 45 12'
+    };
+    const quittance = buildQuittance(cur, r, profile);
+    this.setData({ receipt: r, quittance });
   },
 
   onCloseReceipt() {
-    this.setData({ receipt: null });
+    this.setData({ receipt: null, quittance: null });
     setTabBarVisible(true);
   },
 
   onDownloadReceipt() {
-    wx.showToast({ title: 'Reçu téléchargé', icon: 'success' });
+    wx.showLoading({ title: 'Génération PDF...' });
+    setTimeout(() => {
+      wx.hideLoading();
+      wx.showToast({ title: 'Quittance officielle téléchargée', icon: 'success' });
+    }, 600);
+  },
+
+  onShareReceipt() {
+    if (!this.data.quittance) return;
+    wx.setClipboardData({
+      data: `Quittance certifiée SAMA LOYER ${this.data.quittance.quittanceNo} · ${this.data.quittance.logementTitle} (${this.data.quittance.totalPayeText}) · Acquitté Orange Money`,
+      success: () => wx.showToast({ title: 'Lien de quittance copié', icon: 'success' })
+    });
   },
 
   // --- Contrat, bailleur, problème, départ --------------------------------------
-  // Écran « Mon contrat » (maquette) : contrat complet, articles, signatures
+  // Écran « Mon contrat » : contrat complet dynamique, articles, signatures
   onViewContrat() {
-    wx.navigateTo({ url: '/pages/client/contrat/contrat' });
+    wx.navigateTo({ url: `/pages/client/contrat/contrat?id=${this.data.selectedId}` });
   },
 
   onWriteBailleur() {

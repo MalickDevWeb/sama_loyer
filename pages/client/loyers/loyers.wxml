@@ -174,24 +174,77 @@
     </view>
   </view>
 
-  <!-- ================= REÇU ================= -->
+  <!-- ================= QUITTANCE OFFICIELLE DE LOYER ================= -->
   <view wx:if="{{ receipt }}" class="sl-mx-backdrop" catchtouchmove="noop" bindtap="onCloseReceipt">
-    <view class="sl-mx loy__receipt" catchtap="noop" aria-label="Reçu de paiement">
-      <view class="sl-mx-icon"><view class="ic ic-doc-navy"></view></view>
-      <text class="sl-mx-title">Reçu de paiement</text>
-      <text class="sl-mx-amount">{{ receipt.amountText }}</text>
-      <view class="sl-mx-box">
-        <view class="sl-mx-row"><text class="sl-mx-muted">Motif</text><text class="sl-mx-strong sl-mx-right">{{ receipt.label }}</text></view>
-        <view class="sl-mx-row"><text class="sl-mx-muted">Logement</text><text class="sl-mx-strong sl-mx-right">{{ cur.name }}</text></view>
-        <view class="sl-mx-row"><text class="sl-mx-muted">Bailleur</text><text class="sl-mx-strong">{{ cur.owner }}</text></view>
-        <view class="sl-mx-row"><text class="sl-mx-muted">Paiement</text><text class="sl-mx-strong sl-mx-right">{{ receipt.sub }}</text></view>
-        <view class="sl-mx-row sl-mx-row--total"><text class="sl-mx-muted">Référence</text><text class="sl-mx-strong">{{ receipt.ref }}</text></view>
+    <view class="sl-mx loy__quittance-modal" catchtap="noop" aria-label="Quittance de loyer">
+      <view class="loy__quittance-header">
+        <view class="loy__quittance-repub">
+          <text class="loy__repub-flag">🇸🇳</text>
+          <text class="loy__repub-txt">RÉPUBLIQUE DU SÉNÉGAL</text>
+        </view>
+        <view class="loy__quittance-close" hover-class="sl-hover" bindtap="onCloseReceipt">
+          <view class="ic ic-close-navy" style="width: 28rpx; height: 28rpx;"></view>
+        </view>
       </view>
-      <view class="sl-btn sl-btn--navy sl-mx-btn" hover-class="sl-hover" bindtap="onDownloadReceipt">
-        <view class="ic ic-download-white"></view>
-        <text>Télécharger le PDF</text>
+
+      <view class="loy__quittance-body">
+        <text class="loy__quittance-badge">QUITTANCE DE LOYER OFFICIELLE</text>
+        <text class="loy__quittance-ref">{{ quittance.quittanceNo }}</text>
+        <text class="loy__quittance-date">Délivrée le {{ quittance.dateEmission }}</text>
+
+        <!-- Sceau Acquitté -->
+        <view class="loy__quittance-seal">
+          <view class="ic ic-shield-check-green" style="width: 36rpx; height: 36rpx;"></view>
+          <text class="loy__seal-txt">ACQUITTÉ · PAIEMENT CERTIFIÉ MAX IT</text>
+        </view>
+
+        <!-- Montant mis en avant -->
+        <view class="loy__quittance-amount-box">
+          <text class="loy__amount-label">MONTANT TOTAL ACQUITTÉ</text>
+          <text class="loy__amount-val">{{ quittance.totalPayeText }}</text>
+          <text class="loy__amount-period">{{ quittance.periode }}</text>
+        </view>
+
+        <!-- Détails officiel -->
+        <view class="loy__quittance-grid">
+          <view class="loy__q-row">
+            <text class="loy__q-lbl">Bailleur</text>
+            <text class="loy__q-val">{{ quittance.bailleurName }}</text>
+          </view>
+          <view class="loy__q-row">
+            <text class="loy__q-lbl">Locataire</text>
+            <text class="loy__q-val">{{ quittance.locataireName }}</text>
+          </view>
+          <view class="loy__q-row">
+            <text class="loy__q-lbl">Logement</text>
+            <text class="loy__q-val">{{ quittance.logementTitle }} · {{ quittance.logementPlace }}</text>
+          </view>
+          <view class="loy__q-row">
+            <text class="loy__q-lbl">Loyer principal</text>
+            <text class="loy__q-val">{{ quittance.montantLoyerText }}</text>
+          </view>
+          <view class="loy__q-row">
+            <text class="loy__q-lbl">Charges</text>
+            <text class="loy__q-val">{{ quittance.montantChargesText }}</text>
+          </view>
+          <view class="loy__q-row loy__q-row--total">
+            <text class="loy__q-lbl">Réf. transaction OM</text>
+            <text class="loy__q-val loy__q-val--code">{{ quittance.hashSecurite }}</text>
+          </view>
+        </view>
+
+        <text class="loy__quittance-legal">Cette quittance électronique certifie le paiement libératoire du loyer pour le terme désigné, sans réserve d'encaissement via Orange Money.</text>
       </view>
-      <view class="sl-mx-cancel" hover-class="sl-hover" bindtap="onCloseReceipt">Fermer</view>
+
+      <view class="loy__quittance-actions">
+        <view class="sl-btn sl-btn--berry loy__q-btn" hover-class="sl-hover" bindtap="onDownloadReceipt">
+          <view class="ic ic-download-white" style="width: 36rpx; height: 36rpx;"></view>
+          <text>Télécharger le PDF officiel</text>
+        </view>
+        <view class="sl-btn sl-btn--outline-navy loy__q-btn" hover-class="sl-hover" bindtap="onShareReceipt">
+          <text>Partager la quittance</text>
+        </view>
+      </view>
     </view>
   </view>
 </view>

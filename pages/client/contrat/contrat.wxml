@@ -96,18 +96,28 @@
 
   <!-- Signatures -->
   <view class="contrat__section">
-    <text class="contrat__h2 contrat__h2--pad">Signatures</text>
+    <view class="contrat__sig-head">
+      <text class="contrat__h2 contrat__h2--pad">Signatures numériques</text>
+      <view class="contrat__sig-btn" hover-class="sl-hover" bindtap="onOpenSign">
+        <view class="ic ic-shield-check-green" style="width: 28rpx; height: 28rpx;"></view>
+        <text>Certificat Max it</text>
+      </view>
+    </view>
     <view class="contrat__parties">
       <view class="contrat__party">
         <text class="contrat__sig-label">Le bailleur</text>
         <text class="contrat__sig">{{ contrat.bailleur.signature }}</text>
         <text class="contrat__sig-date">{{ contrat.bailleur.signedOn }}</text>
       </view>
-      <view class="contrat__party">
+      <view class="contrat__party contrat__party--locataire">
         <text class="contrat__sig-label">Le locataire</text>
         <text class="contrat__sig">{{ contrat.locataire.signature }}</text>
         <text class="contrat__sig-date">{{ contrat.locataire.signedOn }}</text>
       </view>
+    </view>
+    <view class="contrat__seal">
+      <view class="ic ic-shield-check-green" style="width: 32rpx; height: 32rpx;"></view>
+      <text class="contrat__seal-text">Bail officiel vérifié et archivé sous le sceau SAMA LOYER · Code : {{ contrat.numero }}</text>
     </view>
     <text class="contrat__legal">Modèle de contrat proposé par SAMA LOYER. Les signatures sont enregistrées avec le numéro de téléphone vérifié de chaque partie.</text>
   </view>
@@ -120,6 +130,34 @@
     <view class="sl-btn sl-btn--berry contrat__download" hover-class="sl-hover" bindtap="onDownload">
       <view class="ic ic-download-white contrat__download-icon"></view>
       <text>Télécharger (PDF)</text>
+    </view>
+  </view>
+
+  <!-- Modal Signature Numérique Max it -->
+  <view wx:if="{{ showSignModal }}" class="contrat__sign-backdrop" catchtouchmove="noop" bindtap="onCloseSign">
+    <view class="contrat__sign-modal" catchtap="noop">
+      <view class="contrat__sign-header">
+        <text class="contrat__sign-title">Signature électronique certifiée</text>
+        <view class="contrat__sign-close" bindtap="onCloseSign">
+          <view class="ic ic-close-navy" style="width: 24rpx; height: 24rpx;"></view>
+        </view>
+      </view>
+      <view class="contrat__sign-body">
+        <view class="contrat__sign-badge">
+          <view class="ic ic-shield-check-green" style="width: 32rpx; height: 32rpx;"></view>
+          <text>Authentifié par Orange Max it</text>
+        </view>
+        <text class="contrat__sign-desc">En apposant votre signature, vous validez l'ensemble des 8 articles du bail de location pour « {{ contrat.subtitle }} ».</text>
+        <view class="contrat__sign-pad">
+          <text class="contrat__sign-holder">{{ contrat.locataire.name }}</text>
+          <text class="contrat__sign-sub">{{ contrat.locataire.phone }} · Session certifiée</text>
+          <view class="contrat__sign-line"></view>
+        </view>
+      </view>
+      <view class="contrat__sign-actions">
+        <view class="sl-btn sl-btn--berry" hover-class="sl-hover" bindtap="onConfirmSign">Confirmer la signature</view>
+        <view class="contrat__sign-cancel" hover-class="sl-hover" bindtap="onCloseSign">Annuler</view>
+      </view>
     </view>
   </view>
 
