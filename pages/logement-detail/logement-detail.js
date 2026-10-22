@@ -60,6 +60,7 @@ const DEFAULT_LOGEMENT = {
 Page({
   data: {
     statusBarHeight: 24,
+    headerTop: 54,
     logement: DEFAULT_LOGEMENT,
     currentSlideIndex: 0,
     isExpandedDesc: false,
@@ -75,12 +76,20 @@ Page({
   },
 
   onLoad(options) {
+    let top = 54;
     try {
-      const sys = wx.getSystemInfoSync();
-      if (sys && sys.statusBarHeight) {
-        this.setData({ statusBarHeight: sys.statusBarHeight });
+      const menuBtn = wx.getMenuButtonBoundingClientRect ? wx.getMenuButtonBoundingClientRect() : null;
+      if (menuBtn && menuBtn.bottom) {
+        // Position below the native WeChat capsule button with margin
+        top = menuBtn.bottom + 10;
+      } else {
+        const sys = wx.getSystemInfoSync();
+        top = (sys.statusBarHeight || 20) + 44;
       }
-    } catch (e) {}
+    } catch (e) {
+      top = 54;
+    }
+    this.setData({ headerTop: top });
 
     // Check if favorited
     try {

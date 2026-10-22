@@ -6,8 +6,8 @@
     <!-- Zone Carrousel / Image principale -->
     <view class="hero-carousel" style="background-color: {{ logement.slides[currentSlideIndex].bg }};">
       
-      <!-- Barre d'action flottante supérieure (safe-area top) -->
-      <view class="floating-header" style="padding-top: {{ statusBarHeight + 10 }}px;">
+      <!-- Barre d'action flottante supérieure (positionnée sous la capsule native) -->
+      <view class="floating-header" style="top: {{ headerTop }}px;">
         <view class="btn-circle-nav" bindtap="onBackTap">
           <view class="icon-svg icon-arrow-left"></view>
         </view>
