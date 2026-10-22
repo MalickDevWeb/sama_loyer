@@ -15,19 +15,18 @@
   box-sizing: border-box;
 }
 
-/* Dark Hero Header */
-.dark-hero {
-  background-color: #0F1E3D;
-  padding: 0 32rpx 48rpx;
-  color: #FFFFFF;
+/* Header Section (Fond clair) */
+.bailleur-header {
+  background-color: #FFFFFF;
+  padding: 0 32rpx 36rpx;
+  border-bottom: 1rpx solid #ECEFF2;
 }
 
 .hero-top-row {
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  gap: 20rpx;
-  margin-bottom: 28rpx;
+  margin-bottom: 24rpx;
   min-height: 72rpx;
 }
 
@@ -54,11 +53,11 @@
   line-height: 1.05;
 }
 
-.brand-title--white {
+.brand-title {
   font-size: 32rpx;
   font-weight: 800;
   letter-spacing: 0.04em;
-  color: #FFFFFF !important;
+  color: #0F1E3D;
 }
 
 .brand-sub {
@@ -81,22 +80,11 @@
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23FFFFFF' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 10.5 12 3l9 7.5'/%3E%3Cpath d='M5 9.5V20h14V9.5'/%3E%3Cpath d='M10 20v-5h4v5'/%3E%3C/svg%3E");
 }
 
-.badge-role-pill {
-  font-size: 20rpx;
-  font-weight: 800;
-  letter-spacing: 1.5rpx;
-  background-color: rgba(255, 255, 255, 0.14);
-  color: #FFFFFF;
-  padding: 8rpx 18rpx;
-  border-radius: 20rpx;
-  border: 1rpx solid rgba(255, 255, 255, 0.2);
-}
-
 .hero-profile-row {
   display: flex;
   align-items: center;
   gap: 24rpx;
-  margin-top: 10rpx;
+  margin-top: 6rpx;
 }
 
 .avatar-circle-bailleur {
@@ -108,8 +96,7 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  box-shadow: 0 6rpx 18rpx rgba(200, 35, 95, 0.4);
-  border: 3rpx solid rgba(255, 255, 255, 0.25);
+  box-shadow: 0 6rpx 18rpx rgba(200, 35, 95, 0.28);
 }
 
 .avatar-text {
@@ -132,9 +119,9 @@
 }
 
 .hero-welcome {
-  font-size: 44rpx;
+  font-size: 46rpx;
   font-weight: 800;
-  color: #FFFFFF;
+  color: #0F1E3D;
 }
 
 .verified-badge-mini {
@@ -150,13 +137,13 @@
 
 .hero-sub {
   font-size: 26rpx;
-  color: #A0AAB8;
+  color: #5B6475;
 }
 
 /* Main Body */
 .main-body {
-  padding: 32rpx;
-  margin-top: -24rpx;
+  padding: 24rpx 32rpx 32rpx;
+  margin-top: 0;
 }
 
 /* KPI Grid (4 cards) */
