@@ -6,7 +6,7 @@
       <text class="page-title">Demandes</text>
       <text class="page-subtitle">Visites et messages des locataires</text>
 
-      <!-- Tabs Visites (1) & Messages (2) -->
+      <!-- Tabs Pilule : Visites (1) | Messages (2) | Clients (2) -->
       <view class="tabs-outer-pill">
         <view 
           class="tab-item {{ activeTab === 'visites' ? 'tab-item--active' : '' }}"
@@ -22,14 +22,20 @@
         >
           Messages (2)
         </view>
+        <view 
+          class="tab-item {{ activeTab === 'locataires' ? 'tab-item--active' : '' }}"
+          data-tab="locataires"
+          bindtap="onSelectTab"
+        >
+          Clients (2)
+        </view>
       </view>
     </view>
 
-    <!-- Liste des demandes -->
-    <view class="demandes-list">
+    <!-- VUE 1 : VISITES -->
+    <view wx:if="{{ activeTab === 'visites' }}" class="demandes-list">
       <block wx:for="{{ demandes }}" wx:key="id">
         <view class="demande-card">
-          
           <!-- En-tête de la carte : Avatar, Nom, Logement & Badge statut -->
           <view class="demande-card-top">
             <view class="demande-user-info">
@@ -81,6 +87,78 @@
           </view>
         </view>
       </block>
+    </view>
+
+    <!-- VUE 2 : MESSAGES AVEC LES CLIENTS / LOCATAIRES -->
+    <view wx:elif="{{ activeTab === 'messages' }}" class="demandes-list">
+      <block wx:for="{{ messagesList }}" wx:key="id">
+        <view class="demande-card message-item-card" data-id="{{ item.id }}" bindtap="onOpenChat">
+          <view class="demande-card-top">
+            <view class="demande-user-info">
+              <view class="avatar-circle-sm" style="background-color: {{ item.avatarBg }};">
+                <text class="avatar-sm-text">{{ item.initials }}</text>
+              </view>
+              <view class="user-text-col">
+                <text class="demande-name">{{ item.name }}</text>
+                <text class="demande-prop">{{ item.property }}</text>
+              </view>
+            </view>
+            <text class="msg-time">{{ item.time }}</text>
+          </view>
+
+          <view class="msg-last-row">
+            <text class="msg-preview-text">{{ item.lastMessage }}</text>
+            <view wx:if="{{ item.unread > 0 }}" class="msg-unread-badge">{{ item.unread }}</view>
+          </view>
+
+          <view class="msg-event-pill">
+            <text>📅 {{ item.event }}</text>
+          </view>
+        </view>
+      </block>
+    </view>
+
+    <!-- VUE 3 : MES CLIENTS / LOCATAIRES ACTIFS -->
+    <view wx:elif="{{ activeTab === 'locataires' }}" class="demandes-list">
+      <block wx:for="{{ locataires }}" wx:key="id">
+        <view class="demande-card">
+          <view class="demande-card-top">
+            <view class="demande-user-info">
+              <view class="avatar-circle-sm" style="background-color: {{ item.avatarBg }};">
+                <text class="avatar-sm-text">{{ item.initials }}</text>
+              </view>
+              <view class="user-text-col">
+                <text class="demande-name">{{ item.name }}</text>
+                <text class="demande-prop">{{ item.property }} · {{ item.rent }}</text>
+              </view>
+            </view>
+            <view class="status-badge-demande {{ item.statusClass }}">
+              {{ item.statusLabel }}
+            </view>
+          </view>
+
+          <view class="client-detail-notice">
+            <text class="notice-sms-text">{{ item.paymentDetail }} · Tel : {{ item.phone }}</text>
+          </view>
+
+          <!-- Boutons directs d'appel et de message -->
+          <view class="buttons-pair-row" style="margin-top: 20rpx;">
+            <button class="btn-refuser" data-phone="{{ item.phoneRaw }}" bindtap="onCallClient">
+              📞 Appeler
+            </button>
+            <button class="btn-accepter" data-name="{{ item.name }}" data-phone="{{ item.phone }}" bindtap="onWhatsAppClient">
+              💬 WhatsApp
+            </button>
+          </view>
+        </view>
+      </block>
+
+      <!-- Bouton d'accès à la gestion complète -->
+      <view class="see-all-clients-wrap">
+        <button class="btn-see-all-clients" bindtap="onGoClientsPage">
+          Gérer tous mes locataires & quittances ›
+        </button>
+      </view>
     </view>
 
     <view class="scroll-spacer"></view>

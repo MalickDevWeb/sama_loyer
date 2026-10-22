@@ -251,6 +251,68 @@
   color: #5B6475;
 }
 
+/* Messages & Clients Extra Styles */
+.msg-time {
+  font-size: 22rpx;
+  color: #8C96A6;
+}
+
+.msg-last-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12rpx;
+}
+
+.msg-preview-text {
+  flex: 1;
+  font-size: 24rpx;
+  color: #333F53;
+}
+
+.msg-unread-badge {
+  background-color: #C8235F;
+  color: #FFFFFF;
+  font-size: 20rpx;
+  font-weight: 700;
+  padding: 4rpx 14rpx;
+  border-radius: 20rpx;
+}
+
+.msg-event-pill {
+  display: inline-block;
+  background-color: #F4F6F9;
+  border-radius: 12rpx;
+  padding: 8rpx 16rpx;
+  font-size: 22rpx;
+  color: #5B6475;
+}
+
+.client-detail-notice {
+  background-color: #F0F9F4;
+  border: 1rpx solid #CCEBD9;
+  border-radius: 16rpx;
+  padding: 16rpx 20rpx;
+}
+
+.see-all-clients-wrap {
+  margin-top: 10rpx;
+}
+
+.btn-see-all-clients {
+  width: 100%;
+  height: 88rpx;
+  border-radius: 44rpx;
+  background-color: #FFFFFF;
+  border: 1.5rpx solid #D5DAE1;
+  color: #0F1E3D;
+  font-size: 26rpx;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .scroll-spacer {
   height: 180rpx;
 }

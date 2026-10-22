@@ -45,7 +45,7 @@
         </view>
 
         <!-- KPI 3 -->
-        <view class="kpi-card" bindtap="onGoAnnonces">
+        <view class="kpi-card" bindtap="onGoClients">
           <view class="kpi-top">
             <view class="kpi-icon-wrap icon-green">
               <text class="kpi-icon">🔑</text>

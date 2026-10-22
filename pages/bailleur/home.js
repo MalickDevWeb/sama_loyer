@@ -49,6 +49,12 @@ Page({
     });
   },
 
+  onGoClients() {
+    wx.navigateTo({
+      url: '/pages/bailleur/clients'
+    });
+  },
+
   onGoPremium() {
     wx.redirectTo({
       url: '/pages/bailleur/premium'
@@ -56,8 +62,8 @@ Page({
   },
 
   onGoHistorique() {
-    wx.redirectTo({
-      url: '/pages/bailleur/premium'
+    wx.navigateTo({
+      url: '/pages/bailleur/clients'
     });
   },
 

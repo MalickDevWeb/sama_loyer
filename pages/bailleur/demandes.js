@@ -1,7 +1,7 @@
 Page({
   data: {
     statusBarHeight: 44,
-    activeTab: 'visites', // 'visites' | 'messages'
+    activeTab: 'visites', // 'visites' | 'messages' | 'locataires'
     demandes: [
       {
         id: 'd1',
@@ -40,6 +40,58 @@ Page({
         notice: "Visite acceptée. Le locataire a reçu l'adresse exacte par SMS.",
         isPending: false
       }
+    ],
+    messagesList: [
+      {
+        id: 'AD',
+        initials: 'AD',
+        avatarBg: '#0F1E3D',
+        name: 'Awa Diop',
+        property: 'Chambre salon · Icotaf · 65 000 F',
+        lastMessage: 'Je vous enverrai l’adresse exacte vendredi.',
+        time: '10:43',
+        unread: 2,
+        event: 'Visite demandée · sam. 24, 16 h'
+      },
+      {
+        id: 'FK',
+        initials: 'FK',
+        avatarBg: '#C8235F',
+        name: 'Fatou K.',
+        property: 'Chambre · Thiaroye · 45 000 F',
+        lastMessage: 'Merci pour la quittance de loyer reçue !',
+        time: 'Hier',
+        unread: 0,
+        event: 'Locataire active'
+      }
+    ],
+    locataires: [
+      {
+        id: 'c1',
+        initials: 'FK',
+        avatarBg: '#C8235F',
+        name: 'Fatou K.',
+        property: 'Chambre · Thiaroye',
+        rent: '45 000 F',
+        phone: '77 123 45 67',
+        phoneRaw: '771234567',
+        statusLabel: 'Loyer payé (Octobre)',
+        statusClass: 'badge-green',
+        paymentDetail: 'Payé le 3 oct. via Wave'
+      },
+      {
+        id: 'c2',
+        initials: 'FB',
+        avatarBg: '#0F1E3D',
+        name: 'Famille Ba',
+        property: 'Maison · Pikine Nord',
+        rent: '160 000 F',
+        phone: '78 234 56 78',
+        phoneRaw: '782345678',
+        statusLabel: 'Loyer payé (Octobre)',
+        statusClass: 'badge-green',
+        paymentDetail: 'Payé le 5 oct. via Orange Money'
+      }
     ]
   },
 
@@ -61,11 +113,6 @@ Page({
   onSelectTab(e) {
     const tab = e.currentTarget.dataset.tab;
     this.setData({ activeTab: tab });
-    if (tab === 'messages') {
-      wx.navigateTo({
-        url: '/pages/messages/messages'
-      });
-    }
   },
 
   onAccept(e) {
@@ -111,6 +158,43 @@ Page({
   onProposeHoraire(e) {
     wx.navigateTo({
       url: '/pages/messages/chat?id=AD'
+    });
+  },
+
+  onOpenChat(e) {
+    const id = e.currentTarget.dataset.id;
+    wx.navigateTo({
+      url: `/pages/messages/chat?id=${id}`
+    });
+  },
+
+  onCallClient(e) {
+    const phone = e.currentTarget.dataset.phone;
+    wx.makePhoneCall({
+      phoneNumber: phone,
+      fail: () => {}
+    });
+  },
+
+  onWhatsAppClient(e) {
+    const name = e.currentTarget.dataset.name;
+    const phone = e.currentTarget.dataset.phone;
+    wx.setClipboardData({
+      data: `Bonjour ${name}, message de votre bailleur Sama Logement.`,
+      success: () => {
+        wx.showModal({
+          title: 'WhatsApp 💬',
+          content: `Le message pré-rempli pour ${name} (${phone}) a été copié.`,
+          confirmText: 'OK',
+          showCancel: false
+        });
+      }
+    });
+  },
+
+  onGoClientsPage() {
+    wx.navigateTo({
+      url: '/pages/bailleur/clients'
     });
   }
 });
