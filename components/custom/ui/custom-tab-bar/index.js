@@ -32,15 +32,25 @@ Component({
 
   methods: {
     syncTabs() {
-      const role = storage.get(STORAGE_KEYS.USER_ROLE, 'client');
-      const currentTabs = role === 'bailleur' ? BAILLEUR_TABS : CLIENT_TABS;
-      
       const pages = getCurrentPages();
-      const currentPage = pages[pages.length - 1];
-      const route = currentPage ? currentPage.route : '';
+      const currentPage = pages && pages.length > 0 ? pages[pages.length - 1] : null;
+      const route = currentPage ? (currentPage.route || '') : '';
       
-      const match = currentTabs.find(t => t.url.replace(/^\//, '') === route);
-      const activeTab = match ? match.id : this.data.activeTab;
+      // La route actuelle est la source absolue de vérité
+      let isBailleur = false;
+      if (route) {
+        isBailleur = route.includes('pages/bailleur');
+        // Synchronisation du rôle en storage pour garantir la cohérence globale
+        storage.set(STORAGE_KEYS.USER_ROLE, isBailleur ? 'bailleur' : 'client');
+      } else {
+        isBailleur = storage.get(STORAGE_KEYS.USER_ROLE, 'client') === 'bailleur';
+      }
+
+      const currentTabs = isBailleur ? BAILLEUR_TABS : CLIENT_TABS;
+      
+      const cleanRoute = route.replace(/^\//, '');
+      const match = currentTabs.find(t => t.url.replace(/^\//, '') === cleanRoute);
+      const activeTab = match ? match.id : (this.properties.activeTab || this.data.activeTab);
 
       this.setData({
         tabs: currentTabs,

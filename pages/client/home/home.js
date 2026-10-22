@@ -124,8 +124,8 @@ Page({
     } catch (e) {}
 
     try {
-      const role = storage.get(STORAGE_KEYS.USER_ROLE, 'client');
-      this.setData({ userRole: role });
+      storage.set(STORAGE_KEYS.USER_ROLE, 'client');
+      this.setData({ userRole: 'client' });
     } catch (e) {}
 
     const favIds = getFavoriteIds();
@@ -137,6 +137,9 @@ Page({
   },
 
   onShow() {
+    try {
+      storage.set(STORAGE_KEYS.USER_ROLE, 'client');
+    } catch (e) {}
     setCustomTabBarActive(this, 'home');
     const favIds = getFavoriteIds();
     this.setData({
