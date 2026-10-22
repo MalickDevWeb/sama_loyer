@@ -1,5 +1,5 @@
 <view class="not-found-page">
-  <!-- Custom Navigation Header -->
+  <!-- Minimalist Nav Bar -->
   <view class="nav-bar-custom" style="padding-top: {{ statusBarHeight }}px; height: {{ navBarHeight }}px;">
     <view class="nav-back-btn" bindtap="onGoHome">
       <text class="back-arrow">←</text>
@@ -7,78 +7,69 @@
     <view class="nav-brand">
       <text class="brand-title">SAMA LOYER</text>
     </view>
-    <view class="nav-placeholder"></view>
+    <!-- Right spacer to balance layout away from WeChat capsule -->
+    <view class="nav-spacer"></view>
   </view>
 
-  <scroll-view scroll-y class="scroll-content" style="padding-top: {{ statusBarHeight + navBarHeight }}px;">
+  <scroll-view scroll-y class="scroll-content" style="padding-top: {{ statusBarHeight + navBarHeight + 8 }}px;">
     <view class="content-wrapper">
-      <!-- 404 Illustration Hero -->
-      <view class="illustration-container">
-        <!-- Floating shapes background -->
-        <view class="shape-circle shape-pink"></view>
-        <view class="shape-circle shape-blue"></view>
-
-        <!-- Graphic House Artwork with Key & Magnifier -->
-        <view class="house-artwork">
-          <view class="house-roof"></view>
-          <view class="house-body">
-            <view class="house-door">
-              <view class="door-handle"></view>
-              <view class="door-sign">404</view>
-            </view>
-            <view class="house-window"></view>
-          </view>
-          <!-- Floating badge -->
-          <view class="floating-key-badge">
-            <text class="key-icon">🔑</text>
-          </view>
-        </view>
+      
+      <!-- Premium Hero Artwork -->
+      <view class="hero-illu-wrap">
+        <view class="hero-illu-art"></view>
       </view>
 
       <!-- Badge Code -->
-      <view class="status-badge">
+      <view class="error-badge">
         <text class="badge-dot">✦</text>
-        <text class="badge-text">ERREUR 404 · PAGE INTROUVABLE</text>
+        <text class="badge-text">ERREUR 404 · LOGEMENT INTROUVABLE</text>
       </view>
 
-      <!-- Headings -->
-      <text class="title-primary">Cette porte ne mène nulle part !</text>
-      <text class="subtitle-text">
-        L'adresse demandée est introuvable ou le logement a déjà été attribué. Pas d'inquiétude, d'autres pépites t'attendent à Dakar.
+      <!-- Clean Typography (No orphan words) -->
+      <text class="main-title">Ce logement n'habite plus à cette adresse</text>
+      <text class="main-subtitle">
+        L'annonce a été retirée ou le lien n'est plus actif. Rassure-toi, ton futur chez-toi t'attend à Dakar !
       </text>
 
-      <!-- Quick Neighborhood Suggestions -->
-      <view class="suggestions-section">
-        <text class="suggestions-label">Explorer par quartier :</text>
-        <view class="pills-grid">
+      <!-- Card Suggestions : Quartiers Populaires -->
+      <view class="suggestions-card">
+        <view class="suggestions-header">
+          <text class="suggestions-title">Où souhaites-tu chercher ?</text>
+          <text class="suggestions-sub">Quartiers populaires à Dakar</text>
+        </view>
+
+        <view class="zones-grid">
           <view 
             wx:for="{{ popularZones }}" 
             wx:key="key" 
-            class="zone-pill"
+            class="zone-card"
             bindtap="onSelectZone"
             data-zone="{{ item.label }}"
           >
-            <text class="zone-pin">📍</text>
-            <text class="zone-name">{{ item.label }}</text>
+            <view class="zone-pin-circle">📍</view>
+            <text class="zone-label">{{ item.label }}</text>
+            <text class="zone-arrow">→</text>
           </view>
         </view>
       </view>
 
       <!-- Action Buttons -->
-      <view class="actions-section">
-        <button class="btn-primary" bindtap="onGoHome">
-          <text class="btn-icon">🏠</text>
-          <text class="btn-label">Retour à l'accueil</text>
+      <view class="actions-group">
+        <button class="btn-primary" bindtap="onSearchAll">
+          <text class="btn-primary-text">Trouver un logement</text>
+          <text class="btn-arrow">→</text>
         </button>
 
-        <button class="btn-secondary" bindtap="onSearchAll">
-          <text class="btn-secondary-label">Voir tous les logements</text>
+        <button class="btn-secondary" bindtap="onGoHome">
+          <text class="btn-secondary-text">Retourner à l'accueil</text>
         </button>
 
-        <view class="bailleur-link" bindtap="onSwitchBailleur">
-          <text class="bailleur-link-text">Vous êtes propriétaire ? Accéder à l'espace bailleur →</text>
+        <view class="bailleur-row" bindtap="onSwitchBailleur">
+          <text class="bailleur-hint">Vous êtes propriétaire ? </text>
+          <text class="bailleur-link-bold">Espace bailleur →</text>
         </view>
       </view>
+
     </view>
   </scroll-view>
 </view>
