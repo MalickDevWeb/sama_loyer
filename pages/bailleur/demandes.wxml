@@ -7,16 +7,16 @@
       <text class="page-subtitle">Visites et messages des locataires</text>
 
       <!-- Tabs Visites (1) & Messages (2) -->
-      <view class="tabs-header-row">
+      <view class="tabs-outer-pill">
         <view 
-          class="tab-btn {{ activeTab === 'visites' ? 'tab-btn--active' : '' }}"
+          class="tab-item {{ activeTab === 'visites' ? 'tab-item--active' : '' }}"
           data-tab="visites"
           bindtap="onSelectTab"
         >
           Visites (1)
         </view>
         <view 
-          class="tab-btn {{ activeTab === 'messages' ? 'tab-btn--active' : '' }}"
+          class="tab-item {{ activeTab === 'messages' ? 'tab-item--active' : '' }}"
           data-tab="messages"
           bindtap="onSelectTab"
         >
@@ -29,7 +29,8 @@
     <view class="demandes-list">
       <block wx:for="{{ demandes }}" wx:key="id">
         <view class="demande-card">
-          <!-- User info & Status pill -->
+          
+          <!-- En-tête de la carte : Avatar, Nom, Logement & Badge statut -->
           <view class="demande-card-top">
             <view class="demande-user-info">
               <view class="avatar-circle-sm" style="background-color: {{ item.avatarBg }};">
@@ -45,21 +46,23 @@
             </view>
           </view>
 
-          <!-- Date créneau -->
+          <!-- Boîte du créneau horaire -->
           <view class="demande-slot-box">
             <text class="cal-emoji">📅</text>
             <text class="slot-text">{{ item.dateLabel }}</text>
           </view>
 
-          <!-- Message du locataire -->
-          <text wx:if="{{ item.message }}" class="demande-quote-text">{{ item.message }}</text>
+          <!-- Citation / message du locataire -->
+          <view wx:if="{{ item.message }}" class="quote-wrap">
+            <text class="demande-quote-text">{{ item.message }}</text>
+          </view>
 
-          <!-- Notification si acceptée -->
+          <!-- Encadré vert de visite acceptée -->
           <view wx:if="{{ item.notice }}" class="accepted-notice-box">
             <text class="notice-sms-text">{{ item.notice }}</text>
           </view>
 
-          <!-- Boutons Accepter / Refuser si À répondre -->
+          <!-- Boutons Accepter / Refuser (uniquement si en attente) -->
           <view wx:if="{{ item.isPending }}" class="action-buttons-group">
             <view class="buttons-pair-row">
               <button class="btn-refuser" data-id="{{ item.id }}" bindtap="onRefuse">

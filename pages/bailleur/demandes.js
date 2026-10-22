@@ -18,7 +18,7 @@ Page({
       {
         id: 'd2',
         initials: 'CF',
-        avatarBg: '#4A5568',
+        avatarBg: '#4743A0',
         name: 'Cheikh Fall',
         property: 'Studio meublé · Pikine Rue 10',
         status: 'accepted',

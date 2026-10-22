@@ -67,7 +67,7 @@ export const BAILLEUR_TABS = [
   {
     id: 'b-demandes',
     label: 'Demandes',
-    badge: '2',
+    badge: '1',
     url: '/pages/bailleur/demandes',
   },
   {
