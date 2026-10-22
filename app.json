@@ -1,5 +1,6 @@
 {
   "pages": [
+     "pages/common/404/404",
     "pages/client/home/home",
     "pages/client/search/results",
     "pages/client/logement-detail/logement-detail",
@@ -21,8 +22,7 @@
     "pages/bailleur/premium/premium",
     "pages/bailleur/messages/messages",
     "pages/bailleur/conversation/conversation",
-    "pages/bailleur/horaires/horaires",
-    "pages/common/404/404"
+    "pages/bailleur/horaires/horaires"
   ],
   "usingComponents": {
     "app-nav-bar": "/components/ui/nav-bar/index",
