@@ -27,8 +27,8 @@ function setTabBarVisible(visible) {
 Page({
   data: {
     statusBarHeight: 44,
-    selectedId: RENTED_HOMES[0].id,
-    subtitle: `${RENTED_HOMES.length} logements · paiements via Max it`,
+    selectedId: '',
+    subtitle: '',
     totalLeft: '',
     totalLeftLabel: '',
     paidCount: '',
@@ -49,8 +49,13 @@ Page({
 
     const rentedHomes = getStoredRentedHomes();
     this.paid = storage.get(STORAGE_KEYS.RENT_PAID, {}) || {};
-    const initial = options && options.id && rentedHomes.some((h) => h.id === options.id) ? options.id : rentedHomes[0].id;
-    this.setData({ selectedId: initial }, () => this.refresh());
+    const initial = options && options.id && rentedHomes.some((h) => h.id === options.id)
+      ? options.id
+      : (rentedHomes[0] ? rentedHomes[0].id : '');
+    this.setData({
+      selectedId: initial,
+      subtitle: `${rentedHomes.length} logement${rentedHomes.length > 1 ? 's' : ''} · paiements via Max it`
+    }, () => this.refresh());
   },
 
   onShow() {
@@ -65,6 +70,19 @@ Page({
 
   refresh() {
     const rentedHomes = getStoredRentedHomes();
+    if (!rentedHomes || rentedHomes.length === 0) {
+      this.setData({
+        subtitle: '0 logement',
+        totalLeft: '0 F',
+        totalLeftLabel: 'Aucun logement loué',
+        paidCount: '0 / 0',
+        segments: [],
+        homes: [],
+        cur: {},
+        history: []
+      });
+      return;
+    }
     const paid = this.paid || {};
     const total = rentedHomes.reduce((a, h) => a + h.rent, 0);
     const left = rentedHomes.reduce((a, h) => a + (paid[h.id] ? 0 : h.rent), 0);
@@ -85,6 +103,7 @@ Page({
     }
 
     this.setData({
+      subtitle: `${rentedHomes.length} logement${rentedHomes.length > 1 ? 's' : ''} · paiements via Max it`,
       totalLeft: left ? `${fmt(left)} F` : 'Tout est payé',
       totalLeftLabel: left ? `restent à payer sur ${fmt(total)} F` : `pour ${RENT_MONTH}`,
       paidCount: `${paidN} / ${rentedHomes.length} payé(s)`,
@@ -117,7 +136,7 @@ Page({
 
   currentHome() {
     const rentedHomes = getStoredRentedHomes();
-    return rentedHomes.find((x) => x.id === this.data.selectedId) || rentedHomes[0];
+    return rentedHomes.find((x) => x.id === this.data.selectedId) || rentedHomes[0] || {};
   },
 
   onSelectHome(e) {
