@@ -193,7 +193,7 @@
       </view>
 
       <!-- SECTION : Le bailleur -->
-      <view class="section-block">
+      <view class="section-block" bindtap="onContactTap">
         <text class="section-title">Le bailleur</text>
         
         <view class="landlord-card">
@@ -207,6 +207,9 @@
               <text>Identité vérifiée</text>
             </view>
             <text class="landlord-response">{{ logement.bailleur.responseTime }}</text>
+          </view>
+          <view class="btn-chat-landlord">
+            <view class="ic ic-chat-navy"></view>
           </view>
         </view>
       </view>
@@ -236,9 +239,6 @@
       </view>
     </view>
     <view class="entry-actions">
-      <button class="btn-contact-square" bindtap="onContactTap" aria-label="Contacter le bailleur">
-        <view class="ic ic-chat-navy"></view>
-      </button>
       <button class="btn-contact-outline" bindtap="onOpenVisitModal">
         <view class="ic ic-cal-navy entry-actions__icon"></view>
         <text>Visiter</text>

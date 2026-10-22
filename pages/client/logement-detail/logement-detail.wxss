@@ -964,39 +964,39 @@
 
 .entry-actions {
   display: flex;
-  gap: 16rpx;
+  gap: 20rpx;
 }
 
-.entry-actions .btn-contact-outline,
-.entry-actions .btn-visit-primary {
+.entry-actions .btn-contact-outline {
+  flex: 1;
   height: 108rpx;
   border-radius: 32rpx;
+  font-size: 30rpx;
+  font-weight: 800;
 }
 
 .entry-actions .btn-visit-primary {
-  flex: 1.5;
+  flex: 1.6;
+  height: 108rpx;
+  border-radius: 32rpx;
+  font-size: 30rpx;
+  font-weight: 800;
   box-shadow: 0 12rpx 28rpx rgba(200, 35, 95, 0.28);
 }
 
 .entry-actions__icon {
-  width: 34rpx;
-  height: 34rpx;
+  width: 36rpx;
+  height: 36rpx;
 }
 
-.btn-contact-square {
-  width: 104rpx;
-  height: 108rpx;
-  flex: 0 0 104rpx;
-  border-radius: 32rpx;
-  border: 2rpx solid #E4E7EE;
-  background: #FFFFFF;
+.btn-chat-landlord {
+  width: 76rpx;
+  height: 76rpx;
+  border-radius: 50%;
+  background-color: #F1F4F9;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0;
-  margin: 0;
-}
-
-.btn-contact-square::after {
-  border: 0;
+  flex-shrink: 0;
+  margin-left: auto;
 }
