@@ -1,6 +1,6 @@
 /* ==========================================================================
    Page 404 Haute Couture - SAMA LOYER
-   Design ultra-moderne, épuré et aligné au pixel près avec la capsule WeChat
+   Design ultra-moderne, épuré et aligné avec le branding officiel SAMA LOYER
    ========================================================================== */
 
 .not-found-page {
@@ -32,42 +32,56 @@
   justify-content: space-between;
 }
 
-.nav-back-btn {
-  border-radius: 50%;
-  background-color: #FFFFFF;
-  border: 2rpx solid #EAEFF7;
+/* Logo officiel SAMA LOYER (identique à l'accueil / bailleur) */
+.sama-brand {
+  display: flex;
+  align-items: center;
+  gap: 18rpx;
+}
+
+.sama-brand__icon {
+  width: 72rpx;
+  height: 72rpx;
+  border-radius: 22rpx;
+  background-color: #C8235F;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2rpx 8rpx rgba(15, 30, 61, 0.05);
-  box-sizing: border-box;
+  box-shadow: 0 4rpx 14rpx rgba(200, 35, 95, 0.28);
   flex-shrink: 0;
 }
 
-.back-arrow {
-  font-size: 34rpx;
-  color: #0F1E3D;
-  font-weight: 700;
-  line-height: 1;
+.icon-svg {
+  display: inline-block;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
 }
 
-.nav-brand {
-  flex: 1;
+.icon-house-white {
+  width: 40rpx;
+  height: 40rpx;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23FFFFFF' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 10.5 12 3l9 7.5'/%3E%3Cpath d='M5 9.5V20h14V9.5'/%3E%3Cpath d='M10 20v-5h4v5'/%3E%3C/svg%3E");
+}
+
+.sama-brand__text {
   display: flex;
-  align-items: center;
-  justify-content: center;
+  flex-direction: column;
+  line-height: 1.05;
 }
 
 .brand-title {
   font-size: 32rpx;
   font-weight: 800;
+  letter-spacing: 0.04em;
   color: #0F1E3D;
-  letter-spacing: 0.5rpx;
-  line-height: 1;
 }
 
-.nav-capsule-spacer {
-  flex-shrink: 0;
+.brand-sub {
+  font-size: 20rpx;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  color: #C8235F;
 }
 
 /* Scrollable Body */

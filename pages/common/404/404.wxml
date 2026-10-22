@@ -1,19 +1,21 @@
 <view class="not-found-page">
-  <!-- Minimalist Nav Bar strictly aligned with WeChat Capsule -->
+  <!-- Minimalist Nav Bar with Official SAMA LOYER Branding (Matching Image 2) -->
   <view class="nav-bar-custom" style="height: {{ navTotalHeight }}px;">
-    <view class="nav-content-row" style="top: {{ capsuleTop }}px; height: {{ capsuleHeight }}px;">
-      <view class="nav-back-btn" style="width: {{ capsuleHeight }}px; height: {{ capsuleHeight }}px;" bindtap="onGoHome">
-        <text class="back-arrow">←</text>
+    <view class="nav-content-row" style="top: {{ capsuleTop - 2 }}px; height: {{ capsuleHeight + 4 }}px;">
+      <!-- Logo officiel SAMA LOYER identique à l'accueil -->
+      <view class="sama-brand" bindtap="onGoHome">
+        <view class="sama-brand__icon">
+          <view class="icon-svg icon-house-white"></view>
+        </view>
+        <view class="sama-brand__text">
+          <text class="brand-title">SAMA</text>
+          <text class="brand-sub">LOYER</text>
+        </view>
       </view>
-      <view class="nav-brand">
-        <text class="brand-title">SAMA LOYER</text>
-      </view>
-      <!-- Capsule Spacer so title is optically centered -->
-      <view class="nav-capsule-spacer" style="width: {{ capsuleWidth }}px;"></view>
     </view>
   </view>
 
-  <scroll-view scroll-y class="scroll-content" style="padding-top: {{ navTotalHeight + 8 }}px;">
+  <scroll-view scroll-y class="scroll-content" style="padding-top: {{ navTotalHeight + 14 }}px;">
     <view class="content-wrapper">
       
       <!-- Premium Hero Artwork -->
