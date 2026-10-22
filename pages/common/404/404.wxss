@@ -1,6 +1,6 @@
 /* ==========================================================================
    Page 404 Haute Couture - SAMA LOYER
-   Design ultra-moderne, épuré et aligné avec l'identité du projet
+   Design ultra-moderne, épuré et aligné au pixel près avec la capsule WeChat
    ========================================================================== */
 
 .not-found-page {
@@ -11,42 +11,51 @@
   flex-direction: column;
 }
 
-/* Nav Bar Custom */
+/* Nav Bar Custom - Fixé en haut */
 .nav-bar-custom {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 32rpx;
   background-color: #FAFAFC;
   z-index: 100;
   box-sizing: border-box;
 }
 
+/* Ligne de contenu parfaitement calée sur l'axe de la capsule native */
+.nav-content-row {
+  position: absolute;
+  left: 32rpx;
+  right: 32rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
 .nav-back-btn {
-  width: 76rpx;
-  height: 76rpx;
-  border-radius: 38rpx;
+  border-radius: 50%;
   background-color: #FFFFFF;
   border: 2rpx solid #EAEFF7;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2rpx 8rpx rgba(15, 30, 61, 0.04);
+  box-shadow: 0 2rpx 8rpx rgba(15, 30, 61, 0.05);
+  box-sizing: border-box;
+  flex-shrink: 0;
 }
 
 .back-arrow {
   font-size: 34rpx;
   color: #0F1E3D;
   font-weight: 700;
+  line-height: 1;
 }
 
 .nav-brand {
+  flex: 1;
   display: flex;
   align-items: center;
+  justify-content: center;
 }
 
 .brand-title {
@@ -54,10 +63,11 @@
   font-weight: 800;
   color: #0F1E3D;
   letter-spacing: 0.5rpx;
+  line-height: 1;
 }
 
-.nav-spacer {
-  width: 76rpx;
+.nav-capsule-spacer {
+  flex-shrink: 0;
 }
 
 /* Scrollable Body */
@@ -67,7 +77,7 @@
 }
 
 .content-wrapper {
-  padding: 24rpx 40rpx;
+  padding: 20rpx 40rpx;
   padding-bottom: calc(64rpx + env(safe-area-inset-bottom));
   display: flex;
   flex-direction: column;
@@ -78,7 +88,7 @@
 /* Hero Artwork Container */
 .hero-illu-wrap {
   width: 440rpx;
-  height: 330rpx;
+  height: 320rpx;
   display: flex;
   align-items: center;
   justify-content: center;

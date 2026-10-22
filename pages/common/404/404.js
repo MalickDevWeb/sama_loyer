@@ -5,7 +5,10 @@ import { STORAGE_KEYS } from '../../../utils/constants/index';
 Page({
   data: {
     statusBarHeight: 44,
-    navBarHeight: 44,
+    capsuleTop: 50,
+    capsuleHeight: 32,
+    capsuleWidth: 87,
+    navTotalHeight: 88,
     requestedPath: '',
     popularZones: [
       { key: 'ouakam', label: 'Ouakam' },
@@ -19,17 +22,29 @@ Page({
 
   onLoad(options) {
     try {
-      const menuButton = wx.getMenuButtonBoundingClientRect ? wx.getMenuButtonBoundingClientRect() : null;
       const sysInfo = wx.getSystemInfoSync();
       const statusBarHeight = sysInfo.statusBarHeight || 44;
-      let navBarHeight = 44;
-      if (menuButton && menuButton.top) {
-        navBarHeight = (menuButton.top - statusBarHeight) * 2 + menuButton.height;
+      const menu = wx.getMenuButtonBoundingClientRect ? wx.getMenuButtonBoundingClientRect() : null;
+
+      let capsuleTop = statusBarHeight + 6;
+      let capsuleHeight = 32;
+      let capsuleWidth = 87;
+      let navTotalHeight = statusBarHeight + 44;
+
+      if (menu && menu.top && menu.height) {
+        capsuleTop = menu.top;
+        capsuleHeight = menu.height;
+        capsuleWidth = menu.width || 87;
+        const gap = Math.max(menu.top - statusBarHeight, 4);
+        navTotalHeight = menu.bottom + gap;
       }
 
       this.setData({
         statusBarHeight,
-        navBarHeight: Math.max(navBarHeight, 44),
+        capsuleTop,
+        capsuleHeight,
+        capsuleWidth,
+        navTotalHeight,
         requestedPath: options && options.path ? decodeURIComponent(options.path) : ''
       });
     } catch (e) {}
@@ -61,4 +76,3 @@ Page({
     });
   }
 });
-

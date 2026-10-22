@@ -1,17 +1,19 @@
 <view class="not-found-page">
-  <!-- Minimalist Nav Bar -->
-  <view class="nav-bar-custom" style="padding-top: {{ statusBarHeight }}px; height: {{ navBarHeight }}px;">
-    <view class="nav-back-btn" bindtap="onGoHome">
-      <text class="back-arrow">←</text>
+  <!-- Minimalist Nav Bar strictly aligned with WeChat Capsule -->
+  <view class="nav-bar-custom" style="height: {{ navTotalHeight }}px;">
+    <view class="nav-content-row" style="top: {{ capsuleTop }}px; height: {{ capsuleHeight }}px;">
+      <view class="nav-back-btn" style="width: {{ capsuleHeight }}px; height: {{ capsuleHeight }}px;" bindtap="onGoHome">
+        <text class="back-arrow">←</text>
+      </view>
+      <view class="nav-brand">
+        <text class="brand-title">SAMA LOYER</text>
+      </view>
+      <!-- Capsule Spacer so title is optically centered -->
+      <view class="nav-capsule-spacer" style="width: {{ capsuleWidth }}px;"></view>
     </view>
-    <view class="nav-brand">
-      <text class="brand-title">SAMA LOYER</text>
-    </view>
-    <!-- Right spacer to balance layout away from WeChat capsule -->
-    <view class="nav-spacer"></view>
   </view>
 
-  <scroll-view scroll-y class="scroll-content" style="padding-top: {{ statusBarHeight + navBarHeight + 8 }}px;">
+  <scroll-view scroll-y class="scroll-content" style="padding-top: {{ navTotalHeight + 8 }}px;">
     <view class="content-wrapper">
       
       <!-- Premium Hero Artwork -->
