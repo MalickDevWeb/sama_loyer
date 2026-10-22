@@ -1,41 +1,52 @@
-# Pages
+# SAMA LOGEMENT — Pages Architecture
 
-## Conventions
+This directory contains all screens for the WeChat Mini-Program **SAMA LOGEMENT**, organized into two sealed and symmetric modules: **Client (Tenant)** and **Bailleur (Landlord)**.
 
-Every page is a folder with 4 files:
+---
+
+## 📁 Directory Structure
+
+Every screen has its dedicated directory containing the standard WeChat quadruplet (`.js`, `.json`, `.wxml`, `.wxss`):
 
 ```
-pages/my-page/
-├── index.js      # Page logic (Page() constructor)
-├── index.json    # Component declarations
-├── index.wxml    # Template
-└── index.wxss    # Styles (can be empty)
+pages/
+├── client/                      # Tenant module (Client)
+│   ├── home/                    # Home: written & AI voice search (Wolof/FR), 3 recommendations
+│   ├── search/                  # Search results with filters & map view
+│   ├── logement-detail/         # Property detail sheet (photos, deposit, visits)
+│   ├── loyers/                  # My Rent: rent summary, certified receipt, OM/Wave payment
+│   ├── visites/                 # Visit tracking (confirmed, past, canceled)
+│   ├── demande-visite/          # Book visit schedule slot
+│   ├── messages/                # Inbox conversations
+│   ├── chat/                    # Real-time chat & WhatsApp action
+│   ├── favoris/                 # Saved favorite listings
+│   └── profile/                 # Tenant profile & switcher to Landlord mode
+│
+└── bailleur/                    # Landlord module (Bailleur)
+    ├── home/                    # Landlord dashboard: KPIs, alerts, quick actions
+    ├── annonces/                # Property management (rented & available)
+    ├── ajouter/                 # Add property form with photo uploads
+    ├── demandes/                # Visit requests & applications
+    ├── locataires/              # My Tenants: rent received, arrears, reported issues
+    └── premium/                 # Boost listing, visibility options & billing
 ```
 
-### Required Patterns
+---
 
-1. **Register in `app.json`** — Every page must be in the `pages` array
-2. **Await `initPromise`** — If the page needs app data:
-   ```javascript
-   async onLoad() {
-     await app.globalData.initPromise;
-   }
-   ```
-3. **Cleanup in `onUnload`** — Unsubscribe from EventBus, clear timers
-4. **Declare components** — Register used components in `index.json`
+## 🧭 Navigation & TabBar
 
-## Current Pages
+### 1. Client Mode (Native Custom TabBar)
+Declared in `app.json` under `tabBar.list` (5 native tabs):
+1. **Chercher** (`pages/client/home/home`) — Navigated via `wx.switchTab`
+2. **Mon loyer** (`pages/client/loyers/loyers`) — Due rent badge (`2`)
+3. **Visites** (`pages/client/visites/visites`) — Visit management
+4. **Messages** (`pages/client/messages/messages`) — Unread message badge (`3`)
+5. **Profil** (`pages/client/profile/profile`) — Profile & mode switch
 
-| Page | Route | Purpose |
-|------|-------|---------|
-| [Home](index/README.md) | `pages/index/index` | Entry page. Demonstrates initPromise, manual EventBus subscription, navigation |
-| [Demo](demo/README.md) | `pages/demo/index` | Component showcase. Demonstrates stepper, modal, WXS, Behavior, EventBus helpers |
-
-## Adding a New Page
-
-See [Recipes: Adding a New Page](../docs/14-recipes.md#adding-a-new-page) for the complete template.
-
-## See Also
-
-- [Mini-Program Concepts: Page Lifecycle](../docs/01-mini-program-concepts.md#page-lifecycle)
-- [Navigation Guide](../docs/12-navigation-guide.md)
+### 2. Landlord Mode (Virtual Custom TabBar)
+Embedded using `<app-custom-tab-bar activeTab="..." />`:
+1. **Accueil** (`pages/bailleur/home/home`)
+2. **Annonces** (`pages/bailleur/annonces/annonces`)
+3. **Ajouter (+)** (`pages/bailleur/ajouter/ajouter`) — Raised central pink action button
+4. **Locataires** (`pages/bailleur/locataires/locataires`) — Arrears/alerts badge (`2`)
+5. **Messages** (`pages/bailleur/demandes/demandes`) — Applications badge (`4`)
