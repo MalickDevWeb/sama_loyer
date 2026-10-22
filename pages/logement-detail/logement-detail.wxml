@@ -1,0 +1,250 @@
+<view class="detail-page">
+  
+  <!-- Zone défilante -->
+  <scroll-view class="detail-scroll" scroll-y="{{true}}" enhanced="{{true}}" show-scrollbar="{{false}}">
+    
+    <!-- Zone Carrousel / Image principale -->
+    <view class="hero-carousel" style="background-color: {{ logement.slides[currentSlideIndex].bg }};">
+      
+      <!-- Barre d'action flottante supérieure (safe-area top) -->
+      <view class="floating-header" style="padding-top: {{ statusBarHeight + 10 }}px;">
+        <view class="btn-circle-nav" bindtap="onBackTap">
+          <view class="icon-svg icon-arrow-left"></view>
+        </view>
+        <view class="floating-header__right">
+          <view class="btn-circle-nav" bindtap="onShareTap">
+            <view class="icon-svg icon-share"></view>
+          </view>
+          <view class="btn-circle-nav" bindtap="onToggleFavorite">
+            <text class="heart-icon {{ isFavorite ? 'heart-active' : '' }}">{{ isFavorite ? '♥' : '♡' }}</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- Illustration filaire maison -->
+      <view class="hero-house-drawing"></view>
+
+      <!-- Flèches de navigation carrousel -->
+      <view class="carousel-nav-btn btn-prev" bindtap="onPrevSlide">
+        <text class="nav-arrow-char">‹</text>
+      </view>
+      <view class="carousel-nav-btn btn-next" bindtap="onNextSlide">
+        <text class="nav-arrow-char">›</text>
+      </view>
+
+      <!-- Badges sur l'image (Salon / 1/5) -->
+      <view class="hero-tag-room">{{ logement.slides[currentSlideIndex].label }}</view>
+      <view class="hero-tag-counter">{{ currentSlideIndex + 1 }}/{{ logement.slides.length }}</view>
+    </view>
+
+    <!-- Bandeau de miniatures -->
+    <view class="thumb-strip">
+      <block wx:for="{{ logement.slides }}" wx:key="id">
+        <view
+          class="thumb-item {{ currentSlideIndex === index ? 'thumb-item--active' : '' }}"
+          style="background-color: {{ item.bg }};"
+          data-index="{{ index }}"
+          bindtap="onSelectThumb"
+        >
+          <text wx:if="{{ item.isVideo }}" class="thumb-play-icon">▶</text>
+        </view>
+      </block>
+    </view>
+
+    <!-- Contenu principal -->
+    <view class="detail-body">
+      
+      <!-- Ligne de tags -->
+      <view class="meta-tags-row">
+        <view class="tag-premium">★ Premium</view>
+        <view class="tag-type">{{ logement.typeLabel }}</view>
+        <text class="meta-published">{{ logement.publishedAgo }}</text>
+      </view>
+
+      <!-- Titre principal -->
+      <text class="detail-main-title">{{ logement.title }}</text>
+
+      <!-- Localisation sous le titre -->
+      <view class="detail-location-row">
+        <view class="icon-svg icon-pin-berry"></view>
+        <text class="location-text">{{ logement.place }}</text>
+      </view>
+
+      <!-- Prix mensuel -->
+      <view class="price-row">
+        <text class="price-amount">{{ logement.price }}</text>
+        <text class="price-unit">FCFA / mois</text>
+      </view>
+
+      <!-- Carte de disponibilité confirmée (Verte) -->
+      <view class="availability-card">
+        <view class="avail-check-circle">✓</view>
+        <view class="avail-text-col">
+          <text class="avail-title">{{ logement.dispoDate }}</text>
+          <text class="avail-subtitle">{{ logement.dispoConfirmed }}</text>
+        </view>
+      </view>
+
+      <!-- SECTION : Prix et conditions -->
+      <view class="section-block">
+        <text class="section-title">Prix et conditions</text>
+        
+        <!-- Tableau des conditions financières -->
+        <view class="pricing-table">
+          <view class="table-row">
+            <text class="row-label">Loyer mensuel</text>
+            <text class="row-val">{{ logement.loyerMensuel }}</text>
+          </view>
+          <view class="table-row">
+            <text class="row-label">Caution (2 mois)</text>
+            <text class="row-val">{{ logement.caution }}</text>
+          </view>
+          <view class="table-row">
+            <text class="row-label">Avance (1 mois)</text>
+            <text class="row-val">{{ logement.avance }}</text>
+          </view>
+          <view class="table-row">
+            <text class="row-label">Frais d’agence</text>
+            <text class="row-val">{{ logement.fraisAgence }}</text>
+          </view>
+          <view class="table-row table-row--total">
+            <text class="total-label">À payer à l’entrée</text>
+            <text class="total-val">{{ logement.totalEntree }}</text>
+          </view>
+        </view>
+
+        <!-- Puces conditions -->
+        <view class="conditions-bullets">
+          <block wx:for="{{ logement.conditions }}" wx:key="*this">
+            <view class="bullet-item">
+              <text class="bullet-dot">•</text>
+              <text class="bullet-text">{{ item }}</text>
+            </view>
+          </block>
+        </view>
+      </view>
+
+      <!-- SECTION : Description -->
+      <view class="section-block">
+        <text class="section-title">Description</text>
+        <text class="desc-content">{{ isExpandedDesc ? logement.descriptionFull : logement.descriptionShort }}</text>
+        <view class="btn-read-more" bindtap="onToggleDesc">
+          {{ isExpandedDesc ? 'Réduire' : 'Lire la suite' }}
+        </view>
+      </view>
+
+      <!-- SECTION : Équipements -->
+      <view class="section-block">
+        <text class="section-title">Équipements</text>
+        <view class="equipments-grid">
+          <block wx:for="{{ logement.equipements }}" wx:key="id">
+            <view class="equip-card">
+              <view class="equip-icon icon-svg icon-equip-{{ item.icon }}"></view>
+              <text class="equip-label">{{ item.label }}</text>
+            </view>
+          </block>
+        </view>
+      </view>
+
+      <!-- SECTION : Localisation -->
+      <view class="section-block">
+        <text class="section-title">Localisation</text>
+        
+        <view class="map-preview-box">
+          <!-- Fond graphique de carte -->
+          <view class="map-grid-graphic"></view>
+          <!-- Marqueur avec zone de confidentialité -->
+          <view class="map-center-pin">
+            <view class="map-privacy-halo"></view>
+            <view class="map-pin-bubble">
+              <view class="icon-svg icon-house-white-mini"></view>
+            </view>
+          </view>
+          <!-- Bouton ouvrir la carte -->
+          <view class="btn-open-map" bindtap="onOpenMap">
+            <text class="map-btn-icon">↗</text>
+            <text>Ouvrir la carte</text>
+          </view>
+        </view>
+
+        <view class="map-caption">
+          <text class="map-place-bold">{{ logement.placeDetails }}</text>
+          <text class="map-place-sub">L'adresse exacte est donnée après la confirmation de la visite.</text>
+        </view>
+      </view>
+
+      <!-- SECTION : Le bailleur -->
+      <view class="section-block">
+        <text class="section-title">Le bailleur</text>
+        
+        <view class="landlord-card">
+          <view class="landlord-avatar">
+            <text class="landlord-initial">{{ logement.bailleur.initial }}</text>
+          </view>
+          <view class="landlord-meta">
+            <text class="landlord-name">{{ logement.bailleur.name }}</text>
+            <view class="verified-label">
+              <text class="verified-check">✓</text>
+              <text>Identité vérifiée</text>
+            </view>
+            <text class="landlord-response">{{ logement.bailleur.responseTime }}</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- Signalement de l'annonce -->
+      <view class="report-box" bindtap="onReportListing">
+        <text class="report-flag">⚐</text>
+        <text class="report-text">Signaler cette annonce</text>
+      </view>
+
+      <view class="scroll-spacer"></view>
+    </view>
+  </scroll-view>
+
+  <!-- ======================================================== -->
+  <!-- BARRE D'ACTIONS FIXE INFÉRIEURE -->
+  <!-- ======================================================== -->
+  <view class="fixed-action-bar">
+    <button class="btn-contact-outline" bindtap="onContactTap">
+      <view class="icon-svg icon-chat-navy"></view>
+      <text>Contacter</text>
+    </button>
+    <button class="btn-visit-primary" bindtap="onOpenVisitModal">
+      <view class="icon-svg icon-calendar-white"></view>
+      <text>Demander une visite</text>
+    </button>
+  </view>
+
+  <!-- ======================================================== -->
+  <!-- MODAL DEMANDE DE VISITE -->
+  <!-- ======================================================== -->
+  <view wx:if="{{ showVisitModal }}" class="modal-backdrop" bindtap="onCloseVisitModal">
+    <view class="visit-sheet" catchtap="true">
+      <view class="visit-sheet__header">
+        <text class="visit-sheet__title">Planifier une visite 📅</text>
+        <view class="modal-close" bindtap="onCloseVisitModal">✕</view>
+      </view>
+      
+      <text class="visit-sheet__sub">Choisissez un créneau disponible avec {{ logement.bailleur.name }} :</text>
+
+      <view class="slots-list">
+        <block wx:for="{{ visitSlots }}" wx:key="*this">
+          <view
+            class="slot-item {{ selectedVisitDate === item ? 'slot-item--selected' : '' }}"
+            data-slot="{{ item }}"
+            bindtap="onSelectSlot"
+          >
+            <text class="slot-text">{{ item }}</text>
+            <text wx:if="{{ selectedVisitDate === item }}" class="slot-check">✓</text>
+          </view>
+        </block>
+      </view>
+
+      <button class="btn-confirm-visit" bindtap="onSubmitVisit">
+        Confirmer ma demande de visite
+      </button>
+    </view>
+  </view>
+
+</view>

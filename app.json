@@ -1,6 +1,7 @@
 {
   "pages": [
     "pages/home/home",
+    "pages/logement-detail/logement-detail",
     "pages/favoris/favoris",
     "pages/voyage/voyage",
     "pages/index/index",

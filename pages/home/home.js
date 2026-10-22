@@ -407,12 +407,16 @@ Page({
     const item = e.currentTarget.dataset.item;
     if (!item) return;
 
-    const initialTotal = (item.price || 0) + (item.caution || 0) + (item.avance || 0) + (item.frais || 0);
-
-    this.setData({
-      selectedListing: item,
-      totalInitialCost: initialTotal,
-      showDetailModal: true
+    wx.navigateTo({
+      url: `/pages/logement-detail/logement-detail?id=${item.id}`,
+      fail: () => {
+        const initialTotal = (item.price || 0) + (item.caution || 0) + (item.avance || 0) + (item.frais || 0);
+        this.setData({
+          selectedListing: item,
+          totalInitialCost: initialTotal,
+          showDetailModal: true
+        });
+      }
     });
   },
 
