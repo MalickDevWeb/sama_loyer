@@ -166,3 +166,4 @@
   <!-- Bailleur Tab Bar -->
   <app-custom-tab-bar activeTab="b-home" />
 </view>
+

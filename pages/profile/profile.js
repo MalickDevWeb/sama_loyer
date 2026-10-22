@@ -56,6 +56,12 @@ Page({
     wx.switchTab({ url: '/pages/messages/messages' });
   },
 
+  onNavLoyers() {
+    wx.navigateTo({
+      url: '/pages/loyers/loyers'
+    });
+  },
+
   onSwitchToBailleur() {
     wx.showLoading({ title: 'Chargement...' });
     wx.setStorageSync(STORAGE_KEYS.USER_ROLE, 'bailleur');

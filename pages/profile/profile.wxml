@@ -43,6 +43,20 @@
     <view class="profile-section">
       <text class="section-title-label">MON COMPTE</text>
       <view class="menu-list-card">
+        <view class="menu-row" bindtap="onNavLoyers">
+          <view class="menu-left">
+            <text class="menu-icon">💳</text>
+            <view class="menu-text-col">
+              <text class="menu-name font-bold">Mes loyers & cautions</text>
+              <text class="menu-subtext">Payer loyer, caution & quittances</text>
+            </view>
+          </view>
+          <view class="menu-right-badge">
+            <text class="badge-pending-mini">1 échéance</text>
+            <text class="chevron-right">›</text>
+          </view>
+        </view>
+        <view class="menu-divider"></view>
         <view class="menu-row">
           <view class="menu-left">
             <text class="menu-icon">👤</text>

@@ -36,6 +36,7 @@ Page({
     ],
     quickReplies: [
       'Je confirme la visite',
+      '💳 Payer loyer / caution',
       'Les factures sont-elles comprises ?'
     ]
   },
@@ -78,6 +79,10 @@ Page({
 
   onQuickReplyTap(e) {
     const text = e.currentTarget.dataset.text;
+    if (text.includes('Payer')) {
+      wx.navigateTo({ url: '/pages/loyers/loyers' });
+      return;
+    }
     this.sendMessage(text);
   },
 

@@ -9,6 +9,7 @@
     "pages/messages/messages",
     "pages/messages/chat",
     "pages/profile/profile",
+    "pages/loyers/loyers",
     "pages/bailleur/home",
     "pages/bailleur/annonces",
     "pages/bailleur/ajouter",

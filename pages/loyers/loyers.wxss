@@ -1,0 +1,675 @@
+/* pages/loyers/loyers.wxss */
+.loyers-page {
+  min-height: 100vh;
+  background-color: #F8F9FA;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Nav bar */
+.nav-bar-custom {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  background: #FFFFFF;
+  border-bottom: 1rpx solid #EEEEEE;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24rpx;
+  box-sizing: border-box;
+}
+
+.btn-back {
+  width: 64rpx;
+  height: 64rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.arrow-back {
+  font-size: 56rpx;
+  color: #0F1E3D;
+  line-height: 1;
+}
+
+.nav-title {
+  font-size: 32rpx;
+  font-weight: 700;
+  color: #0F1E3D;
+}
+
+.nav-placeholder {
+  width: 64rpx;
+}
+
+/* Scroll content */
+.loyers-scroll {
+  flex: 1;
+  padding: 24rpx;
+  box-sizing: border-box;
+}
+
+/* Current lease card */
+.current-lease-card {
+  background: #FFFFFF;
+  border-radius: 20rpx;
+  padding: 28rpx;
+  box-shadow: 0 4rpx 16rpx rgba(15, 30, 61, 0.05);
+  margin-bottom: 24rpx;
+  border: 1rpx solid #EFEFEF;
+}
+
+.lease-top-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12rpx;
+}
+
+.lease-badge {
+  background: #E2F0EA;
+  color: #007C3D;
+  font-size: 22rpx;
+  font-weight: 700;
+  padding: 6rpx 16rpx;
+  border-radius: 20rpx;
+}
+
+.lease-ref {
+  font-size: 22rpx;
+  color: #8E8E93;
+  font-family: monospace;
+}
+
+.lease-title {
+  font-size: 30rpx;
+  font-weight: 700;
+  color: #0F1E3D;
+  margin-bottom: 6rpx;
+  display: block;
+}
+
+.lease-place {
+  font-size: 24rpx;
+  color: #666666;
+  margin-bottom: 12rpx;
+  display: block;
+}
+
+.lease-landlord {
+  font-size: 22rpx;
+  color: #0F1E3D;
+  font-weight: 600;
+  background: #F4F6F9;
+  padding: 10rpx 16rpx;
+  border-radius: 10rpx;
+  display: inline-block;
+}
+
+/* 3 Tabs Nav */
+.loyers-tabs-nav {
+  display: flex;
+  background: #EAECEF;
+  border-radius: 16rpx;
+  padding: 6rpx;
+  margin-bottom: 24rpx;
+}
+
+.tab-btn {
+  flex: 1;
+  text-align: center;
+  padding: 18rpx 8rpx;
+  font-size: 26rpx;
+  font-weight: 600;
+  color: #666666;
+  border-radius: 12rpx;
+  transition: all 0.2s ease;
+}
+
+.tab-btn--active {
+  background: #FFFFFF;
+  color: #C8235F;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.08);
+}
+
+/* Tab Content */
+.tab-content-section {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Due Card */
+.due-card {
+  background: #FFFFFF;
+  border-radius: 20rpx;
+  padding: 32rpx 28rpx;
+  box-shadow: 0 4rpx 16rpx rgba(15, 30, 61, 0.06);
+  border: 1rpx solid #EFEFEF;
+}
+
+.due-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20rpx;
+}
+
+.due-month-title {
+  font-size: 28rpx;
+  font-weight: 700;
+  color: #0F1E3D;
+}
+
+.due-status-badge {
+  font-size: 22rpx;
+  font-weight: 700;
+  padding: 6rpx 16rpx;
+  border-radius: 20rpx;
+}
+
+.status-paid {
+  background: #E2F0EA;
+  color: #007C3D;
+}
+
+.status-pending {
+  background: #FFF3DC;
+  color: #B56200;
+}
+
+.status-secure {
+  background: #E8F0FE;
+  color: #1A73E8;
+}
+
+.due-amount-row {
+  display: flex;
+  align-items: baseline;
+  gap: 12rpx;
+  margin-bottom: 24rpx;
+}
+
+.due-amount-num {
+  font-size: 54rpx;
+  font-weight: 800;
+  color: #C8235F;
+}
+
+.due-currency {
+  font-size: 26rpx;
+  color: #666666;
+  font-weight: 500;
+}
+
+/* Info box */
+.due-info-box {
+  background: #F8F9FA;
+  border-radius: 14rpx;
+  padding: 20rpx;
+  margin-bottom: 28rpx;
+}
+
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10rpx;
+}
+
+.info-row:last-child {
+  margin-bottom: 0;
+}
+
+.info-label {
+  font-size: 24rpx;
+  color: #666666;
+}
+
+.info-value {
+  font-size: 24rpx;
+  font-weight: 600;
+  color: #0F1E3D;
+}
+
+.info-value.highlight {
+  color: #B56200;
+}
+
+/* Payment Methods */
+.pay-method-title {
+  font-size: 26rpx;
+  font-weight: 700;
+  color: #0F1E3D;
+  margin-bottom: 16rpx;
+  display: block;
+}
+
+.methods-options-row {
+  display: flex;
+  gap: 16rpx;
+  margin-bottom: 30rpx;
+}
+
+.method-box {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 14rpx;
+  padding: 20rpx 16rpx;
+  border: 2rpx solid #EAECEF;
+  border-radius: 16rpx;
+  background: #FFFFFF;
+  cursor: pointer;
+}
+
+.method--selected {
+  border-color: #C8235F;
+  background: #FFF5F8;
+}
+
+.method-logo {
+  width: 48rpx;
+  height: 48rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20rpx;
+  font-weight: 800;
+}
+
+.om-logo {
+  background: #FF6600;
+  color: #FFFFFF;
+}
+
+.wave-logo {
+  background: #1BA2EC;
+  color: #FFFFFF;
+  font-size: 24rpx;
+}
+
+.method-name {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: #0F1E3D;
+}
+
+/* Pay Buttons */
+.btn-pay-action {
+  width: 100%;
+  color: #FFFFFF;
+  font-size: 28rpx;
+  font-weight: 700;
+  border-radius: 16rpx;
+  padding: 24rpx 0;
+  text-align: center;
+  box-shadow: 0 6rpx 18rpx rgba(200, 35, 95, 0.25);
+  border: none;
+}
+
+.btn-pay-berry {
+  background: #C8235F;
+}
+
+.btn-pay-green {
+  background: #007C3D;
+  box-shadow: 0 6rpx 18rpx rgba(0, 124, 61, 0.25);
+}
+
+.paid-confirmation-banner {
+  display: flex;
+  align-items: center;
+  gap: 14rpx;
+  background: #E2F0EA;
+  color: #007C3D;
+  padding: 24rpx;
+  border-radius: 16rpx;
+  font-size: 26rpx;
+  font-weight: 600;
+}
+
+.paid-check {
+  font-size: 32rpx;
+  font-weight: 800;
+}
+
+/* Caution Breakdown */
+.caution-breakdown-list {
+  background: #F8F9FA;
+  border-radius: 16rpx;
+  padding: 24rpx;
+  margin-bottom: 24rpx;
+}
+
+.breakdown-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14rpx;
+}
+
+.breakdown-item .item-name {
+  font-size: 24rpx;
+  color: #666666;
+}
+
+.breakdown-item .item-val {
+  font-size: 24rpx;
+  font-weight: 600;
+  color: #0F1E3D;
+}
+
+.breakdown-item .free-val {
+  color: #007C3D;
+}
+
+.breakdown-divider {
+  height: 1rpx;
+  background: #E5E7EB;
+  margin: 16rpx 0;
+}
+
+.breakdown-total-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.total-label-txt {
+  font-size: 26rpx;
+  font-weight: 700;
+  color: #0F1E3D;
+}
+
+.total-val-txt {
+  font-size: 32rpx;
+  font-weight: 800;
+  color: #007C3D;
+}
+
+.protection-notice-box {
+  display: flex;
+  gap: 14rpx;
+  background: #E8F0FE;
+  padding: 20rpx;
+  border-radius: 14rpx;
+  margin-bottom: 24rpx;
+  align-items: flex-start;
+}
+
+.notice-icon {
+  font-size: 30rpx;
+  line-height: 1.2;
+}
+
+.notice-desc {
+  font-size: 22rpx;
+  color: #1A73E8;
+  line-height: 1.4;
+  flex: 1;
+}
+
+/* Receipts List */
+.receipts-list {
+  display: flex;
+  flex-direction: column;
+  gap: 18rpx;
+}
+
+.receipt-card {
+  background: #FFFFFF;
+  border-radius: 18rpx;
+  padding: 24rpx;
+  box-shadow: 0 4rpx 14rpx rgba(15, 30, 61, 0.05);
+  border: 1rpx solid #EFEFEF;
+}
+
+.receipt-top-row {
+  display: flex;
+  align-items: center;
+  gap: 18rpx;
+  margin-bottom: 18rpx;
+}
+
+.receipt-icon-wrap {
+  width: 64rpx;
+  height: 64rpx;
+  border-radius: 14rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 30rpx;
+}
+
+.icon-pink {
+  background: #FFF0F4;
+}
+
+.icon-green {
+  background: #E2F0EA;
+}
+
+.receipt-info-col {
+  flex: 1;
+}
+
+.receipt-main-title {
+  font-size: 28rpx;
+  font-weight: 700;
+  color: #0F1E3D;
+  display: block;
+}
+
+.receipt-sub-date {
+  font-size: 22rpx;
+  color: #8E8E93;
+}
+
+.receipt-price-txt {
+  font-size: 28rpx;
+  font-weight: 800;
+  color: #0F1E3D;
+}
+
+.receipt-footer-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1rpx dashed #E5E7EB;
+  padding-top: 16rpx;
+}
+
+.receipt-ref-pill {
+  font-size: 22rpx;
+  color: #8E8E93;
+  font-family: monospace;
+}
+
+.btn-download-pill {
+  font-size: 24rpx;
+  font-weight: 600;
+  color: #C8235F;
+  cursor: pointer;
+}
+
+.scroll-spacer {
+  height: 80rpx;
+}
+
+/* Modal Quittance */
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(15, 30, 61, 0.6);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32rpx;
+  box-sizing: border-box;
+}
+
+.receipt-modal-container {
+  width: 100%;
+  max-width: 650rpx;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.quittance-sheet-paper {
+  background: #FFFFFF;
+  border-radius: 20rpx;
+  padding: 36rpx 28rpx;
+  box-shadow: 0 10rpx 30rpx rgba(0, 0, 0, 0.2);
+  border: 2rpx solid #EAECEF;
+}
+
+.quittance-header {
+  text-align: center;
+  border-bottom: 2rpx dashed #CCCCCC;
+  padding-bottom: 20rpx;
+  margin-bottom: 24rpx;
+}
+
+.brand-chip {
+  display: inline-block;
+  background: #C8235F;
+  color: #FFFFFF;
+  font-size: 20rpx;
+  font-weight: 800;
+  padding: 4rpx 14rpx;
+  border-radius: 8rpx;
+  letter-spacing: 2rpx;
+  margin-bottom: 10rpx;
+}
+
+.quittance-main-heading {
+  display: block;
+  font-size: 32rpx;
+  font-weight: 800;
+  color: #0F1E3D;
+  margin-bottom: 4rpx;
+}
+
+.quittance-law-mention {
+  font-size: 20rpx;
+  color: #8E8E93;
+}
+
+.quittance-content-body {
+  display: flex;
+  flex-direction: column;
+  gap: 14rpx;
+  margin-bottom: 24rpx;
+}
+
+.q-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  font-size: 24rpx;
+}
+
+.q-label {
+  color: #666666;
+  width: 40%;
+}
+
+.q-val {
+  color: #0F1E3D;
+  font-weight: 500;
+  text-align: right;
+  width: 60%;
+}
+
+.font-bold {
+  font-weight: 700;
+}
+
+.font-mono {
+  font-family: monospace;
+  font-size: 20rpx;
+  color: #8E8E93;
+}
+
+.q-divider {
+  height: 1rpx;
+  background: #EEEEEE;
+  margin: 10rpx 0;
+}
+
+.total-q-row {
+  padding: 8rpx 0;
+}
+
+.price-highlight {
+  font-size: 30rpx;
+  font-weight: 800;
+  color: #007C3D;
+}
+
+/* Sceau officiel */
+.cert-stamp-box {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 28rpx;
+}
+
+.cert-stamp-border {
+  border: 4rpx solid #007C3D;
+  padding: 10rpx 24rpx;
+  border-radius: 12rpx;
+  text-align: center;
+  transform: rotate(-3deg);
+  background: #F0FDF4;
+}
+
+.stamp-title {
+  display: block;
+  font-size: 22rpx;
+  font-weight: 800;
+  color: #007C3D;
+  letter-spacing: 2rpx;
+}
+
+.stamp-sub {
+  font-size: 18rpx;
+  color: #007C3D;
+  font-weight: 600;
+}
+
+/* Actions */
+.quittance-actions-row {
+  display: flex;
+  flex-direction: column;
+  gap: 14rpx;
+}
+
+.btn-pdf-download {
+  background: #C8235F;
+  color: #FFFFFF;
+  font-size: 26rpx;
+  font-weight: 700;
+  border-radius: 12rpx;
+  padding: 20rpx 0;
+  border: none;
+}
+
+.btn-modal-dismiss {
+  background: #F4F6F9;
+  color: #666666;
+  font-size: 26rpx;
+  font-weight: 600;
+  border-radius: 12rpx;
+  padding: 18rpx 0;
+  border: none;
+}

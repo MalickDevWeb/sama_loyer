@@ -1,0 +1,270 @@
+<view class="loyers-page">
+  <!-- Nav bar personnalisée -->
+  <view class="nav-bar-custom" style="padding-top: {{ statusBarHeight }}px; height: {{ navBarHeight }}px;">
+    <view class="btn-back" bindtap="onGoBack">
+      <text class="arrow-back">‹</text>
+    </view>
+    <text class="nav-title">Mes Loyers & Cautions</text>
+    <view class="nav-placeholder"></view>
+  </view>
+
+  <scroll-view class="loyers-scroll" scroll-y="{{true}}" enhanced="{{true}}" show-scrollbar="{{false}}" style="padding-top: {{ statusBarHeight + navBarHeight }}px;">
+    
+    <!-- Résumé du logement loué -->
+    <view class="current-lease-card">
+      <view class="lease-top-row">
+        <text class="lease-badge">Bail en cours</text>
+        <text class="lease-ref">#{{ logement.refContrat }}</text>
+      </view>
+      <text class="lease-title">{{ logement.title }}</text>
+      <text class="lease-place">{{ logement.place }}</text>
+      <text class="lease-landlord">Bailleur : {{ logement.bailleurNom }} · Tel : {{ logement.bailleurPhone }}</text>
+    </view>
+
+    <!-- Contrôle des 3 onglets -->
+    <view class="loyers-tabs-nav">
+      <view 
+        class="tab-btn {{ activeTab === 'echeance' ? 'tab-btn--active' : '' }}"
+        data-tab="echeance"
+        bindtap="onSelectTab"
+      >
+        Loyer du mois
+      </view>
+      <view 
+        class="tab-btn {{ activeTab === 'caution' ? 'tab-btn--active' : '' }}"
+        data-tab="caution"
+        bindtap="onSelectTab"
+      >
+        Payer la caution
+      </view>
+      <view 
+        class="tab-btn {{ activeTab === 'recus' ? 'tab-btn--active' : '' }}"
+        data-tab="recus"
+        bindtap="onSelectTab"
+      >
+        Quittances ({{ quittances.length }})
+      </view>
+    </view>
+
+    <!-- ONGLET 1 : LOYER DU MOIS / MENSUALITÉ -->
+    <view wx:if="{{ activeTab === 'echeance' }}" class="tab-content-section">
+      <view class="due-card">
+        <view class="due-card-header">
+          <text class="due-month-title">Échéance {{ logement.moisActuel }}</text>
+          <view class="due-status-badge {{ logement.statut === 'paid' ? 'status-paid' : 'status-pending' }}">
+            {{ logement.statut === 'paid' ? '✓ Loyer Réglé' : 'À payer avant le 5' }}
+          </view>
+        </view>
+
+        <view class="due-amount-row">
+          <text class="due-amount-num">{{ logement.loyerMensuel }}</text>
+          <text class="due-currency">FCFA / mois</text>
+        </view>
+
+        <view class="due-info-box">
+          <view class="info-row">
+            <text class="info-label">Date limite de paiement :</text>
+            <text class="info-value highlight">{{ logement.dateEcheance }}</text>
+          </view>
+          <view class="info-row">
+            <text class="info-label">Frais de service :</text>
+            <text class="info-value">0 FCFA (Inclus)</text>
+          </view>
+        </view>
+
+        <!-- Sélecteur de méthode de paiement -->
+        <text class="pay-method-title">Choisir le moyen de paiement</text>
+        <view class="methods-options-row">
+          <view 
+            class="method-box {{ selectedPaymentMethod === 'orange_money' ? 'method--selected' : '' }}"
+            data-method="orange_money"
+            bindtap="onSelectMethod"
+          >
+            <view class="method-logo om-logo">OM</view>
+            <text class="method-name">Orange Money</text>
+          </view>
+
+          <view 
+            class="method-box {{ selectedPaymentMethod === 'wave' ? 'method--selected' : '' }}"
+            data-method="wave"
+            bindtap="onSelectMethod"
+          >
+            <view class="method-logo wave-logo">🌊</view>
+            <text class="method-name">Wave</text>
+          </view>
+        </view>
+
+        <!-- Bouton Payer Mensualité -->
+        <button 
+          wx:if="{{ logement.statut !== 'paid' }}" 
+          class="btn-pay-action btn-pay-berry" 
+          bindtap="onPayMensualite"
+        >
+          Payer mon loyer de {{ logement.loyerMensuel }} F
+        </button>
+        <view wx:else class="paid-confirmation-banner">
+          <text class="paid-check">✓</text>
+          <text class="paid-text">Votre loyer de {{ logement.moisActuel }} a été réglé avec succès !</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- ONGLET 2 : PAYER LA CAUTION ET LES AVANCES -->
+    <view wx:elif="{{ activeTab === 'caution' }}" class="tab-content-section">
+      <view class="due-card">
+        <view class="due-card-header">
+          <text class="due-month-title">Frais d'entrée & Garantie</text>
+          <view class="due-status-badge status-secure">🔒 Séquestre Garanti</view>
+        </view>
+
+        <view class="caution-breakdown-list">
+          <view class="breakdown-item">
+            <text class="item-name">Caution remboursable (2 mois) :</text>
+            <text class="item-val">{{ logement.cautionMontant }} FCFA</text>
+          </view>
+          <view class="breakdown-item">
+            <text class="item-name">Mois d'avance (1 mois) :</text>
+            <text class="item-val">{{ logement.avanceMontant }} FCFA</text>
+          </view>
+          <view class="breakdown-item">
+            <text class="item-name">Frais de dossier / Agence :</text>
+            <text class="item-val free-val">0 FCFA (Gratuit)</text>
+          </view>
+          <view class="breakdown-divider"></view>
+          <view class="breakdown-total-row">
+            <text class="total-label-txt">Montant total à consigner :</text>
+            <text class="total-val-txt">{{ logement.totalEntree }} FCFA</text>
+          </view>
+        </view>
+
+        <view class="protection-notice-box">
+          <text class="notice-icon">🛡️</text>
+          <text class="notice-desc">Votre caution est consignée en toute sécurité par Sama Logement et ne sera transmise au bailleur qu'après validation de l'état des lieux et remise des clés.</text>
+        </view>
+
+        <!-- Sélecteur de méthode de paiement -->
+        <text class="pay-method-title">Régler via</text>
+        <view class="methods-options-row">
+          <view 
+            class="method-box {{ selectedPaymentMethod === 'orange_money' ? 'method--selected' : '' }}"
+            data-method="orange_money"
+            bindtap="onSelectMethod"
+          >
+            <view class="method-logo om-logo">OM</view>
+            <text class="method-name">Orange Money</text>
+          </view>
+
+          <view 
+            class="method-box {{ selectedPaymentMethod === 'wave' ? 'method--selected' : '' }}"
+            data-method="wave"
+            bindtap="onSelectMethod"
+          >
+            <view class="method-logo wave-logo">🌊</view>
+            <text class="method-name">Wave</text>
+          </view>
+        </view>
+
+        <button class="btn-pay-action btn-pay-green" bindtap="onPayCaution">
+          Consigner la caution & avance ({{ logement.totalEntree }} F)
+        </button>
+      </view>
+    </view>
+
+    <!-- ONGLET 3 : HISTORIQUE DES QUITTANCES ET REÇUS -->
+    <view wx:elif="{{ activeTab === 'recus' }}" class="tab-content-section">
+      <view class="receipts-list">
+        <block wx:for="{{ quittances }}" wx:key="id">
+          <view class="receipt-card" data-receipt="{{ item }}" bindtap="onViewReceipt">
+            <view class="receipt-top-row">
+              <view class="receipt-icon-wrap {{ item.type === 'caution' ? 'icon-green' : 'icon-pink' }}">
+                <text>{{ item.type === 'caution' ? '🛡️' : '📄' }}</text>
+              </view>
+              <view class="receipt-info-col">
+                <text class="receipt-main-title">{{ item.title }}</text>
+                <text class="receipt-sub-date">{{ item.datePaye }}</text>
+              </view>
+              <text class="receipt-price-txt">{{ item.montant }}</text>
+            </view>
+
+            <view class="receipt-footer-row">
+              <text class="receipt-ref-pill">Réf : #{{ item.ref }}</text>
+              <view class="btn-download-pill" data-receipt="{{ item }}" catchtap="onViewReceipt">
+                Voir la quittance ›
+              </view>
+            </view>
+          </view>
+        </block>
+      </view>
+    </view>
+
+    <view class="scroll-spacer"></view>
+  </scroll-view>
+
+  <!-- MODALE OFFICIELLE DE QUITTANCE DE LOYER CERTIFIÉE -->
+  <view wx:if="{{ showReceiptModal }}" class="modal-backdrop" bindtap="onCloseReceiptModal">
+    <view class="receipt-modal-container" catchtap="true">
+      <view class="quittance-sheet-paper">
+        <!-- Logo et titre officiel -->
+        <view class="quittance-header">
+          <view class="brand-chip">SAMA LOGEMENT</view>
+          <text class="quittance-main-heading">QUITTANCE DE LOYER</text>
+          <text class="quittance-law-mention">Conforme à la réglementation locative du Sénégal</text>
+        </view>
+
+        <view class="quittance-content-body">
+          <view class="q-row">
+            <text class="q-label">N° Quittance :</text>
+            <text class="q-val font-bold">#{{ activeReceipt.ref }}</text>
+          </view>
+          <view class="q-row">
+            <text class="q-label">Identifiant transaction :</text>
+            <text class="q-val font-mono">{{ activeReceipt.txId }}</text>
+          </view>
+          <view class="q-row">
+            <text class="q-label">Période concernée :</text>
+            <text class="q-val font-bold">{{ activeReceipt.title }}</text>
+          </view>
+          <view class="q-row">
+            <text class="q-label">Locataire :</text>
+            <text class="q-val">Awa Diop (+221 77 ••• •• 12)</text>
+          </view>
+          <view class="q-row">
+            <text class="q-label">Bailleur bénéficiaire :</text>
+            <text class="q-val">{{ logement.bailleurNom }}</text>
+          </view>
+          <view class="q-row">
+            <text class="q-label">Logement loué :</text>
+            <text class="q-val">{{ logement.title }} ({{ logement.place }})</text>
+          </view>
+          <view class="q-divider"></view>
+          <view class="q-row total-q-row">
+            <text class="q-label font-bold">Montant acquitté :</text>
+            <text class="q-val price-highlight">{{ activeReceipt.montant }} CFA</text>
+          </view>
+          <view class="q-row">
+            <text class="q-label">Date & Mode de règlement :</text>
+            <text class="q-val">{{ activeReceipt.datePaye }}</text>
+          </view>
+        </view>
+
+        <!-- Sceau de certification numérique -->
+        <view class="cert-stamp-box">
+          <view class="cert-stamp-border">
+            <text class="stamp-title">CERTIFIÉ CONFORME</text>
+            <text class="stamp-sub">SAMA LOGEMENT SÉNÉGAL</text>
+          </view>
+        </view>
+
+        <!-- Boutons d'action -->
+        <view class="quittance-actions-row">
+          <button class="btn-pdf-download" bindtap="onDownloadPDF">
+            📥 Télécharger le PDF officiel
+          </button>
+          <button class="btn-modal-dismiss" bindtap="onCloseReceiptModal">
+            Fermer
+          </button>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

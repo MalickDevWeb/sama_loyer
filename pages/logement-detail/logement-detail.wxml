@@ -122,6 +122,15 @@
             </view>
           </block>
         </view>
+
+        <!-- Bouton Consigner la caution & avance -->
+        <view class="caution-cta-box" bindtap="onPayCaution">
+          <view class="caution-cta-left">
+            <text class="caution-cta-title">🔒 Consigner la caution & avance</text>
+            <text class="caution-cta-sub">Séquestre sécurisé Sama · Déblocage après clés</text>
+          </view>
+          <text class="caution-cta-arrow">›</text>
+        </view>
       </view>
 
       <!-- SECTION : Description -->

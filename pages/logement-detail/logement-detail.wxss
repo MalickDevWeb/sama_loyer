@@ -383,6 +383,41 @@
   line-height: 1.4;
 }
 
+/* Caution CTA Box */
+.caution-cta-box {
+  margin-top: 24rpx;
+  background: #E8F0FE;
+  border: 2rpx solid #C2D7FA;
+  border-radius: 18rpx;
+  padding: 20rpx 24rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.caution-cta-left {
+  display: flex;
+  flex-direction: column;
+  gap: 4rpx;
+}
+
+.caution-cta-title {
+  font-size: 26rpx;
+  font-weight: 700;
+  color: #1A73E8;
+}
+
+.caution-cta-sub {
+  font-size: 22rpx;
+  color: #4A658A;
+}
+
+.caution-cta-arrow {
+  font-size: 36rpx;
+  color: #1A73E8;
+  font-weight: 700;
+}
+
 /* Description */
 .desc-content {
   font-size: 28rpx;

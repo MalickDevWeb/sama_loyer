@@ -195,6 +195,21 @@
   color: #A0AAB8;
 }
 
+.menu-right-badge {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+}
+
+.badge-pending-mini {
+  background: #FFF3DC;
+  color: #B56200;
+  font-size: 20rpx;
+  font-weight: 700;
+  padding: 4rpx 14rpx;
+  border-radius: 20rpx;
+}
+
 .menu-divider {
   height: 1rpx;
   background-color: #F0F2F5;

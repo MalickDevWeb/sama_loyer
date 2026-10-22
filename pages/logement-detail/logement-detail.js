@@ -196,6 +196,12 @@ Page({
     });
   },
 
+  onPayCaution() {
+    wx.navigateTo({
+      url: '/pages/loyers/loyers?tab=caution'
+    });
+  },
+
   onOpenVisitModal() {
     wx.navigateTo({
       url: '/pages/visites/demande'
