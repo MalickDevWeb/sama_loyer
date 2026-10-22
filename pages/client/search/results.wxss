@@ -465,30 +465,30 @@
   display: flex;
   align-items: center;
   gap: 18rpx;
-  background: linear-gradient(135deg, #0F1E3D 0%, #1A2E56 100%);
-  border: 1.5rpx solid rgba(255, 255, 255, 0.18);
+  background: linear-gradient(135deg, #0F1E3D 0%, #162444 100%);
+  border: 2rpx solid rgba(200, 35, 95, 0.45);
   border-radius: 999rpx;
-  padding: 14rpx 24rpx 14rpx 16rpx;
-  box-shadow: 0 16rpx 40rpx rgba(15, 30, 61, 0.35), 0 2rpx 8rpx rgba(200, 35, 95, 0.2);
+  padding: 14rpx 28rpx 14rpx 16rpx;
+  box-shadow: 0 16rpx 40rpx rgba(15, 30, 61, 0.4), 0 4rpx 16rpx rgba(200, 35, 95, 0.3);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
 }
 
 .toast-icon-wrapper {
-  width: 56rpx;
-  height: 56rpx;
+  width: 58rpx;
+  height: 58rpx;
   border-radius: 50%;
   flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;
   background: linear-gradient(135deg, #C8235F 0%, #E03575 100%);
-  box-shadow: 0 4rpx 12rpx rgba(200, 35, 95, 0.45);
+  box-shadow: 0 4rpx 14rpx rgba(200, 35, 95, 0.5);
 }
 
 .toast-icon--voice {
-  background: linear-gradient(135deg, #0284C7 0%, #38BDF8 100%);
-  box-shadow: 0 4rpx 12rpx rgba(2, 132, 199, 0.45);
+  background: linear-gradient(135deg, #C8235F 0%, #E03575 100%);
+  box-shadow: 0 4rpx 14rpx rgba(200, 35, 95, 0.5);
 }
 
 .toast-icon--heart {
@@ -543,10 +543,10 @@
 }
 
 .toast-subtitle-text {
-  font-size: 21rpx;
-  font-weight: 600;
-  color: #6EE7B7;
-  letter-spacing: -0.2rpx;
+  font-size: 22rpx;
+  font-weight: 700;
+  color: #F8B4C8;
+  letter-spacing: 0.2rpx;
 }
 
 .toast-badge-sparkle {

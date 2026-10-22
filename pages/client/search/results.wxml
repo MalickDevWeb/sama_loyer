@@ -1,9 +1,9 @@
 <view class="search-page">
-  <!-- Toast / Notification Flottante Haute Couture (remplace le carré noir natif) -->
+  <!-- Toast / Notification Flottante Haute Couture (aux couleurs SAMA LOYER) -->
   <view 
     wx:if="{{ toast.visible }}" 
     class="sama-floating-toast {{ toast.hiding ? 'toast--hide' : 'toast--show' }}" 
-    style="top: {{ statusBarHeight + 58 }}px;"
+    style="top: {{ statusBarHeight + 112 }}px;"
     catchtap="onDismissToast"
   >
     <view class="toast-pill-body">

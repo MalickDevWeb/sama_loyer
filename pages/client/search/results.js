@@ -202,11 +202,11 @@ Page({
       this.filterListings();
       const count = this.data.filteredListings.length;
       this.showMagnifiqueToast({
-        title: `Reconnu : ${display || selected}`,
-        subtitle: `${count} logement${count > 1 ? 's' : ''} trouvé${count > 1 ? 's' : ''}`,
+        title: display ? `« ${display} »` : `« ${selected} »`,
+        subtitle: `✦ IA SAMA LOYER · ${count} logement${count > 1 ? 's' : ''} trouvé${count > 1 ? 's' : ''}`,
         type: 'voice',
         iconClass: 'icon-toast-mic',
-        duration: 2600
+        duration: 3200
       });
     });
   },
