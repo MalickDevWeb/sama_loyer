@@ -119,29 +119,43 @@
 
       <!-- Liste verticale -->
       <view class="available-list">
-        <block wx:for="{{ filteredListings }}" wx:key="id">
-          <view class="avail-card" data-id="{{ item.id }}" bindtap="onCardTap">
-            <view class="avail-thumb" style="background-color: {{ item.bg }};">
-              <view class="thumb-house-outline-sm"></view>
-            </view>
-            <view class="avail-content">
-              <view class="avail-price-row">
-                <text class="avail-price">{{ item.price }}</text>
-                <text class="avail-heart {{ item.isFavorite ? 'avail-heart--active' : '' }}">{{ item.isFavorite ? '♥' : '♡' }}</text>
+        <block wx:if="{{ filteredListings && filteredListings.length > 0 }}">
+          <block wx:for="{{ filteredListings }}" wx:key="id">
+            <view class="avail-card" data-id="{{ item.id }}" bindtap="onCardTap">
+              <view class="avail-thumb" style="background-color: {{ item.bg }};">
+                <view class="thumb-house-outline-sm"></view>
               </view>
-              <text class="avail-title">{{ item.title }}</text>
-              <text class="avail-place">{{ item.place }}</text>
+              <view class="avail-content">
+                <view class="avail-price-row">
+                  <text class="avail-price">{{ item.price }}</text>
+                  <text class="avail-heart {{ item.isFavorite ? 'avail-heart--active' : '' }}">{{ item.isFavorite ? '♥' : '♡' }}</text>
+                </view>
+                <text class="avail-title">{{ item.title }}</text>
+                <text class="avail-place">{{ item.place }}</text>
 
-              <view class="avail-tags-row">
-                <block wx:for="{{ item.tags }}" wx:for-item="t" wx:key="*this">
-                  <view class="chip-tag">{{ t }}</view>
-                </block>
+                <view class="avail-tags-row">
+                  <block wx:for="{{ item.tags }}" wx:for-item="t" wx:key="*this">
+                    <view class="chip-tag">{{ t }}</view>
+                  </block>
+                </view>
+
+                <text class="avail-status">{{ item.status }}</text>
               </view>
-
-              <text class="avail-status">{{ item.status }}</text>
             </view>
-          </view>
+          </block>
         </block>
+
+        <!-- État si la recherche ne donne aucun résultat ("fail le recherche") -->
+        <view wx:else class="search-empty-state">
+          <view class="empty-icon-circle">
+            <text class="empty-icon-symbol">🔍</text>
+          </view>
+          <text class="empty-title">Aucun logement trouvé</text>
+          <text class="empty-desc">Aucune annonce ne correspond exactement à tes critères. Essaie de modifier la localité ou d'augmenter ton budget.</text>
+          <button class="btn-empty-reset" bindtap="onResetFilters">
+            Voir toutes les annonces
+          </button>
+        </view>
       </view>
     </view>
 

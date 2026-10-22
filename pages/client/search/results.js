@@ -138,6 +138,22 @@ Page({
     });
   },
 
+  onResetFilters() {
+    this.setData({
+      searchQuery: '',
+      activeCategory: 'tous'
+    }, () => {
+      this.filterListings();
+      this.showMagnifiqueToast({
+        title: 'Recherche réinitialisée',
+        subtitle: `${this.data.filteredListings.length} logements disponibles`,
+        type: 'search',
+        iconClass: 'icon-toast-search',
+        duration: 2000
+      });
+    });
+  },
+
   onModifyTap() {
     wx.navigateBack({
       fail: () => {

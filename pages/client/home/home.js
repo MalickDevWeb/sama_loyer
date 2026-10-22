@@ -2,7 +2,7 @@ import { storage } from '../../../utils/storage.js';
 import { setCustomTabBarActive } from '../../../utils/helpers/tab-bar';
 import { STORAGE_KEYS } from '../../../utils/constants/index';
 import { LOGEMENTS as LISTINGS } from '../../../utils/mocks/logements';
-import { getFavoritesMap, toggleFavoriteId } from '../../../utils/helpers/favorites';
+import { getFavoritesMap, getFavoriteIds, toggleFavoriteId } from '../../../utils/helpers/favorites';
 
 const NEAR_ZONES = {
   ouakam: ['ngor', 'mermoz', 'yoff', 'almadies'],
@@ -82,11 +82,16 @@ Page({
     budget: '60 000',
     qPlace: 'Ouakam',
     qBudget: 60000,
-    searched: true,
+    searchState: 'form', // 'form' | 'loading' | 'results' | 'failed'
+    step1Done: false,
+    step2Done: false,
+    step3Done: false,
     recs: [],
-    heading: '',
-    summary: '',
-    targetScrollId: '',
+    fallbackListings: [],
+    fallbackZones: ['Ngor', 'Yoff', 'Mermoz', 'Grand Yoff'],
+    minObservedPrice: '55 000',
+    favorites: {},
+    favoritesCount: 4,
     toast: {
       visible: false,
       hiding: false,
@@ -95,12 +100,8 @@ Page({
       type: 'search',
       iconClass: 'icon-toast-search'
     },
-    userRole: 'client', // 'client' | 'bailleur'
-    favorites: {},
+    userRole: 'client',
     showVoiceModal: false,
-    showDetailModal: false,
-    selectedListing: null,
-    totalInitialCost: 0,
     isRecording: false,
     voiceStatus: 'À l’écoute… (Wolof / Français)',
     voicePrompts: [
@@ -126,86 +127,236 @@ Page({
       this.setData({ userRole: role });
     } catch (e) {}
 
-    this.runSearch();
+    const favIds = getFavoriteIds();
+    this.setData({
+      favorites: getFavoritesMap(),
+      favoritesCount: favIds.length || 4,
+      searchState: 'form'
+    });
   },
 
   onShow() {
     setCustomTabBarActive(this, 'home');
-    // Les favoris peuvent avoir changé sur une autre page
-    this.setData({ favorites: getFavoritesMap() });
+    const favIds = getFavoriteIds();
+    this.setData({
+      favorites: getFavoritesMap(),
+      favoritesCount: favIds.length || 4
+    });
+
+    if (this.data.searchState === 'form') {
+      try { wx.showTabBar({ animation: false }); } catch (e) {}
+    }
   },
 
   // ==========================================
-  // RECHERCHE ÉCRITE (EN DIRECT ET PAR ENTRÉE)
+  // RECHERCHE ÉCRITE & CHAMPS DU FORMULAIRE
   // ==========================================
   onPlaceInput(e) {
-    const val = e.detail.value || '';
-    this.setData({ place: val }, () => {
-      // Recherche dynamique si plus de 2 caractères
-      if (val.trim().length >= 2) {
-        this.setData({
-          qPlace: val.trim(),
-          searched: true
-        });
-        this.runSearch();
-      }
-    });
+    this.setData({ place: e.detail.value || '' });
   },
 
   onClearPlace() {
-    this.setData({ place: '', qPlace: '' }, () => {
-      this.runSearch();
-    });
+    this.setData({ place: '' });
   },
 
   onBudgetInput(e) {
     const raw = e.detail.value || '';
     const digits = raw.replace(/\D/g, '');
     const formatted = digits ? formatMoney(Number(digits)) : '';
-    this.setData({
-      budget: formatted,
-      qBudget: Number(digits) || 0
-    }, () => {
-      if (digits.length >= 4) {
-        this.runSearch();
-      }
-    });
+    this.setData({ budget: formatted });
   },
 
   onClearBudget() {
-    this.setData({ budget: '', qBudget: 0 }, () => {
-      this.runSearch();
+    this.setData({ budget: '' });
+  },
+
+  // Clic sur "Rechercher"
+  onSearchTap() {
+    const pl = this.data.place.trim();
+    const b = Number(String(this.data.budget).replace(/\D/g, '')) || 0;
+    this.startAiSearch(pl, b);
+  },
+
+  // ==========================================
+  // SÉQUENCE D'ANALYSE IA ("L'IA cherche pour toi...")
+  // ==========================================
+  startAiSearch(targetPlace, targetBudgetNum) {
+    const pl = (targetPlace !== undefined ? targetPlace : this.data.place).trim();
+    const numBudget = targetBudgetNum !== undefined 
+      ? targetBudgetNum 
+      : (Number(String(this.data.budget).replace(/\D/g, '')) || 0);
+
+    if (wx.vibrateShort) {
+      wx.vibrateShort();
+    }
+
+    // Masque la TabBar pour immersion plein écran fluide
+    try {
+      wx.hideTabBar({ animation: true });
+    } catch (e) {}
+
+    this.setData({
+      searchState: 'loading',
+      qPlace: pl,
+      qBudget: numBudget,
+      step1Done: false,
+      step2Done: false,
+      step3Done: false
+    });
+
+    // Étape 1 : Lecture de la demande (400ms)
+    setTimeout(() => {
+      this.setData({ step1Done: true });
+    }, 450);
+
+    // Étape 2 : Comparaison dans le quartier (1100ms)
+    setTimeout(() => {
+      this.setData({ step2Done: true });
+    }, 1100);
+
+    // Étape 3 : Sélection des meilleurs (1700ms)
+    setTimeout(() => {
+      this.setData({ step3Done: true });
+    }, 1700);
+
+    // Finalisation & Transition vers Résultats ou Échec (2100ms)
+    setTimeout(() => {
+      this.executeAiSearch(pl, numBudget);
+    }, 2100);
+  },
+
+  // Moteur de scoring et matching IA
+  executeAiSearch(qPlace, budget) {
+    const q = normalize(qPlace);
+    const zoneKey = Object.keys(NEAR_ZONES).find((z) => q && (q.indexOf(z) >= 0 || z.indexOf(q) >= 0)) || '';
+    
+    // Tentes assorties pour l'illustration des cartes (Rose, Bleu brume, Beige doux)
+    const tints = ['#FDEEF2', '#E8EEF5', '#F5EFE6'];
+
+    // 1. Recherche exacte
+    const scored = LISTINGS.map((l) => {
+      let s = 0;
+      let why = '';
+      const inZone = zoneKey && l.zone === zoneKey;
+      const nearZone = zoneKey && (NEAR_ZONES[zoneKey] || []).indexOf(l.zone) >= 0;
+
+      if (inZone) {
+        s += 50;
+        why = 'Dans ton quartier';
+      } else if (nearZone) {
+        s += 30;
+        why = `Juste à côté de ${qPlace || 'ta zone'}`;
+      } else if (!q) {
+        s += 25;
+        why = 'Recommandé à Dakar';
+      } else {
+        why = 'Bon rapport qualité-prix';
+      }
+
+      if (budget > 0) {
+        if (l.price <= budget) {
+          s += 40 - Math.round(((budget - l.price) / budget) * 15);
+          why += ' · dans ton budget';
+        } else if (l.price <= budget * 1.08) {
+          s += 8;
+          why += ' · légèrement au-dessus';
+        } else {
+          s -= 120; // En dehors du budget
+        }
+      } else {
+        s += 20;
+      }
+
+      return Object.assign({}, l, { score: s, why });
+    })
+      .filter((l) => l.score > 0)
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 3);
+
+    if (scored.length > 0) {
+      const recs = scored.map((l, i) => ({
+        ...l,
+        rank: i + 1,
+        formattedPrice: formatMoney(l.price),
+        reason: l.why,
+        tintBg: tints[i % tints.length]
+      }));
+
+      if (wx.vibrateShort) wx.vibrateShort();
+
+      this.setData({
+        recs,
+        searchState: 'results'
+      });
+    } else {
+      // 2. Recherche échouée ("fail le recherche") -> Proposer alternatives IA
+      const fallbackNearby = zoneKey && NEAR_ZONES[zoneKey] 
+        ? NEAR_ZONES[zoneKey].map(k => k.charAt(0).toUpperCase() + k.slice(1))
+        : ['Ngor', 'Yoff', 'Mermoz', 'Grand Yoff'];
+
+      // Trouver les logements disponibles les plus proches en termes de zone ou budget
+      const fallbacks = LISTINGS.filter(l => {
+        if (zoneKey && (l.zone === zoneKey || (NEAR_ZONES[zoneKey] || []).includes(l.zone))) return true;
+        return l.price <= (budget > 0 ? budget * 1.3 : 100000);
+      })
+      .slice(0, 2)
+      .map((l, i) => ({
+        ...l,
+        rank: i + 1,
+        formattedPrice: formatMoney(l.price),
+        reason: zoneKey && l.zone === zoneKey ? 'Dans ton quartier · budget supérieur' : 'Quartier voisin disponible',
+        tintBg: tints[i % tints.length]
+      }));
+
+      if (wx.vibrateShort) wx.vibrateShort();
+
+      this.setData({
+        recs: [],
+        fallbackZones: fallbackNearby,
+        fallbackListings: fallbacks,
+        searchState: 'failed'
+      });
+    }
+  },
+
+  // Revenir au formulaire pour modifier les critères
+  onModifyTap() {
+    this.setData({ searchState: 'form' });
+    try {
+      wx.showTabBar({ animation: true });
+    } catch (e) {}
+  },
+
+  // Clic sur une suggestion de quartier voisin en cas d'échec
+  onSelectFallbackZone(e) {
+    const zone = e.currentTarget.dataset.zone;
+    if (!zone) return;
+    this.setData({ place: zone });
+    this.startAiSearch(zone, this.data.qBudget);
+  },
+
+  // Aller vers tous les résultats
+  onGoToAllResults() {
+    wx.navigateTo({
+      url: `/pages/client/search/results?place=${encodeURIComponent(this.data.place || 'Ouakam')}&budget=${encodeURIComponent(this.data.budget || '60 000')}`
     });
   },
 
-  onSearchTap() {
-    const b = Number(String(this.data.budget).replace(/\D/g, '')) || 0;
-    this.setData(
-      {
-        qPlace: this.data.place.trim(),
-        qBudget: b,
-        searched: true
-      },
-      () => {
-        this.runSearch();
-        const placeName = this.data.place.trim() || 'Dakar';
-        const count = this.data.recs ? this.data.recs.length : 0;
-        const sub = count > 0 
-          ? `${count} logement${count > 1 ? 's' : ''} trouvé${count > 1 ? 's' : ''} par l'IA`
-          : 'Aucun logement exact dans ce budget';
-        
-        this.showMagnifiqueToast({
-          title: `Recherche : ${placeName}`,
-          subtitle: sub,
-          type: 'search',
-          iconClass: 'icon-toast-search',
-          duration: 2600
-        });
+  // Aller vers les favoris
+  onGoToFavorites() {
+    wx.navigateTo({
+      url: '/pages/client/favoris/favoris'
+    });
+  },
 
-        // Défilement doux vers les résultats
-        this.setData({ targetScrollId: 'recs-section' });
-      }
-    );
+  // Clic sur une carte logement -> Détail
+  onListingTap(e) {
+    const item = e.currentTarget.dataset.item;
+    if (!item) return;
+
+    wx.navigateTo({
+      url: `/pages/client/logement-detail/logement-detail?id=${item.id}`
+    });
   },
 
   // ==========================================
@@ -222,14 +373,13 @@ Page({
       wx.vibrateShort();
     }
 
-    // Gestion de l'enregistreur vocal WeChat si disponible
     try {
       const rm = wx.getRecorderManager ? wx.getRecorderManager() : null;
       if (rm) {
         rm.onStart(() => {
           this.setData({ isRecording: true, voiceStatus: 'Enregistrement en cours…' });
         });
-        rm.onStop((res) => {
+        rm.onStop(() => {
           this.setData({ isRecording: false, voiceStatus: 'Traitement vocal IA…' });
         });
         rm.start({ duration: 6000, sampleRate: 16000, format: 'mp3' });
@@ -272,159 +422,19 @@ Page({
       wx.vibrateShort();
     }
 
-    // Extrait critères via moteur NLP Wolof/FR
     const parsed = parseNaturalQuery(item.text);
     const targetPlace = parsed.place || item.place || 'Ouakam';
     const targetBudget = parsed.budget || item.budget || '60 000';
     const numBudget = Number(String(targetBudget).replace(/\D/g, '')) || 0;
 
-    this.setData(
-      {
-        place: targetPlace,
-        budget: targetBudget,
-        qPlace: targetPlace,
-        qBudget: numBudget,
-        showVoiceModal: false,
-        isRecording: false,
-        searched: true
-      },
-      () => {
-        this.runSearch();
-        const count = this.data.recs ? this.data.recs.length : 0;
-        const langLabel = item.lang === 'WO' ? 'Wolof' : (item.lang === 'FR' ? 'Français' : item.lang);
-        this.showMagnifiqueToast({
-          title: `Reconnu (${langLabel}) : ${targetPlace}`,
-          subtitle: `${numBudget ? formatMoney(numBudget) + ' F CFA · ' : ''}${count} logement${count > 1 ? 's' : ''} trouvé${count > 1 ? 's' : ''}`,
-          type: 'voice',
-          iconClass: 'icon-toast-mic',
-          duration: 2800
-        });
-        this.setData({ targetScrollId: 'recs-section' });
-      }
-    );
-  },
-
-  // ==========================================
-  // MOTEUR DE MATCHING IA SAMA LOYER
-  // ==========================================
-  runSearch() {
-    const q = normalize(this.data.qPlace);
-    const budget = this.data.qBudget || 0;
-    const zoneKey = Object.keys(NEAR_ZONES).find((z) => q && (q.indexOf(z) >= 0 || z.indexOf(q) >= 0)) || '';
-    const tints = ['#FBE3EC', '#E3E9F5', '#F3ECE1'];
-
-    const scored = LISTINGS.map((l) => {
-      let s = 0;
-      let why = '';
-      const inZone = zoneKey && l.zone === zoneKey;
-      const nearZone = zoneKey && (NEAR_ZONES[zoneKey] || []).indexOf(l.zone) >= 0;
-
-      if (inZone) {
-        s += 50;
-        why = 'Dans ton quartier';
-      } else if (nearZone) {
-        s += 30;
-        why = `Juste à côté de ${this.data.qPlace || 'ta zone'}`;
-      } else if (!q) {
-        s += 25;
-        why = 'Recommandé à Dakar';
-      } else {
-        why = 'Bon rapport qualité-prix';
-      }
-
-      if (budget > 0) {
-        if (l.price <= budget) {
-          s += 40 - Math.round(((budget - l.price) / budget) * 15);
-          why += ' · dans ton budget';
-        } else if (l.price <= budget * 1.1) {
-          s += 10;
-          why += ' · un peu au-dessus';
-        } else {
-          s -= 100;
-        }
-      } else {
-        s += 20;
-      }
-
-      return Object.assign({}, l, { score: s, why: why });
-    })
-      .filter((l) => l.score > 0)
-      .sort((a, b) => b.score - a.score)
-      .slice(0, 3);
-
-    const recs = scored.map((l, i) => {
-      return {
-        ...l,
-        rank: i + 1,
-        formattedPrice: formatMoney(l.price),
-        match: Math.min(98, l.score + 8) + ' % pour toi',
-        reason: l.why,
-        tintBg: tints[i % tints.length]
-      };
-    });
-
-    const n = recs.length;
-    const heading = n ? `Tes ${n} meilleurs logements` : 'Aucun logement trouvé';
-    const summary = n
-      ? (this.data.qPlace || 'Partout à Dakar') + (budget ? ' · ' + formatMoney(budget) + ' F max' : '')
-      : 'Essaie un budget un peu plus élevé ou un quartier voisin.';
-
     this.setData({
-      recs,
-      heading,
-      summary,
-      searched: true
+      place: targetPlace,
+      budget: targetBudget,
+      showVoiceModal: false,
+      isRecording: false
     });
-  },
 
-  onGoToAllResults() {
-    wx.navigateTo({
-      url: `/pages/client/search/results?place=${encodeURIComponent(this.data.place || 'Ouakam')}&budget=${encodeURIComponent(this.data.budget || '60 000')}`
-    });
-  },
-
-  onListingTap(e) {
-    const item = e.currentTarget.dataset.item;
-    if (!item) return;
-
-    wx.navigateTo({
-      url: `/pages/client/logement-detail/logement-detail?id=${item.id}`,
-      fail: () => {
-        const initialTotal = (item.price || 0) + (item.caution || 0) + (item.avance || 0) + (item.frais || 0);
-        this.setData({
-          selectedListing: item,
-          totalInitialCost: initialTotal,
-          showDetailModal: true
-        });
-      }
-    });
-  },
-
-  onCloseDetailModal() {
-    this.setData({ showDetailModal: false, selectedListing: null });
-  },
-
-  // --- Actions de la fiche rapide (boutons existants sans fonction) ---
-  onCallBailleur() {
-    const l = this.data.selectedListing;
-    if (l && l.phone) wx.makePhoneCall({ phoneNumber: l.phone, fail: () => {} });
-  },
-
-  onWhatsAppBailleur() {
-    const l = this.data.selectedListing;
-    if (!l) return;
-    wx.setClipboardData({
-      data: `Bonjour ${l.bailleurName}, je suis intéressé par votre annonce « ${l.title} » à ${l.place}.`,
-      success: () => wx.showToast({ title: 'Message copié pour WhatsApp', icon: 'none' })
-    });
-  },
-
-  // Paiement de l'entrée (avance + caution) : parcours « Entrer dans le logement »
-  onPayRentWithOrangeMoney() {
-    const l = this.data.selectedListing;
-    if (!l) return;
-    this.setData({ showDetailModal: false });
-    wx.navigateTo({ url: `/pages/client/entree/entree?id=${encodeURIComponent(l.id)}` });
+    this.startAiSearch(targetPlace, numBudget);
   },
 
   onToggleFavorite(e) {
@@ -433,7 +443,11 @@ Page({
 
     const liked = !this.data.favorites[id];
     toggleFavoriteId(id, liked);
-    this.setData({ favorites: getFavoritesMap() });
+    const favIds = getFavoriteIds();
+    this.setData({
+      favorites: getFavoritesMap(),
+      favoritesCount: favIds.length || 0
+    });
     
     this.showMagnifiqueToast({
       title: liked ? 'Ajouté aux favoris' : 'Retiré des favoris',
@@ -444,18 +458,10 @@ Page({
     });
   },
 
-  // ==========================================
-  // TOAST MAGNIFIQUE (HAUTE GAMME SAMA LOYER)
-  // ==========================================
+  // Toast Flottant Haute Couture
   showMagnifiqueToast({ title, subtitle = '', type = 'search', iconClass = 'icon-toast-search', duration = 2600 }) {
-    if (this._toastTimer) {
-      clearTimeout(this._toastTimer);
-      this._toastTimer = null;
-    }
-    if (this._toastHideTimer) {
-      clearTimeout(this._toastHideTimer);
-      this._toastHideTimer = null;
-    }
+    if (this._toastTimer) clearTimeout(this._toastTimer);
+    if (this._toastHideTimer) clearTimeout(this._toastHideTimer);
 
     this.setData({
       toast: {
@@ -486,14 +492,8 @@ Page({
   },
 
   onDismissToast() {
-    if (this._toastTimer) {
-      clearTimeout(this._toastTimer);
-      this._toastTimer = null;
-    }
-    if (this._toastHideTimer) {
-      clearTimeout(this._toastHideTimer);
-      this._toastHideTimer = null;
-    }
+    if (this._toastTimer) clearTimeout(this._toastTimer);
+    if (this._toastHideTimer) clearTimeout(this._toastHideTimer);
 
     this.setData({ 'toast.hiding': true });
     setTimeout(() => {
@@ -508,20 +508,5 @@ Page({
         }
       });
     }, 280);
-  },
-
-  onSwitchProfile() {
-    wx.showActionSheet({
-      itemList: ['Voir mon Profil (Awa Diop)', 'Basculer en Espace Bailleur (Moussa D.)'],
-      success: (res) => {
-        if (res.tapIndex === 0) {
-          wx.switchTab({ url: '/pages/client/profile/profile' });
-        } else {
-          storage.set(STORAGE_KEYS.USER_ROLE, 'bailleur');
-          this.setData({ userRole: 'bailleur' });
-          wx.reLaunch({ url: '/pages/bailleur/home/home' });
-        }
-      }
-    });
   }
 });
