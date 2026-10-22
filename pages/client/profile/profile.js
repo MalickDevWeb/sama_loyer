@@ -43,6 +43,24 @@ const BUDGET_OPTIONS = [
   'Plus de 250 000 FCFA / mois'
 ];
 
+function setTabBarVisible(page, visible) {
+  try {
+    if (visible) wx.showTabBar({ animation: false });
+    else wx.hideTabBar({ animation: false });
+  } catch (e) {}
+
+  try {
+    if (page && typeof page.getTabBar === 'function') {
+      const tb = page.getTabBar();
+      if (tb && typeof tb.setVisible === 'function') {
+        tb.setVisible(visible);
+      } else if (tb) {
+        tb.setData({ hidden: !visible });
+      }
+    }
+  } catch (e) {}
+}
+
 function loadPrefs() {
   const saved = storage.get(STORAGE_KEYS.PROFILE_PREFS, null);
   if (!saved || typeof saved !== 'object') return JSON.parse(JSON.stringify(DEFAULT_PREFS));
@@ -116,6 +134,7 @@ Page({
 
   onShow() {
     setCustomTabBarActive(this, 'profile');
+    setTabBarVisible(this, true);
     this.refreshUserProfile();
     this.setData({
       stats: {
@@ -124,6 +143,14 @@ Page({
         conversations: getConversations().length
       }
     });
+  },
+
+  onHide() {
+    setTabBarVisible(this, true);
+  },
+
+  onUnload() {
+    setTabBarVisible(this, true);
   },
 
   refreshUserProfile() {
@@ -157,6 +184,7 @@ Page({
 
   // --- MON COMPTE : INFORMATIONS PERSONNELLES -------------------------------
   onOpenPersonalInfo() {
+    setTabBarVisible(this, false);
     const profile = this.data.userProfile;
     this.setData({
       activeModal: 'info',
@@ -174,19 +202,8 @@ Page({
     this.setData({ 'editForm.fullName': e.detail.value });
   },
 
-  onInputEmail(e) {
-    this.setData({ 'editForm.email': e.detail.value });
-  },
-
-  onInputJob(e) {
-    this.setData({ 'editForm.job': e.detail.value });
-  },
-
-  onInputCity(e) {
-    this.setData({ 'editForm.city': e.detail.value });
-  },
-
   onSavePersonalInfo() {
+    setTabBarVisible(this, true);
     const name = (this.data.editForm.fullName || '').trim();
     if (!name) {
       wx.showToast({ title: 'Veuillez renseigner votre nom', icon: 'none' });
@@ -195,10 +212,7 @@ Page({
 
     const updated = {
       ...this.data.userProfile,
-      fullName: name,
-      email: (this.data.editForm.email || '').trim(),
-      job: (this.data.editForm.job || '').trim(),
-      city: (this.data.editForm.city || '').trim()
+      fullName: name
     };
 
     storage.set(STORAGE_KEYS.USER_PROFILE, updated);
@@ -206,13 +220,14 @@ Page({
     this.setData({ activeModal: '' });
 
     wx.showToast({
-      title: 'Informations enregistrées',
+      title: 'Nom mis à jour',
       icon: 'success'
     });
   },
 
   // --- MON COMPTE : NUMÉRO DE TÉLÉPHONE --------------------------------------
   onOpenPhone() {
+    setTabBarVisible(this, false);
     const profile = this.data.userProfile;
     const cleanPhone = (profile.phone || '').replace(/^\+221\s*/, '');
     this.setData({
@@ -224,41 +239,9 @@ Page({
     });
   },
 
-  onInputPhone(e) {
-    this.setData({ 'editForm.phone': e.detail.value });
-  },
-
-  onSavePhone() {
-    const raw = (this.data.editForm.phone || '').trim();
-    const cleanDigits = raw.replace(/\D/g, '');
-
-    if (cleanDigits.length < 9) {
-      wx.showToast({ title: 'Numéro sénégalais à 9 chiffres requis', icon: 'none' });
-      return;
-    }
-
-    // Format propre sénégalais: 77 123 45 12
-    const formatted = cleanDigits.length === 9
-      ? `${cleanDigits.slice(0, 2)} ${cleanDigits.slice(2, 5)} ${cleanDigits.slice(5, 7)} ${cleanDigits.slice(7, 9)}`
-      : raw;
-
-    const updated = {
-      ...this.data.userProfile,
-      phone: formatted
-    };
-
-    storage.set(STORAGE_KEYS.USER_PROFILE, updated);
-    this.refreshUserProfile();
-    this.setData({ activeModal: '' });
-
-    wx.showToast({
-      title: 'Numéro enregistré',
-      icon: 'success'
-    });
-  },
-
   // --- PRÉFÉRENCES : QUARTIERS PRÉFÉRÉS -------------------------------------
   onOpenZones() {
+    setTabBarVisible(this, false);
     const current = (this.prefs.zones || '')
       .split(',')
       .map((s) => s.trim())
@@ -283,6 +266,7 @@ Page({
   },
 
   onSaveZones() {
+    setTabBarVisible(this, true);
     if (this.data.tempZones.length === 0) {
       wx.showToast({ title: 'Sélectionnez au moins un quartier', icon: 'none' });
       return;
@@ -295,6 +279,7 @@ Page({
 
   // --- PRÉFÉRENCES : BUDGET HABITUEL ----------------------------------------
   onOpenBudget() {
+    setTabBarVisible(this, false);
     this.setData({
       activeModal: 'budget',
       tempBudget: this.prefs.budget || BUDGET_OPTIONS[2]
@@ -306,6 +291,7 @@ Page({
   },
 
   onSaveBudget() {
+    setTabBarVisible(this, true);
     this.prefs.budget = this.data.tempBudget;
     this.savePrefs();
     this.setData({ activeModal: '' });
@@ -314,14 +300,17 @@ Page({
 
   // --- AIDE & SUPPORT -------------------------------------------------------
   onOpenHelp() {
+    setTabBarVisible(this, false);
     this.setData({ activeModal: 'help' });
   },
 
   onOpenSecurity() {
+    setTabBarVisible(this, false);
     this.setData({ activeModal: 'security' });
   },
 
   onOpenSupport() {
+    setTabBarVisible(this, false);
     this.setData({ activeModal: 'support' });
   },
 
@@ -349,6 +338,7 @@ Page({
   },
 
   onCloseModal() {
+    setTabBarVisible(this, true);
     this.setData({ activeModal: '' });
   },
 
@@ -392,14 +382,17 @@ Page({
   },
 
   onAskLogout() {
+    setTabBarVisible(this, false);
     this.setData({ confirmLogout: true });
   },
 
   onCancelLogout() {
+    setTabBarVisible(this, true);
     this.setData({ confirmLogout: false });
   },
 
   onLogout() {
+    setTabBarVisible(this, true);
     storage.remove(STORAGE_KEYS.ACCESS_TOKEN);
     storage.remove(STORAGE_KEYS.TOKEN_EXPIRY);
     this.setData({ confirmLogout: false });

@@ -402,8 +402,8 @@ page {
   right: 0;
   bottom: 0;
   left: 0;
-  z-index: 2000;
-  background: rgba(15, 30, 61, 0.55);
+  z-index: 99999;
+  background: rgba(15, 30, 61, 0.65);
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
@@ -417,16 +417,16 @@ page {
 
 .prof__sheet {
   width: 100%;
-  max-height: 85vh;
+  max-height: 82vh;
   box-sizing: border-box;
   background: #FFFFFF;
   border-top-left-radius: 48rpx;
   border-top-right-radius: 48rpx;
-  padding: 24rpx 40rpx calc(48rpx + env(safe-area-inset-bottom)) 40rpx;
+  padding: 24rpx 40rpx calc(32rpx + env(safe-area-inset-bottom)) 40rpx;
   display: flex;
   flex-direction: column;
   animation: profSlideUp 0.28s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: 0 -12rpx 40rpx rgba(15, 30, 61, 0.12);
+  box-shadow: 0 -12rpx 40rpx rgba(15, 30, 61, 0.25);
 }
 
 @keyframes profSlideUp {
@@ -487,7 +487,7 @@ page {
 
 .prof__sheet-body {
   overflow-y: auto;
-  max-height: 55vh;
+  max-height: 50vh;
   padding-bottom: 24rpx;
   display: flex;
   flex-direction: column;
@@ -604,6 +604,7 @@ page {
 /* Boutons footer */
 .prof__sheet-footer {
   margin-top: 24rpx;
+  margin-bottom: calc(16rpx + env(safe-area-inset-bottom));
 }
 
 .prof__btn-primary {

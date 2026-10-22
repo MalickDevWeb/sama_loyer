@@ -1,6 +1,7 @@
 Component({
   data: {
     activeTab: 'home',
+    hidden: false,
   },
 
   methods: {
@@ -14,6 +15,10 @@ Component({
 
     setActiveTab(activeTab) {
       this.setData({ activeTab });
+    },
+
+    setVisible(visible) {
+      this.setData({ hidden: !visible });
     },
   },
 });
