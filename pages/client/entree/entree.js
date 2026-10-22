@@ -1,5 +1,6 @@
 import { getLogementById } from '../../../utils/mocks/logements';
 import { buildContratEntree } from '../../../utils/mocks/contrats';
+import { addStoredRentedHome } from '../../../utils/helpers/store';
 
 function fmt(n) {
   return String(n || 0).replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
@@ -252,7 +253,20 @@ Page({
 
   onMxValidate() {
     if (!this.firstPay) this.firstPay = this.payNow;
-    this.setData({ mx: null, paid: this.data.paid + this.payNow }, () => this.refresh());
+    const newPaid = this.data.paid + this.payNow;
+    this.setData({ mx: null, paid: newPaid }, () => {
+      this.refresh();
+      try {
+        const l = this.data.logement;
+        const fullL = getLogementById(l.id) || l;
+        addStoredRentedHome(fullL, newPaid, {
+          locataireName: 'Moussa Ndiaye',
+          phone: '77 123 45 67'
+        });
+      } catch (e) {
+        console.warn('[Entree] addStoredRentedHome error:', e);
+      }
+    });
   },
 
   onMxClose() {

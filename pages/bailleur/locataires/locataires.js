@@ -1,3 +1,5 @@
+import { getStoredLocataires, confirmLocataireCashPayment } from '../../../utils/helpers/store';
+
 // pages/bailleur/locataires/locataires.js
 const INITIAL_LOCATAIRES = [
   {
@@ -98,13 +100,32 @@ Page({
       });
     } catch (e) {}
 
-    this.applyFilter('all');
+    this.loadLocataires();
   },
 
   onShow() {
     if (typeof this.getTabBar === 'function' && this.getTabBar()) {
       this.getTabBar().setData({ activeTab: 'b-locataires' });
     }
+    this.loadLocataires();
+  },
+
+  loadLocataires() {
+    const locataires = getStoredLocataires();
+    const nbPayes = locataires.filter(l => l.status === 'payes').length;
+    const nbAConfirmer = locataires.filter(l => l.status === 'a_confirmer').length;
+    const nbEnRetard = locataires.filter(l => l.status === 'en_retard').length;
+
+    this.setData({
+      locataires,
+      'kpi.totalCount': locataires.length,
+      'kpi.nbPayes': nbPayes,
+      'kpi.nbAConfirmer': nbAConfirmer,
+      'kpi.nbEnRetard': nbEnRetard,
+      'kpi.montantRecu': `${nbPayes * 100000} F`
+    }, () => {
+      this.applyFilter(this.data.activeFilter);
+    });
   },
 
   onSelectFilter(e) {
@@ -130,26 +151,8 @@ Page({
     wx.showLoading({ title: 'Confirmation...' });
     setTimeout(() => {
       wx.hideLoading();
-      const updated = this.data.locataires.map(l => {
-        if (l.id === 'cheikh') {
-          return {
-            ...l,
-            status: 'payes',
-            statusLabel: 'Payé',
-            bannerType: 'success',
-            bannerText: 'Payé le 20 oct. · Espèces (confirmé) · reçu envoyé'
-          };
-        }
-        return l;
-      });
-
-      this.setData({
-        locataires: updated,
-        'kpi.nbPayes': 3,
-        'kpi.nbAConfirmer': 0,
-        'kpi.montantRecu': '300 000 F'
-      });
-      this.applyFilter(this.data.activeFilter);
+      confirmLocataireCashPayment('cheikh');
+      this.loadLocataires();
 
       wx.showToast({
         title: 'Reçu officiel envoyé !',

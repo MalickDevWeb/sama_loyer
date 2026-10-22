@@ -1,7 +1,7 @@
 import { storage } from '../../../utils/storage.js';
 import { setCustomTabBarActive } from '../../../utils/helpers/tab-bar';
 import { STORAGE_KEYS } from '../../../utils/constants/index';
-import { LOGEMENTS as LISTINGS } from '../../../utils/mocks/logements';
+import { getAllLogements } from '../../../utils/mocks/logements';
 import { getFavoritesMap, getFavoriteIds, toggleFavoriteId } from '../../../utils/helpers/favorites';
 
 const NEAR_ZONES = {
@@ -238,7 +238,8 @@ Page({
     const tints = ['#FDEEF2', '#E8EEF5', '#F5EFE6'];
 
     // 1. Recherche exacte
-    const scored = LISTINGS.map((l) => {
+    const allLogements = getAllLogements();
+    const scored = allLogements.map((l) => {
       let s = 0;
       let why = '';
       const inZone = zoneKey && l.zone === zoneKey;
@@ -300,7 +301,7 @@ Page({
         : ['Ngor', 'Yoff', 'Mermoz', 'Grand Yoff'];
 
       // Trouver les logements disponibles les plus proches en termes de zone ou budget
-      const fallbacks = LISTINGS.filter(l => {
+      const fallbacks = allLogements.filter(l => {
         if (zoneKey && (l.zone === zoneKey || (NEAR_ZONES[zoneKey] || []).includes(l.zone))) return true;
         return l.price <= (budget > 0 ? budget * 1.3 : 100000);
       })

@@ -11,6 +11,11 @@ export const STORAGE_KEYS = {
   USER_ROLE: 'sama_user_role', // 'client' | 'bailleur'
   FAVORITES: 'sama_favorites',
   VISITES: 'sama_visites',
+  LOGEMENTS: 'sama_logements',
+  RENTED_HOMES: 'sama_rented_homes',
+  CONTRATS: 'sama_contrats',
+  LOCATAIRES: 'sama_bailleur_locataires',
+  CONVERSATIONS: 'sama_conversations',
   ACTIVE_TAB: 'sama_active_tab',
   RENT_PAID: 'sama_rent_paid', // { [logementId]: true } — loyer du mois payé
   PROFILE_PREFS: 'sama_profile_prefs', // { notifs: { msg, visit, new, price }, lang }

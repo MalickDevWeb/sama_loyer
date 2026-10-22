@@ -1,0 +1,517 @@
+// ============================================================================
+// SAMA LOYER — LOCAL DATA STORE (Centralized Reactive Local Persistence)
+// Toutes les données (Annonces, Visites, Contrats, Loyers, Messages, Favoris)
+// sont persistées localement via storage.js (wx.setStorageSync / getStorageSync).
+// Permet à tous les flux de l'application de fonctionner de bout en bout
+// sans dépendre d'un serveur distant pendant le hackathon / la démo.
+// ============================================================================
+
+import { storage } from '../storage.js';
+import { STORAGE_KEYS } from '../constants/index.js';
+import { LOGEMENTS as DEFAULT_LOGEMENTS, formatMoney } from '../mocks/logements.js';
+import { DEFAULT_VISITES } from '../mocks/visites.js';
+import { RENTED_HOMES as DEFAULT_RENTED_HOMES, RENT_MONTH } from '../mocks/loyers.js';
+import { CONVERSATIONS as DEFAULT_CONVERSATIONS } from '../mocks/conversations.js';
+
+// --- MOCK ANNONCES BAILLEUR PAR DÉFAUT ---
+const DEFAULT_BAILLEUR_ANNONCES = [
+  {
+    id: 'ouakam-cite-avion',
+    tag: 'En ligne · Vérifié',
+    tagClass: 'tag-enligne',
+    thumbBg: '#FBE3EC',
+    title: 'Chambre salon avec toilettes privées',
+    placeName: 'Ouakam, Cité Avion · ',
+    price: '60 000 F',
+    stats: '184 vues · 2 demandes',
+    notice: "Disponibilité confirmée il y a 2 jours. Les locataires le voient.",
+    noticeClass: 'notice-gray',
+    isConfirmed: true,
+    type: 'en_ligne'
+  },
+  {
+    id: 'icotaf-01',
+    tag: 'En ligne · Premium',
+    tagClass: 'tag-enligne',
+    thumbBg: '#FDE8EE',
+    title: 'Chambre salon avec douche intérieure',
+    placeName: 'Icotaf, Pikine · ',
+    price: '65 000 F',
+    stats: '248 vues · 3 demandes',
+    notice: "Disponibilité confirmée aujourd'hui. Les locataires le voient.",
+    noticeClass: 'notice-gray',
+    isConfirmed: true,
+    type: 'en_ligne'
+  },
+  {
+    id: 'pikine-rue10',
+    tag: 'En ligne · Premium',
+    tagClass: 'tag-enligne',
+    thumbBg: '#E3E8F0',
+    title: 'Studio meublé, entrée indépendante',
+    placeName: 'Pikine Rue 10 · ',
+    price: '95 000 F',
+    stats: '131 vues · 1 demande',
+    notice: "Disponibilité confirmée il y a 14 jours. Confirme-la pour rester visible.",
+    noticeClass: 'notice-yellow',
+    isConfirmed: false,
+    needsConfirm: true,
+    type: 'en_ligne'
+  },
+  {
+    id: 'technopole-01',
+    tag: 'En validation',
+    tagClass: 'tag-validation',
+    thumbBg: '#F5EFE6',
+    title: 'Appartement F2 neuf',
+    placeName: 'Pikine Technopole · ',
+    price: '140 000 F',
+    notice: 'Notre équipe vérifie les photos et les informations. Réponse sous 24 h.',
+    noticeClass: 'notice-yellow',
+    type: 'validation'
+  },
+  {
+    id: 'dalifort-01',
+    tag: 'À corriger',
+    tagClass: 'tag-corriger',
+    thumbBg: '#EFEBF5',
+    title: 'Chambre avec balcon',
+    placeName: 'Dalifort · ',
+    price: '50 000 F',
+    notice: 'Motif : 2 photos sont floues et le prix de la caution manque.',
+    noticeClass: 'notice-pink',
+    canCorrect: true,
+    type: 'validation'
+  },
+  {
+    id: 'thiaroye-01',
+    tag: 'Loué',
+    tagClass: 'tag-loue',
+    thumbBg: '#E2F0EA',
+    title: 'Chambre simple carrelée',
+    placeName: 'Thiaroye Gare · ',
+    price: '45 000 F',
+    stats: 'Loué à Ibou Sarr depuis le 1er oct.',
+    notice: 'Loyer géré via SAMA LOYER. Prochaine échéance le 5 nov.',
+    noticeClass: 'notice-gray',
+    type: 'loue'
+  }
+];
+
+// --- MOCK LOCATAIRES BAILLEUR PAR DÉFAUT ---
+const DEFAULT_LOCATAIRES = [
+  {
+    id: 'cheikh',
+    name: 'Cheikh Fall',
+    initials: 'CF',
+    avatarBg: '#5B45B2',
+    property: 'Studio · Pikine Rue 10 · 95 000 F',
+    status: 'a_confirmer',
+    statusLabel: 'À confirmer',
+    bannerType: 'warning',
+    bannerText: "Cheikh dit avoir payé 95 000 F en espèces le 20 oct. L'as-tu bien reçu ?",
+    cautionDetenue: '190 000 F',
+    phone: '77 456 78 90'
+  },
+  {
+    id: 'modou',
+    name: 'Modou Ndiaye',
+    initials: 'MN',
+    avatarBg: '#9A6A15',
+    property: 'Appartement F2 · Technopole · 85 000 F',
+    status: 'en_retard',
+    statusLabel: 'En retard',
+    bannerType: 'danger',
+    bannerText: 'Loyer attendu le 5 oct. · 17 jours de retard.',
+    cautionDetenue: '170 000 F',
+    phone: '78 123 45 67'
+  },
+  {
+    id: 'ibou',
+    name: 'Ibou Sarr',
+    initials: 'IS',
+    avatarBg: '#007C3D',
+    property: 'Chambre · Thiaroye · 45 000 F',
+    status: 'payes',
+    statusLabel: 'Payé',
+    bannerType: 'success',
+    bannerText: 'Payé le 3 oct. · Wave (payé par son frère) · reçu envoyé',
+    cautionDetenue: '45 000 F',
+    phone: '77 333 44 55'
+  },
+  {
+    id: 'famille_ba',
+    name: 'Famille Ba',
+    initials: 'FB',
+    avatarBg: '#0F1E3D',
+    property: 'Maison · Pikine Nord · 160 000 F',
+    status: 'payes',
+    statusLabel: 'Payé',
+    bannerType: 'success',
+    bannerText: 'Payé le 5 oct. · Orange Money · reçu envoyé',
+    cautionDetenue: '320 000 F',
+    phone: '77 555 66 77'
+  }
+];
+
+// ============================================================================
+// 1. LOGEMENTS (Catalogue locataire & annonces)
+// ============================================================================
+
+export function getStoredLogements() {
+  const saved = storage.get(STORAGE_KEYS.LOGEMENTS, null);
+  if (Array.isArray(saved) && saved.length > 0) {
+    return saved;
+  }
+  // Initialisation au premier lancement
+  storage.set(STORAGE_KEYS.LOGEMENTS, DEFAULT_LOGEMENTS);
+  return DEFAULT_LOGEMENTS.slice();
+}
+
+export function getStoredLogementById(id) {
+  const all = getStoredLogements();
+  return all.find((l) => String(l.id) === String(id)) || null;
+}
+
+export function addStoredLogement(data) {
+  const all = getStoredLogements();
+  const id = `logement-${Date.now()}`;
+  const price = Number(data.price) || 50000;
+  const caution = Number(data.caution) || price;
+  const avance = Number(data.avance) || price;
+
+  const newLogement = {
+    id,
+    title: data.title || `${data.typeLabel || 'Logement'} à ${data.place || 'Dakar'}`,
+    typeLabel: data.typeLabel || 'Chambre salon',
+    place: data.place || 'Ouakam, Dakar',
+    zone: (data.zone || 'ouakam').toLowerCase(),
+    price,
+    caution,
+    avance,
+    frais: 0,
+    verified: false,
+    verificationLevel: 'En validation · sous 24 h',
+    dateConfirmation: 'Ajouté à l’instant',
+    phone: data.phone || '771234567',
+    bailleurName: data.bailleurName || 'Moussa Diop',
+    equipements: data.equipements || ['Toilettes privées', 'Compteur Woyofal'],
+    description: data.description || 'Logement propre et bien situé.',
+    tint: data.tint || '#FBE3EC',
+    isPremium: !!data.isPremium,
+    status: 'validation' // 'en_ligne' | 'validation' | 'loue'
+  };
+
+  const updated = [newLogement, ...all];
+  storage.set(STORAGE_KEYS.LOGEMENTS, updated);
+
+  // Ajouter également à la liste des annonces du bailleur
+  const bailleurAnnonces = getStoredBailleurAnnonces();
+  const newAnnonce = {
+    id,
+    tag: 'En validation',
+    tagClass: 'tag-validation',
+    thumbBg: newLogement.tint,
+    title: newLogement.title,
+    placeName: `${newLogement.place} · `,
+    price: `${formatMoney(newLogement.price)} F`,
+    notice: 'Notre équipe vérifie les photos et les informations. Réponse sous 24 h.',
+    noticeClass: 'notice-yellow',
+    type: 'validation'
+  };
+  storage.set('sama_bailleur_annonces', [newAnnonce, ...bailleurAnnonces]);
+
+  return newLogement;
+}
+
+export function updateStoredLogement(id, patch) {
+  const all = getStoredLogements();
+  const next = all.map((l) => (String(l.id) === String(id) ? Object.assign({}, l, patch) : l));
+  storage.set(STORAGE_KEYS.LOGEMENTS, next);
+  return next.find((l) => String(l.id) === String(id));
+}
+
+// ============================================================================
+// 2. DEMANDES DE VISITES (Locataire <-> Bailleur)
+// ============================================================================
+
+export function getStoredRawVisites() {
+  const saved = storage.get(STORAGE_KEYS.VISITES, null);
+  if (Array.isArray(saved)) {
+    return saved;
+  }
+  storage.set(STORAGE_KEYS.VISITES, DEFAULT_VISITES);
+  return DEFAULT_VISITES.slice();
+}
+
+export function addStoredVisite(logementId, slotLabel, message = '') {
+  const current = getStoredRawVisites();
+  const id = `v-${Date.now()}`;
+  const visite = {
+    id,
+    logementId,
+    status: 'pending',
+    dateLabel: slotLabel,
+    note: message ? `Ton message : « ${message} »` : 'Envoyée à l’instant. Le bailleur répond en général sous 24 h.',
+    createdAt: Date.now()
+  };
+
+  const next = [visite, ...current];
+  storage.set(STORAGE_KEYS.VISITES, next);
+  return visite;
+}
+
+export function updateStoredVisiteStatus(id, newStatus, note = '') {
+  const current = getStoredRawVisites();
+  const next = current.map((v) => {
+    if (v.id === id) {
+      const defaultNote =
+        newStatus === 'accepted'
+          ? "Visite acceptée. Le bailleur t'attend à l'heure convenue."
+          : newStatus === 'rejected'
+          ? 'Visite refusée par le bailleur.'
+          : newStatus === 'cancelled'
+          ? 'Tu as annulé cette demande.'
+          : v.note;
+
+      return Object.assign({}, v, {
+        status: newStatus,
+        note: note || defaultNote
+      });
+    }
+    return v;
+  });
+  storage.set(STORAGE_KEYS.VISITES, next);
+  return next.find((v) => v.id === id);
+}
+
+// ============================================================================
+// 3. LOCATIONS & CONTRATS (Mon Loyer <-> Locataires Bailleur)
+// ============================================================================
+
+export function getStoredRentedHomes() {
+  const saved = storage.get(STORAGE_KEYS.RENTED_HOMES, null);
+  if (Array.isArray(saved) && saved.length > 0) {
+    return saved;
+  }
+  storage.set(STORAGE_KEYS.RENTED_HOMES, DEFAULT_RENTED_HOMES);
+  return DEFAULT_RENTED_HOMES.slice();
+}
+
+export function addStoredRentedHome(logement, amountPaid, options = {}) {
+  const homes = getStoredRentedHomes();
+  const homeId = `rented-${logement.id || Date.now()}`;
+
+  const today = new Date();
+  const dateStr = `${today.getDate()} nov. 2026`;
+
+  const newHome = {
+    id: homeId,
+    name: logement.title || 'Mon logement',
+    place: logement.place || 'Dakar',
+    owner: logement.bailleurName || 'Bailleur SAMA LOYER',
+    ownerPhone: logement.phone || '771234567',
+    conversationId: `conv-${homeId}`,
+    rent: logement.price || 60000,
+    deposit: logement.caution || 60000,
+    depositInfo: `Caution versée le ${dateStr}`,
+    contract: 'Bail 1 an renouvelable · préavis 1 mois',
+    since: `Depuis le ${dateStr}`,
+    due: `Avant le 5 ${RENT_MONTH}`,
+    tint: logement.tint || '#FBE3EC',
+    history: [
+      {
+        id: `rec-entree-${Date.now()}`,
+        label: 'Entrée : avance + caution',
+        sub: `Payé le ${dateStr} · Orange Money`,
+        amount: amountPaid || (logement.price + logement.caution),
+        kind: 'entry',
+        ref: `REC-ENT-${Date.now().toString().slice(-6)}`
+      }
+    ]
+  };
+
+  const updatedHomes = [newHome, ...homes];
+  storage.set(STORAGE_KEYS.RENTED_HOMES, updatedHomes);
+
+  // Marquer le logement comme loué dans le catalogue
+  updateStoredLogement(logement.id, { status: 'loue' });
+
+  // Ajouter également le nouveau locataire dans la liste du bailleur
+  const locataires = getStoredLocataires();
+  const newLocataire = {
+    id: `loc-${Date.now()}`,
+    name: options.locataireName || 'Amina Ndiaye',
+    initials: 'AN',
+    avatarBg: '#C8235F',
+    property: `${logement.typeLabel || 'Logement'} · ${logement.place} · ${formatMoney(logement.price)} F`,
+    status: 'payes',
+    statusLabel: 'Payé',
+    bannerType: 'success',
+    bannerText: `Entrée validée le ${dateStr} · Max it · Reçu émis`,
+    cautionDetenue: `${formatMoney(logement.caution)} F`,
+    phone: options.phone || '77 800 12 34'
+  };
+  storage.set(STORAGE_KEYS.LOCATAIRES, [newLocataire, ...locataires]);
+
+  return newHome;
+}
+
+// ============================================================================
+// 4. PAIEMENTS DE LOYERS (Orange Money / Max it)
+// ============================================================================
+
+export function getStoredRentPaidMap() {
+  return storage.get(STORAGE_KEYS.RENT_PAID, {});
+}
+
+export function recordRentPayment(homeId, amount) {
+  const currentPaid = getStoredRentPaidMap();
+  const updatedPaid = Object.assign({}, currentPaid, { [homeId]: true });
+  storage.set(STORAGE_KEYS.RENT_PAID, updatedPaid);
+
+  // Ajouter le reçu dans l'historique du logement loué
+  const homes = getStoredRentedHomes();
+  const nextHomes = homes.map((h) => {
+    if (h.id === homeId) {
+      const today = new Date();
+      const receipt = {
+        id: `rec-${Date.now()}`,
+        label: `Loyer de ${RENT_MONTH}`,
+        sub: `Payé le ${today.getDate()} nov. · Max it`,
+        amount: amount || h.rent,
+        kind: 'rent',
+        ref: `REC-NOV-2026-${Date.now().toString().slice(-6)}`
+      };
+      return Object.assign({}, h, {
+        history: [receipt, ...h.history]
+      });
+    }
+    return h;
+  });
+  storage.set(STORAGE_KEYS.RENTED_HOMES, nextHomes);
+
+  return updatedPaid;
+}
+
+// ============================================================================
+// 5. ANNONCES DU BAILLEUR
+// ============================================================================
+
+export function getStoredBailleurAnnonces() {
+  const saved = storage.get('sama_bailleur_annonces', null);
+  if (Array.isArray(saved) && saved.length > 0) {
+    return saved;
+  }
+  storage.set('sama_bailleur_annonces', DEFAULT_BAILLEUR_ANNONCES);
+  return DEFAULT_BAILLEUR_ANNONCES.slice();
+}
+
+export function confirmBailleurAnnonce(id) {
+  const annonces = getStoredBailleurAnnonces();
+  const next = annonces.map((a) => {
+    if (a.id === id) {
+      return Object.assign({}, a, {
+        isConfirmed: true,
+        needsConfirm: false,
+        notice: "Disponibilité confirmée aujourd'hui. Les locataires le voient.",
+        noticeClass: 'notice-gray'
+      });
+    }
+    return a;
+  });
+  storage.set('sama_bailleur_annonces', next);
+  return next;
+}
+
+// ============================================================================
+// 6. LOCATAIRES DU BAILLEUR
+// ============================================================================
+
+export function getStoredLocataires() {
+  const saved = storage.get(STORAGE_KEYS.LOCATAIRES, null);
+  if (Array.isArray(saved) && saved.length > 0) {
+    return saved;
+  }
+  storage.set(STORAGE_KEYS.LOCATAIRES, DEFAULT_LOCATAIRES);
+  return DEFAULT_LOCATAIRES.slice();
+}
+
+export function confirmLocataireCashPayment(id) {
+  const locs = getStoredLocataires();
+  const next = locs.map((l) => {
+    if (l.id === id) {
+      return Object.assign({}, l, {
+        status: 'payes',
+        statusLabel: 'Payé',
+        bannerType: 'success',
+        bannerText: 'Paiement en espèces confirmé par le bailleur · reçu émis'
+      });
+    }
+    return l;
+  });
+  storage.set(STORAGE_KEYS.LOCATAIRES, next);
+  return next;
+}
+
+// ============================================================================
+// 7. CONVERSATIONS & CHAT (Locataire <-> Bailleur)
+// ============================================================================
+
+export function getStoredConversations() {
+  const saved = storage.get(STORAGE_KEYS.CONVERSATIONS, null);
+  if (Array.isArray(saved) && saved.length > 0) {
+    return saved;
+  }
+  storage.set(STORAGE_KEYS.CONVERSATIONS, DEFAULT_CONVERSATIONS);
+  return DEFAULT_CONVERSATIONS.slice();
+}
+
+export function getStoredConversation(convIdOrLogementId) {
+  const convs = getStoredConversations();
+  return (
+    convs.find((c) => c.id === convIdOrLogementId || c.logementId === convIdOrLogementId) ||
+    convs[0]
+  );
+}
+
+export function addStoredMessage(convId, message) {
+  const convs = getStoredConversations();
+  const d = new Date();
+  const timeStr = `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
+
+  const fullMsg = Object.assign(
+    {
+      id: `m-${Date.now()}`,
+      time: timeStr
+    },
+    message
+  );
+
+  let found = false;
+  const nextConvs = convs.map((c) => {
+    if (c.id === convId || c.logementId === convId) {
+      found = true;
+      return Object.assign({}, c, {
+        time: timeStr,
+        messages: [...(c.messages || []), fullMsg]
+      });
+    }
+    return c;
+  });
+
+  if (!found) {
+    // Nouvelle conversation créée automatiquement
+    nextConvs.unshift({
+      id: convId,
+      logementId: convId,
+      time: timeStr,
+      unread: 0,
+      avatarBg: '#0F1E3D',
+      messages: [fullMsg]
+    });
+  }
+
+  storage.set(STORAGE_KEYS.CONVERSATIONS, nextConvs);
+  return fullMsg;
+}

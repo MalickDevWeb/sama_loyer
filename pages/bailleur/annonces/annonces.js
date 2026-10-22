@@ -1,76 +1,12 @@
+// pages/bailleur/annonces/annonces.js
+import { getStoredBailleurAnnonces, confirmBailleurAnnonce } from '../../../utils/helpers/store';
+import { storage } from '../../../utils/storage';
+
 Page({
   data: {
     statusBarHeight: 44,
     activeFilter: 'all', // all | en_ligne | validation | loue
-    annonces: [
-      {
-        id: 'a1',
-        tag: 'En ligne · Premium',
-        tagClass: 'tag-enligne',
-        thumbBg: '#FDE8EE',
-        title: 'Chambre salon avec douche int...',
-        placeName: 'Icotaf, Pikine · ',
-        price: '65 000 F',
-        stats: '248 vues · 3 demandes',
-        notice: "Disponibilité confirmée aujourd'hui. Les locataires le voient.",
-        noticeClass: 'notice-gray',
-        isConfirmed: true,
-        type: 'en_ligne'
-      },
-      {
-        id: 'a2',
-        tag: 'En ligne · Premium',
-        tagClass: 'tag-enligne',
-        thumbBg: '#E3E8F0',
-        title: 'Studio meublé, entrée indépen...',
-        placeName: 'Pikine Rue 10 · ',
-        price: '95 000 F',
-        stats: '131 vues · 1 demandes',
-        notice: "Disponibilité confirmée il y a 14 jours. Confirme-la pour rester bien visible.",
-        noticeClass: 'notice-yellow',
-        isConfirmed: false,
-        needsConfirm: true,
-        type: 'en_ligne'
-      },
-      {
-        id: 'a3',
-        tag: 'En validation',
-        tagClass: 'tag-validation',
-        thumbBg: '#F5EFE6',
-        title: 'Appartement F2 neuf',
-        placeName: 'Pikine Technopole · ',
-        price: '140 000 F',
-        notice: 'Notre équipe vérifie les photos et les informations. Réponse sous 24 h.',
-        noticeClass: 'notice-yellow',
-        type: 'validation'
-      },
-      {
-        id: 'a4',
-        tag: 'À corriger',
-        tagClass: 'tag-corriger',
-        thumbBg: '#EFEBF5',
-        title: 'Chambre avec balcon',
-        placeName: 'Dalifort · ',
-        price: '50 000 F',
-        notice: 'Motif : 2 photos sont floues et le prix de la caution manque.',
-        noticeClass: 'notice-pink',
-        canCorrect: true,
-        type: 'validation'
-      },
-      {
-        id: 'a5',
-        tag: 'Loué',
-        tagClass: 'tag-loue',
-        thumbBg: '#FDE8EE',
-        title: 'Chambre indépendante',
-        placeName: 'Thiaroye · ',
-        price: '45 000 F',
-        notice: 'Annonce retirée des recherches. Les locataires ne la voient plus.',
-        noticeClass: 'notice-gray',
-        canRelist: true,
-        type: 'loue'
-      }
-    ],
+    annonces: [],
     filteredAnnonces: []
   },
 
@@ -82,13 +18,21 @@ Page({
       });
     } catch (e) {}
 
-    this.applyFilter('all');
+    this.loadAnnonces();
   },
 
   onShow() {
     if (typeof this.getTabBar === 'function' && this.getTabBar()) {
       this.getTabBar().setData({ activeTab: 'b-annonces' });
     }
+    this.loadAnnonces();
+  },
+
+  loadAnnonces() {
+    const annonces = getStoredBailleurAnnonces();
+    this.setData({ annonces }, () => {
+      this.applyFilter(this.data.activeFilter);
+    });
   },
 
   onFilterSelect(e) {
@@ -111,18 +55,7 @@ Page({
 
   onConfirmDispo(e) {
     const id = e.currentTarget.dataset.id;
-    const updated = this.data.annonces.map(a => {
-      if (a.id === id) {
-        return {
-          ...a,
-          isConfirmed: true,
-          needsConfirm: false,
-          notice: "Disponibilité confirmée aujourd'hui. Les locataires le voient.",
-          noticeClass: 'notice-gray'
-        };
-      }
-      return a;
-    });
+    const updated = confirmBailleurAnnonce(id);
 
     this.setData({ annonces: updated });
     this.applyFilter(this.data.activeFilter);
@@ -158,6 +91,7 @@ Page({
             }
             return a;
           });
+          storage.set('sama_bailleur_annonces', updated);
           this.setData({ annonces: updated });
           this.applyFilter(this.data.activeFilter);
           wx.showToast({ title: 'Logement marqué loué' });
@@ -172,7 +106,7 @@ Page({
       if (a.id === id) {
         return {
           ...a,
-          tag: 'En ligne · Premium',
+          tag: 'En ligne · Vérifié',
           tagClass: 'tag-enligne',
           type: 'en_ligne',
           notice: "Disponibilité confirmée aujourd'hui. Les locataires le voient.",
@@ -184,14 +118,22 @@ Page({
       }
       return a;
     });
+    storage.set('sama_bailleur_annonces', updated);
     this.setData({ annonces: updated });
     this.applyFilter(this.data.activeFilter);
-    wx.showToast({ title: 'Remis en ligne !', icon: 'success' });
+    wx.showToast({ title: 'Remis en location ✓', icon: 'success' });
   },
 
-  onGoAjouter() {
+  onOpenAdd() {
     wx.navigateTo({
       url: '/pages/bailleur/ajouter/ajouter'
+    });
+  },
+
+  onCardTap(e) {
+    const id = e.currentTarget.dataset.id;
+    wx.navigateTo({
+      url: `/pages/client/logement-detail/logement-detail?id=${id}`
     });
   }
 });

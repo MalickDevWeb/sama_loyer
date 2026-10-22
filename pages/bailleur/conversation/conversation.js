@@ -1,4 +1,5 @@
 import { getBailleurConversation } from '../../../utils/mocks/bailleur-conversations';
+import { addStoredMessage } from '../../../utils/helpers/store';
 
 function now() {
   const d = new Date();
@@ -71,11 +72,19 @@ Page({
   pushMessage(text) {
     const t = String(text || '').trim();
     if (!t) return;
+    const newMsg = { id: `m-${Date.now()}`, from: 'me', sender: 'bailleur', text: t, time: now() };
     this.setData({
-      messages: [...this.data.messages, { id: `m-${Date.now()}`, from: 'me', text: t, time: now() }],
+      messages: [...this.data.messages, newMsg],
       draft: ''
     });
     this.scrollDown();
+
+    try {
+      const convId = (this.data.conv && this.data.conv.id) || 'moussa-d';
+      addStoredMessage(convId, newMsg);
+    } catch (e) {
+      console.warn('[BailleurConv] addStoredMessage error:', e);
+    }
   },
 
   onBack() {

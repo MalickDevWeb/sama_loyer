@@ -1,4 +1,5 @@
-import { RENTED_HOMES, RENT_MONTH, PROBLEM_CATEGORIES } from '../../../utils/mocks/loyers';
+import { RENT_MONTH, PROBLEM_CATEGORIES } from '../../../utils/mocks/loyers';
+import { getStoredRentedHomes, recordRentPayment } from '../../../utils/helpers/store';
 import { storage } from '../../../utils/storage.js';
 import { STORAGE_KEYS } from '../../../utils/constants/index';
 import { setCustomTabBarActive } from '../../../utils/helpers/tab-bar';
@@ -46,13 +47,16 @@ Page({
       this.setData({ statusBarHeight: sys.statusBarHeight || 44 });
     } catch (e) {}
 
+    const rentedHomes = getStoredRentedHomes();
     this.paid = storage.get(STORAGE_KEYS.RENT_PAID, {}) || {};
-    const initial = options && options.id && RENTED_HOMES.some((h) => h.id === options.id) ? options.id : RENTED_HOMES[0].id;
+    const initial = options && options.id && rentedHomes.some((h) => h.id === options.id) ? options.id : rentedHomes[0].id;
     this.setData({ selectedId: initial }, () => this.refresh());
   },
 
   onShow() {
     setCustomTabBarActive(this, 'loyers');
+    this.paid = storage.get(STORAGE_KEYS.RENT_PAID, {}) || {};
+    this.refresh();
   },
 
   onUnload() {
@@ -60,31 +64,32 @@ Page({
   },
 
   refresh() {
-    const paid = this.paid;
-    const total = RENTED_HOMES.reduce((a, h) => a + h.rent, 0);
-    const left = RENTED_HOMES.reduce((a, h) => a + (paid[h.id] ? 0 : h.rent), 0);
-    const paidN = RENTED_HOMES.filter((h) => paid[h.id]).length;
-    const h = RENTED_HOMES.find((x) => x.id === this.data.selectedId) || RENTED_HOMES[0];
+    const rentedHomes = getStoredRentedHomes();
+    const paid = this.paid || {};
+    const total = rentedHomes.reduce((a, h) => a + h.rent, 0);
+    const left = rentedHomes.reduce((a, h) => a + (paid[h.id] ? 0 : h.rent), 0);
+    const paidN = rentedHomes.filter((h) => paid[h.id]).length;
+    const h = rentedHomes.find((x) => x.id === this.data.selectedId) || rentedHomes[0];
     const isPaid = !!paid[h.id];
 
-    const history = h.history.slice();
-    if (isPaid) {
+    const history = (h.history || []).slice();
+    if (isPaid && !history.some(r => r.id === 'r-nov')) {
       history.unshift({
         id: 'r-nov',
         label: `Loyer de ${RENT_MONTH}`,
         sub: `Payé le ${todayShort()} · Max it`,
         amount: h.rent,
         kind: 'rent',
-        ref: `REC-NOV-2026-${h.id.toUpperCase()}`
+        ref: `REC-NOV-2026-${String(h.id).toUpperCase()}`
       });
     }
 
     this.setData({
       totalLeft: left ? `${fmt(left)} F` : 'Tout est payé',
       totalLeftLabel: left ? `restent à payer sur ${fmt(total)} F` : `pour ${RENT_MONTH}`,
-      paidCount: `${paidN} / ${RENTED_HOMES.length} payé(s)`,
-      segments: RENTED_HOMES.map((x) => ({ id: x.id, weight: x.rent, paid: !!paid[x.id] })),
-      homes: RENTED_HOMES.map((x) => ({
+      paidCount: `${paidN} / ${rentedHomes.length} payé(s)`,
+      segments: rentedHomes.map((x) => ({ id: x.id, weight: x.rent, paid: !!paid[x.id] })),
+      homes: rentedHomes.map((x) => ({
         id: x.id,
         name: x.name,
         rent: fmt(x.rent),
@@ -111,7 +116,8 @@ Page({
   },
 
   currentHome() {
-    return RENTED_HOMES.find((x) => x.id === this.data.selectedId) || RENTED_HOMES[0];
+    const rentedHomes = getStoredRentedHomes();
+    return rentedHomes.find((x) => x.id === this.data.selectedId) || rentedHomes[0];
   },
 
   onSelectHome(e) {
@@ -131,8 +137,9 @@ Page({
   },
 
   onMxValidate() {
-    this.paid = { ...this.paid, [this.data.selectedId]: true };
-    storage.set(STORAGE_KEYS.RENT_PAID, this.paid);
+    const cur = this.currentHome();
+    recordRentPayment(this.data.selectedId, cur.rent);
+    this.paid = storage.get(STORAGE_KEYS.RENT_PAID, {}) || {};
     this.setData({ mx: 'done' });
     this.refresh();
   },

@@ -1,3 +1,6 @@
+import { storage } from '../storage.js';
+import { STORAGE_KEYS } from '../constants/index.js';
+
 // ============================================================================
 // LOGEMENTS — SOURCE UNIQUE DE DONNÉES FICTIVES (MOCK)
 // Toutes les pages (accueil, recherche, fiche, favoris) lisent ce catalogue,
@@ -373,12 +376,27 @@ function initials(name) {
 }
 
 /**
+ * Retourne l'ensemble des logements (stockés ou mockés par défaut).
+ * @returns {Array<Object>}
+ */
+export function getAllLogements() {
+  try {
+    const stored = storage.get(STORAGE_KEYS.LOGEMENTS, null);
+    if (Array.isArray(stored) && stored.length > 0) {
+      return stored;
+    }
+  } catch (e) {}
+  return LOGEMENTS;
+}
+
+/**
  * Retrouve un logement du catalogue par son identifiant.
  * @param {string} id
  * @returns {Object|null}
  */
 export function getLogementById(id) {
-  return LOGEMENTS.find((l) => String(l.id) === String(id)) || null;
+  const all = getAllLogements();
+  return all.find((l) => String(l.id) === String(id)) || null;
 }
 
 /**

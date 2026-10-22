@@ -1,24 +1,173 @@
 <view class="ajouter-page">
-  <!-- Nav Bar with Close button & Step 5/5 -->
+  <!-- Nav Bar with Close button & Step indicator -->
   <view class="nav-bar-custom" style="padding-top: {{ statusBarHeight }}px; height: {{ navBarHeight }}px;">
     <view class="btn-close" bindtap="onClose">
-      <text class="close-icon">✕</text>
+      <text class="close-icon">{{ step === 5 ? '✕' : (step === 1 ? '✕' : '←') }}</text>
     </view>
     <text class="nav-title">Ajouter un logement</text>
-    <text class="step-label">5/5</text>
+    <text class="step-label">{{ step }}/5</text>
   </view>
 
   <!-- Segmented Progress Bar (5 bars) -->
   <view class="progress-bar-row" style="top: {{ statusBarHeight + navBarHeight }}px;">
-    <view class="progress-segment"></view>
-    <view class="progress-segment"></view>
-    <view class="progress-segment"></view>
-    <view class="progress-segment"></view>
-    <view class="progress-segment"></view>
+    <view class="progress-segment {{ step >= 1 ? 'active' : '' }}"></view>
+    <view class="progress-segment {{ step >= 2 ? 'active' : '' }}"></view>
+    <view class="progress-segment {{ step >= 3 ? 'active' : '' }}"></view>
+    <view class="progress-segment {{ step >= 4 ? 'active' : '' }}"></view>
+    <view class="progress-segment {{ step >= 5 ? 'active' : '' }}"></view>
   </view>
 
-  <!-- Center Content Confirmation -->
-  <view class="center-content">
+  <!-- STEP 1: Type de bien & Quartier -->
+  <view class="step-container" wx:if="{{ step === 1 }}" style="margin-top: {{ statusBarHeight + navBarHeight + 20 }}px;">
+    <text class="step-heading">Quel type de logement louez-vous ?</text>
+    <text class="step-subheading">Sélectionnez le type et la zone pour que les locataires le trouvent facilement.</text>
+
+    <view class="form-section-title">Type de logement</view>
+    <view class="chip-grid">
+      <view 
+        wx:for="{{ typeList }}" 
+        wx:key="*this" 
+        class="chip-item {{ selectedType === item ? 'chip-item-active' : '' }}"
+        bindtap="onSelectType"
+        data-type="{{ item }}"
+      >
+        <text class="chip-text">{{ item }}</text>
+      </view>
+    </view>
+
+    <view class="form-section-title" style="margin-top: 40rpx;">Quartier à Dakar</view>
+    <view class="chip-grid">
+      <view 
+        wx:for="{{ quartierList }}" 
+        wx:key="*this" 
+        class="chip-item {{ selectedQuartier === item ? 'chip-item-active' : '' }}"
+        bindtap="onSelectQuartier"
+        data-quartier="{{ item }}"
+      >
+        <text class="chip-text">{{ item }}</text>
+      </view>
+    </view>
+
+    <view class="form-section-title" style="margin-top: 40rpx;">Précision de l'adresse (rue, repère)</view>
+    <input 
+      class="text-input-field" 
+      placeholder="Ex: Cité Avion, près de la pharmacie" 
+      value="{{ adresseDetail }}" 
+      bindinput="onInputAdresse"
+    />
+  </view>
+
+  <!-- STEP 2: Loyer & Conditions financières -->
+  <view class="step-container" wx:if="{{ step === 2 }}" style="margin-top: {{ statusBarHeight + navBarHeight + 20 }}px;">
+    <text class="step-heading">Loyer et conditions financières</text>
+    <text class="step-subheading">Fixez un loyer juste et conforme au marché dakarois.</text>
+
+    <view class="form-section-title">Loyer mensuel (FCFA)</view>
+    <view class="input-with-suffix">
+      <input 
+        class="text-input-field number-input" 
+        type="number" 
+        placeholder="65 000" 
+        value="{{ loyer }}" 
+        bindinput="onInputLoyer"
+      />
+      <text class="input-suffix">F / mois</text>
+    </view>
+
+    <view class="form-section-title" style="margin-top: 40rpx;">Caution demandée</view>
+    <view class="segmented-choice">
+      <view 
+        class="choice-btn {{ cautionMonths === 1 ? 'choice-btn-active' : '' }}" 
+        bindtap="onSelectCaution" 
+        data-months="{{ 1 }}"
+      >
+        1 mois
+      </view>
+      <view 
+        class="choice-btn {{ cautionMonths === 2 ? 'choice-btn-active' : '' }}" 
+        bindtap="onSelectCaution" 
+        data-months="{{ 2 }}"
+      >
+        2 mois
+      </view>
+    </view>
+
+    <!-- Financial summary card -->
+    <view class="financial-summary-card">
+      <view class="summary-row">
+        <text class="summary-label">Avance (1er mois)</text>
+        <text class="summary-val">{{ loyerFormatted }} F</text>
+      </view>
+      <view class="summary-row">
+        <text class="summary-label">Caution ({{ cautionMonths }} mois)</text>
+        <text class="summary-val">{{ cautionFormatted }} F</text>
+      </view>
+      <view class="summary-divider"></view>
+      <view class="summary-row summary-total-row">
+        <text class="summary-total-label">Total pour entrer</text>
+        <text class="summary-total-val">{{ totalEntreeFormatted }} F</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- STEP 3: Équipements & Description -->
+  <view class="step-container" wx:if="{{ step === 3 }}" style="margin-top: {{ statusBarHeight + navBarHeight + 20 }}px;">
+    <text class="step-heading">Équipements et détails</text>
+    <text class="step-subheading">Ce que propose le logement au futur locataire.</text>
+
+    <view class="form-section-title">Équipements inclus</view>
+    <view class="equipments-list">
+      <view 
+        wx:for="{{ equipements }}" 
+        wx:key="id" 
+        class="equipment-checkbox-row {{ item.checked ? 'equipment-checked' : '' }}"
+        bindtap="onToggleEquipment"
+        data-id="{{ item.id }}"
+      >
+        <view class="custom-checkbox {{ item.checked ? 'custom-checkbox-active' : '' }}">
+          <text wx:if="{{ item.checked }}" class="check-mark">✓</text>
+        </view>
+        <text class="equipment-label">{{ item.label }}</text>
+      </view>
+    </view>
+
+    <view class="form-section-title" style="margin-top: 40rpx;">Description courte</view>
+    <textarea 
+      class="textarea-field" 
+      placeholder="Décrivez les atouts : pièce lumineuse, quartier calme, proche des transports..." 
+      value="{{ description }}" 
+      bindinput="onInputDescription"
+      maxlength="400"
+    ></textarea>
+  </view>
+
+  <!-- STEP 4: Photos & Vidéo -->
+  <view class="step-container" wx:if="{{ step === 4 }}" style="margin-top: {{ statusBarHeight + navBarHeight + 20 }}px;">
+    <text class="step-heading">Photos et visite vidéo</text>
+    <text class="step-subheading">Une annonce avec des photos claires et une vidéo loue 3× plus vite.</text>
+
+    <view class="media-upload-grid">
+      <view class="media-card media-card-success">
+        <view class="media-icon-wrap">📸</view>
+        <text class="media-title">Photos du logement</text>
+        <text class="media-status">✓ 3 photos préparées</text>
+      </view>
+
+      <view class="media-card {{ hasVideo ? 'media-card-success' : '' }}" bindtap="onToggleVideo">
+        <view class="media-icon-wrap">🎥</view>
+        <text class="media-title">Vidéo de visite (0:28)</text>
+        <text class="media-status">{{ hasVideo ? '✓ Vidéo ajoutée' : '+ Ajouter une vidéo' }}</text>
+      </view>
+    </view>
+
+    <view class="info-alert-box">
+      <text class="info-alert-icon">💡</text>
+      <text class="info-alert-text">Notre équipe valide l'annonce et vérifie les photos sous 24h ouvrées.</text>
+    </view>
+  </view>
+
+  <!-- STEP 5: Confirmation (Écran de succès) -->
+  <view class="center-content" wx:if="{{ step === 5 }}">
     <view class="clock-circle-icon">
       <text class="clock-emoji">🕒</text>
     </view>
@@ -31,11 +180,30 @@
     </view>
   </view>
 
-  <!-- Sticky Bottom Button -->
+  <!-- Sticky Bottom Actions -->
   <view class="bottom-action-container">
-    <button class="btn-voir-annonces" bindtap="onVoirAnnonces">
+    <button 
+      wx:if="{{ step < 4 }}" 
+      class="btn-primary-action" 
+      bindtap="onNextStep"
+    >
+      Continuer
+    </button>
+
+    <button 
+      wx:if="{{ step === 4 }}" 
+      class="btn-primary-action btn-publish" 
+      bindtap="onPublishListing"
+    >
+      Publier l'annonce
+    </button>
+
+    <button 
+      wx:if="{{ step === 5 }}" 
+      class="btn-voir-annonces" 
+      bindtap="onVoirAnnonces"
+    >
       Voir mes annonces
     </button>
   </view>
 </view>
-

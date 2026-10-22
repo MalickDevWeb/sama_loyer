@@ -1,4 +1,5 @@
 import { findConversation } from '../../../utils/mocks/conversations';
+import { getStoredConversation, addStoredMessage } from '../../../utils/helpers/store';
 
 function now() {
   const d = new Date();
@@ -39,11 +40,22 @@ Page({
       }
     } catch (e) {}
 
-    const conversation = findConversation({
-      id: options && options.id ? decodeURIComponent(options.id) : '',
-      logementId: options && options.logementId ? decodeURIComponent(options.logementId) : ''
-    }) || findConversation({ id: 'moussa-d' });
-    this.raw = conversation.messages.slice();
+    const paramId = options && options.id ? decodeURIComponent(options.id) : '';
+    const paramLogement = options && options.logementId ? decodeURIComponent(options.logementId) : '';
+    
+    let conversation = null;
+    try {
+      conversation = getStoredConversation(paramId || paramLogement || 'moussa-d');
+    } catch (e) {}
+
+    if (!conversation) {
+      conversation = findConversation({
+        id: paramId,
+        logementId: paramLogement
+      }) || findConversation({ id: 'moussa-d' });
+    }
+
+    this.raw = (conversation.messages || []).slice();
     this.setData({ conversation, messages: withMeta(this.raw) });
     this.scrollDown();
   },
@@ -104,8 +116,16 @@ Page({
   },
 
   sendMessage(text) {
-    this.raw.push({ id: `m-${Date.now()}`, sender: 'client', text, time: now() });
+    const newMsg = { id: `m-${Date.now()}`, sender: 'client', text, time: now() };
+    this.raw.push(newMsg);
     this.setData({ messages: withMeta(this.raw), inputText: '' });
     this.scrollDown();
+
+    try {
+      const convId = (this.data.conversation && (this.data.conversation.id || this.data.conversation.logementId)) || 'moussa-d';
+      addStoredMessage(convId, newMsg);
+    } catch (e) {
+      console.warn('[Chat] addStoredMessage error:', e);
+    }
   }
 });
