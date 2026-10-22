@@ -1,18 +1,17 @@
 <view class="osn-tab-bar">
-  <view class="osn-tab-bar__tabs container-class {{ containerClass }}">
+  <view class="osn-tab-bar__tabs">
     <block wx:for="{{ tabs }}" wx:key="id">
       <view
-        class="osn-tab-bar__tab item-class {{ itemClass }} {{ activeTab === item.id ? 'osn-tab-bar__tab--active active-item-class' : '' }} {{ activeTab === item.id ? activeItemClass : '' }}"
+        class="osn-tab-bar__tab {{ activeTab === item.id ? 'osn-tab-bar__tab--active' : '' }}"
         data-tab="{{ item.id }}"
         data-url="{{ item.url }}"
-        bindtap="handleTap"      >
-        <image
-          wx:if="{{ item.iconImage }}"
-          class="osn-tab-bar__icon icon-class {{ iconClass }}"
-          src="{{ item.iconImage }}"
-          mode="aspectFit"
-        />
-        <text wx:if="{{ activeTab === item.id }}" class="osn-tab-bar__label label-class {{ labelClass }}">{{ item.label }}</text>
+        bindtap="handleTap"
+      >
+        <view class="tab-icon-wrapper">
+          <view class="tab-svg-icon tab-icon-{{ item.id }} {{ activeTab === item.id ? 'active' : '' }}"></view>
+          <text wx:if="{{ item.badge }}" class="tab-badge">{{ item.badge }}</text>
+        </view>
+        <text class="osn-tab-bar__label {{ activeTab === item.id ? 'active' : '' }}">{{ item.label }}</text>
       </view>
     </block>
   </view>

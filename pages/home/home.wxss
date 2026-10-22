@@ -223,8 +223,8 @@
 
 .btn-search {
   flex: 1;
-  height: 112rpx;
-  border-radius: 32rpx;
+  height: 108rpx;
+  border-radius: 999rpx;
   border: 0;
   background-color: #C8235F;
   color: #FFFFFF;
@@ -234,7 +234,7 @@
   gap: 16rpx;
   margin: 0;
   padding: 0;
-  box-shadow: 0 8rpx 20rpx rgba(200, 35, 95, 0.3);
+  box-shadow: 0 8rpx 20rpx rgba(200, 35, 95, 0.25);
 }
 
 .btn-search--hover {
@@ -249,10 +249,10 @@
 }
 
 .btn-voice {
-  width: 112rpx;
-  height: 112rpx;
-  flex: 0 0 112rpx;
-  border-radius: 32rpx;
+  width: 108rpx;
+  height: 108rpx;
+  flex: 0 0 108rpx;
+  border-radius: 28rpx;
   border: 0;
   background-color: #FBE3EC;
   display: flex;

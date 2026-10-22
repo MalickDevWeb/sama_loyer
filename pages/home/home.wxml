@@ -15,12 +15,9 @@
         </view>
       </view>
 
-      <!-- Profil Avatar avec rôle actif -->
+      <!-- Profil Avatar -->
       <view class="sama-avatar-badge" bindtap="onSwitchProfile">
         <text class="avatar-text">AD</text>
-        <view class="role-indicator {{ userRole === 'bailleur' ? 'role-bailleur' : 'role-client' }}">
-          {{ userRole === 'bailleur' ? 'PRO' : 'LOC' }}
-        </view>
       </view>
     </view>
 
@@ -49,7 +46,6 @@
             placeholder="Ex. Ouakam, Mermoz, Yoff…"
             placeholder-class="input-placeholder"
           />
-          <view wx:if="{{ place }}" class="btn-clear" bindtap="onClearPlace">✕</view>
         </view>
       </view>
 
@@ -68,7 +64,6 @@
             placeholder-class="input-placeholder"
           />
           <text class="input-suffix">F CFA</text>
-          <view wx:if="{{ budget }}" class="btn-clear" bindtap="onClearBudget">✕</view>
         </view>
       </view>
 

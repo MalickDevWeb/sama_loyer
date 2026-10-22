@@ -121,31 +121,28 @@ export const SUCCESS_MESSAGES = {
 /**
  * Main app tabs used by the custom tab bar.
  * @readonly
- * @type {Array<{id: string, label: string, iconImage: string, url: string}>}
+ * @type {Array<{id: string, label: string, badge?: string, url: string}>}
  */
 export const MAIN_TABS = [
   {
     id: 'home',
     label: 'Chercher',
-    iconImage: '/assets/icons/home.png',
     url: '/pages/home/home',
   },
   {
     id: 'favorites',
     label: 'Favoris',
-    iconImage: '/assets/icons/favoris.png',
     url: '/pages/favoris/favoris',
   },
   {
     id: 'voyages',
     label: 'Messages',
-    iconImage: '/assets/icons/voyage.png',
+    badge: '2',
     url: '/pages/voyage/voyage',
   },
   {
     id: 'profile',
     label: 'Profil',
-    iconImage: '/assets/icons/explore.png',
     url: '/pages/index/index',
   },
 ];

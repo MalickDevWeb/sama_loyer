@@ -1,71 +1,121 @@
+/* ============================================================================
+   SAMA LOGEMENT — BOTTOM BAR NAVIGATION
+   Fidèle au design Claude Artifacts
+   ============================================================================ */
+
 .osn-tab-bar {
   position: fixed;
   left: 0;
   right: 0;
   bottom: 0;
-  z-index: 280;
+  z-index: 990;
   width: 100%;
   box-sizing: border-box;
-  padding: 16rpx 24rpx calc(16rpx + env(safe-area-inset-bottom));
-  background: transparent;
-  pointer-events: none;
+  background-color: #FFFFFF;
+  border-top: 2rpx solid #E4E7EE;
+  padding-bottom: env(safe-area-inset-bottom);
 }
 
 .osn-tab-bar__tabs {
   display: flex;
   align-items: center;
+  justify-content: space-around;
   width: 100%;
-  min-height: 128rpx;
+  height: 120rpx;
   box-sizing: border-box;
-  padding: 16rpx 24rpx;
-  border: 1rpx solid #e5e7eb;
-  border-radius: 999rpx;
-  background: #ffffff;
-  box-shadow: 0 10rpx 30rpx rgba(17, 24, 39, 0.16);
-  pointer-events: auto;
+  padding: 8rpx 16rpx 12rpx;
 }
 
 .osn-tab-bar__tab {
-  flex: 0.5;
+  flex: 1;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  gap: 6rpx;
   min-width: 0;
-  height: 84rpx;
-  padding: 0 18rpx;
-  border-radius: 999rpx;
+  height: 100%;
+  padding: 0;
   text-align: center;
-  color: #C8235F;
-  /* transition: color 0.25s, background 0.25s; */
+  box-sizing: border-box;
 }
 
-.osn-tab-bar__tab--active {
-  flex: 1;
-  min-width: 176rpx;
-  padding: 0 24rpx;
-  color: #ffffff;
-  background: #C8235F;
-  box-shadow: 0 8rpx 18rpx rgba(200, 35, 95, 0.28);
+.tab-icon-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48rpx;
+  height: 48rpx;
 }
 
-.osn-tab-bar__icon {
+.tab-svg-icon {
   width: 44rpx;
   height: 44rpx;
-  flex: 0 0 44rpx;
-  display: block;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
 }
 
-.osn-tab-bar__tab--active .osn-tab-bar__icon {
-  filter: brightness(0) invert(1);
-} 
+/* 1. Chercher */
+.tab-icon-home {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%235B6475' stroke-width='2.2' stroke-linecap='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='m20 20-3.5-3.5'/%3E%3C/svg%3E");
+}
+.tab-icon-home.active {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23C8235F' stroke-width='2.4' stroke-linecap='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='m20 20-3.5-3.5'/%3E%3C/svg%3E");
+}
+
+/* 2. Favoris */
+.tab-icon-favorites {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%235B6475' stroke-width='2' stroke-linejoin='round'%3E%3Cpath d='M12 20s-7-4.4-9-9a5 5 0 0 1 9-3 5 5 0 0 1 9 3c-2 4.6-9 9-9 9z'/%3E%3C/svg%3E");
+}
+.tab-icon-favorites.active {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23C8235F' stroke-width='2.2' stroke-linejoin='round'%3E%3Cpath d='M12 20s-7-4.4-9-9a5 5 0 0 1 9-3 5 5 0 0 1 9 3c-2 4.6-9 9-9 9z'/%3E%3C/svg%3E");
+}
+
+/* 3. Messages */
+.tab-icon-voyages {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%235B6475' stroke-width='2' stroke-linejoin='round'%3E%3Cpath d='M4 5h16v11H9l-5 4z'/%3E%3C/svg%3E");
+}
+.tab-icon-voyages.active {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23C8235F' stroke-width='2.2' stroke-linejoin='round'%3E%3Cpath d='M4 5h16v11H9l-5 4z'/%3E%3C/svg%3E");
+}
+
+/* 4. Profil */
+.tab-icon-profile {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%235B6475' stroke-width='2' stroke-linecap='round'%3E%3Ccircle cx='12' cy='8' r='4'/%3E%3Cpath d='M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6'/%3E%3C/svg%3E");
+}
+.tab-icon-profile.active {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23C8235F' stroke-width='2.2' stroke-linecap='round'%3E%3Ccircle cx='12' cy='8' r='4'/%3E%3Cpath d='M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6'/%3E%3C/svg%3E");
+}
+
+/* Badge numérique rouge */
+.tab-badge {
+  position: absolute;
+  top: -8rpx;
+  right: -18rpx;
+  min-width: 34rpx;
+  height: 34rpx;
+  border-radius: 17rpx;
+  background-color: #C8235F;
+  color: #FFFFFF;
+  font-size: 20rpx;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 6rpx;
+  box-sizing: border-box;
+}
 
 .osn-tab-bar__label {
-  max-width: 100%;
-  margin-left: 14rpx;
-  overflow: hidden;
-  font-size: 30rpx;
-  font-weight: 700;
-  line-height: 44rpx;
-  white-space: nowrap;
+  font-size: 24rpx;
+  font-weight: 600;
+  color: #5B6475;
+  line-height: 1.1;
+}
+
+.osn-tab-bar__label.active {
+  font-weight: 800;
+  color: #C8235F;
 }
