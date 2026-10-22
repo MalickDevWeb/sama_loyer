@@ -64,7 +64,23 @@ export const withRetry = async (fn, { maxAttempts = 3, baseDelay = 500, shouldRe
  * @returns {Promise<Object>} Plugin response
  * @throws {Error} If plugin call fails or strict validation rejects
  */
+/**
+ * Checks if running inside the DevTools simulator or without native bridge.
+ * @returns {boolean}
+ */
+export const isDevtools = () => {
+  try {
+    const sys = wx.getSystemInfoSync ? wx.getSystemInfoSync() : {};
+    return sys.platform === 'devtools' || typeof wx.invokeNativePlugin !== 'function';
+  } catch (e) {
+    return typeof wx.invokeNativePlugin !== 'function';
+  }
+};
+
 export const invokePlugin = (apiName, data = {}, { strict = true } = {}) => {
+  if (typeof wx.invokeNativePlugin !== 'function') {
+    return Promise.reject(new Error('wx.invokeNativePlugin is not available in simulator'));
+  }
   return new Promise((resolve, reject) => {
     wx.invokeNativePlugin({
       api_name: apiName,
@@ -108,6 +124,15 @@ export const invokePlugin = (apiName, data = {}, { strict = true } = {}) => {
  * }
  */
 export const getUserInfos = async () => {
+  // En environnement DevTools / simulateur avec __DEV__ = true, le pont natif Android/iOS
+  // n'est pas présent : on fournit directement le profil de dev sans retries ni warnings bloquants.
+  if (__DEV__ && isDevtools()) {
+    return {
+      msisdn: '770000000',
+      fullName: 'Dev User',
+    };
+  }
+
   try {
     await delay(300);
 
@@ -165,5 +190,7 @@ export const getUserInfos = async () => {
  * Add your native plugin wrappers here.
  */
 export const nativeService = {
+  isDevtools,
+  invokePlugin,
   getUserInfos,
 };
