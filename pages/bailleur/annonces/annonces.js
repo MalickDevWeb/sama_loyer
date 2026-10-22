@@ -191,7 +191,7 @@ Page({
 
   onGoAjouter() {
     wx.navigateTo({
-      url: '/pages/bailleur/ajouter'
+      url: '/pages/bailleur/ajouter/ajouter'
     });
   }
 });

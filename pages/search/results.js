@@ -1,4 +1,10 @@
 import { setCustomTabBarActive } from '../../utils/helpers/tab-bar';
+import { getFavoritesMap, isFavorite, toggleFavoriteId } from '../../utils/helpers/favorites';
+
+function withFavorites(items) {
+  const favs = getFavoritesMap();
+  return items.map((l) => ({ ...l, isFavorite: !!favs[l.id] }));
+}
 
 const PREMIUM_LISTINGS = [
   {
@@ -103,6 +109,17 @@ Page({
 
   onShow() {
     setCustomTabBarActive(this, 'home');
+    this.refreshFavorites();
+  },
+
+  // Les favoris peuvent avoir changé sur la fiche logement
+  refreshFavorites() {
+    this.setData({
+      premiumListings: withFavorites(this.data.premiumListings),
+      listings: withFavorites(this.data.listings)
+    }, () => {
+      this.filterListings();
+    });
   },
 
   onBackTap() {
@@ -202,10 +219,9 @@ Page({
 
   onToggleFavorite(e) {
     const id = e.currentTarget.dataset.id;
-    const updated = this.data.listings.map((l) => (l.id === id ? { ...l, isFavorite: !l.isFavorite } : l));
-    this.setData({ listings: updated }, () => {
-      this.filterListings();
-    });
-    wx.showToast({ title: 'Favoris mis à jour', icon: 'none' });
+    const liked = !isFavorite(id);
+    toggleFavoriteId(id, liked);
+    this.refreshFavorites();
+    wx.showToast({ title: liked ? 'Ajouté aux favoris ❤️' : 'Retiré des favoris', icon: 'none' });
   }
 });

@@ -1,57 +1,35 @@
+import { getLogementById } from '../../utils/mocks/logements';
+import { getFavoriteIds, toggleFavoriteId } from '../../utils/helpers/favorites';
+
+function formatMoney(n) {
+  return String(n || 0).replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+}
+
+// Construit les cartes à partir des IDs favoris et du catalogue
+function buildFavoritesList() {
+  return getFavoriteIds()
+    .map(getLogementById)
+    .filter(Boolean)
+    .map((l) => ({
+      id: l.id,
+      isPremium: !!l.isPremium,
+      price: `${formatMoney(l.price)} FCFA`,
+      unit: '/ mois',
+      title: l.title,
+      place: l.place,
+      status: l.status || 'disponible',
+      statusLabel: l.statusLabel || 'Disponible',
+      priceDropLabel: l.priceDropLabel || '',
+      registeredAt: 'Enregistré',
+      bg: l.tint
+    }));
+}
+
 Page({
   data: {
     statusBarHeight: 44,
     activeTabFilter: 'tous', // 'tous' | 'dispo'
-    favoritesList: [
-      {
-        id: 'f1',
-        isPremium: true,
-        price: '65 000 FCFA',
-        unit: '/ mois',
-        title: 'Chambre salon avec douche intérieure',
-        place: 'Icotaf, Pikine',
-        status: 'disponible',
-        statusLabel: 'Disponible',
-        registeredAt: "Enregistré aujourd’hui",
-        bg: '#FCE8EF'
-      },
-      {
-        id: 'f2',
-        isPremium: true,
-        price: '95 000 FCFA',
-        unit: '/ mois',
-        title: 'Studio meublé, entrée indépendante',
-        place: 'Pikine Rue 10, Pikine',
-        status: 'disponible',
-        statusLabel: 'Disponible',
-        registeredAt: 'Enregistré hier',
-        bg: '#EAF2FB'
-      },
-      {
-        id: 'f3',
-        isPremium: false,
-        price: '180 000 FCFA',
-        unit: '/ mois',
-        title: 'Appartement F3 lumineux',
-        place: 'Pikine Technopole, Pikine',
-        status: 'price-drop',
-        priceDropLabel: 'Le prix a baissé de 20 000 F',
-        registeredAt: 'Enregistré il y a 3 j',
-        bg: '#F7EFE8'
-      },
-      {
-        id: 'f4',
-        isPremium: false,
-        price: '45 000 FCFA',
-        unit: '/ mois',
-        title: 'Chambre indépendante',
-        place: 'Guinaw Rails, Pikine',
-        status: 'rented',
-        statusLabel: 'Déjà loué',
-        registeredAt: 'Enregistré il y a 5 j',
-        bg: '#EBF4EE'
-      }
-    ],
+    favoritesList: [],
     filteredList: []
   },
 
@@ -62,14 +40,15 @@ Page({
         statusBarHeight: sys.statusBarHeight || 44
       });
     } catch (e) {}
-
-    this.applyFilter('tous');
   },
 
   onShow() {
     if (typeof this.getTabBar === 'function' && this.getTabBar()) {
       this.getTabBar().setData({ activeTab: 'favoris' });
     }
+    // Recharge à chaque affichage : les favoris changent sur les autres pages
+    this.setData({ favoritesList: buildFavoritesList() });
+    this.applyFilter(this.data.activeTabFilter);
   },
 
   onFilterSelect(e) {
@@ -96,8 +75,8 @@ Page({
       cancelText: 'Annuler',
       success: (res) => {
         if (res.confirm) {
-          const updated = this.data.favoritesList.filter(item => item.id !== id);
-          this.setData({ favoritesList: updated });
+          toggleFavoriteId(id, false);
+          this.setData({ favoritesList: buildFavoritesList() });
           this.applyFilter(this.data.activeTabFilter);
           wx.showToast({ title: 'Favori retiré', icon: 'success' });
         }
@@ -106,8 +85,9 @@ Page({
   },
 
   onCardTap(e) {
+    const id = e.currentTarget.dataset.id;
     wx.navigateTo({
-      url: '/pages/logement-detail/logement-detail'
+      url: `/pages/logement-detail/logement-detail?id=${encodeURIComponent(id)}`
     });
   }
 });

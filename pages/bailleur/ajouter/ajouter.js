@@ -22,13 +22,13 @@ Page({
 
   onClose() {
     wx.redirectTo({
-      url: '/pages/bailleur/home'
+      url: '/pages/bailleur/home/home'
     });
   },
 
   onVoirAnnonces() {
     wx.redirectTo({
-      url: '/pages/bailleur/annonces'
+      url: '/pages/bailleur/annonces/annonces'
     });
   }
 });

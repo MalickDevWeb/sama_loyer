@@ -1,5 +1,6 @@
 <app-tab-bar
   tabs="{{ tabs }}"
   activeTab="{{ activeTab }}"
+  navigationType="redirectTo"
   bind:change="handleChange"
 />

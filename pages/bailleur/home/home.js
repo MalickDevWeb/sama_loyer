@@ -1,4 +1,4 @@
-import { STORAGE_KEYS } from '../../utils/constants/index';
+import { STORAGE_KEYS } from '../../../utils/constants/index';
 
 Page({
   data: {
@@ -33,37 +33,37 @@ Page({
 
   onGoAjouter() {
     wx.navigateTo({
-      url: '/pages/bailleur/ajouter'
+      url: '/pages/bailleur/ajouter/ajouter'
     });
   },
 
   onGoDemandes() {
     wx.redirectTo({
-      url: '/pages/bailleur/demandes'
+      url: '/pages/bailleur/demandes/demandes'
     });
   },
 
   onGoAnnonces() {
     wx.redirectTo({
-      url: '/pages/bailleur/annonces'
+      url: '/pages/bailleur/annonces/annonces'
     });
   },
 
   onGoClients() {
     wx.navigateTo({
-      url: '/pages/bailleur/clients'
+      url: '/pages/bailleur/clients/clients'
     });
   },
 
   onGoPremium() {
     wx.redirectTo({
-      url: '/pages/bailleur/premium'
+      url: '/pages/bailleur/premium/premium'
     });
   },
 
   onGoHistorique() {
     wx.navigateTo({
-      url: '/pages/bailleur/clients'
+      url: '/pages/bailleur/clients/clients'
     });
   },
 

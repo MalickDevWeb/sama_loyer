@@ -1,61 +1,8 @@
-import { STORAGE_KEYS } from '../../utils/constants/index';
+import { LOGEMENTS, getLogementById, toLogementDetail } from '../../utils/mocks/logements';
+import { isFavorite, toggleFavoriteId } from '../../utils/helpers/favorites';
 
-const DEFAULT_LOGEMENT = {
-  id: 'icotaf-01',
-  title: 'Chambre salon avec douche intérieure',
-  tagPremium: true,
-  typeLabel: 'Chambre salon',
-  publishedAgo: 'Publié il y a 2 h',
-  place: 'Icotaf, Pikine — Dakar',
-  placeDetails: 'Icotaf, Pikine — près du marché',
-  price: '65 000',
-  dispoDate: 'Disponible dès le 1er novembre 2026',
-  dispoConfirmed: 'Confirmé par le bailleur le 20 octobre',
-  
-  // Prix et conditions
-  loyerMensuel: '65 000 FCFA',
-  caution: '130 000 FCFA',
-  avance: '65 000 FCFA',
-  fraisAgence: 'Aucun',
-  totalEntree: '195 000 FCFA',
-  conditions: [
-    'Contrat de location écrit, durée minimale 6 mois',
-    'Eau et électricité : compteurs séparés, à la charge du locataire',
-    'Pour 1 à 2 personnes'
-  ],
-
-  // Description
-  descriptionShort: 'Grande chambre carrelée avec un salon séparé, une douche intérieure et des toilettes privées. Le logement est au rez-de-chaussée d\'une maison...',
-  descriptionFull: 'Grande chambre carrelée avec un salon séparé, une douche intérieure et des toilettes privées. Le logement est au rez-de-chaussée d\'une maison familiale calme, à 5 minutes à pied du marché et des arrêts de bus. Idéal pour jeune couple ou travailleur cherchant un cadre propre et sécurisé.',
-
-  // Équipements
-  equipements: [
-    { id: 'douche', label: 'Douche intérieure', icon: 'douche' },
-    { id: 'wc', label: 'Toilettes privées', icon: 'wc' },
-    { id: 'eau', label: 'Accès à l\'eau', icon: 'eau' },
-    { id: 'elec', label: 'Électricité', icon: 'elec' },
-    { id: 'cour', label: 'Cour partagée', icon: 'cour' },
-    { id: 'placard', label: 'Placard intégré', icon: 'placard' }
-  ],
-
-  // Bailleur
-  bailleur: {
-    name: 'Moussa D.',
-    initial: 'MD',
-    verified: true,
-    responseTime: 'Répond en général en moins d\'une heure',
-    phone: '771234567'
-  },
-
-  // Slides
-  slides: [
-    { id: 1, label: 'Salon', bg: '#F5EFE6' },
-    { id: 2, label: 'Chambre', bg: '#FCE7F0' },
-    { id: 3, label: 'Douche', bg: '#E3E9F5' },
-    { id: 4, label: 'Cour', bg: '#E2F0EA' },
-    { id: 5, label: 'Vidéo visite', isVideo: true, bg: '#F0EBFA' }
-  ]
-};
+// Fiche affichée si l'id est absent ou inconnu
+const DEFAULT_LOGEMENT = toLogementDetail(getLogementById('icotaf-01') || LOGEMENTS[0]);
 
 Page({
   data: {
@@ -89,15 +36,14 @@ Page({
     } catch (e) {
       top = 54;
     }
-    this.setData({ headerTop: top });
+    const found = options && options.id ? getLogementById(decodeURIComponent(options.id)) : null;
+    const logement = found ? toLogementDetail(found) : DEFAULT_LOGEMENT;
 
-    // Check if favorited
-    try {
-      const favs = wx.getStorageSync(STORAGE_KEYS.FAVORITES) || {};
-      if (favs[this.data.logement.id] !== undefined) {
-        this.setData({ isFavorite: !!favs[this.data.logement.id] });
-      }
-    } catch (e) {}
+    this.setData({
+      headerTop: top,
+      logement,
+      isFavorite: isFavorite(logement.id)
+    });
   },
 
   onBackTap() {
@@ -120,11 +66,7 @@ Page({
   onToggleFavorite() {
     const fav = !this.data.isFavorite;
     this.setData({ isFavorite: fav });
-    try {
-      const favs = wx.getStorageSync(STORAGE_KEYS.FAVORITES) || {};
-      favs[this.data.logement.id] = fav;
-      wx.setStorageSync(STORAGE_KEYS.FAVORITES, favs);
-    } catch (e) {}
+    toggleFavoriteId(this.data.logement.id, fav);
 
     wx.showToast({
       title: fav ? 'Ajouté aux favoris ❤️' : 'Retiré des favoris',
@@ -190,7 +132,7 @@ Page({
             }
           });
         } else if (res.tapIndex === 2) {
-          wx.navigateTo({ url: '/pages/messages/chat?id=MD' });
+          wx.navigateTo({ url: '/pages/messages/chat/chat?id=MD' });
         }
       }
     });
@@ -204,7 +146,7 @@ Page({
 
   onOpenVisitModal() {
     wx.navigateTo({
-      url: '/pages/visites/demande'
+      url: '/pages/visites/demande/demande'
     });
   },
 
@@ -230,7 +172,7 @@ Page({
         cancelText: 'Fermer',
         success: (res) => {
           if (res.confirm) {
-            wx.switchTab({ url: '/pages/voyage/voyage' });
+            wx.switchTab({ url: '/pages/messages/messages' });
           }
         }
       });

@@ -157,14 +157,14 @@ Page({
 
   onProposeHoraire(e) {
     wx.navigateTo({
-      url: '/pages/messages/chat?id=AD'
+      url: '/pages/messages/chat/chat?id=AD'
     });
   },
 
   onOpenChat(e) {
     const id = e.currentTarget.dataset.id;
     wx.navigateTo({
-      url: `/pages/messages/chat?id=${id}`
+      url: `/pages/messages/chat/chat?id=${id}`
     });
   },
 
@@ -194,7 +194,7 @@ Page({
 
   onGoClientsPage() {
     wx.navigateTo({
-      url: '/pages/bailleur/clients'
+      url: '/pages/bailleur/clients/clients'
     });
   }
 });

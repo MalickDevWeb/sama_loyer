@@ -102,7 +102,7 @@ Page({
 
   onOpenMessage(e) {
     wx.navigateTo({
-      url: '/pages/messages/chat?id=MD'
+      url: '/pages/messages/chat/chat?id=MD'
     });
   },
 

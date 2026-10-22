@@ -51,29 +51,29 @@ export const BAILLEUR_TABS = [
   {
     id: 'b-home',
     label: 'Accueil',
-    url: '/pages/bailleur/home',
+    url: '/pages/bailleur/home/home',
   },
   {
     id: 'b-annonces',
     label: 'Annonces',
-    url: '/pages/bailleur/annonces',
+    url: '/pages/bailleur/annonces/annonces',
   },
   {
     id: 'b-ajouter',
     label: 'Ajouter',
     isSpecial: true, // Bouton central rose +
-    url: '/pages/bailleur/ajouter',
+    url: '/pages/bailleur/ajouter/ajouter',
   },
   {
     id: 'b-demandes',
     label: 'Demandes',
     badge: '1',
-    url: '/pages/bailleur/demandes',
+    url: '/pages/bailleur/demandes/demandes',
   },
   {
     id: 'b-premium',
     label: 'Premium',
-    url: '/pages/bailleur/premium',
+    url: '/pages/bailleur/premium/premium',
   },
 ];
 

@@ -85,7 +85,7 @@ Page({
   onGoBack() {
     wx.navigateBack({
       fail: () => {
-        wx.redirectTo({ url: '/pages/bailleur/home' });
+        wx.redirectTo({ url: '/pages/bailleur/home/home' });
       }
     });
   },

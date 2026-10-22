@@ -73,7 +73,7 @@ Page({
   onOpenChat(e) {
     const id = e.currentTarget.dataset.id;
     wx.navigateTo({
-      url: `/pages/messages/chat?id=${id}`
+      url: `/pages/messages/chat/chat?id=${id}`
     });
   }
 });

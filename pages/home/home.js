@@ -1,294 +1,7 @@
 import { setCustomTabBarActive } from '../../utils/helpers/tab-bar';
 import { STORAGE_KEYS } from '../../utils/constants/index';
-
-const LISTINGS = [
-  {
-    id: 1,
-    title: 'Avec toilettes privées',
-    typeLabel: 'Chambre salon',
-    place: 'Ouakam, Cité Avion',
-    zone: 'ouakam',
-    price: 60000,
-    caution: 60000,
-    avance: 60000,
-    frais: 0,
-    verified: true,
-    verificationLevel: 'Identité & visite vérifiées',
-    dateConfirmation: 'Confirmé il y a 2 jours',
-    phone: '771234567',
-    bailleurName: 'Mamadou Diallo',
-    equipements: ['Toilettes privées', 'Compteur Woyofal individuel', 'Eau courante SDE'],
-    description: 'Chambre salon spacieuse, bien ventilée, située dans un quartier calme et accessible à Ouakam Cité Avion.',
-    tint: '#FBE3EC'
-  },
-  {
-    id: 2,
-    title: 'Chambre salon carrelée',
-    typeLabel: 'Chambre salon',
-    place: 'Ouakam, Tonghor',
-    zone: 'ouakam',
-    price: 55000,
-    caution: 55000,
-    avance: 55000,
-    frais: 0,
-    verified: true,
-    verificationLevel: 'Numéro vérifié',
-    dateConfirmation: 'Confirmé hier',
-    phone: '782345678',
-    bailleurName: 'Aïssatou Sow',
-    equipements: ['Carrelage moderne', 'Toilettes partagées propres', 'Woyofal'],
-    description: 'Logement propre et carrelé à Ouakam Tonghor, proche des commerces et du marché.',
-    tint: '#E3E9F5'
-  },
-  {
-    id: 3,
-    title: 'Chambre simple, calme',
-    typeLabel: 'Chambre',
-    place: 'Ngor Village',
-    zone: 'ngor',
-    price: 50000,
-    caution: 50000,
-    avance: 50000,
-    frais: 0,
-    verified: false,
-    verificationLevel: 'Déclaré par le bailleur',
-    dateConfirmation: 'Confirmé aujourd’hui',
-    phone: '763456789',
-    bailleurName: 'Ousmane Ndiaye',
-    equipements: ['Quartier calme', 'Proche de la plage', 'Eau comprise'],
-    description: 'Chambre individuelle au calme dans le village traditionnel de Ngor, idéale pour étudiant ou travailleur.',
-    tint: '#F3ECE1'
-  },
-  {
-    id: 4,
-    title: 'Chambre avec balcon',
-    typeLabel: 'Chambre',
-    place: 'Mermoz',
-    zone: 'mermoz',
-    price: 65000,
-    caution: 65000,
-    avance: 65000,
-    frais: 0,
-    verified: true,
-    verificationLevel: 'Identité vérifiée',
-    dateConfirmation: 'Confirmé il y a 3 jours',
-    phone: '774567890',
-    bailleurName: 'Abdoulaye Ba',
-    equipements: ['Balcon privé', 'Toilettes intérieures', 'Accès terrasse'],
-    description: 'Superbe chambre avec balcon privé dans une villa paisible à Mermoz, proche universités et VDN.',
-    tint: '#FBE3EC'
-  },
-  {
-    id: 5,
-    title: 'Studio meublé',
-    typeLabel: 'Studio',
-    place: 'Point E',
-    zone: 'point e',
-    price: 150000,
-    caution: 150000,
-    avance: 150000,
-    frais: 10000,
-    verified: true,
-    verificationLevel: 'Agence certifiée',
-    dateConfirmation: 'Confirmé hier',
-    phone: '705678901',
-    bailleurName: 'Fatou Diop',
-    equipements: ['Meublé complet', 'Climatisation', 'Wifi fibre haut débit'],
-    description: 'Studio standing entièrement équipé au Point E avec cuisine américaine, sécurisé 24h/24.',
-    tint: '#E3E9F5'
-  },
-  {
-    id: 6,
-    title: 'Chambre salon',
-    typeLabel: 'Chambre salon',
-    place: 'Yoff Virage',
-    zone: 'yoff',
-    price: 58000,
-    caution: 58000,
-    avance: 58000,
-    frais: 0,
-    verified: true,
-    verificationLevel: 'Numéro vérifié',
-    dateConfirmation: 'Confirmé il y a 1 jour',
-    phone: '776789012',
-    bailleurName: 'Cheikh Gueye',
-    equipements: ['Vue dégagée', 'Toilettes privées', 'Proche VDN'],
-    description: 'Chambre et salon avec belle luminosité à Yoff Virage, accès immédiat aux transports.',
-    tint: '#F3ECE1'
-  },
-  {
-    id: 7,
-    title: 'Appartement F3',
-    typeLabel: 'Appartement',
-    place: 'Liberté 6',
-    zone: 'liberte',
-    price: 250000,
-    caution: 250000,
-    avance: 250000,
-    frais: 25000,
-    verified: true,
-    verificationLevel: 'Agence partenaire vérifiée',
-    dateConfirmation: 'Confirmé il y a 4 jours',
-    phone: '777890123',
-    bailleurName: 'Cabinet Immo Horizon',
-    equipements: ['2 chambres + salon', 'Cuisine avec placards', 'Parking sécurisé'],
-    description: 'Appartement F3 familial au 2ème étage d’un immeuble neuf à Liberté 6 Extension.',
-    tint: '#FBE3EC'
-  },
-  {
-    id: 8,
-    title: 'Chambre simple',
-    typeLabel: 'Chambre',
-    place: 'HLM Grand Yoff',
-    zone: 'grand yoff',
-    price: 45000,
-    caution: 45000,
-    avance: 45000,
-    frais: 0,
-    verified: false,
-    verificationLevel: 'Déclaré par le bailleur',
-    dateConfirmation: 'Confirmé il y a 2 jours',
-    phone: '768901234',
-    bailleurName: 'Ibrahima Sarr',
-    equipements: ['Économique', 'Accès facile', 'Compteur partagé'],
-    description: 'Petite chambre pour petit budget, très accessible à côté du terminus des bus.',
-    tint: '#E3E9F5'
-  },
-  {
-    id: 9,
-    title: 'Studio neuf',
-    typeLabel: 'Studio',
-    place: 'Sacré-Cœur 3',
-    zone: 'sacre coeur',
-    price: 120000,
-    caution: 120000,
-    avance: 120000,
-    frais: 0,
-    verified: true,
-    verificationLevel: 'Bailleur vérifié',
-    dateConfirmation: 'Confirmé il y a 1 jour',
-    phone: '779012345',
-    bailleurName: 'Mariama Fall',
-    equipements: ['Immeuble neuf', 'Gardien 24/7', 'Chauffe-eau'],
-    description: 'Studio moderne dans un quartier résidentiel très prisé de Sacré-Cœur 3.',
-    tint: '#F3ECE1'
-  },
-  {
-    id: 10,
-    title: 'Maison avec cour',
-    typeLabel: 'Maison',
-    place: 'Keur Massar',
-    zone: 'keur massar',
-    price: 200000,
-    caution: 200000,
-    avance: 200000,
-    frais: 0,
-    verified: true,
-    verificationLevel: 'Titre de propriété examiné',
-    dateConfirmation: 'Confirmé il y a 5 jours',
-    phone: '780123456',
-    bailleurName: 'El Hadji Seck',
-    equipements: ['Cour avant et arrière', 'Garage fermé', '3 chambres spacieuses'],
-    description: 'Grande maison individuelle bien aérée à Keur Massar, quartier calme et sécurisé.',
-    tint: '#FBE3EC'
-  },
-  // Listings Pikine / Prototype
-  {
-    id: 11,
-    title: 'Chambre salon avec douche intérieure',
-    typeLabel: 'Chambre salon',
-    place: 'Icotaf, Pikine',
-    zone: 'pikine',
-    price: 65000,
-    caution: 130000,
-    avance: 65000,
-    frais: 0,
-    verified: true,
-    verificationLevel: 'Bailleur vérifié',
-    dateConfirmation: 'Confirmé aujourd’hui',
-    phone: '771234567',
-    bailleurName: 'Moussa D.',
-    equipements: ['Douche intérieure', 'Eau courante', 'Woyofal'],
-    description: 'Chambre salon avec douche intérieure, disponible à Icotaf Pikine près de la pharmacie du marché.',
-    tint: '#FBE3EC'
-  },
-  {
-    id: 12,
-    title: 'Studio meublé, entrée indépendante',
-    typeLabel: 'Studio',
-    place: 'Pikine Rue 10',
-    zone: 'pikine',
-    price: 95000,
-    caution: 95000,
-    avance: 95000,
-    frais: 0,
-    verified: true,
-    verificationLevel: 'Bailleur vérifié',
-    dateConfirmation: 'Confirmé hier',
-    phone: '772345678',
-    bailleurName: 'Awa N.',
-    equipements: ['Entrée indépendante', 'Meublé', 'Compteur individuel'],
-    description: 'Joli studio meublé avec entrée indépendante à Pikine Rue 10.',
-    tint: '#E3E9F5'
-  },
-  {
-    id: 13,
-    title: 'Appartement F3 lumineux',
-    typeLabel: 'Appartement',
-    place: 'Pikine Technopole',
-    zone: 'pikine',
-    price: 180000,
-    caution: 180000,
-    avance: 180000,
-    frais: 0,
-    verified: true,
-    verificationLevel: 'Identité vérifiée',
-    dateConfirmation: 'Confirmé il y a 3 jours',
-    phone: '773456789',
-    bailleurName: 'Ibrahima S.',
-    equipements: ['F3 spacieux', 'Lumineux', 'Balcon'],
-    description: 'Grand F3 lumineux dans la zone calme du Technopole Pikine.',
-    tint: '#F3ECE1'
-  },
-  {
-    id: 14,
-    title: 'Chambre salon',
-    typeLabel: 'Chambre salon',
-    place: 'Thiaroye Azur, Pikine',
-    zone: 'pikine',
-    price: 55000,
-    caution: 55000,
-    avance: 55000,
-    frais: 0,
-    verified: true,
-    verificationLevel: 'Bailleur vérifié',
-    dateConfirmation: 'Confirmé hier',
-    phone: '775678901',
-    bailleurName: 'Mariama Sow',
-    equipements: ['Proche route', 'Eau SDE'],
-    description: 'Belle chambre salon propre à Thiaroye Azur, Pikine.',
-    tint: '#FBE3EC'
-  },
-  {
-    id: 15,
-    title: 'Chambre indépendante',
-    typeLabel: 'Chambre',
-    place: 'Guinaw Rails, Pikine',
-    zone: 'pikine',
-    price: 45000,
-    caution: 45000,
-    avance: 45000,
-    frais: 0,
-    verified: true,
-    verificationLevel: 'Bailleur vérifié',
-    dateConfirmation: 'Confirmé il y a 5 jours',
-    phone: '774567890',
-    bailleurName: 'Fatou K.',
-    equipements: ['Chambre autonome', 'Eau comprise'],
-    description: 'Chambre indépendante économique à Guinaw Rails.',
-    tint: '#E3E9F5'
-  }
-];
+import { LOGEMENTS as LISTINGS } from '../../utils/mocks/logements';
+import { getFavoritesMap, toggleFavoriteId } from '../../utils/helpers/favorites';
 
 const NEAR_ZONES = {
   ouakam: ['ngor', 'mermoz', 'yoff', 'almadies'],
@@ -399,11 +112,6 @@ Page({
     } catch (e) {}
 
     try {
-      const favs = wx.getStorageSync(STORAGE_KEYS.FAVORITES) || {};
-      this.setData({ favorites: favs });
-    } catch (e) {}
-
-    try {
       const role = wx.getStorageSync(STORAGE_KEYS.USER_ROLE) || 'client';
       this.setData({ userRole: role });
     } catch (e) {}
@@ -413,6 +121,8 @@ Page({
 
   onShow() {
     setCustomTabBarActive(this, 'home');
+    // Les favoris peuvent avoir changé sur une autre page
+    this.setData({ favorites: getFavoritesMap() });
   },
 
   // ==========================================
@@ -672,19 +382,10 @@ Page({
     const id = e.currentTarget.dataset.id;
     if (!id) return;
 
-    const favorites = Object.assign({}, this.data.favorites);
-    if (favorites[id]) {
-      delete favorites[id];
-      wx.showToast({ title: 'Retiré des favoris', icon: 'none' });
-    } else {
-      favorites[id] = true;
-      wx.showToast({ title: 'Ajouté aux favoris ❤️', icon: 'none' });
-    }
-
-    this.setData({ favorites });
-    try {
-      wx.setStorageSync(STORAGE_KEYS.FAVORITES, favorites);
-    } catch (err) {}
+    const liked = !this.data.favorites[id];
+    toggleFavoriteId(id, liked);
+    this.setData({ favorites: getFavoritesMap() });
+    wx.showToast({ title: liked ? 'Ajouté aux favoris ❤️' : 'Retiré des favoris', icon: 'none' });
   },
 
   onSwitchProfile() {
@@ -696,7 +397,7 @@ Page({
         } else {
           wx.setStorageSync(STORAGE_KEYS.USER_ROLE, 'bailleur');
           this.setData({ userRole: 'bailleur' });
-          wx.reLaunch({ url: '/pages/bailleur/home' });
+          wx.reLaunch({ url: '/pages/bailleur/home/home' });
         }
       }
     });

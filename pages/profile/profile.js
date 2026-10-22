@@ -69,7 +69,7 @@ Page({
     setTimeout(() => {
       wx.hideLoading();
       wx.reLaunch({
-        url: '/pages/bailleur/home'
+        url: '/pages/bailleur/home/home'
       });
     }, 400);
   }

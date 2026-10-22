@@ -2,27 +2,27 @@ Page({
   data: {
     statusBarHeight: 44,
     selectedOption: 'boost30',
-    selectedPriceLabel: '[PRIX] F',
+    selectedPriceLabel: '6 000 F',
     boostOptions: [
       {
         id: 'boost7',
         title: 'Boost 7 jours',
         sub: '1 annonce en haut des recherches',
-        priceLabel: '[PRIX] F',
+        priceLabel: '1 500 F',
         badge: ''
       },
       {
         id: 'boost30',
         title: 'Boost 30 jours',
         sub: '1 annonce · le plus choisi',
-        priceLabel: '[PRIX] F',
+        priceLabel: '6 000 F',
         badge: 'le plus choisi'
       },
       {
         id: 'renew',
-        title: 'Renouveler Premium',
+        title: 'Renouveler Pro',
         sub: '1 mois · 3 annonces mises en avant',
-        priceLabel: '[PRIX] F',
+        priceLabel: '15 000 F',
         badge: ''
       }
     ],
@@ -30,9 +30,9 @@ Page({
       {
         id: 'p1',
         type: 'debit',
-        title: 'Premium mensuel',
-        meta: '15 oct. 2026 · Wave',
-        amount: '- [PRIX] F',
+        title: 'Abonnement Pro mensuel',
+        meta: '15 oct. 2026 · Orange Money',
+        amount: '- 15 000 F',
         amountClass: 'amount-debit'
       },
       {
@@ -56,7 +56,7 @@ Page({
         type: 'debit',
         title: 'Boost 7 jours · Studio',
         meta: '28 sept. 2026 · Wave',
-        amount: '- [PRIX] F',
+        amount: '- 1 500 F',
         amountClass: 'amount-debit'
       }
     ]
