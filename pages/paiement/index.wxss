@@ -1,132 +1,445 @@
-.payment-scroll {
-  flex: 1;
-  min-height: 0;
-  width: 100%;
-  background: transparent;
-  box-sizing: border-box;
-}
+/* ============================================================================
+   SAMA LOGEMENT — PAIEMENT DE LOYER
+   ============================================================================ */
 
 .payment-page {
-  width: auto;
-  padding-top: 40rpx;
-  margin-right: 38rpx;
-  margin-left: 38rpx;
-  padding-bottom: 160rpx;
-  box-sizing: border-box;
-  background: transparent !important;
-}
-
-.payment-summary-card {
+  position: relative;
   width: 100%;
-  min-height: 434rpx;
-  padding: 36rpx 40rpx;
+  min-height: 100vh;
   box-sizing: border-box;
-  border-radius: 28rpx;
-  background: linear-gradient(180deg, #01953e 0%, #008437 100%);
-  box-shadow: 0 20rpx 36rpx rgba(1, 149, 62, 0.22);
+  background-color: #F8F9FA;
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  color: #0F1E3D;
 }
 
-.payment-summary-card__label {
-  margin-bottom: 2rpx;
-}
-
-.payment-summary-card__title {
-  margin-top: 2rpx;
-}
-
-.payment-summary-card__divider {
+.payment-scroll {
   width: 100%;
-  height: 1rpx;
-  margin: 36rpx 0 28rpx;
-  background: rgba(255, 255, 255, 0.26);
+  height: 100vh;
+  box-sizing: border-box;
+  padding: 0 36rpx calc(160rpx + env(safe-area-inset-bottom));
 }
 
-.payment-summary-card__meta {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 28rpx;
-}
-
-.payment-summary-card__meta-item {
-  flex: 1;
-  min-width: 0;
-}
-
-.payment-summary-card__total {
+.pay-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 24rpx;
+  margin-bottom: 32rpx;
 }
 
-.payment-section-title {
-  margin-top: 52rpx;
-  margin-bottom: 54rpx;
-}
-
-.payment-secure-card {
+.btn-back {
+  width: 72rpx;
+  height: 72rpx;
+  border-radius: 36rpx;
+  background-color: #FFFFFF;
+  border: 2rpx solid #E4E7EE;
   display: flex;
-  align-items: flex-start;
-  gap: 22rpx;
-  width: 100%;
-  padding: 30rpx 32rpx 32rpx;
-  box-sizing: border-box;
-  border: 1.6rpx solid #cfe0ff;
-  border-radius: 24rpx;
-  background: #edf5ff;
-}
-
-.payment-secure-card__icon {
-  flex: 0 0 auto;
-  width: 40rpx;
-  min-height: 44rpx;
-  padding-top: 2rpx;
-  display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: center;
 }
 
-.payment-secure-card__copy {
-  flex: 1;
-  min-width: 0;
-}
-
-.payment-secure-card__description {
-  margin-top: 8rpx;
-}
-
-.payment-terms {
-  margin-top: 52rpx;
-}
-
-.payment-terms__link {
-  color: #fad700;
+.back-arrow {
+  font-size: 40rpx;
+  color: #0F1E3D;
   font-weight: 700;
+  margin-top: -4rpx;
 }
 
-.payment-footer {
+.pay-title {
+  font-size: 34rpx;
+  font-weight: 800;
+  color: #0F1E3D;
+}
+
+.header-placeholder {
+  width: 72rpx;
+}
+
+/* Carte échéance */
+.echeance-card {
+  background-color: #FFFFFF;
+  border-radius: 32rpx;
+  border: 2rpx solid #E4E7EE;
+  padding: 32rpx;
+  box-shadow: 0 4rpx 14rpx rgba(15, 30, 61, 0.04);
+  margin-bottom: 36rpx;
+}
+
+.echeance-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16rpx;
+}
+
+.echeance-badge {
+  font-size: 22rpx;
+  font-weight: 800;
+  color: #C8235F;
+  background-color: #FBE3EC;
+  padding: 4rpx 16rpx;
+  border-radius: 999rpx;
+}
+
+.echeance-periode {
+  font-size: 24rpx;
+  font-weight: 700;
+  color: #5B6475;
+}
+
+.echeance-property {
+  font-size: 34rpx;
+  font-weight: 800;
+  color: #0F1E3D;
+  line-height: 1.25;
+}
+
+.echeance-place {
+  font-size: 26rpx;
+  color: #5B6475;
+  margin-top: 6rpx;
+}
+
+.echeance-divider {
+  height: 2rpx;
+  background-color: #F1F3F6;
+  margin: 24rpx 0;
+}
+
+.echeance-detail-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12rpx;
+}
+
+.detail-label {
+  font-size: 26rpx;
+  color: #7A8294;
+}
+
+.detail-val {
+  font-size: 26rpx;
+  font-weight: 700;
+  color: #0F1E3D;
+}
+
+.highlight-date {
+  color: #C8235F;
+}
+
+.echeance-amount-box {
+  background-color: #FFF8FA;
+  border-radius: 20rpx;
+  padding: 20rpx 24rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 20rpx;
+  border: 2rpx dashed #F7D0DF;
+}
+
+.amount-label {
+  font-size: 26rpx;
+  font-weight: 700;
+  color: #0F1E3D;
+}
+
+.amount-val-group {
+  display: flex;
+  align-items: baseline;
+  gap: 8rpx;
+}
+
+.amount-number {
+  font-size: 38rpx;
+  font-weight: 800;
+  color: #C8235F;
+}
+
+.amount-currency {
+  font-size: 24rpx;
+  font-weight: 700;
+  color: #C8235F;
+}
+
+/* Méthodes de paiement */
+.pay-section {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+  margin-bottom: 32rpx;
+}
+
+.section-label {
+  font-size: 28rpx;
+  font-weight: 800;
+  color: #0F1E3D;
+  margin-bottom: 4rpx;
+}
+
+.method-card {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+  background-color: #FFFFFF;
+  border: 2rpx solid #E4E7EE;
+  border-radius: 24rpx;
+  padding: 24rpx;
+}
+
+.method-card--active {
+  border-color: #C8235F;
+  background-color: #FFF8FA;
+}
+
+.method-icon-box {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 20rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 80rpx;
+}
+
+.om-bg {
+  background-color: #FF6600;
+  color: #FFFFFF;
+}
+
+.om-text {
+  font-size: 26rpx;
+  font-weight: 900;
+}
+
+.wave-bg {
+  background-color: #1DA1F2;
+  color: #FFFFFF;
+}
+
+.wave-text {
+  font-size: 32rpx;
+  font-weight: 900;
+}
+
+.method-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.method-name {
+  font-size: 28rpx;
+  font-weight: 800;
+  color: #0F1E3D;
+}
+
+.method-desc {
+  font-size: 22rpx;
+  color: #7A8294;
+  margin-top: 4rpx;
+}
+
+.method-radio {
+  width: 40rpx;
+  height: 40rpx;
+  border-radius: 20rpx;
+  border: 2rpx solid #D1D5DB;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.radio-checked {
+  border-color: #C8235F;
+}
+
+.radio-inner {
+  width: 20rpx;
+  height: 20rpx;
+  border-radius: 10rpx;
+  background-color: #C8235F;
+}
+
+.compliance-box {
+  display: flex;
+  align-items: flex-start;
+  gap: 16rpx;
+  padding: 24rpx;
+  border-radius: 20rpx;
+  background-color: #F1F3F6;
+}
+
+.compliance-icon {
+  font-size: 28rpx;
+}
+
+.compliance-text {
+  font-size: 22rpx;
+  color: #5B6475;
+  line-height: 1.4;
+}
+
+.scroll-spacer {
+  height: 60rpx;
+}
+
+/* Barre fixe paiement */
+.fixed-pay-bar {
   position: fixed;
   left: 0;
   right: 0;
   bottom: 0;
-  z-index: 40;
-  padding: 24rpx 38rpx;
-  box-sizing: border-box;
-  background: #ffffff;
-  border-top: 1rpx solid #f3f4f6;
-  box-shadow: 0 -20rpx 50rpx rgba(0, 0, 0, 0.08);
+  z-index: 100;
+  background-color: #FFFFFF;
+  border-top: 2rpx solid #E4E7EE;
+  padding: 20rpx 36rpx calc(24rpx + env(safe-area-inset-bottom));
 }
 
-.payment-pay-button {
-  width: 100% !important;
-  min-height: 112rpx !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  padding: 0 !important;
-  border-radius: 32rpx !important;
-  background: #01953e !important;
-  background-color: #01953e !important;
-  box-shadow: 0 8rpx 12rpx -8rpx rgba(0, 0, 0, 0.1), 0 20rpx 30rpx -6rpx rgba(0, 0, 0, 0.1) !important;
+.btn-pay-now {
+  width: 100%;
+  height: 100rpx;
+  border-radius: 28rpx;
+  background-color: #C8235F;
+  color: #FFFFFF;
+  font-size: 30rpx;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8rpx 20rpx rgba(200, 35, 95, 0.3);
+  margin: 0;
+}
+
+/* Modal Quittance */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(15, 30, 61, 0.65);
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40rpx;
+  box-sizing: border-box;
+}
+
+.receipt-card {
+  width: 100%;
+  max-width: 620rpx;
+  background-color: #FFFFFF;
+  border-radius: 36rpx;
+  padding: 44rpx 36rpx;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.receipt-success-badge {
+  width: 100rpx;
+  height: 100rpx;
+  border-radius: 50rpx;
+  background-color: #E2F0EA;
+  color: #007C3D;
+  font-size: 52rpx;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 24rpx;
+}
+
+.receipt-header-title {
+  font-size: 34rpx;
+  font-weight: 800;
+  color: #0F1E3D;
+}
+
+.receipt-header-sub {
+  font-size: 24rpx;
+  color: #5B6475;
+  margin-top: 6rpx;
+  margin-bottom: 28rpx;
+}
+
+.receipt-details-box {
+  width: 100%;
+  background-color: #F8F9FA;
+  border-radius: 24rpx;
+  padding: 24rpx;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 12rpx;
+  margin-bottom: 32rpx;
+}
+
+.receipt-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 24rpx;
+  color: #5B6475;
+}
+
+.receipt-row .bold {
+  font-weight: 800;
+  color: #0F1E3D;
+}
+
+.receipt-divider {
+  height: 2rpx;
+  background-color: #E4E7EE;
+  margin: 8rpx 0;
+}
+
+.receipt-row.total {
+  font-size: 28rpx;
+  font-weight: 800;
+}
+
+.rec-label.total {
+  color: #0F1E3D;
+}
+
+.rec-val.total {
+  color: #C8235F;
+  font-size: 32rpx;
+}
+
+.receipt-actions {
+  width: 100%;
+  display: flex;
+  gap: 16rpx;
+}
+
+.btn-receipt-share {
+  flex: 1;
+  height: 84rpx;
+  border-radius: 20rpx;
+  border: 2rpx solid #0F1E3D;
+  background-color: #FFFFFF;
+  color: #0F1E3D;
+  font-size: 24rpx;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+}
+
+.btn-receipt-done {
+  flex: 1;
+  height: 84rpx;
+  border-radius: 20rpx;
+  background-color: #0F1E3D;
+  color: #FFFFFF;
+  font-size: 24rpx;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
 }

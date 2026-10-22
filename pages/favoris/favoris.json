@@ -1,6 +1,5 @@
 {
-  "usingComponents": {
-    "app-list-destination": "/components/custom/ui/list-destination/index",
-    "app-typography": "/components/ui/typography/index"
-  }
+  "navigationBarTitleText": "Mes Favoris",
+  "navigationStyle": "custom",
+  "usingComponents": {}
 }

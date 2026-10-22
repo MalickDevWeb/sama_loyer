@@ -1,139 +1,94 @@
-import { MAIN_TABS } from '../../utils/constants/index';
-import { navigateToLocked } from '../../utils/helpers/navigation';
 import { setCustomTabBarActive } from '../../utils/helpers/tab-bar';
-import { waitForAppInit } from '../../utils/helpers/app-init';
-import { applyFavoritesToPackages, toggleFavoriteId } from '../../utils/helpers/favorites';
-import { loadPackages } from '../../utils/helpers/catalog';
+import { STORAGE_KEYS } from '../../utils/constants/index';
 
-const app = getApp();
-
-function formatFavoritesLabel(count) {
-  return `${count} destination${count === 1 ? '' : 's'} sauvegardée${count === 1 ? '' : 's'}`;
-}
+const ALL_FAVORITES_MOCK = [
+  {
+    id: 'icotaf-01',
+    title: 'Chambre salon avec douche intérieure',
+    typeLabel: 'Chambre salon',
+    place: 'Icotaf, Pikine — Dakar',
+    price: '65 000',
+    unit: 'FCFA / mois',
+    verified: true,
+    bg: '#F5EFE6',
+    dateAdded: 'Ajouté aujourd’hui',
+    caution: '130 000 FCFA'
+  },
+  {
+    id: 1,
+    title: 'Avec toilettes privées',
+    typeLabel: 'Chambre salon',
+    place: 'Ouakam, Cité Avion',
+    price: '60 000',
+    unit: 'FCFA / mois',
+    verified: true,
+    bg: '#FBE3EC',
+    dateAdded: 'Ajouté hier',
+    caution: '60 000 FCFA'
+  },
+  {
+    id: 5,
+    title: 'Studio meublé standing',
+    typeLabel: 'Studio',
+    place: 'Point E — Dakar',
+    price: '150 000',
+    unit: 'FCFA / mois',
+    verified: true,
+    bg: '#E3E9F5',
+    dateAdded: 'Ajouté il y a 3 jours',
+    caution: '150 000 FCFA'
+  }
+];
 
 Page({
   data: {
-    activeTab: 'favorites',
-    tabs: MAIN_TABS,
-    allDestinations: [],
-    favoriteDestinations: [],
-    resultsLabel: 'Chargement des favoris…',
-    loading: true,
+    statusBarHeight: 24,
+    favoritesList: ALL_FAVORITES_MOCK
   },
 
   onLoad() {
-    this.refreshFavorites();
+    try {
+      const sys = wx.getSystemInfoSync();
+      if (sys && sys.statusBarHeight) {
+        this.setData({ statusBarHeight: sys.statusBarHeight });
+      }
+    } catch (e) {}
   },
 
   onShow() {
     setCustomTabBarActive(this, 'favorites');
-
-    const rawDestinations = Array.isArray(app.globalData.DESTINATIONS) && app.globalData.DESTINATIONS.length
-      ? app.globalData.DESTINATIONS
-      : [];
-
-    if (rawDestinations.length > 0) {
-      const syncedDestinations = applyFavoritesToPackages(rawDestinations);
-      app.globalData.DESTINATIONS = syncedDestinations;
-      const favoriteDestinations = syncedDestinations.filter((item) => Boolean(item.like));
-
-      this.setData({
-        allDestinations: syncedDestinations,
-        favoriteDestinations,
-        resultsLabel: formatFavoritesLabel(favoriteDestinations.length),
-        loading: false,
-      });
-      return;
-    }
-
     this.refreshFavorites();
   },
 
-  onHide() {
-    if (!this.data.favoriteDestinations || this.data.favoriteDestinations.length === 0) {
-      this.setData({ loading: true, resultsLabel: 'Chargement des favoris…' });
-    }
-  },
-
-  async refreshFavorites() {
-    if (!this.data.favoriteDestinations || this.data.favoriteDestinations.length === 0) {
-      this.setData({ loading: true, resultsLabel: 'Chargement des favoris…' });
-    }
-
+  refreshFavorites() {
     try {
-      await waitForAppInit(app);
-
-      let destinations = Array.isArray(app.globalData.DESTINATIONS) && app.globalData.DESTINATIONS.length
-        ? app.globalData.DESTINATIONS
-        : [];
-
-      // Si les données de l'API n'ont pas encore été chargées (ex: arrivée directe sur favoris)
-      if (destinations.length === 0) {
-        try {
-          destinations = await loadPackages();
-          app.globalData.DESTINATIONS = destinations;
-        } catch (error) {
-          console.error('[Favoris] Erreur chargement packages API:', error);
-        }
-      }
-
-      // Applique l'état des favoris persistés dans le stockage local
-      const syncedDestinations = applyFavoritesToPackages(destinations);
-      app.globalData.DESTINATIONS = syncedDestinations;
-
-      const favoriteDestinations = syncedDestinations.filter((item) => Boolean(item.like));
-      this._favoritesLoaded = true;
-
-      this.setData({
-        allDestinations: syncedDestinations,
-        favoriteDestinations,
-        resultsLabel: formatFavoritesLabel(favoriteDestinations.length),
-        loading: false,
-      });
-    } catch (error) {
-      console.error('[Favoris] Erreur rafraîchissement favoris:', error);
-      this.setData({ loading: false });
-    }
+      const favs = wx.getStorageSync(STORAGE_KEYS.FAVORITES) || {};
+      const filtered = ALL_FAVORITES_MOCK.filter((item) => favs[item.id] !== false);
+      this.setData({ favoritesList: filtered });
+    } catch (e) {}
   },
 
-  handleCardPress(event) {
-    const { destination } = event.detail || {};
-
-    if (!destination || !destination.id) {
-      return;
-    }
-    navigateToLocked(this, `/pages/destination-detail/destination-detail?id=${destination.id}`, '_openingDestinationDetail');
-  },
-
-  handleDestinationLike(event) {
-    const { destination, like } = event.detail;
-
-    if (!destination) {
-      return;
-    }
-
-    // 1. Sauvegarder dans le stockage local persistant
-    toggleFavoriteId(destination.id, like);
-
-    // 2. Mettre à jour allDestinations global
-    const sourceDestinations = Array.isArray(this.data.allDestinations)
-      ? this.data.allDestinations
-      : [];
-    const updatedDestinations = sourceDestinations.map((item) => (
-      String(item.id) === String(destination.id)
-        ? { ...item, like }
-        : item
-    ));
-
-    app.globalData.DESTINATIONS = updatedDestinations;
-
-    // 3. Filtrer pour la vue des favoris
-    const favoriteDestinations = updatedDestinations.filter((item) => Boolean(item.like));
-
-    this.setData({
-      allDestinations: updatedDestinations,
-      favoriteDestinations,
-      resultsLabel: formatFavoritesLabel(favoriteDestinations.length),
+  onCardTap(e) {
+    const id = e.currentTarget.dataset.id;
+    wx.navigateTo({
+      url: `/pages/logement-detail/logement-detail?id=${id}`
     });
   },
+
+  onRemoveFavorite(e) {
+    const id = e.currentTarget.dataset.id;
+    try {
+      const favs = wx.getStorageSync(STORAGE_KEYS.FAVORITES) || {};
+      favs[id] = false;
+      wx.setStorageSync(STORAGE_KEYS.FAVORITES, favs);
+    } catch (err) {}
+
+    const updated = this.data.favoritesList.filter((item) => item.id !== id);
+    this.setData({ favoritesList: updated });
+    wx.showToast({ title: 'Retiré des favoris', icon: 'none' });
+  },
+
+  onGoToHome() {
+    wx.switchTab({ url: '/pages/home/home' });
+  }
 });

@@ -1,29 +1,227 @@
-@import "../shared-tab-page.wxss";
+/* ============================================================================
+   SAMA LOGEMENT — FAVORIS
+   ============================================================================ */
 
 .favorites-page {
-  width: auto;
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
   box-sizing: border-box;
+  background-color: #F8F9FA;
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  color: #0F1E3D;
+}
+
+.favorites-scroll {
+  width: 100%;
+  height: 100vh;
+  box-sizing: border-box;
+  padding: 0 36rpx calc(150rpx + env(safe-area-inset-bottom));
+}
+
+.fav-header {
+  margin-bottom: 28rpx;
+}
+
+.fav-header__titles {
   display: flex;
   flex-direction: column;
-  gap: 32rpx;
-  padding-top: 34rpx;
-  margin-right: 32rpx;
-  margin-left: 32rpx;
-  background: transparent !important;
-  padding-bottom: calc(160rpx + env(safe-area-inset-bottom));
 }
 
-.favorites-page__header {
-  width: 100%;
-  min-height: 60rpx;
+.page-title {
+  font-size: 42rpx;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  color: #0F1E3D;
 }
 
-.favorites-page__empty {
+.page-subtitle {
+  font-size: 26rpx;
+  color: #5B6475;
+  margin-top: 4rpx;
+}
+
+.fav-list {
+  display: flex;
+  flex-direction: column;
+  gap: 24rpx;
+}
+
+.fav-card {
+  display: flex;
+  background-color: #FFFFFF;
+  border-radius: 32rpx;
+  border: 2rpx solid #E4E7EE;
+  overflow: hidden;
+  box-shadow: 0 4rpx 14rpx rgba(15, 30, 61, 0.04);
+}
+
+.fav-card:active {
+  transform: scale(0.99);
+}
+
+.fav-thumb {
+  position: relative;
+  width: 220rpx;
+  flex: 0 0 220rpx;
+  min-height: 220rpx;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.fav-thumb__house {
+  width: 110rpx;
+  height: 100rpx;
+  background-repeat: no-repeat;
+  background-position: center bottom;
+  background-size: contain;
+  opacity: 0.7;
+  margin-bottom: 12rpx;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='110' height='100' viewBox='0 0 110 100' fill='none' stroke='%230F1E3D' stroke-width='2' stroke-linejoin='round'%3E%3Cpath d='M10 100V40l45-30 45 30v60H10z'/%3E%3Crect x='30' y='50' width='20' height='20' rx='2'/%3E%3Cpath d='M60 100V60h20v40'/%3E%3C/svg%3E");
+}
+
+.fav-btn-heart {
+  position: absolute;
+  top: 12rpx;
+  left: 12rpx;
+  width: 52rpx;
+  height: 52rpx;
+  border-radius: 26rpx;
+  background-color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2rpx 8rpx rgba(15, 30, 61, 0.15);
+}
+
+.heart-icon {
+  color: #C8235F;
+  font-size: 28rpx;
+  line-height: 1;
+}
+
+.fav-content {
+  flex: 1;
+  padding: 24rpx;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 8rpx;
+}
+
+.fav-meta-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.fav-type {
+  font-size: 22rpx;
+  font-weight: 700;
+  color: #C8235F;
+}
+
+.fav-date {
+  font-size: 20rpx;
+  color: #9CA3AF;
+}
+
+.fav-title {
+  font-size: 28rpx;
+  font-weight: 800;
+  color: #0F1E3D;
+  line-height: 1.25;
+}
+
+.fav-place {
+  font-size: 24rpx;
+  color: #5B6475;
+}
+
+.fav-bottom-row {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-top: 8rpx;
+}
+
+.fav-price-col {
+  display: flex;
+  align-items: baseline;
+  gap: 6rpx;
+}
+
+.fav-price {
+  font-size: 32rpx;
+  font-weight: 800;
+  color: #0F1E3D;
+}
+
+.fav-unit {
+  font-size: 22rpx;
+  color: #5B6475;
+}
+
+.btn-fav-view {
+  font-size: 26rpx;
+  font-weight: 800;
+  color: #C8235F;
+  padding: 8rpx 14rpx;
+}
+
+/* État vide */
+.fav-empty-state {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  min-height: 360rpx;
   text-align: center;
-  color: #7a8094;
+  padding: 100rpx 40rpx;
+}
+
+.empty-icon-circle {
+  width: 140rpx;
+  height: 140rpx;
+  border-radius: 70rpx;
+  background-color: #FBE3EC;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 32rpx;
+}
+
+.empty-heart {
+  font-size: 64rpx;
+  color: #C8235F;
+}
+
+.empty-title {
+  font-size: 34rpx;
+  font-weight: 800;
+  color: #0F1E3D;
+  margin-bottom: 12rpx;
+}
+
+.empty-desc {
+  font-size: 26rpx;
+  color: #5B6475;
+  line-height: 1.45;
+  margin-bottom: 40rpx;
+}
+
+.btn-discover {
+  height: 88rpx;
+  padding: 0 44rpx;
+  border-radius: 999rpx;
+  background-color: #0F1E3D;
+  color: #FFFFFF;
+  font-size: 26rpx;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.scroll-spacer {
+  height: 60rpx;
 }

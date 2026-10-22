@@ -1,1 +1,189 @@
-<view class="index-container"></view>
+<view class="profile-page">
+  <scroll-view class="profile-scroll" scroll-y="{{true}}" enhanced="{{true}}" show-scrollbar="{{false}}">
+    
+    <!-- En-tête Utilisateur -->
+    <view class="profile-header" style="padding-top: {{ statusBarHeight + 14 }}px;">
+      <view class="user-card-main">
+        <view class="user-avatar-circle">
+          <text>{{ user.initials }}</text>
+        </view>
+        <view class="user-meta-main">
+          <text class="user-name-title">{{ user.name }}</text>
+          <text class="user-phone-sub">{{ user.phone }}</text>
+          <view class="maxit-verified-chip">
+            <text class="chip-check">✓</text>
+            <text>{{ user.status }}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- Sélecteur de Rôle (Locataire ⇄ Bailleur) -->
+    <view class="role-switcher-box">
+      <view
+        class="role-switch-btn {{ currentRole === 'client' ? 'role-switch-btn--active' : '' }}"
+        data-role="client"
+        bindtap="onSwitchRole"
+      >
+        <text>🏠 Mode Locataire</text>
+      </view>
+      <view
+        class="role-switch-btn {{ currentRole === 'bailleur' ? 'role-switch-btn--active' : '' }}"
+        data-role="bailleur"
+        bindtap="onSwitchRole"
+      >
+        <text>🏢 Mode Propriétaire</text>
+      </view>
+    </view>
+
+    <!-- ======================================================== -->
+    <!-- VUE 1 : ESPACE LOCATAIRE -->
+    <!-- ======================================================== -->
+    <view wx:if="{{ currentRole === 'client' }}" class="role-view">
+      
+      <!-- Mes Quittances de Loyer -->
+      <view class="profile-section">
+        <view class="section-head-row">
+          <text class="section-title">Mes Quittances de Loyer</text>
+          <text class="section-count">{{ locataireQuittances.length }} reçus</text>
+        </view>
+
+        <view class="quittances-list">
+          <block wx:for="{{ locataireQuittances }}" wx:key="id">
+            <view class="quittance-card" data-q="{{ item }}" bindtap="onDownloadQuittance">
+              <view class="quittance-icon">📄</view>
+              <view class="quittance-info">
+                <text class="quittance-period">{{ item.mois }}</text>
+                <text class="quittance-bailleur">Bailleur : {{ item.bailleur }}</text>
+                <text class="quittance-date">{{ item.date }} · N° {{ item.id }}</text>
+              </view>
+              <view class="quittance-amount-col">
+                <text class="quittance-price">{{ item.montant }}</text>
+                <text class="quittance-tag">Payé OM</text>
+              </view>
+            </view>
+          </block>
+        </view>
+      </view>
+
+      <!-- Mes Visites Prévues -->
+      <view class="profile-section">
+        <text class="section-title">Mes Demandes de Visites</text>
+        <view class="visites-list">
+          <block wx:for="{{ locataireVisites }}" wx:key="id">
+            <view class="visite-card">
+              <view class="visite-top">
+                <text class="visite-property">{{ item.logement }}</text>
+                <text class="visite-status">{{ item.statut }}</text>
+              </view>
+              <text class="visite-place">{{ item.lieu }}</text>
+              <view class="visite-bottom">
+                <text class="visite-date">📅 {{ item.date }}</text>
+              </view>
+            </view>
+          </block>
+        </view>
+      </view>
+
+    </view>
+
+    <!-- ======================================================== -->
+    <!-- VUE 2 : ESPACE PROPRIÉTAIRE (BAILLEUR) -->
+    <!-- ======================================================== -->
+    <view wx:if="{{ currentRole === 'bailleur' }}" class="role-view">
+      
+      <!-- En-tête gestionnaire & bouton publier -->
+      <view class="bailleur-summary-bar">
+        <view class="summary-stat">
+          <text class="stat-number">{{ bailleurBiens.length }}</text>
+          <text class="stat-label">Biens gérés</text>
+        </view>
+        <button class="btn-publish-new" bindtap="onOpenPublish">
+          + Publier un bien
+        </button>
+      </view>
+
+      <!-- Liste des logements du bailleur -->
+      <view class="profile-section">
+        <text class="section-title">Mes Logements publiés</text>
+
+        <view class="bailleur-biens-list">
+          <block wx:for="{{ bailleurBiens }}" wx:key="id">
+            <view class="bien-card">
+              <view class="bien-top">
+                <text class="bien-title">{{ item.titre }}</text>
+                <view class="bien-status-chip {{ item.needsReconfirmation ? 'chip-warning' : 'chip-success' }}">
+                  {{ item.statut }}
+                </view>
+              </view>
+              <text class="bien-place">{{ item.quartier }}</text>
+              <text class="bien-price">{{ item.prix }}</text>
+
+              <view class="bien-meta-row">
+                <text class="bien-meta-text">👁 {{ item.vues }} vues</text>
+                <text class="bien-meta-text">💬 {{ item.demandes }} demandes</text>
+                <text class="bien-confirmation-text">{{ item.derniereConfirmation }}</text>
+              </view>
+
+              <!-- Alerte Reconfirmation 7 jours (Cahier des charges) -->
+              <view wx:if="{{ item.needsReconfirmation }}" class="reconfirmation-box">
+                <text class="reconfirm-text">⚠️ Votre annonce a plus de 7 jours. Reconfirmez sa disponibilité pour conserver le badge certifié.</text>
+                <button class="btn-reconfirm" data-id="{{ item.id }}" bindtap="onReconfirmDispo">
+                  ✓ Reconfirmer disponible (7j)
+                </button>
+              </view>
+
+              <view wx:else class="reconfirm-ok-box">
+                <text class="reconfirm-ok-text">✓ Disponibilité active et vérifiée par l'IA</text>
+              </view>
+
+            </view>
+          </block>
+        </view>
+      </view>
+
+    </view>
+
+    <view class="scroll-spacer"></view>
+  </scroll-view>
+
+  <!-- ======================================================== -->
+  <!-- MODAL PUBLICATION DE LOGEMENT (BAILLEUR) -->
+  <!-- ======================================================== -->
+  <view wx:if="{{ showPublishModal }}" class="modal-backdrop" bindtap="onClosePublish">
+    <view class="publish-sheet" catchtap="true">
+      <view class="publish-header">
+        <text class="publish-title">Publier un nouveau logement 🏢</text>
+        <view class="modal-close" bindtap="onClosePublish">✕</view>
+      </view>
+
+      <view class="publish-form">
+        <view class="pub-group">
+          <text class="pub-label">Titre de l'annonce</text>
+          <input class="pub-input" placeholder="Ex. Studio meublé climatisé" value="{{ newProp.titre }}" bindinput="onInputPublishTitle" />
+        </view>
+
+        <view class="pub-group">
+          <text class="pub-label">Quartier (Dakar)</text>
+          <input class="pub-input" placeholder="Ex. Ouakam, Mermoz, Yoff…" value="{{ newProp.quartier }}" bindinput="onInputPublishQuartier" />
+        </view>
+
+        <view class="pub-row">
+          <view class="pub-group flex-1">
+            <text class="pub-label">Loyer mensuel (FCFA)</text>
+            <input class="pub-input" type="number" placeholder="Ex. 60000" value="{{ newProp.prix }}" bindinput="onInputPublishPrice" />
+          </view>
+          <view class="pub-group flex-1">
+            <text class="pub-label">Caution</text>
+            <input class="pub-input" placeholder="Ex. 1 mois" value="{{ newProp.caution }}" />
+          </view>
+        </view>
+
+        <button class="btn-submit-publish" bindtap="onSubmitNewProperty">
+          Mettre en ligne mon bien
+        </button>
+      </view>
+    </view>
+  </view>
+
+</view>

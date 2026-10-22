@@ -1,214 +1,161 @@
-<app-layout
-  title="Paiement"
-  showBack="{{true}}"
-  showLogo="{{false}}"
-  transparent="{{true}}"
-  showNavBorder="{{false}}"
-  showTabBar="{{false}}"
->
-  <scroll-view
-    class="payment-scroll"
-    scroll-y="{{true}}"
-    enhanced="{{true}}"
-    show-scrollbar="{{false}}"
-  >
-    <view class="payment-page">
-      <view class="payment-summary-card">
-        <app-typography
-          containerClass="payment-summary-card__label"
-          fontSize="24rpx"
-          weight="400"
-          color="rgba(255, 255, 255, 0.72)"
-          lineHeight="44rpx"
-        >
-          Votre Réservation
-        </app-typography>
-
-        <app-typography
-          containerClass="payment-summary-card__title"
-          fontSize="44rpx"
-          weight="700"
-          color="#FFFFFF"
-          lineHeight="56rpx"
-        >
-          {{ reservation.title }}
-        </app-typography>
-
-        <view class="payment-summary-card__divider"></view>
-
-        <view class="payment-summary-card__meta">
-          <view class="payment-summary-card__meta-item">
-            <app-typography
-              fontSize="25rpx"
-              weight="400"
-              color="rgba(255, 255, 255, 0.72)"
-              lineHeight="36rpx"
-            >
-              Catégorie
-            </app-typography>
-            <app-typography
-              fontSize="31rpx"
-              weight="600"
-              color="#FFFFFF"
-              lineHeight="42rpx"
-            >
-              {{ reservation.category }}
-            </app-typography>
-          </view>
-
-          <view class="payment-summary-card__meta-item">
-            <app-typography
-              fontSize="25rpx"
-              weight="400"
-              color="rgba(255, 255, 255, 0.72)"
-              lineHeight="36rpx"
-            >
-              Durée
-            </app-typography>
-            <app-typography
-              fontSize="31rpx"
-              weight="600"
-              color="#FFFFFF"
-              lineHeight="42rpx"
-            >
-              {{ reservation.duration }}
-            </app-typography>
-          </view>
-        </view>
-
-        <view class="payment-summary-card__divider"></view>
-
-        <view class="payment-summary-card__total">
-          <app-typography
-            fontSize="27rpx"
-            weight="400"
-            color="rgba(255, 255, 255, 0.72)"
-            lineHeight="40rpx"
-          >
-            Montant Total
-          </app-typography>
-          <app-typography
-            fontSize="48rpx"
-            weight="700"
-            color="#FFFFFF"
-            lineHeight="58rpx"
-            align="right"
-          >
-            {{ reservation.amount }}
-          </app-typography>
-        </view>
+<view class="payment-page">
+  <scroll-view class="payment-scroll" scroll-y="{{true}}" enhanced="{{true}}" show-scrollbar="{{false}}">
+    
+    <!-- En-tête -->
+    <view class="pay-header" style="padding-top: {{ statusBarHeight + 12 }}px;">
+      <view class="btn-back" bindtap="onBackTap">
+        <text class="back-arrow">‹</text>
       </view>
-
-      <app-typography
-        containerClass="payment-section-title"
-        fontSize="35rpx"
-        weight="700"
-        color="#1C1C1C"
-        lineHeight="48rpx"
-      >
-        Moyen de Paiement
-      </app-typography>
-
-      <view class="payment-secure-card">
-        <view class="payment-secure-card__icon">
-          <app-icon icon="Vector" width="{{30}}" height="{{38}}" />
-        </view>
-
-        <view class="payment-secure-card__copy">
-          <app-typography
-            fontSize="29rpx"
-            weight="700"
-            color="#174EA6"
-            lineHeight="40rpx"
-          >
-            Paiement Sécurisé
-          </app-typography>
-          <app-typography
-            containerClass="payment-secure-card__description"
-            fontSize="28rpx"
-            weight="400"
-            color="#0F52FF"
-            lineHeight="44rpx"
-          >
-            Toutes les transactions sont cryptées et traitées de manière sécurisée via la super-app Max It. Vos informations de paiement ne sont jamais stockées.
-          </app-typography>
-        </view>
-      </view>
-
-      <app-typography
-        containerClass="payment-terms"
-        fontSize="24rpx"
-        weight="400"
-        color="#7A8094"
-        lineHeight="56rpx"
-      >
-        <view>En finalisant cette réservation, vous acceptez nos</view>
-        <view><text class="payment-terms__link" style="font-size: 28rpx;" catchtap="openTerms">Conditions d'Utilisation</text> et notre</view>
-        <view><text class="payment-terms__link" style="font-size: 28rpx;" catchtap="openPolicy">Politique d'Annulation</text>. Remboursement complet</view>
-        <view>disponible jusqu'à 24h avant le voyage.</view>
-      </app-typography>
+      <text class="pay-title">Règlement du loyer</text>
+      <view class="header-placeholder"></view>
     </view>
+
+    <!-- Carte Récapitulative de l'échéance -->
+    <view class="echeance-card">
+      <view class="echeance-top">
+        <text class="echeance-badge">Échéance de loyer</text>
+        <text class="echeance-periode">{{ echeance.periode }}</text>
+      </view>
+
+      <text class="echeance-property">{{ echeance.logementTitre }}</text>
+      <text class="echeance-place">{{ echeance.quartier }}</text>
+
+      <view class="echeance-divider"></view>
+
+      <view class="echeance-detail-row">
+        <text class="detail-label">Bénéficiaire</text>
+        <text class="detail-val">{{ echeance.bailleurNom }}</text>
+      </view>
+
+      <view class="echeance-detail-row">
+        <text class="detail-label">Réf. Contrat</text>
+        <text class="detail-val">{{ echeance.refLocation }}</text>
+      </view>
+
+      <view class="echeance-detail-row">
+        <text class="detail-label">Date limite</text>
+        <text class="detail-val highlight-date">{{ echeance.dateEcheance }}</text>
+      </view>
+
+      <view class="echeance-amount-box">
+        <text class="amount-label">Montant à régler :</text>
+        <view class="amount-val-group">
+          <text class="amount-number">{{ echeance.total }}</text>
+          <text class="amount-currency">FCFA</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- Méthode de paiement -->
+    <view class="pay-section">
+      <text class="section-label">Moyen de paiement sécurisé</text>
+
+      <view
+        class="method-card {{ paymentMethod === 'orange_money' ? 'method-card--active' : '' }}"
+        data-method="orange_money"
+        bindtap="onSelectMethod"
+      >
+        <view class="method-icon-box om-bg">
+          <text class="om-text">OM</text>
+        </view>
+        <view class="method-info">
+          <text class="method-name">Orange Money Sénégal</text>
+          <text class="method-desc">Paiement instantané depuis votre compte +221 {{ payerPhone }}</text>
+        </view>
+        <view class="method-radio {{ paymentMethod === 'orange_money' ? 'radio-checked' : '' }}">
+          <view wx:if="{{ paymentMethod === 'orange_money' }}" class="radio-inner"></view>
+        </view>
+      </view>
+
+      <view
+        class="method-card {{ paymentMethod === 'wave' ? 'method-card--active' : '' }}"
+        data-method="wave"
+        bindtap="onSelectMethod"
+      >
+        <view class="method-icon-box wave-bg">
+          <text class="wave-text">W</text>
+        </view>
+        <view class="method-info">
+          <text class="method-name">Wave Sénégal</text>
+          <text class="method-desc">Paiement direct sans frais supplémentaires</text>
+        </view>
+        <view class="method-radio {{ paymentMethod === 'wave' ? 'radio-checked' : '' }}">
+          <view wx:if="{{ paymentMethod === 'wave' }}" class="radio-inner"></view>
+        </view>
+      </view>
+    </view>
+
+    <!-- Garantie et conformité BCEAO -->
+    <view class="compliance-box">
+      <text class="compliance-icon">🔒</text>
+      <text class="compliance-text">Transaction sécurisée direct compte à compte. Aucun code secret ni mot de passe ne vous est demandé sur l’application.</text>
+    </view>
+
+    <view class="scroll-spacer"></view>
   </scroll-view>
 
-  <view class="payment-footer">
-    <app-button
-      type="primary"
-      buttonClass="payment-pay-button"
-      loading="{{ isPaying }}"
-      bind:onPress="handlePay"
-    >
-      <app-typography
-        fontSize="32rpx"
-        weight="600"
-        color="#FFFFFF"
-        lineHeight="48rpx"
-        align="center"
-      >
-        Payer {{ reservation.amount }}
-      </app-typography>
-    </app-button>
+  <!-- Bouton de paiement fixe -->
+  <view class="fixed-pay-bar">
+    <button class="btn-pay-now" loading="{{ isProcessing }}" bindtap="onPayRent">
+      ⚡ Confirmer et payer {{ echeance.total }} FCFA
+    </button>
   </view>
-  </app-layout>
 
+  <!-- ======================================================== -->
+  <!-- MODAL QUITTANCE / REÇU HORODATÉ -->
+  <!-- ======================================================== -->
+  <view wx:if="{{ showReceiptModal }}" class="modal-backdrop" bindtap="onCloseReceipt">
+    <view class="receipt-card" catchtap="true">
+      
+      <view class="receipt-success-badge">
+        <text class="check-icon">✓</text>
+      </view>
 
+      <text class="receipt-header-title">Quittance de Loyer Électronique</text>
+      <text class="receipt-header-sub">SAMA LOGEMENT · Paiement validé</text>
 
+      <view class="receipt-details-box">
+        <view class="receipt-row">
+          <text class="rec-label">N° Reçu</text>
+          <text class="rec-val bold">{{ receiptData.recId }}</text>
+        </view>
+        <view class="receipt-row">
+          <text class="rec-label">Réf. Orange Money</text>
+          <text class="rec-val">{{ receiptData.omTx }}</text>
+        </view>
+        <view class="receipt-row">
+          <text class="rec-label">Période acquittée</text>
+          <text class="rec-val bold">{{ receiptData.periode }}</text>
+        </view>
+        <view class="receipt-row">
+          <text class="rec-label">Bénéficiaire</text>
+          <text class="rec-val">{{ receiptData.bailleur }}</text>
+        </view>
+        <view class="receipt-row">
+          <text class="rec-label">Logement</text>
+          <text class="rec-val">{{ receiptData.logement }}</text>
+        </view>
+        <view class="receipt-row">
+          <text class="rec-label">Date & Heure</text>
+          <text class="rec-val">{{ receiptData.dateFormatted }}</text>
+        </view>
+        <view class="receipt-divider"></view>
+        <view class="receipt-row total">
+          <text class="rec-label total">Montant payé</text>
+          <text class="rec-val total">{{ receiptData.montant }} FCFA</text>
+        </view>
+      </view>
 
-<app-modal
-  visible="{{showPolicy}}"
-  placement="bottom"
-  size="full"
-  hasHeader="{{true}}"
-  hasContent="{{true}}"
-  bind:close="closePolicy"
->
-  <view slot="header" style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
-    <text style="font-weight: 600; font-size: 32rpx; color: #1C1C1C;">Politique d'Annulation</text>
-    <view catchtap="closePolicy" style="padding: 10rpx;">
-      <icon type="cancel" size="24" color="#666" />
+      <view class="receipt-actions">
+        <button class="btn-receipt-share" bindtap="onShareReceipt">
+          📋 Copier la quittance
+        </button>
+        <button class="btn-receipt-done" bindtap="onCloseReceipt">
+          Terminer
+        </button>
+      </view>
+
     </view>
   </view>
-  <view slot="content" style="max-height: 70vh; padding-bottom: env(safe-area-inset-bottom, 40rpx);">
-    <app-cancellation-policy />
-  </view>
-</app-modal>
 
-<app-modal
-  visible="{{showTerms}}"
-  placement="bottom"
-  size="full"
-  hasHeader="{{true}}"
-  hasContent="{{true}}"
-  bind:close="closeTerms"
->
-  <view slot="header" style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
-    <text style="font-weight: 600; font-size: 32rpx; color: #1C1C1C;">Conditions d'Utilisation</text>
-    <view catchtap="closeTerms" style="padding: 10rpx;">
-      <icon type="cancel" size="24" color="#666" />
-    </view>
-  </view>
-  <view slot="content" style="max-height: 70vh; padding-bottom: env(safe-area-inset-bottom, 40rpx);">
-    <app-terms-of-use />
-  </view>
-</app-modal>
-
-
+</view>

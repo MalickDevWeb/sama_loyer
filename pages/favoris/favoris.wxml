@@ -1,44 +1,60 @@
-<app-layout
-  title="Mes Favoris"
-  showBack="{{true}}"
-  showLogo="{{false}}"
-  transparent="{{true}}"
-  showNavBorder="{{false}}"
-  activeTab="{{activeTab}}"
->
-  <scroll-view class="content favorites-page" scroll-y="{{true}}" enhanced="{{true}}" show-scrollbar="{{false}}">
-    <view class="favorites-page__header">
-      <app-typography size="14" weight="500" color="#7A8094" containerStyle="  line-height: 40rpx;  font-size: 28rpx; font-weight: 400;"  >
-        {{ resultsLabel }}
-      </app-typography>
+<view class="favorites-page">
+  <scroll-view class="favorites-scroll" scroll-y="{{true}}" enhanced="{{true}}" show-scrollbar="{{false}}">
+    
+    <!-- En-tête -->
+    <view class="fav-header" style="padding-top: {{ statusBarHeight + 14 }}px;">
+      <view class="fav-header__titles">
+        <text class="page-title">Mes Favoris</text>
+        <text class="page-subtitle">{{ favoritesList.length }} logements enregistrés</text>
+      </view>
     </view>
 
-    <view wx:if="{{ loading || favoriteDestinations.length }}">
-      <app-list-destination
-        destinations="{{ favoriteDestinations }}"
-        loading="{{ loading }}"
-        layout="grid"
-        columns="2"
-        cardWidth="100%"
-        imageHeight="288rpx"
-        cardPaddingClass="p-2"
-        cardStyle="height: 560rpx !important;  border:0.5rpx  solid #eeebeb; 
-        border-radius: 32rpx !important;  box-shadow: 0 1px 2px -1px rgba(0, 0, 0, 0.10), 0 1px 3px 0 rgba(0, 0, 0, 0.10) !important ;"
-        cardContainerStyle="border-radius: 32rpx !important;   background: #fff;"
-        imageRadius="32rpx"
-        showDetailsButton="{{ false }}"
-        bind:toggleLike="handleDestinationLike"
-        bind:onCardPress="handleCardPress"
-      />
+    <!-- Liste des logements favoris -->
+    <view wx:if="{{ favoritesList.length > 0 }}" class="fav-list">
+      <block wx:for="{{ favoritesList }}" wx:key="id">
+        <view class="fav-card" data-id="{{ item.id }}" bindtap="onCardTap">
+          <!-- Thumbnail -->
+          <view class="fav-thumb" style="background-color: {{ item.bg }};">
+            <view class="fav-thumb__house"></view>
+            <view class="fav-btn-heart" data-id="{{ item.id }}" catchtap="onRemoveFavorite">
+              <text class="heart-icon">♥</text>
+            </view>
+          </view>
+
+          <!-- Détails -->
+          <view class="fav-content">
+            <view class="fav-meta-row">
+              <text class="fav-type">{{ item.typeLabel }}</text>
+              <text class="fav-date">{{ item.dateAdded }}</text>
+            </view>
+
+            <text class="fav-title">{{ item.title }}</text>
+            <text class="fav-place">{{ item.place }}</text>
+
+            <view class="fav-bottom-row">
+              <view class="fav-price-col">
+                <text class="fav-price">{{ item.price }}</text>
+                <text class="fav-unit">{{ item.unit }}</text>
+              </view>
+              <view class="btn-fav-view">Voir</view>
+            </view>
+          </view>
+        </view>
+      </block>
     </view>
 
-    <view wx:else class="favorites-page__empty">
-      <app-typography size="18" weight="600" color="#1C1C1C">
-        Aucun favori pour le moment
-      </app-typography>
-      <app-typography size="14" color="#7A8094">
-        Marquez une destination comme favorite depuis Home ou Explorer.
-      </app-typography>
+    <!-- État vide -->
+    <view wx:else class="fav-empty-state">
+      <view class="empty-icon-circle">
+        <text class="empty-heart">♡</text>
+      </view>
+      <text class="empty-title">Aucun favori pour le moment</text>
+      <text class="empty-desc">Sauvegardez les logements qui vous intéressent pour les retrouver et les comparer facilement.</text>
+      <button class="btn-discover" bindtap="onGoToHome">
+        Découvrir des logements
+      </button>
     </view>
+
+    <view class="scroll-spacer"></view>
   </scroll-view>
-</app-layout>
+</view>
