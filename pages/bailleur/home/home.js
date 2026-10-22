@@ -6,6 +6,8 @@ Page({
     statusBarHeight: 44,
     bailleurName: 'Moussa',
     initials: 'MD',
+    phone: '+221 77 123 45 67',
+    showProfileModal: false,
     kpis: {
       annoncesEnLigne: 3,
       annoncesValidation: 1,
@@ -66,6 +68,15 @@ Page({
     wx.navigateTo({
       url: '/pages/bailleur/locataires/locataires'
     });
+  },
+
+  onOpenProfileModal() {
+    this.setData({ showProfileModal: true });
+    if (wx.vibrateShort) wx.vibrateShort();
+  },
+
+  onCloseProfileModal() {
+    this.setData({ showProfileModal: false });
   },
 
   onSwitchToClient() {

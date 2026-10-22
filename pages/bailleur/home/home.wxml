@@ -3,16 +3,23 @@
     
     <!-- Top Dark Hero Section -->
     <view class="dark-hero" style="padding-top: {{ statusBarHeight + 12 }}px;">
+      <!-- Ligne supérieure avec badge ESPACE BAILLEUR (coin droit libre pour la capsule WeChat ··· ⊚) -->
       <view class="hero-top-row">
         <view class="badge-role-pill">ESPACE BAILLEUR</view>
+      </view>
+
+      <!-- Profil Bailleur aligné à gauche : Avatar MD + Bonjour Moussa -->
+      <view class="hero-profile-row" bindtap="onOpenProfileModal">
         <view class="avatar-circle-bailleur">
           <text class="avatar-text">{{ initials }}</text>
         </view>
-      </view>
-
-      <view class="hero-titles">
-        <text class="hero-welcome">Bonjour {{ bailleurName }}</text>
-        <text class="hero-sub">Voici où en sont tes logements aujourd'hui.</text>
+        <view class="hero-titles">
+          <view class="welcome-line">
+            <text class="hero-welcome">Bonjour {{ bailleurName }}</text>
+            <view class="verified-badge-mini">✓ Vérifié</view>
+          </view>
+          <text class="hero-sub">Voici où en sont tes logements aujourd'hui.</text>
+        </view>
       </view>
     </view>
 
@@ -189,4 +196,43 @@
 
   <!-- Bailleur Tab Bar -->
   <app-custom-tab-bar activeTab="b-home" />
+
+  <!-- ======================================================== -->
+  <!-- MODAL / PROFIL BAILLEUR (Accessible via clic sur l'avatar) -->
+  <!-- ======================================================== -->
+  <view wx:if="{{ showProfileModal }}" class="profile-modal-overlay" bindtap="onCloseProfileModal">
+    <view class="profile-modal-sheet" catchtap="true">
+      <view class="modal-drag-handle"></view>
+      <view class="profile-sheet-header">
+        <view class="avatar-circle-large">
+          <text class="avatar-text-large">{{ initials }}</text>
+        </view>
+        <view class="profile-sheet-titles">
+          <text class="profile-sheet-name">{{ bailleurName }} Diop</text>
+          <view class="profile-sheet-badge">
+            <text class="badge-check">✓</text>
+            <text>Bailleur vérifié · Max it</text>
+          </view>
+        </view>
+        <view class="btn-close-sheet" bindtap="onCloseProfileModal">✕</view>
+      </view>
+
+      <view class="profile-info-cards">
+        <view class="info-card-row">
+          <text class="info-card-label">Numéro Orange Money</text>
+          <text class="info-card-value">{{ phone }}</text>
+        </view>
+        <view class="info-card-row">
+          <text class="info-card-label">Statut publication</text>
+          <text class="info-card-value text-green">Instantanée sans validation</text>
+        </view>
+      </view>
+
+      <!-- Bouton pour basculer vers le profil locataire -->
+      <button class="btn-switch-role-sheet" bindtap="onSwitchToClient">
+        <text class="switch-icon">⇄</text>
+        <text>Basculer en profil Locataire (Awa)</text>
+      </button>
+    </view>
+  </view>
 </view>

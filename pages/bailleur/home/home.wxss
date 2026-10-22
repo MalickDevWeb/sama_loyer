@@ -25,8 +25,9 @@
 .hero-top-row {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  margin-bottom: 24rpx;
+  justify-content: flex-start;
+  margin-bottom: 20rpx;
+  min-height: 52rpx;
 }
 
 .badge-role-pill {
@@ -39,32 +40,60 @@
   border-radius: 20rpx;
 }
 
+.hero-profile-row {
+  display: flex;
+  align-items: center;
+  gap: 24rpx;
+  margin-top: 10rpx;
+}
+
 .avatar-circle-bailleur {
-  width: 72rpx;
-  height: 72rpx;
+  width: 96rpx;
+  height: 96rpx;
   border-radius: 50%;
   background-color: #C8235F;
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 6rpx 18rpx rgba(200, 35, 95, 0.4);
+  border: 3rpx solid rgba(255, 255, 255, 0.25);
 }
 
 .avatar-text {
-  font-size: 26rpx;
+  font-size: 34rpx;
   font-weight: 800;
   color: #FFFFFF;
 }
 
 .hero-titles {
+  flex: 1;
   display: flex;
   flex-direction: column;
 }
 
+.welcome-line {
+  display: flex;
+  align-items: center;
+  gap: 14rpx;
+  margin-bottom: 6rpx;
+}
+
 .hero-welcome {
-  font-size: 48rpx;
+  font-size: 44rpx;
   font-weight: 800;
   color: #FFFFFF;
-  margin-bottom: 8rpx;
+}
+
+.verified-badge-mini {
+  background-color: #11643F;
+  color: #FFFFFF;
+  font-size: 18rpx;
+  font-weight: 800;
+  padding: 4rpx 14rpx;
+  border-radius: 999rpx;
+  display: inline-flex;
+  align-items: center;
 }
 
 .hero-sub {
@@ -401,3 +430,164 @@
 .scroll-spacer {
   height: 180rpx;
 }
+
+/* ==========================================================================
+   Modal / Bottom Sheet Profil Bailleur
+   ========================================================================== */
+.profile-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(15, 30, 61, 0.6);
+  backdrop-filter: blur(8px);
+  z-index: 9999;
+  display: flex;
+  align-items: flex-end;
+  animation: fadeIn 0.2s ease-out;
+}
+
+.profile-modal-sheet {
+  width: 100%;
+  background-color: #FFFFFF;
+  border-radius: 40rpx 40rpx 0 0;
+  padding: 24rpx 36rpx calc(40rpx + env(safe-area-inset-bottom));
+  box-sizing: border-box;
+  animation: slideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.modal-drag-handle {
+  width: 80rpx;
+  height: 8rpx;
+  border-radius: 4rpx;
+  background-color: #E2E8F0;
+  margin: 0 auto 28rpx;
+}
+
+.profile-sheet-header {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+  margin-bottom: 32rpx;
+}
+
+.avatar-circle-large {
+  width: 110rpx;
+  height: 110rpx;
+  border-radius: 50%;
+  background-color: #C8235F;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 8rpx 20rpx rgba(200, 35, 95, 0.25);
+}
+
+.avatar-text-large {
+  font-size: 40rpx;
+  font-weight: 800;
+  color: #FFFFFF;
+}
+
+.profile-sheet-titles {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.profile-sheet-name {
+  font-size: 36rpx;
+  font-weight: 800;
+  color: #0F1E3D;
+  margin-bottom: 6rpx;
+}
+
+.profile-sheet-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8rpx;
+  font-size: 22rpx;
+  font-weight: 700;
+  color: #11643F;
+}
+
+.badge-check {
+  font-weight: 800;
+}
+
+.btn-close-sheet {
+  width: 60rpx;
+  height: 60rpx;
+  border-radius: 50%;
+  background-color: #F1F4F9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #64748B;
+  font-size: 26rpx;
+}
+
+.profile-info-cards {
+  background-color: #F8FAFC;
+  border-radius: 28rpx;
+  padding: 12rpx 28rpx;
+  margin-bottom: 32rpx;
+  border: 2rpx solid #E2E8F0;
+}
+
+.info-card-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20rpx 0;
+  border-bottom: 1rpx solid #E2E8F0;
+}
+
+.info-card-row:last-child {
+  border-bottom: none;
+}
+
+.info-card-label {
+  font-size: 26rpx;
+  color: #64748B;
+  font-weight: 600;
+}
+
+.info-card-value {
+  font-size: 26rpx;
+  color: #0F1E3D;
+  font-weight: 700;
+}
+
+.text-green {
+  color: #11643F !important;
+}
+
+.btn-switch-role-sheet {
+  width: 100%;
+  height: 100rpx;
+  border-radius: 28rpx;
+  background-color: #0F1E3D;
+  color: #FFFFFF;
+  font-size: 28rpx;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14rpx;
+  margin: 0;
+  box-shadow: 0 8rpx 20rpx rgba(15, 30, 61, 0.2);
+}
+
+.switch-icon {
+  font-size: 32rpx;
+}
+
