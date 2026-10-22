@@ -10,8 +10,8 @@ function AdminLayout() {
   const [menuOpen, setMenuOpen] = useState(false)
   const { pathname } = useLocation()
 
+  // Chaque écran s'ouvre en haut de page
   useEffect(() => {
-    setMenuOpen(false)
     window.scrollTo(0, 0)
   }, [pathname])
 
@@ -46,6 +46,7 @@ function AdminLayout() {
               key={path}
               to={path}
               end={path === '/'}
+              onClick={() => setMenuOpen(false)}
               className={({ isActive }) => `admin__link${isActive ? ' admin__link--active' : ''}`}
             >
               <Icon d={icon} />
