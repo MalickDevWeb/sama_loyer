@@ -1,113 +1,168 @@
-# TCMPP Boilerplate
+# 🏠 SAMA LOGEMENT — Mini-App Immobilière pour Maxit (Orange Sénégal)
 
-Une base prête pour la production pour construire des mini-apps TCMPP (Tencent Cloud Mini Program Platform). Clonez le projet, configurez-le et commencez à développer.
+> **Projet Hackathon Orange** — Plateforme immobilière intelligente intégrée dans la Super-App **Maxit**, digitalisant la recherche, la mise en location, la contractualisation et le paiement certifié des loyers au Sénégal.
 
-## Ce que vous obtenez
+---
 
-- **EventBus** — gestion d'état multi-page et système d'événements avec middleware, lecture et historique
-- **Client HTTP** — client API avec suivi de session pour tous les verbes HTTP et format de réponse unifié
-- **Auth OAuth2** — flux client credentials avec mise en cache de jeton et rafraîchissement automatique
-- **Service de plugin natif** — wrappers typés `wx.invokeNativePlugin` avec retry et backoff
-- **JSON Sculpt** — moteur déclaratif de transformation des réponses API
-- **13+ composants UI** — Button, Modal, Nav Bar, Stepper, Input, Typography, et plus
-- **Behaviors** — mixins partagés pour l'état de chargement/erreur dans les pages et composants
-- **Filtres WXS** — filtres de template côté vue pour une logique d'affichage rapide
-- **Helpers de navigation** — wrappers sécurisés pour les 5 méthodes wx de navigation
-- **Wrapper de stockage** — opérations de stockage local sécurisées contre les erreurs
-- **CSS utilitaire** — classes utilitaires flexbox, espacement et mise en page dérivées de Bootstrap
+## 📑 Sommaire
 
-## Démarrage rapide
+1. [Vision & Positionnement dans Maxit](#-1-vision--positionnement-dans-maxit)
+2. [Modèle Double Profil (Client & Bailleur)](#-2-modèle-double-profil-client--bailleur)
+3. [Modèle Économique, Paywall & Monétisation Orange Money](#-3-modèle-économique-paywall--monétisation-orange-money)
+4. [Architecture Technique du Mini-Programme](#-4-architecture-technique-du-mini-programme)
+5. [Règles de Navigation WeChat / TCMPP](#-5-règles-de-navigation-wechat--tcmpp)
+6. [Design System & Composants Clés](#-6-design-system--composants-clés)
+7. [Back-Office d'Administration](#-7-back-office-dadministration)
 
-1. **Installez** [TCMPP Developer Tools](https://cloud.tencent.com/product/tcmpp)
-2. Clonez ce dépôt
-3. Ouvrez le dossier du projet dans TCMPP DevTools
-4. Le mini-programme se compile et s'affiche automatiquement
+---
 
-> Première fois avec les mini-programmes ? Commencez par [Mini-Program Concepts](docs/01-mini-program-concepts.md).
+## 🎯 1. Vision & Positionnement dans Maxit
 
-## Structure du projet
+**SAMA LOGEMENT** est conçu pour s'intégrer nativement dans la Super-App **Maxit** (Orange) via la technologie des mini-programmes (TCMPP) :
 
-```
-tcmpp-boilerplate/
-├── app.js                    # Entrée de l'app : init, EventBus, gestion des erreurs, réseau
-├── app.json                  # Routes, configuration de la fenêtre, permissions
-├── app.wxss                  # Styles globaux (utilitaires dérivés de Bootstrap)
-├── project.config.json       # Paramètres TCMPP DevTools
-│
-├── pages/                    # Pages de l'application
-│   ├── index/                # Page d'accueil (initPromise, démonstration EventBus)
-│   └── demo/                 # Page de démonstration (stepper, modal, WXS, Behavior)
-│
-├── components/               # Composants réutilisables
-│   ├── ui/                   # Bibliothèque UI (button, modal, nav-bar, etc.)
-│   ├── forms/                # Composants de formulaire (placeholder)
-│   └── ux/                   # Composants UX (placeholder)
-│
-├── utils/                    # Modules utilitaires
-│   ├── apis/                 # Client HTTP, auth, plugins natifs, BackendAPI
-│   ├── event/                # EventBus (gestion d'état + pub/sub)
-│   ├── json-sculpt/          # Moteur de transformation de données déclaratif
-│   ├── constants/            # Constantes centralisées de l'app
-│   ├── formatters/           # Formatage date, prix, chaîne
-│   ├── helpers/              # Helpers de page, helpers de navigation
-│   ├── behaviors/            # Mixins Behavior() partagés
-│   ├── wxs/                  # Filtres WXS de template
-│   ├── mappers/              # Définitions de schémas Sculpt
-│   ├── config.js             # Configuration d'environnement (dev/prod)
-│   └── storage.js            # Wrapper de stockage wx sécurisé
-│
-├── types/                    # Définitions de type JSDoc
-└── typings/                  # Définitions TypeScript de l'API WeChat
+* **Authentification unique (SSO Maxit)** : L'utilisateur se connecte automatiquement avec son numéro Orange (`+221 77...`).
+* **Sécurité & KYC Certifié** : L'identité du compte Orange Money certifie les utilisateurs, éliminant les faux démarcheurs et arnaques de faux logements à Dakar.
+* **Paiement In-App direct** : Paiement des loyers et des cautions directement depuis le solde Orange Money du locataire vers le compte Orange Money du bailleur.
+* **Conformité Réglementaire** : Intégration du décret de régulation des loyers de mars 2023 de la République du Sénégal (quittances certifiées numérotées, plafonnement légal des cautions à 1 ou 2 mois, préavis de départ de 1 mois).
+
+---
+
+## 👥 2. Modèle Double Profil (Client & Bailleur)
+
+Un même compte Maxit peut porter les **deux casquettes** sans aucune friction ni déconnexion :
+
+```mermaid
+flowchart TD
+    A["Compte Unique Maxit (+221 77 xxx xx xx)"] --> B["SSO Orange Money (KYC Vérifié)"]
+    B --> C["SAMA LOGEMENT"]
+    C --> D{"Bascule en 1 clic"}
+    
+    D -->|Mode Locataire| E["Profil Client"]
+    E --> E1["🔍 Recherche IA écrite & vocale (Wolof / Français)"]
+    E --> E2["💳 Mon loyer : synthèse, paiement Orange Money/Wave"]
+    E --> E3["📄 Quittance officielle certifiée (PDF téléchargeable)"]
+    E --> E4["📅 Visites & Messagerie directe"]
+    
+    D -->|Mode Bailleur| F["Profil Bailleur"]
+    F --> F1["📊 Dashboard : Loyers encaissés, retards, alertes"]
+    F --> F2["👥 Mes locataires : validation loyers, rappels SMS/Wolof"]
+    F --> F3["➕ Ajouter un logement (photos, caution, contrat)"]
+    F --> F4["💎 Packs visibilité & publication Orange Money"]
 ```
 
-## Parcours d'apprentissage
+* **Comme sur Airbnb ou Uber** : L'utilisateur navigue en tant que locataire par défaut, et peut en 1 clic dans son profil ou sur son avatar choisir *« Basculer en Espace Bailleur »*.
+* Les interfaces, barres d'onglets et données s'adaptent instantanément.
 
-| Étape | Sujet | Lien |
-|------|-------|------|
-| 1 | Fondamentaux du mini-programme | [Mini-Program Concepts](docs/01-mini-program-concepts.md) |
-| 2 | Structure du projet | [Project Architecture](docs/02-project-architecture.md) |
-| 3 | Installation et premier lancement | [Getting Started](docs/03-getting-started.md) |
-| 4 | Cycle de vie de l'app | [App Lifecycle](docs/04-app-lifecycle.md) |
-| 5 | Gestion d'état | [EventBus Guide](docs/05-eventbus-guide.md) |
-| 6 | Appels API | [API Layer](docs/06-api-layer.md) |
-| 7 | Transformation de données | [JSON Sculpt Guide](docs/07-json-sculpt-guide.md) |
-| 8 | Utilisation des composants | [Components Overview](docs/08-components-overview.md) |
-| 9 | Tâches courantes | [Recipes](docs/14-recipes.md) |
-| 10 | Quand ça plante | [Troubleshooting](docs/15-troubleshooting.md) |
-| 11 | Tabbar personnalisé WeChat | [Custom TabBar WeChat](docs/17-custom-tab-bar.md) |
-| 12 | Audit responsive iPhone | [Audit Responsive iPhone](docs/README-responsive-iphone.md) |
+---
 
-## Toute la documentation
+## 💰 3. Modèle Économique, Paywall & Monétisation Orange Money
 
-### Guides
-- [Mini-Program Concepts](docs/01-mini-program-concepts.md) — runtime WeChat/TCMPP, types de fichiers, cycles de vie
-- [Project Architecture](docs/02-project-architecture.md) — diagrammes de flux de données, dépendances des modules
-- [Getting Started](docs/03-getting-started.md) — installation, configuration, premiers changements
-- [App Lifecycle](docs/04-app-lifecycle.md) — app.js : initPromise, mises à jour, réseau, erreurs
-- [EventBus Guide](docs/05-eventbus-guide.md) — API complète de gestion d'état et d'événements
-- [API Layer](docs/06-api-layer.md) — client HTTP, auth, plugins natifs, BackendAPI
-- [JSON Sculpt Guide](docs/07-json-sculpt-guide.md) — mappage déclaratif des réponses
-- [Components Overview](docs/08-components-overview.md) — système de composants et catalogue
-- [Styling Guide](docs/09-styling-guide.md) — variables CSS, classes utilitaires, unités rpx
-- [WXS Filters](docs/10-wxs-filters.md) — scripts de template côté vue
-- [Behaviors Guide](docs/11-behaviors-guide.md) — système de mixins partagés
-- [Navigation Guide](docs/12-navigation-guide.md) — pile de pages et helpers de navigation
-- [Storage Guide](docs/13-storage-guide.md) — wrapper de stockage local
-- [Custom TabBar WeChat](docs/17-custom-tab-bar.md) — override du tabbar natif avec le style applicatif
-- [Audit Responsive iPhone](docs/README-responsive-iphone.md) — diagnostic des gaps et problemes d'affichage sur iPhone reel
+### A. La stratégie d'acquisition Freemium ➔ Paywall
 
-### Référence
-- [Recipes](docs/14-recipes.md) — recettes pas à pas pour les tâches courantes
-- [Troubleshooting](docs/15-troubleshooting.md) — erreurs courantes, débogage, FAQ
-- [Glossary](docs/16-glossary.md) — vocabulaire
-- [Contributing](CONTRIBUTING.md) — directives de style et contribution
+```mermaid
+flowchart LR
+    A["1. Acquisition (Promo)"] -->|1ère annonce offerte| B["Bailleur publie et reçoit des locataires"]
+    B -->|Promo expirée / 2e logement| C["2. Paywall Maxit"]
+    C --> D["Paiement Pack via Orange Money"]
+    D --> E["Statut Vérifié Pro + Publication DIRECTE"]
+```
 
-## Tech Stack
+1. **Phase 1 : Promo de lancement**  
+   * La 1ère annonce (ou les 30 premiers jours) est offerte pour inciter les bailleurs dakarois à référencer leurs biens.
+2. **Phase 2 : Paywall quand la promo est dépassée**  
+   * Dès que le bailleur veut publier au-delà de son quota d'essai :
+   * Un message s'affiche :  
+     > *« Votre offre promotionnelle est terminée. Pour continuer à publier et trouver des locataires qualifiés, activez votre Pack Bailleur directement avec votre solde Orange Money. »*
 
-| Élément | Valeur |
-|------|-------|
-| SDK TCMPP | 2.2.4 |
-| Cible JavaScript | ES2015 |
-| Framework CSS | utilitaires dérivés de Bootstrap |
-| Gestion d'état | EventBus personnalisé |
-| Transformation des données | JSON Sculpt |
+### B. Publication Directe (Bailleur Vérifié) vs Validation Manuelle
+
+| Statut du Bailleur | Processus de Publication | Validation Admin | Délai de mise en ligne |
+|---|---|---|---|
+| **🟢 Bailleur Vérifié (Pack Orange Money actif)** | **Instantané** (Auto-approbation) | Aucune (contrôle a posteriori si signalement) | **Immédiat (1 seconde)** |
+| **🟡 Bailleur Standard (Sans offre / non certifié)** | En attente de validation | Revue manuelle par le Super Admin | 24 h à 48 h |
+
+---
+
+## 🏛️ 4. Architecture Technique du Mini-Programme
+
+Toutes les pages sont organisées de manière symétrique dans des sous-dossiers dédiés sous `pages/` :
+
+```
+pages/
+├── client/                      # Module Locataire (Client)
+│   ├── home/                    # Recherche IA écrite & vocale Wolof/FR, 3 recs dynamiques
+│   ├── search/                  # Résultats filtrables, vue carte, chips catégories
+│   ├── logement-detail/         # Fiche logement complète, photos, visite, caution
+│   ├── loyers/                  # "Mon loyer" : synthèse 125 000 F, quittances, paiement
+│   ├── visites/                 # Suivi des visites confirmées, passées, annulées
+│   ├── demande-visite/          # Prise de RDV avec sélection de créneaux
+│   ├── messages/                # Boîte de réception messagerie
+│   ├── chat/                    # Messagerie temps réel & raccourcis WhatsApp
+│   ├── favoris/                 # Sauvegarde des logements coup de cœur
+│   └── profile/                 # Profil locataire & bascule Espace Bailleur
+│
+└── bailleur/                    # Module Propriétaire (Bailleur)
+    ├── home/                    # Dashboard bailleur : KPIs, alertes, raccourcis
+    ├── annonces/                # Gestion des logements loués et disponibles
+    ├── ajouter/                 # Formulaire d'ajout de bien en 5 étapes
+    ├── demandes/                # Gestion des candidatures de locataires
+    ├── locataires/              # "Mes locataires" : barre tricolore, actions directes
+    └── premium/                 # Boosts d'annonces & factures professionnelles
+```
+
+---
+
+## ⚡ 5. Règles de Navigation WeChat / TCMPP
+
+Pour éviter les erreurs bloquantes du runtime WeChat (`fail can not redirectTo a tabbar page`), le routeur [`components/ui/tab-bar/index.js`](components/ui/tab-bar/index.js) applique un routage strict :
+
+1. **Onglets Clients (`tabBar.list` dans `app.json`)** :
+   * `pages/client/home/home` (Chercher)
+   * `pages/client/loyers/loyers` (Mon loyer - Badge `2`)
+   * `pages/client/visites/visites` (Visites)
+   * `pages/client/messages/messages` (Messages - Badge `3`)
+   * `pages/client/profile/profile` (Profil)  
+   👉 **Obligatoirement appelés via `wx.switchTab({ url })`**.
+
+2. **Onglets Espace Bailleur (Hors `tabBar.list`)** :
+   * `pages/bailleur/home/home`, `annonces`, `ajouter`, `locataires`, `demandes`.  
+   👉 **Appelés via `wx.redirectTo({ url })`**.
+
+3. **Protection des feuilles modales (*Bottom Sheets*)** :
+   * Pour éviter que la barre d'onglets ne recouvre les boutons d'action des modales (*Payer*, *Fermer l'aperçu* sur `Mon loyer`) :
+     * `wx.hideTabBar({ animation: true })` à l'ouverture de la modale.
+     * `wx.showTabBar({ animation: true })` à la fermeture.
+     * `padding-bottom: calc(150rpx + env(safe-area-inset-bottom))` sur `.modal-sheet`.
+
+---
+
+## 🎨 6. Design System & Composants Clés
+
+### Palette de Couleurs Officielles
+
+* **Berry Framboise (`#C8235F`)** : Couleur d'action primaire Orange/Sama, boutons principaux, badges d'alerte.
+* **Deep Navy (`#0F1E3D`)** : Titres majeurs, fonds sombres des KPIs de loyers.
+* **Mint Green (`#007C3D` / `#E2F0EA`)** : Statuts payés, quittances certifiées conformes.
+* **Warning Amber (`#D97706` / `#FEF9C3`)** : Loyers à confirmer, signalements de pannes.
+* **Soft Red (`#DC2626` / `#FEE2E2`)** : Retards de paiement de loyer.
+
+### Composant Notification Flottante (« Dynamic Island / Pill »)
+Remplace les anciens carrés noirs natifs WeChat par une pilule flottante animée en haut d'écran :
+* Dégradé bleu nuit glassmorphism (`backdrop-filter: blur(14px)`).
+* Cercle icône Berry ou Cyan selon le contexte.
+* Titre net + sous-titre dynamique IA (ex: `Reconnu (Wolof) : Ngor · 50 000 F CFA · 3 trouvés ✨`).
+
+---
+
+## 🖥️ 7. Back-Office d'Administration
+
+Situé dans le dossier [`back_office/`](back_office/) :
+* Développé en **React + TypeScript + Vite**.
+* Interface responsive (Desktop, Tablette et Mobile avec menu repliable).
+* Gestion des signalements locataires / réclamations plomberie et électricité.
+* Supervision des bailleurs certifiés et des transactions Orange Money.
+* Compilation validée sans erreur via `npm run build` (`tsc -b && vite build`).
+
+---
+
+*Branche active du projet : `sama-logement`*
