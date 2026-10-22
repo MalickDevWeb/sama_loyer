@@ -86,6 +86,15 @@ Page({
     recs: [],
     heading: '',
     summary: '',
+    targetScrollId: '',
+    toast: {
+      visible: false,
+      hiding: false,
+      title: '',
+      subtitle: '',
+      type: 'search',
+      iconClass: 'icon-toast-search'
+    },
     userRole: 'client', // 'client' | 'bailleur'
     favorites: {},
     showVoiceModal: false,
@@ -179,11 +188,22 @@ Page({
       },
       () => {
         this.runSearch();
-        wx.showToast({
-          title: `Recherche : ${this.data.place || 'Dakar'}`,
-          icon: 'none',
-          duration: 1200
+        const placeName = this.data.place.trim() || 'Dakar';
+        const count = this.data.recs ? this.data.recs.length : 0;
+        const sub = count > 0 
+          ? `${count} logement${count > 1 ? 's' : ''} trouvé${count > 1 ? 's' : ''} par l'IA`
+          : 'Aucun logement exact dans ce budget';
+        
+        this.showMagnifiqueToast({
+          title: `Recherche : ${placeName}`,
+          subtitle: sub,
+          type: 'search',
+          iconClass: 'icon-toast-search',
+          duration: 2600
         });
+
+        // Défilement doux vers les résultats
+        this.setData({ targetScrollId: 'recs-section' });
       }
     );
   },
@@ -269,12 +289,16 @@ Page({
         searched: true
       },
       () => {
-        wx.showToast({
-          title: `Reconnu (${item.lang}) : ${targetPlace}`,
-          icon: 'success',
-          duration: 1500
-        });
         this.runSearch();
+        const count = this.data.recs ? this.data.recs.length : 0;
+        this.showMagnifiqueToast({
+          title: `Reconnu (${item.lang}) : ${targetPlace}`,
+          subtitle: `${numBudget ? formatMoney(numBudget) + ' F CFA · ' : ''}${count} logement${count > 1 ? 's' : ''} trouvé${count > 1 ? 's' : ''}`,
+          type: 'voice',
+          iconClass: 'icon-toast-mic',
+          duration: 2800
+        });
+        this.setData({ targetScrollId: 'recs-section' });
       }
     );
   },
@@ -386,7 +410,80 @@ Page({
     const liked = !this.data.favorites[id];
     toggleFavoriteId(id, liked);
     this.setData({ favorites: getFavoritesMap() });
-    wx.showToast({ title: liked ? 'Ajouté aux favoris ❤️' : 'Retiré des favoris', icon: 'none' });
+    
+    this.showMagnifiqueToast({
+      title: liked ? 'Ajouté aux favoris' : 'Retiré des favoris',
+      subtitle: liked ? 'Retrouve ce logement dans tes favoris' : '',
+      type: 'heart',
+      iconClass: 'icon-toast-heart',
+      duration: 2000
+    });
+  },
+
+  // ==========================================
+  // TOAST MAGNIFIQUE (HAUTE GAMME SAMA LOGEMENT)
+  // ==========================================
+  showMagnifiqueToast({ title, subtitle = '', type = 'search', iconClass = 'icon-toast-search', duration = 2600 }) {
+    if (this._toastTimer) {
+      clearTimeout(this._toastTimer);
+      this._toastTimer = null;
+    }
+    if (this._toastHideTimer) {
+      clearTimeout(this._toastHideTimer);
+      this._toastHideTimer = null;
+    }
+
+    this.setData({
+      toast: {
+        visible: true,
+        hiding: false,
+        title,
+        subtitle,
+        type,
+        iconClass
+      }
+    });
+
+    this._toastTimer = setTimeout(() => {
+      this.setData({ 'toast.hiding': true });
+      this._toastHideTimer = setTimeout(() => {
+        this.setData({
+          toast: {
+            visible: false,
+            hiding: false,
+            title: '',
+            subtitle: '',
+            type: 'search',
+            iconClass: 'icon-toast-search'
+          }
+        });
+      }, 280);
+    }, duration);
+  },
+
+  onDismissToast() {
+    if (this._toastTimer) {
+      clearTimeout(this._toastTimer);
+      this._toastTimer = null;
+    }
+    if (this._toastHideTimer) {
+      clearTimeout(this._toastHideTimer);
+      this._toastHideTimer = null;
+    }
+
+    this.setData({ 'toast.hiding': true });
+    setTimeout(() => {
+      this.setData({
+        toast: {
+          visible: false,
+          hiding: false,
+          title: '',
+          subtitle: '',
+          type: 'search',
+          iconClass: 'icon-toast-search'
+        }
+      });
+    }, 280);
   },
 
   onSwitchProfile() {

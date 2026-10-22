@@ -1,6 +1,43 @@
 <view class="sama-page">
+  <!-- Toast / Notification Flottante Haute Couture (remplace le carré noir natif) -->
+  <view 
+    wx:if="{{ toast.visible }}" 
+    class="sama-floating-toast {{ toast.hiding ? 'toast--hide' : 'toast--show' }}" 
+    style="top: {{ statusBarHeight + 58 }}px;"
+    catchtap="onDismissToast"
+  >
+    <view class="toast-pill-body">
+      <!-- Cercle Icône dynamique avec dégradé -->
+      <view class="toast-icon-wrapper {{ toast.type === 'voice' ? 'toast-icon--voice' : (toast.type === 'heart' ? 'toast-icon--heart' : 'toast-icon--search') }}">
+        <view class="toast-svg {{ toast.iconClass }}"></view>
+      </view>
+
+      <!-- Textes : Titre + Sous-titre dynamique -->
+      <view class="toast-text-block">
+        <view class="toast-main-line">
+          <text class="toast-title-text">{{ toast.title }}</text>
+        </view>
+        <view wx:if="{{ toast.subtitle }}" class="toast-sub-line">
+          <text class="toast-subtitle-text">{{ toast.subtitle }}</text>
+        </view>
+      </view>
+
+      <!-- Badge scintillant IA -->
+      <view class="toast-badge-sparkle">
+        <text class="toast-sparkle-symbol">✨</text>
+      </view>
+    </view>
+  </view>
+
   <!-- Zone défilante -->
-  <scroll-view class="sama-scroll" scroll-y="{{true}}" enhanced="{{true}}" show-scrollbar="{{false}}">
+  <scroll-view 
+    class="sama-scroll" 
+    scroll-y="{{true}}" 
+    enhanced="{{true}}" 
+    show-scrollbar="{{false}}"
+    scroll-into-view="{{ targetScrollId }}"
+    scroll-with-animation="{{ true }}"
+  >
     
     <!-- En-tête avec safe-area top -->
     <view class="sama-header" style="padding-top: {{ statusBarHeight + 12 }}px;">
@@ -95,7 +132,7 @@
     </view>
 
     <!-- Recommandations IA (Résultats) -->
-    <view wx:if="{{ searched }}" class="sama-recommendations">
+    <view wx:if="{{ searched }}" id="recs-section" class="sama-recommendations">
       <view class="recs-badge">
         <view class="icon-svg icon-sparkle-berry"></view>
         <text class="recs-badge__text">CHOISIS PAR L'IA</text>
