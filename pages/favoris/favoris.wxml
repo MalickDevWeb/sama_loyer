@@ -3,19 +3,38 @@
     
     <!-- En-tête -->
     <view class="fav-header" style="padding-top: {{ statusBarHeight + 14 }}px;">
-      <view class="fav-header__titles">
-        <text class="page-title">Mes Favoris</text>
-        <text class="page-subtitle">{{ favoritesList.length }} logements enregistrés</text>
+      <text class="page-title">Favoris</text>
+      <text class="page-subtitle">{{ favoritesList.length }} logements enregistrés</text>
+
+      <!-- Filtres Tous / Encore disponibles -->
+      <view class="fav-filter-pills">
+        <view 
+          class="fav-pill {{ activeTabFilter === 'tous' ? 'fav-pill--active' : '' }}"
+          data-filter="tous"
+          bindtap="onFilterSelect"
+        >
+          Tous
+        </view>
+        <view 
+          class="fav-pill {{ activeTabFilter === 'dispo' ? 'fav-pill--active' : '' }}"
+          data-filter="dispo"
+          bindtap="onFilterSelect"
+        >
+          Encore disponibles
+        </view>
       </view>
     </view>
 
     <!-- Liste des logements favoris -->
-    <view wx:if="{{ favoritesList.length > 0 }}" class="fav-list">
-      <block wx:for="{{ favoritesList }}" wx:key="id">
+    <view class="fav-list">
+      <block wx:for="{{ filteredList }}" wx:key="id">
         <view class="fav-card" data-id="{{ item.id }}" bindtap="onCardTap">
-          <!-- Thumbnail -->
+          <!-- Thumbnail illustration maison avec bouton coeur -->
           <view class="fav-thumb" style="background-color: {{ item.bg }};">
             <view class="fav-thumb__house"></view>
+            <view wx:if="{{ item.isPremium }}" class="badge-premium-pill">
+              ★ Premium
+            </view>
             <view class="fav-btn-heart" data-id="{{ item.id }}" catchtap="onRemoveFavorite">
               <text class="heart-icon">♥</text>
             </view>
@@ -23,36 +42,36 @@
 
           <!-- Détails -->
           <view class="fav-content">
-            <view class="fav-meta-row">
-              <text class="fav-type">{{ item.typeLabel }}</text>
-              <text class="fav-date">{{ item.dateAdded }}</text>
+            <!-- Prix -->
+            <view class="fav-price-row">
+              <text class="fav-price">{{ item.price }}</text>
+              <text class="fav-unit">{{ item.unit }}</text>
             </view>
 
+            <!-- Titre & Localisation -->
             <text class="fav-title">{{ item.title }}</text>
             <text class="fav-place">{{ item.place }}</text>
 
-            <view class="fav-bottom-row">
-              <view class="fav-price-col">
-                <text class="fav-price">{{ item.price }}</text>
-                <text class="fav-unit">{{ item.unit }}</text>
+            <!-- Statuts conditionnels -->
+            <view class="fav-status-row" wx:if="{{ item.status === 'disponible' }}">
+              <view class="badge-dispo">
+                <text class="check-icon">✓</text> Disponible
               </view>
-              <view class="btn-fav-view">Voir</view>
             </view>
+
+            <view class="fav-status-row" wx:elif="{{ item.status === 'price-drop' }}">
+              <text class="price-drop-text">{{ item.priceDropLabel }}</text>
+            </view>
+
+            <view class="fav-status-row" wx:elif="{{ item.status === 'rented' }}">
+              <text class="rented-text">{{ item.statusLabel }}</text>
+            </view>
+
+            <!-- Date d'enregistrement -->
+            <text class="fav-registered-text">{{ item.registeredAt }}</text>
           </view>
         </view>
       </block>
-    </view>
-
-    <!-- État vide -->
-    <view wx:else class="fav-empty-state">
-      <view class="empty-icon-circle">
-        <text class="empty-heart">♡</text>
-      </view>
-      <text class="empty-title">Aucun favori pour le moment</text>
-      <text class="empty-desc">Sauvegardez les logements qui vous intéressent pour les retrouver et les comparer facilement.</text>
-      <button class="btn-discover" bindtap="onGoToHome">
-        Découvrir des logements
-      </button>
     </view>
 
     <view class="scroll-spacer"></view>

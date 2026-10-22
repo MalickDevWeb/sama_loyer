@@ -1,0 +1,291 @@
+/* ==========================================================================
+   Page Mes Annonces Bailleur - SAMA LOGEMENT (Page 12 Claude/PDF)
+   ========================================================================== */
+
+.annonces-page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: #F8F9FA;
+  box-sizing: border-box;
+}
+
+.annonces-scroll {
+  flex: 1;
+  box-sizing: border-box;
+}
+
+/* En-tête */
+.annonces-header {
+  padding: 0 32rpx 20rpx;
+  background-color: #FFFFFF;
+  border-bottom: 1rpx solid #ECEFF2;
+}
+
+.header-top-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24rpx;
+}
+
+.header-titles {
+  display: flex;
+  flex-direction: column;
+}
+
+.page-title {
+  font-size: 44rpx;
+  font-weight: 800;
+  color: #0F1E3D;
+  margin-bottom: 6rpx;
+}
+
+.page-subtitle {
+  font-size: 26rpx;
+  color: #5B6475;
+}
+
+.btn-top-add {
+  width: 72rpx;
+  height: 72rpx;
+  border-radius: 50%;
+  background-color: #C8235F;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4rpx 16rpx rgba(200, 35, 95, 0.3);
+}
+
+.btn-top-plus {
+  font-size: 44rpx;
+  color: #FFFFFF;
+  line-height: 1;
+  margin-top: -4rpx;
+}
+
+/* Horizontal Filter Pills */
+.pills-scroll {
+  width: 100%;
+  white-space: nowrap;
+}
+
+.pills-row {
+  display: flex;
+  gap: 16rpx;
+  padding: 4rpx 0;
+}
+
+.filter-pill {
+  display: inline-block;
+  padding: 14rpx 32rpx;
+  border-radius: 36rpx;
+  font-size: 26rpx;
+  font-weight: 600;
+  background-color: #F4F6F9;
+  color: #0F1E3D;
+}
+
+.filter-pill--active {
+  background-color: #0F1E3D;
+  color: #FFFFFF;
+}
+
+/* Liste des cartes */
+.annonces-list {
+  padding: 32rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 28rpx;
+}
+
+.annonce-card {
+  background-color: #FFFFFF;
+  border-radius: 24rpx;
+  padding: 28rpx;
+  border: 1rpx solid #ECEFF2;
+  box-shadow: 0 4rpx 16rpx rgba(15, 30, 61, 0.04);
+}
+
+.annonce-top {
+  margin-bottom: 16rpx;
+}
+
+.badge-tag {
+  display: inline-block;
+  font-size: 22rpx;
+  font-weight: 700;
+  padding: 6rpx 18rpx;
+  border-radius: 16rpx;
+}
+
+.tag-enligne {
+  background-color: #E2F0EA;
+  color: #007C3D;
+}
+
+.tag-validation {
+  background-color: #FFF3DC;
+  color: #B56200;
+}
+
+.tag-corriger {
+  background-color: #FDE8EC;
+  color: #D32F2F;
+}
+
+.tag-loue {
+  background-color: #F0F2F5;
+  color: #5B6475;
+}
+
+.annonce-title {
+  display: block;
+  font-size: 32rpx;
+  font-weight: 800;
+  color: #0F1E3D;
+  margin-bottom: 8rpx;
+}
+
+.annonce-place {
+  display: block;
+  font-size: 26rpx;
+  color: #5B6475;
+  margin-bottom: 12rpx;
+}
+
+.annonce-stats {
+  display: block;
+  font-size: 22rpx;
+  color: #8C96A6;
+  margin-bottom: 18rpx;
+}
+
+/* Notice box */
+.notice-box {
+  background-color: #F8F9FA;
+  border-radius: 16rpx;
+  padding: 18rpx 20rpx;
+  margin-bottom: 20rpx;
+}
+
+.notice-warning {
+  background-color: #FFF9ED;
+  border: 1rpx solid #F5E8D3;
+}
+
+.notice-text {
+  font-size: 24rpx;
+  color: #5B6475;
+  line-height: 1.4;
+}
+
+.notice-warning .notice-text {
+  color: #8A5A00;
+}
+
+/* Confirmed Pill */
+.confirmed-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8rpx;
+  padding: 10rpx 24rpx;
+  border-radius: 20rpx;
+  background-color: #E2F0EA;
+  color: #007C3D;
+  font-size: 24rpx;
+  font-weight: 700;
+  margin-bottom: 24rpx;
+}
+
+.check-icon {
+  font-size: 24rpx;
+}
+
+/* Big Green Reconfirm Button */
+.reconfirm-action-box {
+  margin-bottom: 24rpx;
+}
+
+.btn-reconfirm {
+  width: 100%;
+  height: 88rpx;
+  border-radius: 44rpx;
+  background-color: #007C3D;
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28rpx;
+  font-weight: 700;
+  border: none;
+  gap: 10rpx;
+}
+
+/* Correction button */
+.correct-action-box {
+  margin-bottom: 12rpx;
+}
+
+.btn-correct {
+  width: 100%;
+  height: 84rpx;
+  border-radius: 42rpx;
+  background-color: #C8235F;
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26rpx;
+  font-weight: 700;
+  border: none;
+}
+
+/* Relist button */
+.relist-action-box {
+  margin-bottom: 12rpx;
+}
+
+.btn-relist {
+  width: 100%;
+  height: 84rpx;
+  border-radius: 42rpx;
+  background-color: #0F1E3D;
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26rpx;
+  font-weight: 700;
+  border: none;
+}
+
+/* Bottom Actions: Modifier | C'est loué */
+.card-bottom-actions {
+  display: flex;
+  gap: 20rpx;
+  border-top: 1rpx solid #F0F2F5;
+  padding-top: 20rpx;
+}
+
+.btn-subaction {
+  flex: 1;
+  height: 72rpx;
+  border-radius: 36rpx;
+  background-color: #F4F6F9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24rpx;
+  font-weight: 700;
+  color: #0F1E3D;
+  gap: 8rpx;
+}
+
+.pencil-sub {
+  font-size: 24rpx;
+}
+
+.scroll-spacer {
+  height: 180rpx;
+}

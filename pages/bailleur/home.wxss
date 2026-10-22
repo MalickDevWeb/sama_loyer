@@ -1,0 +1,310 @@
+/* ==========================================================================
+   Page Accueil Bailleur - SAMA LOGEMENT (Page 10 Claude/PDF)
+   ========================================================================== */
+
+.bailleur-home-page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: #F8F9FA;
+  box-sizing: border-box;
+}
+
+.bailleur-scroll {
+  flex: 1;
+  box-sizing: border-box;
+}
+
+/* Dark Hero Header */
+.dark-hero {
+  background-color: #0F1E3D;
+  padding: 0 32rpx 48rpx;
+  color: #FFFFFF;
+}
+
+.hero-top-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24rpx;
+}
+
+.badge-role-pill {
+  font-size: 20rpx;
+  font-weight: 800;
+  letter-spacing: 1.5rpx;
+  background-color: rgba(255, 255, 255, 0.15);
+  color: #FFFFFF;
+  padding: 8rpx 20rpx;
+  border-radius: 20rpx;
+}
+
+.avatar-circle-bailleur {
+  width: 72rpx;
+  height: 72rpx;
+  border-radius: 50%;
+  background-color: #C8235F;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.avatar-text {
+  font-size: 26rpx;
+  font-weight: 800;
+  color: #FFFFFF;
+}
+
+.hero-titles {
+  display: flex;
+  flex-direction: column;
+}
+
+.hero-welcome {
+  font-size: 48rpx;
+  font-weight: 800;
+  color: #FFFFFF;
+  margin-bottom: 8rpx;
+}
+
+.hero-sub {
+  font-size: 26rpx;
+  color: #A0AAB8;
+}
+
+/* Main Body */
+.main-body {
+  padding: 32rpx;
+  margin-top: -24rpx;
+}
+
+/* KPI Grid */
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20rpx;
+  margin-bottom: 32rpx;
+}
+
+.kpi-card {
+  background-color: #FFFFFF;
+  border-radius: 24rpx;
+  padding: 24rpx;
+  border: 1rpx solid #ECEFF2;
+  box-shadow: 0 4rpx 16rpx rgba(15, 30, 61, 0.04);
+}
+
+.kpi-top {
+  margin-bottom: 16rpx;
+}
+
+.kpi-icon-wrap {
+  width: 64rpx;
+  height: 64rpx;
+  border-radius: 16rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon-pink { background-color: #FCE8EF; }
+.icon-orange { background-color: #FFF3DC; }
+.icon-green { background-color: #E2F0EA; }
+.icon-blue { background-color: #EAF2FB; }
+
+.kpi-icon {
+  font-size: 30rpx;
+}
+
+.kpi-number {
+  display: block;
+  font-size: 48rpx;
+  font-weight: 800;
+  color: #0F1E3D;
+  margin-bottom: 4rpx;
+  line-height: 1.1;
+}
+
+.kpi-number--price {
+  font-size: 36rpx;
+}
+
+.kpi-title {
+  display: block;
+  font-size: 24rpx;
+  font-weight: 700;
+  color: #0F1E3D;
+  margin-bottom: 6rpx;
+}
+
+.kpi-note {
+  display: block;
+  font-size: 20rpx;
+  color: #8C96A6;
+}
+
+.note-red {
+  color: #C8235F;
+  font-weight: 700;
+}
+
+/* Big Pink Button */
+.cta-add-container {
+  margin-bottom: 36rpx;
+}
+
+.btn-add-logement {
+  width: 100%;
+  height: 96rpx;
+  border-radius: 48rpx;
+  background-color: #C8235F;
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12rpx;
+  border: none;
+  box-shadow: 0 8rpx 24rpx rgba(200, 35, 95, 0.25);
+}
+
+.btn-add-plus {
+  font-size: 38rpx;
+  font-weight: 700;
+}
+
+.btn-add-text {
+  font-size: 30rpx;
+  font-weight: 700;
+}
+
+/* Section À faire maintenant */
+.todo-section {
+  margin-bottom: 32rpx;
+}
+
+.section-heading-title {
+  display: block;
+  font-size: 32rpx;
+  font-weight: 800;
+  color: #0F1E3D;
+  margin-bottom: 16rpx;
+}
+
+.todo-card-list {
+  background-color: #FFFFFF;
+  border-radius: 24rpx;
+  border: 1rpx solid #ECEFF2;
+  box-shadow: 0 4rpx 16rpx rgba(15, 30, 61, 0.04);
+  overflow: hidden;
+}
+
+.todo-item {
+  display: flex;
+  align-items: center;
+  padding: 24rpx 20rpx;
+}
+
+.todo-bullet {
+  width: 16rpx;
+  height: 16rpx;
+  border-radius: 50%;
+  margin-right: 20rpx;
+  flex-shrink: 0;
+}
+
+.bullet-red { background-color: #C8235F; }
+.bullet-orange { background-color: #E68A00; }
+
+.todo-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.todo-item-title {
+  font-size: 26rpx;
+  font-weight: 700;
+  color: #0F1E3D;
+  margin-bottom: 4rpx;
+}
+
+.todo-item-desc {
+  font-size: 22rpx;
+  color: #5B6475;
+}
+
+.todo-chevron {
+  font-size: 36rpx;
+  color: #A0AAB8;
+}
+
+.todo-divider {
+  height: 1rpx;
+  background-color: #F0F2F5;
+  margin: 0 20rpx;
+}
+
+/* Loyers bar card */
+.loyers-bar-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #FFFFFF;
+  border-radius: 20rpx;
+  padding: 24rpx;
+  border: 1rpx solid #ECEFF2;
+  margin-bottom: 32rpx;
+}
+
+.loyers-title {
+  font-size: 28rpx;
+  font-weight: 700;
+  color: #0F1E3D;
+}
+
+.loyers-link {
+  display: flex;
+  align-items: center;
+  gap: 6rpx;
+}
+
+.loyers-link-text {
+  font-size: 24rpx;
+  color: #5B6475;
+}
+
+.loyers-link-chev {
+  font-size: 30rpx;
+  color: #A0AAB8;
+}
+
+/* Switch back to client */
+.switch-role-bar {
+  margin-bottom: 20rpx;
+}
+
+.btn-switch-client {
+  width: 100%;
+  height: 88rpx;
+  border-radius: 44rpx;
+  background-color: #FFFFFF;
+  border: 1.5rpx solid #D5DAE1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12rpx;
+}
+
+.switch-client-icon {
+  font-size: 28rpx;
+}
+
+.switch-client-text {
+  font-size: 26rpx;
+  font-weight: 700;
+  color: #5B6475;
+}
+
+.scroll-spacer {
+  height: 180rpx;
+}

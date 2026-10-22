@@ -1,0 +1,295 @@
+/* ==========================================================================
+   Page Profil Locataire - SAMA LOGEMENT (Page 9 Claude/PDF)
+   ========================================================================== */
+
+.profile-page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: #F8F9FA;
+  box-sizing: border-box;
+}
+
+.profile-scroll {
+  flex: 1;
+  box-sizing: border-box;
+}
+
+.profile-header {
+  padding: 0 32rpx 20rpx;
+  background-color: #FFFFFF;
+}
+
+.page-title {
+  display: block;
+  font-size: 44rpx;
+  font-weight: 800;
+  color: #0F1E3D;
+}
+
+/* User Card */
+.user-card {
+  display: flex;
+  align-items: center;
+  background-color: #FFFFFF;
+  margin: 24rpx 32rpx;
+  padding: 30rpx 28rpx;
+  border-radius: 28rpx;
+  border: 1rpx solid #ECEFF2;
+  box-shadow: 0 4rpx 16rpx rgba(15, 30, 61, 0.04);
+}
+
+.user-avatar-circle {
+  width: 110rpx;
+  height: 110rpx;
+  border-radius: 50%;
+  background-color: #0F1E3D;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 24rpx;
+  flex-shrink: 0;
+}
+
+.avatar-initials {
+  font-size: 38rpx;
+  font-weight: 800;
+  color: #FFFFFF;
+}
+
+.user-info-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.user-fullname {
+  font-size: 34rpx;
+  font-weight: 800;
+  color: #0F1E3D;
+  margin-bottom: 6rpx;
+}
+
+.user-phone {
+  font-size: 24rpx;
+  color: #5B6475;
+  margin-bottom: 8rpx;
+}
+
+.verified-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6rpx;
+  font-size: 20rpx;
+  color: #007C3D;
+  font-weight: 700;
+}
+
+.btn-edit-pencil {
+  width: 64rpx;
+  height: 64rpx;
+  border-radius: 50%;
+  background-color: #F4F6F9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pencil-icon {
+  font-size: 30rpx;
+  color: #5B6475;
+}
+
+/* Stats Cards */
+.stats-cards-row {
+  display: flex;
+  gap: 16rpx;
+  padding: 0 32rpx;
+  margin-bottom: 36rpx;
+}
+
+.stat-box {
+  flex: 1;
+  background-color: #FFFFFF;
+  border-radius: 20rpx;
+  padding: 24rpx 16rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: 1rpx solid #ECEFF2;
+  box-shadow: 0 2rpx 10rpx rgba(15, 30, 61, 0.03);
+}
+
+.stat-number {
+  font-size: 40rpx;
+  font-weight: 800;
+  color: #0F1E3D;
+  margin-bottom: 4rpx;
+}
+
+.stat-label {
+  font-size: 24rpx;
+  font-weight: 600;
+  color: #5B6475;
+}
+
+/* Sections */
+.profile-section {
+  padding: 0 32rpx;
+  margin-bottom: 32rpx;
+}
+
+.section-title-label {
+  display: block;
+  font-size: 24rpx;
+  font-weight: 700;
+  letter-spacing: 1rpx;
+  color: #8C96A6;
+  margin-bottom: 14rpx;
+}
+
+.menu-list-card {
+  background-color: #FFFFFF;
+  border-radius: 24rpx;
+  border: 1rpx solid #ECEFF2;
+  box-shadow: 0 2rpx 10rpx rgba(15, 30, 61, 0.03);
+  overflow: hidden;
+}
+
+.menu-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 28rpx 24rpx;
+}
+
+.menu-left {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+}
+
+.menu-icon {
+  font-size: 32rpx;
+}
+
+.menu-text-col {
+  display: flex;
+  flex-direction: column;
+}
+
+.menu-name {
+  font-size: 28rpx;
+  font-weight: 700;
+  color: #0F1E3D;
+}
+
+.menu-subtext {
+  font-size: 22rpx;
+  color: #8C96A6;
+  margin-top: 4rpx;
+}
+
+.chevron-right {
+  font-size: 36rpx;
+  color: #A0AAB8;
+}
+
+.menu-divider {
+  height: 1rpx;
+  background-color: #F0F2F5;
+  margin: 0 24rpx;
+}
+
+/* Notif row */
+.notif-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24rpx;
+}
+
+.notif-text-col {
+  display: flex;
+  flex-direction: column;
+}
+
+.notif-name {
+  font-size: 28rpx;
+  font-weight: 700;
+  color: #0F1E3D;
+  margin-bottom: 4rpx;
+}
+
+.notif-subtext {
+  font-size: 22rpx;
+  color: #8C96A6;
+}
+
+/* Lang Card */
+.lang-card {
+  padding: 24rpx;
+}
+
+.lang-title {
+  display: block;
+  font-size: 28rpx;
+  font-weight: 700;
+  color: #0F1E3D;
+  margin-bottom: 18rpx;
+}
+
+.lang-pills-row {
+  display: flex;
+  gap: 16rpx;
+}
+
+.lang-pill {
+  flex: 1;
+  height: 72rpx;
+  border-radius: 36rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26rpx;
+  font-weight: 600;
+  background-color: #F4F6F9;
+  color: #0F1E3D;
+}
+
+.lang-pill--active {
+  background-color: #0F1E3D;
+  color: #FFFFFF;
+}
+
+/* Switch role container */
+.switch-role-container {
+  padding: 10rpx 32rpx;
+  margin-bottom: 30rpx;
+}
+
+.btn-switch-role {
+  width: 100%;
+  height: 96rpx;
+  border-radius: 48rpx;
+  background-color: #FFFFFF;
+  border: 2rpx solid #C8235F;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14rpx;
+}
+
+.switch-icon {
+  font-size: 32rpx;
+}
+
+.switch-text {
+  font-size: 28rpx;
+  font-weight: 700;
+  color: #C8235F;
+}
+
+.scroll-spacer {
+  height: 180rpx;
+}

@@ -1,227 +1,215 @@
-/* ============================================================================
-   SAMA LOGEMENT — FAVORIS
-   ============================================================================ */
+/* ==========================================================================
+   Page Favoris - SAMA LOGEMENT (exact match prototype Claude / PDF)
+   ========================================================================== */
 
 .favorites-page {
-  position: relative;
-  width: 100%;
+  display: flex;
+  flex-direction: column;
   min-height: 100vh;
-  box-sizing: border-box;
   background-color: #F8F9FA;
-  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-  color: #0F1E3D;
+  box-sizing: border-box;
 }
 
 .favorites-scroll {
-  width: 100%;
-  height: 100vh;
+  flex: 1;
   box-sizing: border-box;
-  padding: 0 36rpx calc(150rpx + env(safe-area-inset-bottom));
 }
 
+/* En-tête */
 .fav-header {
-  margin-bottom: 28rpx;
-}
-
-.fav-header__titles {
-  display: flex;
-  flex-direction: column;
+  padding: 0 32rpx 24rpx;
+  background-color: #FFFFFF;
+  border-bottom: 1rpx solid #ECEFF2;
 }
 
 .page-title {
-  font-size: 42rpx;
+  display: block;
+  font-size: 44rpx;
   font-weight: 800;
-  letter-spacing: -0.01em;
   color: #0F1E3D;
+  margin-bottom: 6rpx;
 }
 
 .page-subtitle {
+  display: block;
   font-size: 26rpx;
   color: #5B6475;
-  margin-top: 4rpx;
+  margin-bottom: 24rpx;
 }
 
+/* Filter pills */
+.fav-filter-pills {
+  display: flex;
+  gap: 16rpx;
+}
+
+.fav-pill {
+  padding: 14rpx 32rpx;
+  border-radius: 36rpx;
+  font-size: 26rpx;
+  font-weight: 600;
+  background-color: #F4F6F9;
+  color: #0F1E3D;
+}
+
+.fav-pill--active {
+  background-color: #0F1E3D;
+  color: #FFFFFF;
+}
+
+/* Liste des cartes */
 .fav-list {
+  padding: 32rpx;
   display: flex;
   flex-direction: column;
-  gap: 24rpx;
+  gap: 28rpx;
 }
 
 .fav-card {
-  display: flex;
   background-color: #FFFFFF;
-  border-radius: 32rpx;
-  border: 2rpx solid #E4E7EE;
+  border-radius: 24rpx;
   overflow: hidden;
-  box-shadow: 0 4rpx 14rpx rgba(15, 30, 61, 0.04);
+  border: 1rpx solid #ECEFF2;
+  box-shadow: 0 4rpx 16rpx rgba(15, 30, 61, 0.04);
 }
 
-.fav-card:active {
-  transform: scale(0.99);
-}
-
+/* Thumbnail */
 .fav-thumb {
+  height: 280rpx;
   position: relative;
-  width: 220rpx;
-  flex: 0 0 220rpx;
-  min-height: 220rpx;
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   justify-content: center;
 }
 
 .fav-thumb__house {
-  width: 110rpx;
-  height: 100rpx;
-  background-repeat: no-repeat;
-  background-position: center bottom;
-  background-size: contain;
-  opacity: 0.7;
-  margin-bottom: 12rpx;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='110' height='100' viewBox='0 0 110 100' fill='none' stroke='%230F1E3D' stroke-width='2' stroke-linejoin='round'%3E%3Cpath d='M10 100V40l45-30 45 30v60H10z'/%3E%3Crect x='30' y='50' width='20' height='20' rx='2'/%3E%3Cpath d='M60 100V60h20v40'/%3E%3C/svg%3E");
+  width: 140rpx;
+  height: 110rpx;
+  border: 4rpx solid #0F1E3D;
+  border-top: none;
+  position: relative;
+  opacity: 0.28;
+}
+
+.fav-thumb__house::before {
+  content: '';
+  position: absolute;
+  top: -60rpx;
+  left: -14rpx;
+  border-left: 80rpx solid transparent;
+  border-right: 80rpx solid transparent;
+  border-bottom: 60rpx solid #0F1E3D;
+}
+
+.badge-premium-pill {
+  position: absolute;
+  bottom: 20rpx;
+  left: 20rpx;
+  background-color: #C8235F;
+  color: #FFFFFF;
+  font-size: 22rpx;
+  font-weight: 700;
+  padding: 6rpx 18rpx;
+  border-radius: 20rpx;
 }
 
 .fav-btn-heart {
   position: absolute;
-  top: 12rpx;
-  left: 12rpx;
-  width: 52rpx;
-  height: 52rpx;
-  border-radius: 26rpx;
+  top: 20rpx;
+  right: 20rpx;
+  width: 64rpx;
+  height: 64rpx;
+  border-radius: 50%;
   background-color: #FFFFFF;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2rpx 8rpx rgba(15, 30, 61, 0.15);
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.1);
 }
 
 .heart-icon {
+  font-size: 32rpx;
   color: #C8235F;
-  font-size: 28rpx;
   line-height: 1;
 }
 
+/* Contenu */
 .fav-content {
-  flex: 1;
   padding: 24rpx;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  gap: 8rpx;
 }
 
-.fav-meta-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.fav-type {
-  font-size: 22rpx;
-  font-weight: 700;
-  color: #C8235F;
-}
-
-.fav-date {
-  font-size: 20rpx;
-  color: #9CA3AF;
-}
-
-.fav-title {
-  font-size: 28rpx;
-  font-weight: 800;
-  color: #0F1E3D;
-  line-height: 1.25;
-}
-
-.fav-place {
-  font-size: 24rpx;
-  color: #5B6475;
-}
-
-.fav-bottom-row {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  margin-top: 8rpx;
-}
-
-.fav-price-col {
+.fav-price-row {
   display: flex;
   align-items: baseline;
-  gap: 6rpx;
+  gap: 8rpx;
+  margin-bottom: 8rpx;
 }
 
 .fav-price {
-  font-size: 32rpx;
+  font-size: 34rpx;
   font-weight: 800;
   color: #0F1E3D;
 }
 
 .fav-unit {
-  font-size: 22rpx;
+  font-size: 24rpx;
   color: #5B6475;
 }
 
-.btn-fav-view {
-  font-size: 26rpx;
-  font-weight: 800;
-  color: #C8235F;
-  padding: 8rpx 14rpx;
-}
-
-/* État vide */
-.fav-empty-state {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  padding: 100rpx 40rpx;
-}
-
-.empty-icon-circle {
-  width: 140rpx;
-  height: 140rpx;
-  border-radius: 70rpx;
-  background-color: #FBE3EC;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 32rpx;
-}
-
-.empty-heart {
-  font-size: 64rpx;
-  color: #C8235F;
-}
-
-.empty-title {
-  font-size: 34rpx;
-  font-weight: 800;
+.fav-title {
+  display: block;
+  font-size: 28rpx;
+  font-weight: 700;
   color: #0F1E3D;
+  margin-bottom: 6rpx;
+}
+
+.fav-place {
+  display: block;
+  font-size: 24rpx;
+  color: #5B6475;
+  margin-bottom: 14rpx;
+}
+
+/* Status row */
+.fav-status-row {
   margin-bottom: 12rpx;
 }
 
-.empty-desc {
-  font-size: 26rpx;
-  color: #5B6475;
-  line-height: 1.45;
-  margin-bottom: 40rpx;
+.badge-dispo {
+  display: inline-flex;
+  align-items: center;
+  gap: 6rpx;
+  padding: 6rpx 16rpx;
+  border-radius: 12rpx;
+  background-color: #E2F0EA;
+  color: #007C3D;
+  font-size: 22rpx;
+  font-weight: 700;
 }
 
-.btn-discover {
-  height: 88rpx;
-  padding: 0 44rpx;
-  border-radius: 999rpx;
-  background-color: #0F1E3D;
-  color: #FFFFFF;
-  font-size: 26rpx;
-  font-weight: 800;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.check-icon {
+  font-size: 22rpx;
+}
+
+.price-drop-text {
+  font-size: 24rpx;
+  font-weight: 700;
+  color: #C8235F;
+}
+
+.rented-text {
+  font-size: 24rpx;
+  font-weight: 700;
+  color: #C43D3D;
+}
+
+.fav-registered-text {
+  display: block;
+  font-size: 22rpx;
+  color: #8C96A6;
 }
 
 .scroll-spacer {
-  height: 60rpx;
+  height: 180rpx;
 }

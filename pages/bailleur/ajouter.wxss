@@ -1,0 +1,146 @@
+/* ==========================================================================
+   Page Ajouter un Logement (Étape 5/5) - SAMA LOGEMENT (Page 11 Claude/PDF)
+   ========================================================================== */
+
+.ajouter-page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: #FFFFFF;
+  box-sizing: border-box;
+  position: relative;
+}
+
+/* Nav Bar */
+.nav-bar-custom {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 32rpx;
+  background-color: #FFFFFF;
+  z-index: 100;
+}
+
+.btn-close {
+  width: 64rpx;
+  height: 64rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.close-icon {
+  font-size: 36rpx;
+  color: #0F1E3D;
+  font-weight: 700;
+}
+
+.nav-title {
+  font-size: 32rpx;
+  font-weight: 700;
+  color: #0F1E3D;
+}
+
+.step-label {
+  font-size: 26rpx;
+  font-weight: 700;
+  color: #5B6475;
+}
+
+/* Progress bar segments */
+.progress-bar-row {
+  position: fixed;
+  left: 32rpx;
+  right: 32rpx;
+  display: flex;
+  gap: 12rpx;
+  z-index: 99;
+  padding-top: 8rpx;
+}
+
+.progress-segment {
+  flex: 1;
+  height: 8rpx;
+  border-radius: 4rpx;
+  background-color: #C8235F;
+}
+
+/* Center Content */
+.center-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0 48rpx;
+  margin-top: 140rpx;
+}
+
+.clock-circle-icon {
+  width: 140rpx;
+  height: 140rpx;
+  border-radius: 50%;
+  background-color: #FFF3DC;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 40rpx;
+}
+
+.clock-emoji {
+  font-size: 64rpx;
+}
+
+.confirmation-title {
+  font-size: 44rpx;
+  font-weight: 800;
+  color: #0F1E3D;
+  margin-bottom: 16rpx;
+  text-align: center;
+}
+
+.confirmation-sub {
+  font-size: 28rpx;
+  color: #5B6475;
+  text-align: center;
+  line-height: 1.45;
+  margin-bottom: 36rpx;
+}
+
+.badge-validation-pill {
+  padding: 12rpx 32rpx;
+  border-radius: 24rpx;
+  background-color: #FFF3DC;
+  color: #B56200;
+  font-size: 26rpx;
+  font-weight: 700;
+}
+
+/* Sticky Bottom Action */
+.bottom-action-container {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 32rpx;
+  padding-bottom: calc(32rpx + env(safe-area-inset-bottom));
+  background-color: #FFFFFF;
+}
+
+.btn-voir-annonces {
+  width: 100%;
+  height: 96rpx;
+  border-radius: 48rpx;
+  background-color: #0F1E3D;
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32rpx;
+  font-weight: 700;
+  border: none;
+}

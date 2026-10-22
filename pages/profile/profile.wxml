@@ -1,0 +1,146 @@
+<view class="profile-page">
+  <scroll-view class="profile-scroll" scroll-y="{{true}}" enhanced="{{true}}" show-scrollbar="{{false}}">
+    
+    <!-- En-tête -->
+    <view class="profile-header" style="padding-top: {{ statusBarHeight + 14 }}px;">
+      <text class="page-title">Profil</text>
+    </view>
+
+    <!-- Carte utilisateur principale -->
+    <view class="user-card">
+      <view class="user-avatar-circle">
+        <text class="avatar-initials">{{ userInitials }}</text>
+      </view>
+      <view class="user-info-col">
+        <text class="user-fullname">{{ userName }}</text>
+        <text class="user-phone">{{ userPhone }}</text>
+        <view class="verified-tag">
+          <text class="check-mark">✓</text> Numéro vérifié
+        </view>
+      </view>
+      <view class="btn-edit-pencil">
+        <text class="pencil-icon">✎</text>
+      </view>
+    </view>
+
+    <!-- 3 Cartes Statistiques cliquables -->
+    <view class="stats-cards-row">
+      <view class="stat-box" bindtap="onNavFavoris">
+        <text class="stat-number">4</text>
+        <text class="stat-label">Favoris</text>
+      </view>
+      <view class="stat-box" bindtap="onNavVisites">
+        <text class="stat-number">4</text>
+        <text class="stat-label">Visites</text>
+      </view>
+      <view class="stat-box" bindtap="onNavMessages">
+        <text class="stat-number">4</text>
+        <text class="stat-label">Conversations</text>
+      </view>
+    </view>
+
+    <!-- Section MON COMPTE -->
+    <view class="profile-section">
+      <text class="section-title-label">MON COMPTE</text>
+      <view class="menu-list-card">
+        <view class="menu-row">
+          <view class="menu-left">
+            <text class="menu-icon">👤</text>
+            <text class="menu-name">Informations personnelles</text>
+          </view>
+          <text class="chevron-right">›</text>
+        </view>
+        <view class="menu-divider"></view>
+        <view class="menu-row">
+          <view class="menu-left">
+            <text class="menu-icon">📱</text>
+            <view class="menu-text-col">
+              <text class="menu-name">Numéro de téléphone</text>
+              <text class="menu-subtext">Sert à te connecter et à être contacté·e</text>
+            </view>
+          </view>
+          <text class="chevron-right">›</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- Section NOTIFICATIONS -->
+    <view class="profile-section">
+      <text class="section-title-label">NOTIFICATIONS</text>
+      <view class="menu-list-card">
+        <!-- Notif 1 -->
+        <view class="notif-row">
+          <view class="notif-text-col">
+            <text class="notif-name">Nouveaux messages</text>
+            <text class="notif-subtext">Quand un bailleur te répond</text>
+          </view>
+          <switch checked="{{ notifMessages }}" color="#C8235F" data-key="notifMessages" bindchange="onToggleNotif" />
+        </view>
+        <view class="menu-divider"></view>
+
+        <!-- Notif 2 -->
+        <view class="notif-row">
+          <view class="notif-text-col">
+            <text class="notif-name">Réponses aux visites</text>
+            <text class="notif-subtext">Acceptée, refusée ou modifiée</text>
+          </view>
+          <switch checked="{{ notifVisites }}" color="#C8235F" data-key="notifVisites" bindchange="onToggleNotif" />
+        </view>
+        <view class="menu-divider"></view>
+
+        <!-- Notif 3 -->
+        <view class="notif-row">
+          <view class="notif-text-col">
+            <text class="notif-name">Nouvelles annonces</text>
+            <text class="notif-subtext">Dans tes quartiers préférés</text>
+          </view>
+          <switch checked="{{ notifAnnonces }}" color="#C8235F" data-key="notifAnnonces" bindchange="onToggleNotif" />
+        </view>
+        <view class="menu-divider"></view>
+
+        <!-- Notif 4 -->
+        <view class="notif-row">
+          <view class="notif-text-col">
+            <text class="notif-name">Baisses de prix</text>
+            <text class="notif-subtext">Sur tes favoris</text>
+          </view>
+          <switch checked="{{ notifPrices }}" color="#C8235F" data-key="notifPrices" bindchange="onToggleNotif" />
+        </view>
+      </view>
+    </view>
+
+    <!-- Section PRÉFÉRENCES -->
+    <view class="profile-section">
+      <text class="section-title-label">PRÉFÉRENCES</text>
+      <view class="menu-list-card lang-card">
+        <text class="lang-title">Langue de l'application</text>
+        <view class="lang-pills-row">
+          <view 
+            class="lang-pill {{ lang === 'fr' ? 'lang-pill--active' : '' }}"
+            data-lang="fr"
+            bindtap="onSelectLang"
+          >
+            Français
+          </view>
+          <view 
+            class="lang-pill {{ lang === 'wo' ? 'lang-pill--active' : '' }}"
+            data-lang="wo"
+            bindtap="onSelectLang"
+          >
+            Wolof
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- Bouton Bascule vers Espace Bailleur -->
+    <view class="switch-role-container">
+      <button class="btn-switch-role" bindtap="onSwitchToBailleur">
+        <text class="switch-icon">🏢</text>
+        <text class="switch-text">Passer en mode Bailleur</text>
+      </button>
+    </view>
+
+    <view class="scroll-spacer"></view>
+  </scroll-view>
+</view>

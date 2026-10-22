@@ -1,0 +1,40 @@
+<view class="ajouter-page">
+  <!-- Nav Bar with Close button & Step 5/5 -->
+  <view class="nav-bar-custom" style="padding-top: {{ statusBarHeight }}px; height: {{ navBarHeight }}px;">
+    <view class="btn-close" bindtap="onClose">
+      <text class="close-icon">✕</text>
+    </view>
+    <text class="nav-title">Ajouter un logement</text>
+    <text class="step-label">5/5</text>
+  </view>
+
+  <!-- Segmented Progress Bar (5 bars) -->
+  <view class="progress-bar-row" style="top: {{ statusBarHeight + navBarHeight }}px;">
+    <view class="progress-segment"></view>
+    <view class="progress-segment"></view>
+    <view class="progress-segment"></view>
+    <view class="progress-segment"></view>
+    <view class="progress-segment"></view>
+  </view>
+
+  <!-- Center Content Confirmation -->
+  <view class="center-content">
+    <view class="clock-circle-icon">
+      <text class="clock-emoji">🕒</text>
+    </view>
+
+    <text class="confirmation-title">Annonce envoyée</text>
+    <text class="confirmation-sub">Elle est en cours de validation. Tu recevras un SMS dès qu'elle sera en ligne.</text>
+
+    <view class="badge-validation-pill">
+      En validation · sous 24 h
+    </view>
+  </view>
+
+  <!-- Sticky Bottom Button -->
+  <view class="bottom-action-container">
+    <button class="btn-voir-annonces" bindtap="onVoirAnnonces">
+      Voir mes annonces
+    </button>
+  </view>
+</view>

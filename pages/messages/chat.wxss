@@ -1,0 +1,343 @@
+/* ============================================================================
+   SAMA LOGEMENT — CHAT DIRECT BAILLEUR (PAGE 5)
+   ============================================================================ */
+
+.chat-page {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100vh;
+  box-sizing: border-box;
+  background-color: #F8F9FA;
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  color: #0F1E3D;
+}
+
+.chat-top-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 32rpx 16rpx;
+  background-color: #FFFFFF;
+  border-bottom: 2rpx solid #E4E7EE;
+}
+
+.btn-chat-back {
+  font-size: 48rpx;
+  color: #0F1E3D;
+  font-weight: 700;
+  width: 50rpx;
+}
+
+.chat-user-info {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  margin-left: 12rpx;
+}
+
+.user-avatar-round {
+  position: relative;
+  width: 72rpx;
+  height: 72rpx;
+  border-radius: 36rpx;
+  background-color: #0F1E3D;
+  color: #FFFFFF;
+  font-size: 24rpx;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.online-dot {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 18rpx;
+  height: 18rpx;
+  border-radius: 9rpx;
+  background-color: #007C3D;
+  border: 2rpx solid #FFFFFF;
+}
+
+.user-meta-col {
+  display: flex;
+  flex-direction: column;
+}
+
+.user-chat-name {
+  font-size: 28rpx;
+  font-weight: 800;
+  color: #0F1E3D;
+}
+
+.user-status-text {
+  font-size: 20rpx;
+  color: #007C3D;
+}
+
+.chat-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+}
+
+.action-circle-icon {
+  width: 68rpx;
+  height: 68rpx;
+  border-radius: 34rpx;
+  background-color: #F1F3F6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 30rpx;
+}
+
+.whatsapp-color {
+  background-color: #E2F0EA;
+}
+
+/* Contexte bien immobilier */
+.property-context-bar {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  padding: 16rpx 32rpx;
+  background-color: #FFFFFF;
+  border-bottom: 2rpx solid #F1F3F6;
+}
+
+.prop-mini-thumb {
+  width: 68rpx;
+  height: 68rpx;
+  border-radius: 16rpx;
+  background-color: #FCE7F0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.prop-house-mini {
+  width: 36rpx;
+  height: 36rpx;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23C8235F' stroke-width='2.2'%3E%3Cpath d='M3 9.5 12 3l9 6.5V20H3z'/%3E%3C/svg%3E");
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+.prop-meta-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.prop-meta-title {
+  font-size: 26rpx;
+  font-weight: 800;
+  color: #0F1E3D;
+}
+
+.prop-meta-price {
+  font-size: 22rpx;
+  color: #5B6475;
+}
+
+.prop-arrow {
+  font-size: 36rpx;
+  color: #7A8294;
+}
+
+/* Alerte Sécurité */
+.security-banner-box {
+  display: flex;
+  align-items: flex-start;
+  gap: 12rpx;
+  padding: 16rpx 28rpx;
+  background-color: #FFF9E6;
+  border-bottom: 2rpx solid #FFEBAA;
+}
+
+.security-icon {
+  font-size: 24rpx;
+}
+
+.security-text {
+  font-size: 20rpx;
+  color: #7A5300;
+  line-height: 1.35;
+}
+
+/* Conversation */
+.chat-conversation-scroll {
+  flex: 1;
+  padding: 24rpx 32rpx;
+  box-sizing: border-box;
+}
+
+.chat-date-pill {
+  width: fit-content;
+  margin: 0 auto 24rpx;
+  background-color: #EAECEF;
+  color: #5B6475;
+  font-size: 20rpx;
+  font-weight: 700;
+  padding: 6rpx 20rpx;
+  border-radius: 999rpx;
+}
+
+.messages-flow {
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+}
+
+.chat-bubble-row {
+  display: flex;
+  width: 100%;
+}
+
+.row-right {
+  justify-content: flex-end;
+}
+
+.row-left {
+  justify-content: flex-start;
+}
+
+.chat-bubble {
+  max-width: 78%;
+  padding: 20rpx 28rpx;
+  border-radius: 32rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 6rpx;
+}
+
+.bubble-pink {
+  background-color: #C8235F;
+  color: #FFFFFF;
+  border-bottom-right-radius: 8rpx;
+}
+
+.bubble-white {
+  background-color: #FFFFFF;
+  color: #0F1E3D;
+  border: 2rpx solid #E4E7EE;
+  border-bottom-left-radius: 8rpx;
+}
+
+.bubble-content-text {
+  font-size: 26rpx;
+  line-height: 1.4;
+}
+
+.bubble-timestamp {
+  font-size: 18rpx;
+  align-self: flex-end;
+  opacity: 0.8;
+}
+
+.text-dark {
+  color: #7A8294;
+}
+
+/* Carte Visite */
+.chat-event-card {
+  align-self: center;
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  background-color: #FFFFFF;
+  border-radius: 24rpx;
+  border: 2rpx solid #E4E7EE;
+  padding: 20rpx 28rpx;
+  margin: 8rpx 0;
+  box-shadow: 0 4rpx 10rpx rgba(15, 30, 61, 0.04);
+}
+
+.event-icon-circle {
+  font-size: 32rpx;
+}
+
+.event-text-col {
+  display: flex;
+  flex-direction: column;
+}
+
+.event-title-bold {
+  font-size: 24rpx;
+  font-weight: 800;
+  color: #0F1E3D;
+}
+
+.event-date-sub {
+  font-size: 22rpx;
+  color: #5B6475;
+}
+
+/* Suggestions rapides */
+.quick-replies-scroll {
+  width: 100%;
+  white-space: nowrap;
+  padding: 12rpx 32rpx;
+  box-sizing: border-box;
+}
+
+.quick-replies-row {
+  display: flex;
+  gap: 14rpx;
+}
+
+.quick-chip {
+  display: inline-flex;
+  padding: 14rpx 24rpx;
+  border-radius: 999rpx;
+  background-color: #FFFFFF;
+  border: 2rpx solid #C8235F;
+  color: #C8235F;
+  font-size: 24rpx;
+  font-weight: 700;
+}
+
+/* Barre de saisie */
+.chat-bottom-input-bar {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  padding: 16rpx 32rpx calc(24rpx + env(safe-area-inset-bottom));
+  background-color: #FFFFFF;
+  border-top: 2rpx solid #E4E7EE;
+}
+
+.btn-attach-image {
+  font-size: 36rpx;
+  color: #7A8294;
+}
+
+.chat-input-pill {
+  flex: 1;
+  height: 80rpx;
+  background-color: #F1F3F6;
+  border-radius: 999rpx;
+  padding: 0 28rpx;
+  font-size: 26rpx;
+  color: #0F1E3D;
+}
+
+.btn-send-round {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 40rpx;
+  background-color: #C8235F;
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 30rpx;
+}
+
+.send-char {
+  margin-left: 4rpx;
+}

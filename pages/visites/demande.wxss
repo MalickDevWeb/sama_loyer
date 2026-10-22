@@ -1,0 +1,304 @@
+/* ==========================================================================
+   Demande de Visite - SAMA LOGEMENT Style Guide
+   ========================================================================== */
+
+.demande-page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: #F8F9FA;
+  box-sizing: border-box;
+}
+
+/* Custom Navigation Bar */
+.nav-bar-custom {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 32rpx;
+  background-color: #FFFFFF;
+  border-bottom: 1rpx solid #EAECEF;
+  z-index: 100;
+}
+
+.btn-back {
+  width: 72rpx;
+  height: 72rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background-color: #F0F2F5;
+}
+
+.arrow-back {
+  font-size: 52rpx;
+  color: #0F1E3D;
+  line-height: 1;
+  margin-top: -6rpx;
+}
+
+.nav-title {
+  font-size: 34rpx;
+  font-weight: 700;
+  color: #0F1E3D;
+}
+
+.nav-placeholder {
+  width: 72rpx;
+}
+
+/* Scroll area */
+.demande-scroll {
+  flex: 1;
+  padding: 24rpx 32rpx;
+  box-sizing: border-box;
+}
+
+/* Property Summary Card */
+.property-summary-card {
+  display: flex;
+  align-items: center;
+  background-color: #FFFFFF;
+  border-radius: 24rpx;
+  padding: 24rpx;
+  box-shadow: 0 4rpx 16rpx rgba(15, 30, 61, 0.04);
+  border: 1rpx solid #ECEFF2;
+  margin-bottom: 36rpx;
+}
+
+.property-thumb {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 18rpx;
+  background-color: #FCE8EF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 24rpx;
+  flex-shrink: 0;
+}
+
+.thumb-house-icon {
+  width: 52rpx;
+  height: 48rpx;
+  border: 4rpx solid #C8235F;
+  border-top: none;
+  position: relative;
+}
+
+.thumb-house-icon::before {
+  content: '';
+  position: absolute;
+  top: -26rpx;
+  left: -8rpx;
+  border-left: 30rpx solid transparent;
+  border-right: 30rpx solid transparent;
+  border-bottom: 26rpx solid #C8235F;
+}
+
+.property-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.prop-title {
+  font-size: 28rpx;
+  font-weight: 700;
+  color: #0F1E3D;
+  margin-bottom: 8rpx;
+}
+
+.prop-sub {
+  font-size: 24rpx;
+  color: #5B6475;
+  margin-bottom: 6rpx;
+}
+
+.prop-bailleur {
+  font-size: 22rpx;
+  color: #8C96A6;
+  font-weight: 500;
+}
+
+/* Section Heading */
+.section-heading {
+  margin-bottom: 28rpx;
+}
+
+.section-title {
+  display: block;
+  font-size: 36rpx;
+  font-weight: 800;
+  color: #0F1E3D;
+  margin-bottom: 8rpx;
+}
+
+.section-desc {
+  display: block;
+  font-size: 26rpx;
+  color: #5B6475;
+  line-height: 1.4;
+}
+
+/* Slots */
+.slots-container {
+  display: flex;
+  flex-direction: column;
+  gap: 24rpx;
+  margin-bottom: 36rpx;
+}
+
+.slot-group {
+  background-color: #FFFFFF;
+  border-radius: 20rpx;
+  padding: 24rpx;
+  border: 1rpx solid #ECEFF2;
+}
+
+.slot-date-label {
+  display: block;
+  font-size: 28rpx;
+  font-weight: 700;
+  color: #0F1E3D;
+  margin-bottom: 18rpx;
+}
+
+.slot-chips-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16rpx;
+}
+
+.slot-chip {
+  padding: 16rpx 36rpx;
+  border-radius: 16rpx;
+  background-color: #F4F6F9;
+  border: 2rpx solid transparent;
+  transition: all 0.2s ease;
+}
+
+.slot-chip--active {
+  background-color: #FCE8EF;
+  border-color: #C8235F;
+}
+
+.slot-chip-text {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #0F1E3D;
+}
+
+.slot-chip--active .slot-chip-text {
+  color: #C8235F;
+  font-weight: 700;
+}
+
+/* Message Section */
+.message-section {
+  margin-bottom: 30rpx;
+}
+
+.message-label {
+  display: block;
+  font-size: 28rpx;
+  font-weight: 700;
+  color: #0F1E3D;
+  margin-bottom: 14rpx;
+}
+
+.input-card {
+  background-color: #FFFFFF;
+  border-radius: 20rpx;
+  border: 1rpx solid #ECEFF2;
+  padding: 20rpx;
+}
+
+.message-textarea {
+  width: 100%;
+  height: 130rpx;
+  font-size: 26rpx;
+  color: #0F1E3D;
+}
+
+.textarea-ph {
+  color: #A0AAB8;
+}
+
+/* Info Notice Box */
+.info-notice-box {
+  display: flex;
+  align-items: flex-start;
+  gap: 14rpx;
+  background-color: #F1F4F9;
+  border-radius: 16rpx;
+  padding: 20rpx;
+  margin-bottom: 40rpx;
+}
+
+.info-icon {
+  font-size: 26rpx;
+  color: #5B6475;
+  font-weight: 700;
+  margin-top: 2rpx;
+}
+
+.info-text {
+  flex: 1;
+  font-size: 24rpx;
+  color: #5B6475;
+  line-height: 1.4;
+}
+
+.bottom-spacer {
+  height: 220rpx;
+}
+
+/* Sticky Bottom Action Bar */
+.bottom-action-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: #FFFFFF;
+  padding: 20rpx 32rpx;
+  padding-bottom: calc(20rpx + env(safe-area-inset-bottom));
+  box-shadow: 0 -4rpx 20rpx rgba(15, 30, 61, 0.08);
+  border-top: 1rpx solid #EAECEF;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 100;
+}
+
+.selection-status-text {
+  font-size: 24rpx;
+  color: #5B6475;
+  margin-bottom: 14rpx;
+}
+
+.btn-submit-demande {
+  width: 100%;
+  height: 96rpx;
+  border-radius: 48rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32rpx;
+  font-weight: 700;
+  border: none;
+}
+
+.btn-submit--active {
+  background-color: #C8235F;
+  color: #FFFFFF;
+}
+
+.btn-submit--disabled {
+  background-color: #E2E6EC;
+  color: #8C96A6;
+}

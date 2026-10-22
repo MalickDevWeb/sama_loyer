@@ -1,17 +1,21 @@
 {
   "pages": [
     "pages/home/home",
+    "pages/search/results",
     "pages/logement-detail/logement-detail",
+    "pages/visites/demande",
+    "pages/visites/visites",
     "pages/favoris/favoris",
-    "pages/voyage/voyage",
-    "pages/index/index",
-    "pages/page1/page1",
-    "pages/explorer/explorer",
-    "pages/destination-detail/destination-detail",
-    "pages/booking/booking",
+    "pages/messages/messages",
+    "pages/messages/chat",
+    "pages/profile/profile",
+    "pages/bailleur/home",
+    "pages/bailleur/annonces",
+    "pages/bailleur/ajouter",
+    "pages/bailleur/demandes",
+    "pages/bailleur/premium",
     "pages/paiement/index",
-    "pages/booking-confirmation/booking-confirmation",
-    "pages/reservation-detail/reservation-detail"
+    "pages/index/index"
   ],
   "usingComponents": {
     "app-nav-bar": "/components/ui/nav-bar/index",
@@ -53,16 +57,22 @@
         "selectedIconPath": "assets/icons/favoris.png"
       },
       {
-        "pagePath": "pages/voyage/voyage",
+        "pagePath": "pages/visites/visites",
+        "text": "Visites",
+        "iconPath": "assets/icons/booking.png",
+        "selectedIconPath": "assets/icons/booking.png"
+      },
+      {
+        "pagePath": "pages/messages/messages",
         "text": "Messages",
         "iconPath": "assets/icons/voyage.png",
         "selectedIconPath": "assets/icons/voyage.png"
       },
       {
-        "pagePath": "pages/index/index",
+        "pagePath": "pages/profile/profile",
         "text": "Profil",
-        "iconPath": "assets/icons/explore.png",
-        "selectedIconPath": "assets/icons/explore.png"
+        "iconPath": "assets/icons/profile.png",
+        "selectedIconPath": "assets/icons/profile.png"
       }
     ]
   },

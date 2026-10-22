@@ -1,0 +1,116 @@
+<view class="search-page">
+  <scroll-view class="search-scroll" scroll-y="{{true}}" enhanced="{{true}}" show-scrollbar="{{false}}">
+    
+    <!-- En-tête avec retour et carte -->
+    <view class="search-top-nav" style="padding-top: {{ statusBarHeight + 10 }}px;">
+      <view class="btn-back" bindtap="onBackTap">‹</view>
+      <text class="top-nav-title">Résultats de recherche</text>
+      <view class="btn-map-icon">🗺</view>
+    </view>
+
+    <!-- Barre de recherche -->
+    <view class="search-bar-row">
+      <view class="search-input-pill">
+        <text class="search-lens">🔍</text>
+        <input class="search-input" value="{{ searchQuery }}" />
+      </view>
+      <view class="btn-mic-round">🎙</view>
+      <view class="btn-filter-icon">⚙</view>
+    </view>
+
+    <!-- Titre et compteur -->
+    <view class="search-headline-row">
+      <view class="headline-titles">
+        <text class="headline-main">Logements à Pikine</text>
+        <text class="headline-count">4 logements trouvés</text>
+      </view>
+      <text class="btn-modify-link">Modifier</text>
+    </view>
+
+    <!-- Pilules de filtres -->
+    <scroll-view class="category-pills-scroll" scroll-x="{{true}}">
+      <view class="pills-row">
+        <view class="cat-pill pill-filter-btn">
+          <text>⚡ Filtres</text>
+        </view>
+        <view class="cat-pill {{ activeCategory === 'tous' ? 'cat-pill--active' : '' }}" data-cat="tous" bindtap="onCategorySelect">
+          <text>Tous</text>
+        </view>
+        <view class="cat-pill {{ activeCategory === 'chambre' ? 'cat-pill--active' : '' }}" data-cat="chambre" bindtap="onCategorySelect">
+          <text>Chambre</text>
+        </view>
+        <view class="cat-pill {{ activeCategory === 'studio' ? 'cat-pill--active' : '' }}" data-cat="studio" bindtap="onCategorySelect">
+          <text>Studio</text>
+        </view>
+      </view>
+    </scroll-view>
+
+    <!-- Section Bailleurs Premium -->
+    <view class="section-container">
+      <view class="section-header-row">
+        <text class="section-title-pink">★ Bailleurs Premium</text>
+        <text class="section-sub-grey">Des logements mis en avant</text>
+      </view>
+
+      <scroll-view class="premium-carousel" scroll-x="{{true}}">
+        <view class="premium-cards-track">
+          <block wx:for="{{ premiumListings }}" wx:key="id">
+            <view class="premium-card" data-id="{{ item.id }}" bindtap="onCardTap">
+              <view class="premium-card-thumb" style="background-color: {{ item.bg }};">
+                <view class="thumb-badge-premium">★ Premium</view>
+                <view class="thumb-heart-icon">{{ item.isFavorite ? '♥' : '♡' }}</view>
+                <view class="thumb-house-outline"></view>
+              </view>
+              <view class="premium-card-info">
+                <text class="card-price-bold">{{ item.price }}</text>
+                <text class="card-title-bold">{{ item.title }}</text>
+                <text class="card-place-grey">{{ item.place }}</text>
+                <view class="card-dispo-tag">✓ {{ item.badge }}</view>
+              </view>
+            </view>
+          </block>
+        </view>
+      </scroll-view>
+    </view>
+
+    <!-- Section Logements disponibles -->
+    <view class="section-container">
+      <view class="available-head-row">
+        <text class="available-title">Logements disponibles</text>
+        <view class="sort-dropdown">
+          <text class="sort-label">Trier</text>
+          <text class="sort-value">Plus récents ▾</text>
+        </view>
+      </view>
+
+      <!-- Liste verticale -->
+      <view class="available-list">
+        <block wx:for="{{ listings }}" wx:key="id">
+          <view class="avail-card" data-id="{{ item.id }}" bindtap="onCardTap">
+            <view class="avail-thumb" style="background-color: {{ item.bg }};">
+              <view class="thumb-house-outline-sm"></view>
+            </view>
+            <view class="avail-content">
+              <view class="avail-price-row">
+                <text class="avail-price">{{ item.price }}</text>
+                <text class="avail-heart {{ item.isFavorite ? 'avail-heart--active' : '' }}">{{ item.isFavorite ? '♥' : '♡' }}</text>
+              </view>
+              <text class="avail-title">{{ item.title }}</text>
+              <text class="avail-place">{{ item.place }}</text>
+
+              <view class="avail-tags-row">
+                <block wx:for="{{ item.tags }}" wx:for-item="t" wx:key="*this">
+                  <view class="chip-tag">{{ t }}</view>
+                </block>
+              </view>
+
+              <text class="avail-status">{{ item.status }}</text>
+            </view>
+          </view>
+        </block>
+      </view>
+    </view>
+
+    <view class="scroll-spacer"></view>
+  </scroll-view>
+</view>

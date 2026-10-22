@@ -1,0 +1,74 @@
+<view class="msg-page">
+  <scroll-view class="msg-scroll" scroll-y="{{true}}" enhanced="{{true}}" show-scrollbar="{{false}}">
+    
+    <!-- En-tête -->
+    <view class="msg-header" style="padding-top: {{ statusBarHeight + 14 }}px;">
+      <text class="msg-main-title">Messages</text>
+      <text class="msg-sub-title">Tes échanges avec les bailleurs</text>
+    </view>
+
+    <!-- Champ de recherche -->
+    <view class="msg-search-box">
+      <text class="msg-search-icon">🔍</text>
+      <input class="msg-search-input" placeholder="Nom ou quartier" />
+    </view>
+
+    <!-- Filtres -->
+    <view class="msg-filter-pills">
+      <view
+        class="filter-tab {{ activeFilter === 'all' ? 'filter-tab--active' : '' }}"
+        data-filter="all"
+        bindtap="onSelectFilter"
+      >
+        <text>Toutes</text>
+      </view>
+      <view
+        class="filter-tab {{ activeFilter === 'unread' ? 'filter-tab--active' : '' }}"
+        data-filter="unread"
+        bindtap="onSelectFilter"
+      >
+        <text>Non lues (2)</text>
+      </view>
+    </view>
+
+    <!-- Liste des conversations -->
+    <view class="conversations-stack">
+      <block wx:for="{{ conversations }}" wx:key="id">
+        <view
+          wx:if="{{ activeFilter === 'all' || (activeFilter === 'unread' && item.unread > 0) }}"
+          class="chat-row-card"
+          data-id="{{ item.id }}"
+          bindtap="onOpenChat"
+        >
+          <!-- Avatar -->
+          <view class="chat-row-avatar" style="background-color: {{ item.avatarBg }};">
+            <text class="avatar-text">{{ item.initial }}</text>
+            <view class="online-indicator">✓</view>
+          </view>
+
+          <!-- Détails -->
+          <view class="chat-row-meta">
+            <view class="row-top-info">
+              <text class="landlord-bold-name">{{ item.name }}</text>
+              <text class="row-time-text {{ item.unread > 0 ? 'text-berry' : '' }}">{{ item.time }}</text>
+            </view>
+
+            <text class="property-tag-berry">{{ item.property }}</text>
+
+            <view class="row-middle-snippet">
+              <text class="snippet-text">{{ item.snippet }}</text>
+              <view wx:if="{{ item.unread > 0 }}" class="badge-unread-circle">{{ item.unread }}</view>
+            </view>
+
+            <view wx:if="{{ item.visiteBadge }}" class="visite-badge-chip">
+              <text class="cal-mini">📅</text>
+              <text>{{ item.visiteBadge }}</text>
+            </view>
+          </view>
+        </view>
+      </block>
+    </view>
+
+    <view class="scroll-spacer"></view>
+  </scroll-view>
+</view>

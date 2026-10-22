@@ -1,0 +1,228 @@
+/* ============================================================================
+   SAMA LOGEMENT — LISTE MESSAGES (PAGE 4)
+   ============================================================================ */
+
+.msg-page {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  box-sizing: border-box;
+  background-color: #F8F9FA;
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  color: #0F1E3D;
+}
+
+.msg-scroll {
+  width: 100%;
+  height: 100vh;
+  box-sizing: border-box;
+  padding: 0 36rpx calc(150rpx + env(safe-area-inset-bottom));
+}
+
+.msg-header {
+  margin-bottom: 24rpx;
+}
+
+.msg-main-title {
+  font-size: 46rpx;
+  font-weight: 800;
+  color: #0F1E3D;
+  display: block;
+}
+
+.msg-sub-title {
+  font-size: 26rpx;
+  color: #5B6475;
+  margin-top: 4rpx;
+  display: block;
+}
+
+.msg-search-box {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  background-color: #FFFFFF;
+  border-radius: 999rpx;
+  border: 2rpx solid #E4E7EE;
+  padding: 0 28rpx;
+  height: 84rpx;
+  margin-bottom: 24rpx;
+}
+
+.msg-search-icon {
+  font-size: 26rpx;
+}
+
+.msg-search-input {
+  flex: 1;
+  font-size: 26rpx;
+  color: #0F1E3D;
+}
+
+.msg-filter-pills {
+  display: flex;
+  gap: 16rpx;
+  margin-bottom: 28rpx;
+}
+
+.filter-tab {
+  padding: 12rpx 28rpx;
+  border-radius: 999rpx;
+  background-color: #FFFFFF;
+  border: 2rpx solid #E4E7EE;
+  font-size: 24rpx;
+  font-weight: 700;
+  color: #5B6475;
+}
+
+.filter-tab--active {
+  background-color: #0F1E3D;
+  color: #FFFFFF;
+  border-color: #0F1E3D;
+}
+
+.conversations-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+}
+
+.chat-row-card {
+  display: flex;
+  gap: 24rpx;
+  background-color: #FFFFFF;
+  border-radius: 28rpx;
+  padding: 24rpx;
+  border: 2rpx solid #E4E7EE;
+  box-shadow: 0 4rpx 14rpx rgba(15, 30, 61, 0.03);
+}
+
+.chat-row-card:active {
+  transform: scale(0.99);
+}
+
+.chat-row-avatar {
+  position: relative;
+  width: 96rpx;
+  height: 96rpx;
+  border-radius: 48rpx;
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 96rpx;
+}
+
+.avatar-text {
+  font-size: 32rpx;
+  font-weight: 800;
+}
+
+.online-indicator {
+  position: absolute;
+  bottom: -4rpx;
+  right: -4rpx;
+  width: 32rpx;
+  height: 32rpx;
+  border-radius: 16rpx;
+  background-color: #007C3D;
+  color: #FFFFFF;
+  font-size: 18rpx;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 4rpx solid #FFFFFF;
+}
+
+.chat-row-meta {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6rpx;
+}
+
+.row-top-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.landlord-bold-name {
+  font-size: 30rpx;
+  font-weight: 800;
+  color: #0F1E3D;
+}
+
+.row-time-text {
+  font-size: 22rpx;
+  color: #7A8294;
+}
+
+.text-berry {
+  color: #C8235F;
+  font-weight: 700;
+}
+
+.property-tag-berry {
+  font-size: 22rpx;
+  font-weight: 700;
+  color: #C8235F;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.row-middle-snippet {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12rpx;
+  margin-top: 2rpx;
+}
+
+.snippet-text {
+  flex: 1;
+  font-size: 24rpx;
+  color: #5B6475;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.badge-unread-circle {
+  width: 36rpx;
+  height: 36rpx;
+  border-radius: 18rpx;
+  background-color: #C8235F;
+  color: #FFFFFF;
+  font-size: 20rpx;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 36rpx;
+}
+
+.visite-badge-chip {
+  align-self: flex-start;
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  background-color: #E2F0EA;
+  color: #007C3D;
+  font-size: 20rpx;
+  font-weight: 700;
+  padding: 6rpx 16rpx;
+  border-radius: 999rpx;
+  margin-top: 8rpx;
+}
+
+.cal-mini {
+  font-size: 20rpx;
+}
+
+.scroll-spacer {
+  height: 60rpx;
+}

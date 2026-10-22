@@ -1,0 +1,257 @@
+/* ==========================================================================
+   Page Mes Visites - SAMA LOGEMENT
+   ========================================================================== */
+
+.visites-page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: #F8F9FA;
+  box-sizing: border-box;
+}
+
+.visites-scroll {
+  flex: 1;
+  box-sizing: border-box;
+}
+
+/* Header */
+.visites-header {
+  padding: 0 32rpx 20rpx;
+  background-color: #FFFFFF;
+  border-bottom: 1rpx solid #ECEFF2;
+}
+
+.page-title {
+  display: block;
+  font-size: 44rpx;
+  font-weight: 800;
+  color: #0F1E3D;
+  margin-bottom: 6rpx;
+}
+
+.page-subtitle {
+  display: block;
+  font-size: 26rpx;
+  color: #5B6475;
+  margin-bottom: 24rpx;
+}
+
+/* Horizontal Filters */
+.filters-scroll {
+  width: 100%;
+  white-space: nowrap;
+}
+
+.filters-row {
+  display: flex;
+  gap: 16rpx;
+  padding: 4rpx 0;
+}
+
+.filter-pill {
+  display: inline-block;
+  padding: 14rpx 28rpx;
+  border-radius: 36rpx;
+  font-size: 26rpx;
+  font-weight: 600;
+  background-color: #F4F6F9;
+  color: #0F1E3D;
+  border: 1rpx solid transparent;
+}
+
+.filter-pill--active {
+  background-color: #0F1E3D;
+  color: #FFFFFF;
+}
+
+/* Liste des visites */
+.visites-list {
+  padding: 32rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 24rpx;
+}
+
+.visite-card {
+  background-color: #FFFFFF;
+  border-radius: 24rpx;
+  padding: 28rpx;
+  border: 1rpx solid #ECEFF2;
+  box-shadow: 0 4rpx 16rpx rgba(15, 30, 61, 0.04);
+}
+
+.visite-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20rpx;
+}
+
+.visite-date-row {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+}
+
+.visite-cal-icon {
+  font-size: 28rpx;
+}
+
+.visite-date-text {
+  font-size: 28rpx;
+  font-weight: 800;
+  color: #0F1E3D;
+}
+
+/* Badges */
+.visite-status-badge {
+  font-size: 22rpx;
+  font-weight: 700;
+  padding: 8rpx 20rpx;
+  border-radius: 20rpx;
+}
+
+.status-accepted {
+  background-color: #E2F0EA;
+  color: #007C3D;
+}
+
+.status-pending {
+  background-color: #FFF3DC;
+  color: #B56200;
+}
+
+.status-rejected {
+  background-color: #FDE8EC;
+  color: #D32F2F;
+}
+
+/* Property box */
+.visite-prop-box {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+  margin-bottom: 20rpx;
+}
+
+.prop-icon-box {
+  width: 90rpx;
+  height: 90rpx;
+  border-radius: 16rpx;
+  background-color: #FCE8EF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.prop-mini-roof {
+  width: 40rpx;
+  height: 36rpx;
+  border: 3rpx solid #C8235F;
+  border-top: none;
+  position: relative;
+}
+
+.prop-mini-roof::before {
+  content: '';
+  position: absolute;
+  top: -20rpx;
+  left: -6rpx;
+  border-left: 23rpx solid transparent;
+  border-right: 23rpx solid transparent;
+  border-bottom: 20rpx solid #C8235F;
+}
+
+.prop-text-box {
+  display: flex;
+  flex-direction: column;
+}
+
+.prop-name {
+  font-size: 28rpx;
+  font-weight: 700;
+  color: #0F1E3D;
+  margin-bottom: 6rpx;
+}
+
+.prop-meta {
+  font-size: 24rpx;
+  color: #5B6475;
+  margin-bottom: 4rpx;
+}
+
+.prop-bailleur-name {
+  font-size: 22rpx;
+  color: #8C96A6;
+}
+
+/* Note box */
+.visite-note-box {
+  border-radius: 16rpx;
+  padding: 18rpx 22rpx;
+  margin-bottom: 24rpx;
+}
+
+.note-accepted {
+  background-color: #F0F9F4;
+  border: 1rpx solid #CCEBD9;
+}
+
+.note-info {
+  background-color: #FBF7F0;
+  border: 1rpx solid #F5E8D3;
+}
+
+.note-text {
+  font-size: 24rpx;
+  line-height: 1.45;
+  color: #2D3748;
+}
+
+/* Actions Row */
+.visite-actions-row {
+  display: flex;
+  gap: 16rpx;
+}
+
+.btn-action {
+  flex: 1;
+  height: 80rpx;
+  border-radius: 40rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26rpx;
+  font-weight: 700;
+  border: none;
+  margin: 0;
+}
+
+.btn-icon {
+  margin-right: 10rpx;
+  font-size: 26rpx;
+}
+
+.btn-action-primary {
+  background-color: #0F1E3D;
+  color: #FFFFFF;
+}
+
+.btn-action-secondary {
+  background-color: #FFFFFF;
+  color: #0F1E3D;
+  border: 1.5rpx solid #D5DAE1;
+}
+
+.btn-action-cancel {
+  background-color: #FFFFFF;
+  color: #5B6475;
+  border: 1.5rpx solid #E2E6EC;
+  font-weight: 600;
+}
+
+.scroll-spacer {
+  height: 180rpx;
+}

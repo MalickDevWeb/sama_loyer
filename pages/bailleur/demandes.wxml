@@ -1,0 +1,88 @@
+<view class="demandes-page">
+  <scroll-view class="demandes-scroll" scroll-y="{{true}}" enhanced="{{true}}" show-scrollbar="{{false}}">
+    
+    <!-- En-tête -->
+    <view class="demandes-header" style="padding-top: {{ statusBarHeight + 14 }}px;">
+      <text class="page-title">Demandes</text>
+      <text class="page-subtitle">Visites et messages des locataires</text>
+
+      <!-- Tabs Visites (1) & Messages (2) -->
+      <view class="tabs-header-row">
+        <view 
+          class="tab-btn {{ activeTab === 'visites' ? 'tab-btn--active' : '' }}"
+          data-tab="visites"
+          bindtap="onSelectTab"
+        >
+          Visites (1)
+        </view>
+        <view 
+          class="tab-btn {{ activeTab === 'messages' ? 'tab-btn--active' : '' }}"
+          data-tab="messages"
+          bindtap="onSelectTab"
+        >
+          Messages (2)
+        </view>
+      </view>
+    </view>
+
+    <!-- Liste des demandes -->
+    <view class="demandes-list">
+      <block wx:for="{{ demandes }}" wx:key="id">
+        <view class="demande-card">
+          <!-- User info & Status pill -->
+          <view class="demande-card-top">
+            <view class="demande-user-info">
+              <view class="avatar-circle-sm" style="background-color: {{ item.avatarBg }};">
+                <text class="avatar-sm-text">{{ item.initials }}</text>
+              </view>
+              <view class="user-text-col">
+                <text class="demande-name">{{ item.name }}</text>
+                <text class="demande-prop">{{ item.property }}</text>
+              </view>
+            </view>
+            <view class="status-badge-demande {{ item.status === 'pending' ? 'badge-yellow' : 'badge-green' }}">
+              {{ item.statusLabel }}
+            </view>
+          </view>
+
+          <!-- Date créneau -->
+          <view class="demande-slot-box">
+            <text class="cal-emoji">📅</text>
+            <text class="slot-text">{{ item.dateLabel }}</text>
+          </view>
+
+          <!-- Message du locataire -->
+          <text wx:if="{{ item.message }}" class="demande-quote-text">{{ item.message }}</text>
+
+          <!-- Notification si acceptée -->
+          <view wx:if="{{ item.notice }}" class="accepted-notice-box">
+            <text class="notice-sms-text">{{ item.notice }}</text>
+          </view>
+
+          <!-- Boutons Accepter / Refuser si À répondre -->
+          <view wx:if="{{ item.isPending }}" class="action-buttons-group">
+            <view class="buttons-pair-row">
+              <button class="btn-refuser" data-id="{{ item.id }}" bindtap="onRefuse">
+                Refuser
+              </button>
+              <button class="btn-accepter" data-id="{{ item.id }}" bindtap="onAccept">
+                Accepter
+              </button>
+            </view>
+
+            <!-- Lien Proposer un autre horaire par message -->
+            <view class="propose-horaire-link" bindtap="onProposeHoraire">
+              <text class="chat-bubble-icon">💬</text>
+              <text class="propose-text">Proposer un autre horaire par message</text>
+            </view>
+          </view>
+        </view>
+      </block>
+    </view>
+
+    <view class="scroll-spacer"></view>
+  </scroll-view>
+
+  <!-- Bailleur Tab Bar -->
+  <app-custom-tab-bar activeTab="b-demandes" />
+</view>

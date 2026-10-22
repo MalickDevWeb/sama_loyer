@@ -137,6 +137,11 @@
           </view>
         </block>
       </view>
+
+      <!-- Bouton Voir tous les logements (Page 1 prototype) -->
+      <button class="btn-see-all-listings" bindtap="onGoToAllResults">
+        Voir tous les logements
+      </button>
     </view>
 
     <!-- Espace vide de fin pour laisser respirer le scroll -->
@@ -175,6 +180,11 @@
           </view>
         </block>
       </view>
+
+      <!-- Bouton Voir tous les logements (Page 1 prototype) -->
+      <button class="btn-see-all-listings" bindtap="onGoToAllResults">
+        Voir tous les logements
+      </button>
     </view>
   </view>
 

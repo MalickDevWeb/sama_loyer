@@ -403,6 +403,12 @@ Page({
     );
   },
 
+  onGoToAllResults() {
+    wx.navigateTo({
+      url: `/pages/search/results?place=${encodeURIComponent(this.data.place || 'Ouakam')}&budget=${encodeURIComponent(this.data.budget || '60 000')}`
+    });
+  },
+
   onListingTap(e) {
     const item = e.currentTarget.dataset.item;
     if (!item) return;
@@ -500,27 +506,15 @@ Page({
   },
 
   onSwitchProfile() {
-    const newRole = this.data.userRole === 'client' ? 'bailleur' : 'client';
-    const roleLabel = newRole === 'bailleur' ? 'Bailleur (Propriétaire)' : 'Client (Locataire)';
-
     wx.showActionSheet({
-      itemList: ['Mode Locataire / Client', 'Mode Bailleur / Publier un bien'],
+      itemList: ['Voir mon Profil (Awa Diop)', 'Basculer en Espace Bailleur (Moussa D.)'],
       success: (res) => {
-        const selected = res.tapIndex === 0 ? 'client' : 'bailleur';
-        this.setData({ userRole: selected });
-        try {
-          wx.setStorageSync(STORAGE_KEYS.USER_ROLE, selected);
-        } catch (e) {}
-
-        if (selected === 'bailleur') {
-          wx.showModal({
-            title: 'Mode Bailleur activé 🏢',
-            content: 'Bienvenue dans votre espace bailleur. Vous pouvez gérer vos logements, confirmer leur disponibilité tous les 7 jours et suivre les demandes.',
-            confirmText: 'Continuer',
-            showCancel: false
-          });
+        if (res.tapIndex === 0) {
+          wx.switchTab({ url: '/pages/profile/profile' });
         } else {
-          wx.showToast({ title: 'Mode Locataire activé', icon: 'none' });
+          wx.setStorageSync(STORAGE_KEYS.USER_ROLE, 'bailleur');
+          this.setData({ userRole: 'bailleur' });
+          wx.reLaunch({ url: '/pages/bailleur/home' });
         }
       }
     });

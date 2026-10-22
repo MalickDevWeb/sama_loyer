@@ -1,0 +1,342 @@
+/* ==========================================================================
+   Page Premium et Revenus Bailleur - SAMA LOGEMENT (Page 14 Claude/PDF)
+   ========================================================================== */
+
+.premium-page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: #F8F9FA;
+  box-sizing: border-box;
+}
+
+.premium-scroll {
+  flex: 1;
+  box-sizing: border-box;
+}
+
+/* En-tête */
+.premium-header {
+  padding: 0 32rpx 20rpx;
+  background-color: #FFFFFF;
+  border-bottom: 1rpx solid #ECEFF2;
+}
+
+.page-title {
+  display: block;
+  font-size: 44rpx;
+  font-weight: 800;
+  color: #0F1E3D;
+  margin-bottom: 6rpx;
+}
+
+.page-subtitle {
+  display: block;
+  font-size: 26rpx;
+  color: #5B6475;
+}
+
+.premium-content {
+  padding: 32rpx;
+}
+
+/* Dark Subscription Card */
+.dark-subscription-card {
+  background-color: #0F1E3D;
+  border-radius: 28rpx;
+  padding: 32rpx;
+  color: #FFFFFF;
+  margin-bottom: 36rpx;
+  box-shadow: 0 8rpx 24rpx rgba(15, 30, 61, 0.15);
+}
+
+.subs-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24rpx;
+}
+
+.subs-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8rpx;
+  padding: 8rpx 20rpx;
+  border-radius: 20rpx;
+  background-color: #C8235F;
+  font-size: 22rpx;
+  font-weight: 700;
+  color: #FFFFFF;
+}
+
+.star-icon {
+  font-size: 24rpx;
+}
+
+.subs-status-pill {
+  font-size: 22rpx;
+  font-weight: 700;
+  padding: 6rpx 18rpx;
+  border-radius: 16rpx;
+  background-color: rgba(255, 255, 255, 0.15);
+  color: #00E676;
+}
+
+.valid-until-label {
+  display: block;
+  font-size: 22rpx;
+  color: #A0AAB8;
+  margin-bottom: 4rpx;
+}
+
+.valid-date-text {
+  display: block;
+  font-size: 38rpx;
+  font-weight: 800;
+  color: #FFFFFF;
+  margin-bottom: 24rpx;
+}
+
+/* Progress bar */
+.highlight-progress-wrap {
+  margin-bottom: 28rpx;
+}
+
+.progress-labels-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 22rpx;
+  color: #A0AAB8;
+  margin-bottom: 10rpx;
+}
+
+.prog-track {
+  height: 10rpx;
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 5rpx;
+  overflow: hidden;
+}
+
+.prog-fill {
+  height: 100%;
+  background-color: #C8235F;
+  border-radius: 5rpx;
+}
+
+/* Stats 2 cols */
+.subs-stats-row {
+  display: flex;
+  gap: 20rpx;
+  margin-bottom: 28rpx;
+  background-color: rgba(255, 255, 255, 0.08);
+  border-radius: 20rpx;
+  padding: 20rpx;
+}
+
+.subs-stat-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.stat-big-number {
+  font-size: 40rpx;
+  font-weight: 800;
+  color: #FFFFFF;
+  margin-bottom: 4rpx;
+}
+
+.stat-big-desc {
+  font-size: 22rpx;
+  color: #A0AAB8;
+}
+
+.btn-renew-subs {
+  width: 100%;
+  height: 84rpx;
+  border-radius: 42rpx;
+  background-color: #FFFFFF;
+  color: #0F1E3D;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26rpx;
+  font-weight: 700;
+  border: none;
+}
+
+/* Section Boost */
+.boost-section {
+  margin-bottom: 36rpx;
+}
+
+.boost-section-title {
+  display: block;
+  font-size: 32rpx;
+  font-weight: 800;
+  color: #0F1E3D;
+  margin-bottom: 6rpx;
+}
+
+.boost-section-desc {
+  display: block;
+  font-size: 24rpx;
+  color: #5B6475;
+  margin-bottom: 24rpx;
+}
+
+.boost-options-list {
+  display: flex;
+  flex-direction: column;
+  gap: 18rpx;
+  margin-bottom: 28rpx;
+}
+
+.boost-option-card {
+  background-color: #FFFFFF;
+  border-radius: 24rpx;
+  padding: 26rpx 24rpx;
+  border: 2rpx solid #ECEFF2;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 2rpx 10rpx rgba(15, 30, 61, 0.03);
+  transition: all 0.2s ease;
+}
+
+.boost-card--selected {
+  border-color: #C8235F;
+  background-color: #FCF7F9;
+}
+
+.radio-indicator {
+  width: 44rpx;
+  height: 44rpx;
+  border-radius: 50%;
+  border: 3rpx solid #C5CBD4;
+  margin-right: 20rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.radio-indicator--active {
+  border-color: #C8235F;
+}
+
+.radio-dot {
+  width: 22rpx;
+  height: 22rpx;
+  border-radius: 50%;
+  background-color: #C8235F;
+}
+
+.option-details-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.option-title {
+  font-size: 28rpx;
+  font-weight: 800;
+  color: #0F1E3D;
+  margin-bottom: 4rpx;
+}
+
+.option-subtitle {
+  font-size: 22rpx;
+  color: #5B6475;
+}
+
+.option-price-box {
+  display: flex;
+  align-items: baseline;
+  gap: 4rpx;
+}
+
+.option-price-num {
+  font-size: 32rpx;
+  font-weight: 800;
+  color: #0F1E3D;
+}
+
+.option-currency {
+  font-size: 24rpx;
+  color: #5B6475;
+  font-weight: 700;
+}
+
+.btn-continue-pay {
+  width: 100%;
+  height: 96rpx;
+  border-radius: 48rpx;
+  background-color: #C8235F;
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 30rpx;
+  font-weight: 700;
+  border: none;
+  box-shadow: 0 6rpx 20rpx rgba(200, 35, 95, 0.25);
+}
+
+/* Loyers reçus */
+.loyers-received-section {
+  margin-top: 20rpx;
+}
+
+.section-subheading {
+  display: block;
+  font-size: 30rpx;
+  font-weight: 800;
+  color: #0F1E3D;
+  margin-bottom: 16rpx;
+}
+
+.receipt-summary-card {
+  background-color: #FFFFFF;
+  border-radius: 20rpx;
+  border: 1rpx solid #ECEFF2;
+  padding: 24rpx;
+}
+
+.receipt-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.receipt-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.receipt-title {
+  font-size: 26rpx;
+  font-weight: 700;
+  color: #0F1E3D;
+  margin-bottom: 4rpx;
+}
+
+.receipt-date {
+  font-size: 22rpx;
+  color: #8C96A6;
+}
+
+.receipt-amount {
+  font-size: 28rpx;
+  font-weight: 800;
+  color: #007C3D;
+}
+
+.receipt-divider {
+  height: 1rpx;
+  background-color: #F0F2F5;
+  margin: 18rpx 0;
+}
+
+.scroll-spacer {
+  height: 180rpx;
+}

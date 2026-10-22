@@ -1,0 +1,119 @@
+<view class="premium-page">
+  <scroll-view class="premium-scroll" scroll-y="{{true}}" enhanced="{{true}}" show-scrollbar="{{false}}">
+    
+    <!-- En-tête -->
+    <view class="premium-header" style="padding-top: {{ statusBarHeight + 14 }}px;">
+      <text class="page-title">Premium et revenus</text>
+      <text class="page-subtitle">Ton abonnement, tes mises en avant et tes paiements</text>
+    </view>
+
+    <view class="premium-content">
+      <!-- Dark Hero Card -->
+      <view class="dark-subscription-card">
+        <view class="subs-header-row">
+          <view class="subs-badge">
+            <text class="star-icon">★</text> Premium mensuel
+          </view>
+          <view class="subs-status-pill">Actif</view>
+        </view>
+
+        <text class="valid-until-label">Valable jusqu'au</text>
+        <text class="valid-date-text">15 novembre 2026</text>
+
+        <!-- Progress bar Annonces mises en avant -->
+        <view class="highlight-progress-wrap">
+          <view class="progress-labels-row">
+            <text class="prog-label">Annonces mises en avant</text>
+            <text class="prog-val">2 sur 3</text>
+          </view>
+          <view class="prog-track">
+            <view class="prog-fill" style="width: 66%;"></view>
+          </view>
+        </view>
+
+        <!-- Stats 2 col -->
+        <view class="subs-stats-row">
+          <view class="subs-stat-col">
+            <text class="stat-big-number">379</text>
+            <text class="stat-big-desc">vues ce mois</text>
+          </view>
+          <view class="subs-stat-col">
+            <text class="stat-big-number">4</text>
+            <text class="stat-big-desc">demandes de visite</text>
+          </view>
+        </view>
+
+        <button class="btn-renew-subs">
+          Renouveler mon abonnement
+        </button>
+      </view>
+
+      <!-- Section Mettre une annonce en avant -->
+      <view class="boost-section">
+        <text class="boost-section-title">Mettre une annonce en avant</text>
+        <text class="boost-section-desc">Ton annonce apparaît en haut des recherches de son quartier.</text>
+
+        <!-- Radio List -->
+        <view class="boost-options-list">
+          <block wx:for="{{ boostOptions }}" wx:key="id">
+            <view 
+              class="boost-option-card {{ selectedOption === item.id ? 'boost-card--selected' : '' }}"
+              data-id="{{ item.id }}"
+              bindtap="onSelectOption"
+            >
+              <!-- Radio Circle -->
+              <view class="radio-indicator {{ selectedOption === item.id ? 'radio-indicator--active' : '' }}">
+                <view wx:if="{{ selectedOption === item.id }}" class="radio-dot"></view>
+              </view>
+
+              <!-- Option Details -->
+              <view class="option-details-col">
+                <text class="option-title">{{ item.title }}</text>
+                <text class="option-subtitle">{{ item.sub }}</text>
+              </view>
+
+              <!-- Price -->
+              <view class="option-price-box">
+                <text class="option-price-num">{{ item.price }}</text>
+                <text class="option-currency">F</text>
+              </view>
+            </view>
+          </block>
+        </view>
+
+        <!-- Action Button -->
+        <button class="btn-continue-pay" bindtap="onPayAction">
+          Continuer — {{ selectedPrice }} F
+        </button>
+      </view>
+
+      <!-- Section Loyers reçus -->
+      <view class="loyers-received-section">
+        <text class="section-subheading">Loyers reçus</text>
+        <view class="receipt-summary-card">
+          <view class="receipt-row">
+            <view class="receipt-info">
+              <text class="receipt-title">Chambre salon · Icotaf</text>
+              <text class="receipt-date">Payé le 5 oct. via Orange Money</text>
+            </view>
+            <text class="receipt-amount">+65 000 F</text>
+          </view>
+          <view class="receipt-divider"></view>
+          <view class="receipt-row">
+            <view class="receipt-info">
+              <text class="receipt-title">Appartement F2 · Technopole</text>
+              <text class="receipt-date">Payé le 3 oct. via Orange Money</text>
+            </view>
+            <text class="receipt-amount">+140 000 F</text>
+          </view>
+        </view>
+      </view>
+
+    </view>
+
+    <view class="scroll-spacer"></view>
+  </scroll-view>
+
+  <!-- Bailleur Tab Bar -->
+  <app-custom-tab-bar activeTab="b-premium" />
+</view>

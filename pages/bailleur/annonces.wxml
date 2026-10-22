@@ -1,0 +1,116 @@
+<view class="annonces-page">
+  <scroll-view class="annonces-scroll" scroll-y="{{true}}" enhanced="{{true}}" show-scrollbar="{{false}}">
+    
+    <!-- En-tête avec bouton + rose en haut à droite -->
+    <view class="annonces-header" style="padding-top: {{ statusBarHeight + 14 }}px;">
+      <view class="header-top-row">
+        <view class="header-titles">
+          <text class="page-title">Mes annonces</text>
+          <text class="page-subtitle">3 en ligne · 2 en validation · 1 loué(s)</text>
+        </view>
+        <view class="btn-top-add" bindtap="onGoAjouter">
+          <text class="btn-top-plus">+</text>
+        </view>
+      </view>
+
+      <!-- Filtres Horizontaux -->
+      <scroll-view class="pills-scroll" scroll-x="{{true}}" enhanced="{{true}}" show-scrollbar="{{false}}">
+        <view class="pills-row">
+          <view 
+            class="filter-pill {{ activeFilter === 'all' ? 'filter-pill--active' : '' }}"
+            data-filter="all"
+            bindtap="onFilterSelect"
+          >
+            Toutes (6)
+          </view>
+          <view 
+            class="filter-pill {{ activeFilter === 'en_ligne' ? 'filter-pill--active' : '' }}"
+            data-filter="en_ligne"
+            bindtap="onFilterSelect"
+          >
+            En ligne (3)
+          </view>
+          <view 
+            class="filter-pill {{ activeFilter === 'validation' ? 'filter-pill--active' : '' }}"
+            data-filter="validation"
+            bindtap="onFilterSelect"
+          >
+            Validation (2)
+          </view>
+          <view 
+            class="filter-pill {{ activeFilter === 'loue' ? 'filter-pill--active' : '' }}"
+            data-filter="loue"
+            bindtap="onFilterSelect"
+          >
+            Loué (1)
+          </view>
+        </view>
+      </scroll-view>
+    </view>
+
+    <!-- Liste des cartes annonces -->
+    <view class="annonces-list">
+      <block wx:for="{{ filteredAnnonces }}" wx:key="id">
+        <view class="annonce-card">
+          <!-- Tag & Titre -->
+          <view class="annonce-top">
+            <view class="badge-tag {{ item.tagClass }}">{{ item.tag }}</view>
+          </view>
+
+          <!-- Titre & Lieu -->
+          <text class="annonce-title">{{ item.title }}</text>
+          <text class="annonce-place">{{ item.place }}</text>
+
+          <!-- Stats vues / demandes si en ligne -->
+          <text wx:if="{{ item.stats }}" class="annonce-stats">{{ item.stats }}</text>
+
+          <!-- Notice contextuelle -->
+          <view class="notice-box {{ item.needsConfirm ? 'notice-warning' : '' }}">
+            <text class="notice-text">{{ item.notice }}</text>
+          </view>
+
+          <!-- Statut confirmé vert -->
+          <view wx:if="{{ item.isConfirmed }}" class="confirmed-pill">
+            <text class="check-icon">✓</text> Disponibilité confirmée
+          </view>
+
+          <!-- Gros Bouton Vert Reconfirmation 7 jours -->
+          <view wx:if="{{ item.needsConfirm }}" class="reconfirm-action-box">
+            <button class="btn-reconfirm" data-id="{{ item.id }}" bindtap="onConfirmDispo">
+              <text class="check-icon">✓</text> Toujours libre : je confirme
+            </button>
+          </view>
+
+          <!-- Bouton Corriger pour modération -->
+          <view wx:if="{{ item.canCorrect }}" class="correct-action-box">
+            <button class="btn-correct" bindtap="onGoAjouter">
+              Corriger et renvoyer
+            </button>
+          </view>
+
+          <!-- Bouton Remettre en ligne si loué -->
+          <view wx:if="{{ item.canRelist }}" class="relist-action-box">
+            <button class="btn-relist" data-id="{{ item.id }}" bindtap="onRelist">
+              Le logement est libre : remettre en ligne
+            </button>
+          </view>
+
+          <!-- Boutons Modifier / C'est loué pour annonces en ligne -->
+          <view wx:if="{{ item.type === 'en_ligne' }}" class="card-bottom-actions">
+            <view class="btn-subaction">
+              <text class="pencil-sub">✎</text> Modifier
+            </view>
+            <view class="btn-subaction" data-id="{{ item.id }}" bindtap="onMarkLoue">
+              C'est loué
+            </view>
+          </view>
+        </view>
+      </block>
+    </view>
+
+    <view class="scroll-spacer"></view>
+  </scroll-view>
+
+  <!-- Bailleur Tab Bar -->
+  <app-custom-tab-bar activeTab="b-annonces" />
+</view>

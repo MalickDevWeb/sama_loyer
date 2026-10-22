@@ -1,0 +1,249 @@
+/* ==========================================================================
+   Page Demandes Bailleur - SAMA LOGEMENT (Page 13 Claude/PDF)
+   ========================================================================== */
+
+.demandes-page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: #F8F9FA;
+  box-sizing: border-box;
+}
+
+.demandes-scroll {
+  flex: 1;
+  box-sizing: border-box;
+}
+
+/* En-tête */
+.demandes-header {
+  padding: 0 32rpx 20rpx;
+  background-color: #FFFFFF;
+  border-bottom: 1rpx solid #ECEFF2;
+}
+
+.page-title {
+  display: block;
+  font-size: 44rpx;
+  font-weight: 800;
+  color: #0F1E3D;
+  margin-bottom: 6rpx;
+}
+
+.page-subtitle {
+  display: block;
+  font-size: 26rpx;
+  color: #5B6475;
+  margin-bottom: 24rpx;
+}
+
+/* Tabs */
+.tabs-header-row {
+  display: flex;
+  background-color: #F0F2F5;
+  border-radius: 20rpx;
+  padding: 6rpx;
+}
+
+.tab-btn {
+  flex: 1;
+  height: 68rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26rpx;
+  font-weight: 700;
+  color: #5B6475;
+  border-radius: 16rpx;
+}
+
+.tab-btn--active {
+  background-color: #FFFFFF;
+  color: #0F1E3D;
+  box-shadow: 0 2rpx 8rpx rgba(15, 30, 61, 0.08);
+}
+
+/* Demandes list */
+.demandes-list {
+  padding: 32rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 24rpx;
+}
+
+.demande-card {
+  background-color: #FFFFFF;
+  border-radius: 24rpx;
+  padding: 28rpx;
+  border: 1rpx solid #ECEFF2;
+  box-shadow: 0 4rpx 16rpx rgba(15, 30, 61, 0.04);
+}
+
+.demande-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20rpx;
+}
+
+.demande-user-info {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+}
+
+.avatar-circle-sm {
+  width: 72rpx;
+  height: 72rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.avatar-sm-text {
+  font-size: 26rpx;
+  font-weight: 800;
+  color: #FFFFFF;
+}
+
+.user-text-col {
+  display: flex;
+  flex-direction: column;
+}
+
+.demande-name {
+  font-size: 30rpx;
+  font-weight: 800;
+  color: #0F1E3D;
+}
+
+.demande-prop {
+  font-size: 22rpx;
+  color: #5B6475;
+}
+
+/* Badges */
+.status-badge-demande {
+  font-size: 22rpx;
+  font-weight: 700;
+  padding: 6rpx 18rpx;
+  border-radius: 16rpx;
+}
+
+.badge-yellow {
+  background-color: #FFF3DC;
+  color: #B56200;
+}
+
+.badge-green {
+  background-color: #E2F0EA;
+  color: #007C3D;
+}
+
+/* Slot box */
+.demande-slot-box {
+  display: flex;
+  align-items: center;
+  gap: 10rpx;
+  background-color: #F8F9FA;
+  padding: 16rpx 20rpx;
+  border-radius: 16rpx;
+  margin-bottom: 16rpx;
+}
+
+.cal-emoji {
+  font-size: 26rpx;
+}
+
+.slot-text {
+  font-size: 26rpx;
+  font-weight: 700;
+  color: #0F1E3D;
+}
+
+/* Message quote */
+.demande-quote-text {
+  display: block;
+  font-size: 26rpx;
+  color: #333F53;
+  font-style: italic;
+  margin-bottom: 20rpx;
+  line-height: 1.4;
+}
+
+/* Notice box SMS */
+.accepted-notice-box {
+  background-color: #F0F9F4;
+  border: 1rpx solid #CCEBD9;
+  border-radius: 16rpx;
+  padding: 16rpx 20rpx;
+  margin-top: 8rpx;
+}
+
+.notice-sms-text {
+  font-size: 24rpx;
+  color: #007C3D;
+  font-weight: 500;
+}
+
+/* Action buttons */
+.action-buttons-group {
+  margin-top: 20rpx;
+}
+
+.buttons-pair-row {
+  display: flex;
+  gap: 16rpx;
+  margin-bottom: 16rpx;
+}
+
+.btn-refuser {
+  flex: 1;
+  height: 80rpx;
+  border-radius: 40rpx;
+  background-color: #FFFFFF;
+  border: 1.5rpx solid #F2C1D1;
+  color: #C8235F;
+  font-size: 26rpx;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-accepter {
+  flex: 1;
+  height: 80rpx;
+  border-radius: 40rpx;
+  background-color: #007C3D;
+  color: #FFFFFF;
+  font-size: 26rpx;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+}
+
+.propose-horaire-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10rpx;
+  padding: 12rpx 0;
+}
+
+.chat-bubble-icon {
+  font-size: 24rpx;
+}
+
+.propose-text {
+  font-size: 24rpx;
+  font-weight: 600;
+  color: #5B6475;
+}
+
+.scroll-spacer {
+  height: 180rpx;
+}

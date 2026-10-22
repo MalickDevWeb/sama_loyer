@@ -190,14 +190,16 @@ Page({
             }
           });
         } else if (res.tapIndex === 2) {
-          wx.switchTab({ url: '/pages/voyage/voyage' });
+          wx.navigateTo({ url: '/pages/messages/chat?id=MD' });
         }
       }
     });
   },
 
   onOpenVisitModal() {
-    this.setData({ showVisitModal: true });
+    wx.navigateTo({
+      url: '/pages/visites/demande'
+    });
   },
 
   onCloseVisitModal() {

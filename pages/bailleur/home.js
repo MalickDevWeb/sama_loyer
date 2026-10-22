@@ -1,0 +1,62 @@
+import { STORAGE_KEYS } from '../../utils/constants/index';
+
+Page({
+  data: {
+    statusBarHeight: 44,
+    bailleurName: 'Moussa',
+    initials: 'MD',
+    kpis: {
+      annoncesEnLigne: 3,
+      annoncesValidation: 1,
+      demandesVisite: 4,
+      demandesATraiter: 2,
+      logementsLoues: 2,
+      totalLogements: 6,
+      loyersRecus: '205 000 F'
+    }
+  },
+
+  onLoad() {
+    try {
+      const sys = wx.getSystemInfoSync();
+      this.setData({
+        statusBarHeight: sys.statusBarHeight || 44
+      });
+    } catch (e) {}
+  },
+
+  onShow() {
+    if (typeof this.getTabBar === 'function' && this.getTabBar()) {
+      this.getTabBar().setData({ activeTab: 'b-home' });
+    }
+  },
+
+  onGoAjouter() {
+    wx.navigateTo({
+      url: '/pages/bailleur/ajouter'
+    });
+  },
+
+  onGoDemandes() {
+    wx.redirectTo({
+      url: '/pages/bailleur/demandes'
+    });
+  },
+
+  onGoAnnonces() {
+    wx.redirectTo({
+      url: '/pages/bailleur/annonces'
+    });
+  },
+
+  onSwitchToClient() {
+    wx.showLoading({ title: 'Chargement...' });
+    wx.setStorageSync(STORAGE_KEYS.USER_ROLE, 'client');
+    setTimeout(() => {
+      wx.hideLoading();
+      wx.reLaunch({
+        url: '/pages/home/home'
+      });
+    }, 400);
+  }
+});

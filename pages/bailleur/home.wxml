@@ -1,0 +1,143 @@
+<view class="bailleur-home-page">
+  <scroll-view class="bailleur-scroll" scroll-y="{{true}}" enhanced="{{true}}" show-scrollbar="{{false}}">
+    
+    <!-- Top Dark Hero Section -->
+    <view class="dark-hero" style="padding-top: {{ statusBarHeight + 12 }}px;">
+      <view class="hero-top-row">
+        <view class="badge-role-pill">ESPACE BAILLEUR</view>
+        <view class="avatar-circle-bailleur">
+          <text class="avatar-text">{{ initials }}</text>
+        </view>
+      </view>
+
+      <view class="hero-titles">
+        <text class="hero-welcome">Bonjour {{ bailleurName }}</text>
+        <text class="hero-sub">Voici où en sont tes logements aujourd'hui.</text>
+      </view>
+    </view>
+
+    <!-- Main Content Body -->
+    <view class="main-body">
+      <!-- 4 KPI Cards Grid -->
+      <view class="kpi-grid">
+        <!-- KPI 1 -->
+        <view class="kpi-card" bindtap="onGoAnnonces">
+          <view class="kpi-top">
+            <view class="kpi-icon-wrap icon-pink">
+              <text class="kpi-icon">🏠</text>
+            </view>
+          </view>
+          <text class="kpi-number">{{ kpis.annoncesEnLigne }}</text>
+          <text class="kpi-title">Annonces en ligne</text>
+          <text class="kpi-note">+{{ kpis.annoncesValidation }} en validation</text>
+        </view>
+
+        <!-- KPI 2 -->
+        <view class="kpi-card" bindtap="onGoDemandes">
+          <view class="kpi-top">
+            <view class="kpi-icon-wrap icon-orange">
+              <text class="kpi-icon">📅</text>
+            </view>
+          </view>
+          <text class="kpi-number">{{ kpis.demandesVisite }}</text>
+          <text class="kpi-title">Demandes de visite</text>
+          <text class="kpi-note note-red">{{ kpis.demandesATraiter }} à traiter</text>
+        </view>
+
+        <!-- KPI 3 -->
+        <view class="kpi-card" bindtap="onGoAnnonces">
+          <view class="kpi-top">
+            <view class="kpi-icon-wrap icon-green">
+              <text class="kpi-icon">🔑</text>
+            </view>
+          </view>
+          <text class="kpi-number">{{ kpis.logementsLoues }}</text>
+          <text class="kpi-title">Logements loués</text>
+          <text class="kpi-note">sur {{ kpis.totalLogements }} logements</text>
+        </view>
+
+        <!-- KPI 4 -->
+        <view class="kpi-card">
+          <view class="kpi-top">
+            <view class="kpi-icon-wrap icon-blue">
+              <text class="kpi-icon">💳</text>
+            </view>
+          </view>
+          <text class="kpi-number kpi-number--price">{{ kpis.loyersRecus }}</text>
+          <text class="kpi-title">Loyers reçus</text>
+          <text class="kpi-note">en octobre</text>
+        </view>
+      </view>
+
+      <!-- CTA Big Pink Button -->
+      <view class="cta-add-container">
+        <button class="btn-add-logement" bindtap="onGoAjouter">
+          <text class="btn-add-plus">+</text>
+          <text class="btn-add-text">Ajouter un logement</text>
+        </button>
+      </view>
+
+      <!-- Section À faire maintenant -->
+      <view class="todo-section">
+        <text class="section-heading-title">À faire maintenant</text>
+        <view class="todo-card-list">
+          
+          <!-- Item 1 -->
+          <view class="todo-item" bindtap="onGoDemandes">
+            <view class="todo-bullet bullet-red"></view>
+            <view class="todo-content">
+              <text class="todo-item-title">Répondre à 2 demandes de visite</text>
+              <text class="todo-item-desc">Les locataires attendent depuis hier</text>
+            </view>
+            <text class="todo-chevron">›</text>
+          </view>
+          <view class="todo-divider"></view>
+
+          <!-- Item 2 -->
+          <view class="todo-item" bindtap="onGoAnnonces">
+            <view class="todo-bullet bullet-orange"></view>
+            <view class="todo-content">
+              <text class="todo-item-title">Confirmer que le studio est libre</text>
+              <text class="todo-item-desc">Dernière confirmation il y a 14 jours</text>
+            </view>
+            <text class="todo-chevron">›</text>
+          </view>
+          <view class="todo-divider"></view>
+
+          <!-- Item 3 -->
+          <view class="todo-item" bindtap="onGoAnnonces">
+            <view class="todo-bullet bullet-red"></view>
+            <view class="todo-content">
+              <text class="todo-item-title">Remplacer 2 photos floues</text>
+              <text class="todo-item-desc">Appartement F2 — demandé par la validation</text>
+            </view>
+            <text class="todo-chevron">›</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- Section Loyers d'octobre -->
+      <view class="loyers-bar-card">
+        <text class="loyers-title">Loyers d'octobre</text>
+        <view class="loyers-link">
+          <text class="loyers-link-text">Historique</text>
+          <text class="loyers-link-chev">›</text>
+        </view>
+      </view>
+
+      <!-- Bouton de retour vers mode Locataire -->
+      <view class="switch-role-bar">
+        <button class="btn-switch-client" bindtap="onSwitchToClient">
+          <text class="switch-client-icon">🔄</text>
+          <text class="switch-client-text">Passer en mode Locataire</text>
+        </button>
+      </view>
+
+    </view>
+
+    <view class="scroll-spacer"></view>
+  </scroll-view>
+
+  <!-- Bailleur Tab Bar -->
+  <app-custom-tab-bar activeTab="b-home" />
+</view>
