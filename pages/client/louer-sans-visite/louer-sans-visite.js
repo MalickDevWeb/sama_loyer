@@ -22,7 +22,15 @@ Page({
     guards: GUARDS,
     checks: [],
     ready: false,
-    todoText: ''
+    todoText: '',
+    showMediaRequiredModal: false,
+    toast: {
+      visible: false,
+      hiding: false,
+      title: '',
+      subtitle: '',
+      type: 'warning'
+    }
   },
 
   onLoad(options) {
@@ -34,7 +42,6 @@ Page({
     const id = options && options.id ? decodeURIComponent(options.id) : 'icotaf-01';
     this.setData({ logementId: getLogementById(id) ? id : 'icotaf-01' });
 
-    // État de l'écran (hors data : pas affiché tel quel)
     this.seen = {};
     this.ok = {};
     this.refresh();
@@ -61,17 +68,83 @@ Page({
     const id = e.currentTarget.dataset.id;
     this.seen[id] = true;
     this.refresh();
-    wx.showToast({ title: id === 'video' ? 'Vidéo regardée' : 'Photos regardées', icon: 'none' });
+    
+    this.showFloatingToast({
+      title: id === 'video' ? 'Vidéo validée 🎬' : 'Photos validées 📸',
+      subtitle: id === 'video' ? 'Visite vidéo (0:28) visionnée' : 'Les 4 photos ont été consultées',
+      type: 'success',
+      duration: 2200
+    });
   },
 
   onToggleCheck(e) {
     const i = Number(e.currentTarget.dataset.index);
     if (this.data.checks[i].locked) {
-      wx.showToast({ title: 'Regarde d’abord les photos et la vidéo', icon: 'none' });
+      if (wx.vibrateShort) wx.vibrateShort();
+      this.setData({ showMediaRequiredModal: true });
       return;
     }
     this.ok[i] = !this.ok[i];
     this.refresh();
+  },
+
+  onBottomBarTap() {
+    if (!this.data.ready) {
+      const seenAll = MEDIA.every((m) => this.seen[m.id]);
+      if (!seenAll) {
+        if (wx.vibrateShort) wx.vibrateShort();
+        this.setData({ showMediaRequiredModal: true });
+      } else {
+        this.showFloatingToast({
+          title: 'Confirmation requise',
+          subtitle: 'Coche les 2 cases pour continuer vers la location',
+          type: 'warning',
+          duration: 2500
+        });
+      }
+    }
+  },
+
+  onCloseMediaModal() {
+    this.setData({ showMediaRequiredModal: false });
+  },
+
+  onViewPhotosFromModal() {
+    this.seen['photos'] = true;
+    this.refresh();
+    this.setData({ showMediaRequiredModal: false });
+    this.showFloatingToast({
+      title: 'Photos validées 📸',
+      subtitle: 'Les 4 photos ont été consultées avec succès',
+      type: 'success',
+      duration: 2200
+    });
+  },
+
+  onViewVideoFromModal() {
+    this.seen['video'] = true;
+    this.refresh();
+    this.setData({ showMediaRequiredModal: false });
+    this.showFloatingToast({
+      title: 'Vidéo validée 🎬',
+      subtitle: 'La vidéo de visite (0:28) a été visionnée',
+      type: 'success',
+      duration: 2200
+    });
+  },
+
+  onConfirmAllSeenFromModal() {
+    this.seen['photos'] = true;
+    this.seen['video'] = true;
+    this.ok[0] = true; // Coche automatiquement la première case
+    this.refresh();
+    this.setData({ showMediaRequiredModal: false });
+    this.showFloatingToast({
+      title: 'Vérification complète ✨',
+      subtitle: 'Photos et vidéo validées · Case cochée',
+      type: 'success',
+      duration: 2500
+    });
   },
 
   onVideoCall() {
@@ -81,5 +154,50 @@ Page({
   onContinue() {
     if (!this.data.ready) return;
     wx.navigateTo({ url: `/pages/client/entree/entree?id=${this.data.logementId}&remote=1` });
+  },
+
+  // Notification flottante stylée SAMA LOYER
+  showFloatingToast({ title, subtitle = '', type = 'warning', duration = 2400 }) {
+    if (this._toastTimer) clearTimeout(this._toastTimer);
+    if (this._toastHideTimer) clearTimeout(this._toastHideTimer);
+
+    this.setData({
+      toast: {
+        visible: true,
+        hiding: false,
+        title,
+        subtitle,
+        type
+      }
+    });
+
+    this._toastTimer = setTimeout(() => {
+      this.setData({ 'toast.hiding': true });
+      this._toastHideTimer = setTimeout(() => {
+        this.setData({
+          toast: {
+            visible: false,
+            hiding: false,
+            title: '',
+            subtitle: '',
+            type: 'warning'
+          }
+        });
+      }, 260);
+    }, duration);
+  },
+
+  onDismissToast() {
+    if (this._toastTimer) clearTimeout(this._toastTimer);
+    if (this._toastHideTimer) clearTimeout(this._toastHideTimer);
+    this.setData({
+      toast: {
+        visible: false,
+        hiding: false,
+        title: '',
+        subtitle: '',
+        type: 'warning'
+      }
+    });
   }
 });

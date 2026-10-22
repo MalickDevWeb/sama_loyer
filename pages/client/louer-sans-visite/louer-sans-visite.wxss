@@ -159,3 +159,281 @@
   flex-direction: column;
   gap: 16rpx;
 }
+
+/* ============================================================================
+   POPUP MODAL ÉLÉGANT SAMA LOYER (Adapté aux couleurs de l'app)
+   ============================================================================ */
+.sama-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background-color: rgba(15, 30, 61, 0.65);
+  backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40rpx;
+  box-sizing: border-box;
+  animation: fadeIn 0.25s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes popUp {
+  from { opacity: 0; transform: translateY(30rpx) scale(0.95); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.sama-modal-card {
+  position: relative;
+  width: 100%;
+  max-width: 620rpx;
+  background-color: #FFFFFF;
+  border-radius: 40rpx;
+  padding: 48rpx 36rpx 40rpx;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  box-shadow: 0 20rpx 50rpx rgba(15, 30, 61, 0.25);
+  animation: popUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.modal-close-round {
+  position: absolute;
+  top: 24rpx;
+  right: 24rpx;
+  width: 60rpx;
+  height: 60rpx;
+  border-radius: 50%;
+  background-color: #F1F4F9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #5B6475;
+  font-size: 26rpx;
+}
+
+.modal-illu-badge {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 36rpx;
+  background: linear-gradient(135deg, #FFF0F5 0%, #FFE3EE 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 24rpx;
+  box-shadow: 0 8rpx 20rpx rgba(200, 35, 95, 0.15);
+}
+
+.modal-illu-emoji {
+  font-size: 56rpx;
+}
+
+.modal-title {
+  font-size: 38rpx;
+  font-weight: 800;
+  color: #0F1E3D;
+  margin-bottom: 12rpx;
+  letter-spacing: -0.01em;
+}
+
+.modal-desc {
+  font-size: 26rpx;
+  color: #5B6475;
+  line-height: 1.5;
+  margin-bottom: 32rpx;
+}
+
+.modal-actions-list {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+  margin-bottom: 32rpx;
+}
+
+.modal-media-item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+  background-color: #F8F9FA;
+  border: 3rpx solid #E4E7EE;
+  border-radius: 28rpx;
+  padding: 20rpx 24rpx;
+  box-sizing: border-box;
+  text-align: left;
+  transition: all 0.2s;
+}
+
+.modal-media-item--done {
+  background-color: #EEF7F2;
+  border-color: #BFDDCD;
+}
+
+.modal-media-icon {
+  width: 76rpx;
+  height: 76rpx;
+  border-radius: 22rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 34rpx;
+  flex-shrink: 0;
+}
+
+.icon--photos {
+  background-color: #FBE3EC;
+}
+
+.icon--video {
+  background-color: #E3E9F5;
+}
+
+.modal-media-text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-media-name {
+  font-size: 28rpx;
+  font-weight: 800;
+  color: #0F1E3D;
+}
+
+.modal-media-detail {
+  font-size: 22rpx;
+  color: #7A8294;
+  margin-top: 2rpx;
+}
+
+.modal-media-status {
+  padding: 8rpx 20rpx;
+  border-radius: 999rpx;
+  font-size: 24rpx;
+  font-weight: 800;
+}
+
+.status--pending {
+  background-color: #C8235F;
+  color: #FFFFFF;
+}
+
+.status--done {
+  background-color: #11643F;
+  color: #FFFFFF;
+}
+
+.btn-modal-confirm {
+  width: 100%;
+  height: 104rpx;
+  border-radius: 28rpx;
+  background-color: #C8235F;
+  color: #FFFFFF;
+  font-size: 30rpx;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  box-shadow: 0 8rpx 24rpx rgba(200, 35, 95, 0.3);
+  border: none;
+}
+
+.modal-close-link {
+  margin-top: 24rpx;
+  font-size: 26rpx;
+  color: #7A8294;
+  font-weight: 700;
+  padding: 8rpx;
+}
+
+/* ============================================================================
+   NOTIFICATION FLOTTANTE SAMA LOYER
+   ============================================================================ */
+.sama-floating-toast {
+  position: fixed;
+  left: 32rpx;
+  right: 32rpx;
+  z-index: 10000;
+  display: flex;
+  justify-content: center;
+  pointer-events: auto;
+}
+
+.toast-pill-body {
+  display: flex;
+  align-items: center;
+  gap: 18rpx;
+  background: rgba(15, 30, 61, 0.95);
+  backdrop-filter: blur(14px);
+  border: 1rpx solid rgba(255, 255, 255, 0.15);
+  border-radius: 999rpx;
+  padding: 14rpx 26rpx 14rpx 18rpx;
+  box-shadow: 0 12rpx 36rpx rgba(0, 0, 0, 0.28);
+}
+
+.toast-icon-wrapper {
+  width: 52rpx;
+  height: 52rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.toast-icon--success { background: linear-gradient(135deg, #059669 0%, #10B981 100%); }
+.toast-icon--warning { background: linear-gradient(135deg, #C8235F 0%, #E83D84 100%); }
+
+.toast-symbol {
+  color: #FFFFFF;
+  font-size: 26rpx;
+  font-weight: 800;
+}
+
+.toast-text-block {
+  display: flex;
+  flex-direction: column;
+}
+
+.toast-title-text {
+  color: #FFFFFF;
+  font-size: 26rpx;
+  font-weight: 700;
+}
+
+.toast-subtitle-text {
+  color: #CBD5E1;
+  font-size: 20rpx;
+}
+
+.toast-badge-sparkle {
+  font-size: 24rpx;
+  margin-left: 6rpx;
+}
+
+.toast--show {
+  animation: toastPopIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.toast--hide {
+  animation: toastFadeOut 0.25s ease-in forwards;
+}
+
+@keyframes toastPopIn {
+  from { opacity: 0; transform: translateY(-20rpx) scale(0.94); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes toastFadeOut {
+  from { opacity: 1; transform: translateY(0) scale(1); }
+  to { opacity: 0; transform: translateY(-16rpx) scale(0.94); }
+}
+

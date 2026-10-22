@@ -1,4 +1,29 @@
 <view class="lsv">
+  <!-- Toast / Notification Flottante Haute Couture SAMA LOYER -->
+  <view 
+    wx:if="{{ toast.visible }}" 
+    class="sama-floating-toast {{ toast.hiding ? 'toast--hide' : 'toast--show' }}" 
+    style="top: {{ statusBarHeight + 58 }}px;"
+    catchtap="onDismissToast"
+  >
+    <view class="toast-pill-body">
+      <view class="toast-icon-wrapper {{ toast.type === 'success' ? 'toast-icon--success' : 'toast-icon--warning' }}">
+        <text class="toast-symbol">{{ toast.type === 'success' ? '✓' : 'ℹ' }}</text>
+      </view>
+      <view class="toast-text-block">
+        <view class="toast-main-line">
+          <text class="toast-title-text">{{ toast.title }}</text>
+        </view>
+        <view wx:if="{{ toast.subtitle }}" class="toast-sub-line">
+          <text class="toast-subtitle-text">{{ toast.subtitle }}</text>
+        </view>
+      </view>
+      <view class="toast-badge-sparkle">
+        <text class="toast-sparkle-symbol">✨</text>
+      </view>
+    </view>
+  </view>
+
   <!-- Barre du haut -->
   <view class="sl-topbar" style="padding-top: {{ statusBarHeight }}px;">
     <view class="sl-topbar__inner">
@@ -36,7 +61,7 @@
           <text class="lsv__media-label">{{ item.label }}</text>
           <text class="lsv__media-sub">{{ item.sub }}</text>
         </view>
-        <text class="sl-badge {{ item.seen ? 'sl-badge--green' : 'sl-badge--navy' }}">{{ item.seen ? 'Vu' : 'Regarder' }}</text>
+        <text class="sl-badge {{ item.seen ? 'sl-badge--green' : 'sl-badge--navy' }}">{{ item.seen ? 'Vu ✓' : 'Regarder' }}</text>
       </view>
     </view>
     <view class="lsv__video-call" hover-class="sl-hover" bindtap="onVideoCall">
@@ -88,6 +113,60 @@
   <!-- Barre du bas -->
   <view class="sl-bottombar">
     <view wx:if="{{ ready }}" class="sl-btn sl-btn--berry" hover-class="sl-hover" bindtap="onContinue">Continuer vers la location</view>
-    <view wx:else class="sl-btn sl-btn--soft">{{ todoText }}</view>
+    <view wx:else class="sl-btn sl-btn--soft" hover-class="sl-hover" bindtap="onBottomBarTap">{{ todoText }}</view>
+  </view>
+
+  <!-- ======================================================== -->
+  <!-- POPUP ÉLÉGANT SAMA LOYER (Adapté aux couleurs de l'app)  -->
+  <!-- ======================================================== -->
+  <view wx:if="{{ showMediaRequiredModal }}" class="sama-modal-overlay" bindtap="onCloseMediaModal">
+    <view class="sama-modal-card" catchtap="true">
+      <!-- Bouton fermer -->
+      <view class="modal-close-round" bindtap="onCloseMediaModal">✕</view>
+
+      <!-- Badge icône supérieure -->
+      <view class="modal-illu-badge">
+        <text class="modal-illu-emoji">📸</text>
+      </view>
+
+      <text class="modal-title">Photos et vidéo requises</text>
+      <text class="modal-desc">Pour ta sécurité et être certain que le logement te convient, prends quelques secondes pour consulter les 4 photos et la vidéo de visite.</text>
+
+      <!-- 2 cartes d'actions rapides -->
+      <view class="modal-actions-list">
+        <view class="modal-media-item {{ media[0].seen ? 'modal-media-item--done' : '' }}" bindtap="onViewPhotosFromModal">
+          <view class="modal-media-icon icon--photos">
+            <text>🖼</text>
+          </view>
+          <view class="modal-media-text">
+            <text class="modal-media-name">Regarder les 4 photos</text>
+            <text class="modal-media-detail">Salon, chambre, douche, cour</text>
+          </view>
+          <view class="modal-media-status {{ media[0].seen ? 'status--done' : 'status--pending' }}">
+            {{ media[0].seen ? 'Vu ✓' : 'Voir' }}
+          </view>
+        </view>
+
+        <view class="modal-media-item {{ media[1].seen ? 'modal-media-item--done' : '' }}" bindtap="onViewVideoFromModal">
+          <view class="modal-media-icon icon--video">
+            <text>🎬</text>
+          </view>
+          <view class="modal-media-text">
+            <text class="modal-media-name">Visionner la vidéo</text>
+            <text class="modal-media-detail">0:28 · filmée par le bailleur</text>
+          </view>
+          <view class="modal-media-status {{ media[1].seen ? 'status--done' : 'status--pending' }}">
+            {{ media[1].seen ? 'Vu ✓' : 'Voir' }}
+          </view>
+        </view>
+      </view>
+
+      <!-- Bouton principal validation -->
+      <button class="btn-modal-confirm" bindtap="onConfirmAllSeenFromModal">
+        J'ai tout regardé, déverrouiller ✓
+      </button>
+
+      <view class="modal-close-link" bindtap="onCloseMediaModal">Plus tard</view>
+    </view>
   </view>
 </view>
