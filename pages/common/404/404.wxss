@@ -1,6 +1,6 @@
 /* ==========================================================================
-   Page 404 Haute Couture - SAMA LOYER
-   Design ultra-moderne, aéré et aligné avec le branding officiel
+   Page 404 Motion Design - SAMA LOYER
+   Animations fluides, douces et performantes (GPU accelerated)
    ========================================================================== */
 
 .not-found-page {
@@ -16,7 +16,7 @@
   background-color: #FAFAFC;
   padding-left: 36rpx;
   padding-right: 36rpx;
-  padding-bottom: 24rpx;
+  padding-bottom: 16rpx;
   box-sizing: border-box;
 }
 
@@ -27,11 +27,16 @@
   min-height: 72rpx;
 }
 
-/* Logo officiel SAMA LOYER (identique à l'accueil / bailleur) */
+/* Logo officiel SAMA LOYER */
 .sama-brand {
   display: flex;
   align-items: center;
   gap: 18rpx;
+  transition: transform 0.2s ease;
+}
+
+.sama-brand:active {
+  transform: scale(0.96);
 }
 
 .sama-brand__icon {
@@ -94,24 +99,239 @@
   text-align: center;
 }
 
-/* Hero Artwork Container */
-.hero-illu-wrap {
-  width: 440rpx;
-  height: 300rpx;
+/* ==========================================================================
+   MOTION DESIGN HERO STAGE
+   ========================================================================== */
+
+.motion-hero-stage {
+  position: relative;
+  width: 460rpx;
+  height: 330rpx;
   display: flex;
   align-items: center;
   justify-content: center;
   margin-top: 10rpx;
-  margin-bottom: 20rpx;
+  margin-bottom: 24rpx;
 }
 
-.hero-illu-art {
+/* Radar Waves Background Animation */
+.radar-wave {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.wave-1 {
+  width: 280rpx;
+  height: 280rpx;
+  background: radial-gradient(circle, rgba(200, 35, 95, 0.12) 0%, rgba(200, 35, 95, 0.02) 70%, transparent 100%);
+  animation: pulseRadar 3.6s ease-in-out infinite;
+}
+
+.wave-2 {
+  width: 380rpx;
+  height: 380rpx;
+  background: radial-gradient(circle, rgba(15, 30, 61, 0.06) 0%, transparent 65%);
+  animation: pulseRadar 3.6s ease-in-out infinite 1.8s;
+}
+
+@keyframes pulseRadar {
+  0% {
+    transform: scale(0.85);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.15);
+    opacity: 0.35;
+  }
+  100% {
+    transform: scale(0.85);
+    opacity: 0.8;
+  }
+}
+
+/* Levitating House Container */
+.levitating-house {
+  position: relative;
+  width: 320rpx;
+  height: 240rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: houseHover 4s ease-in-out infinite;
+  will-change: transform;
+}
+
+@keyframes houseHover {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-12rpx);
+  }
+}
+
+/* Vector Graphic House (Clean SVG) */
+.house-graphic-art {
   width: 100%;
   height: 100%;
   background-repeat: no-repeat;
   background-position: center;
   background-size: contain;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 240 180' fill='none'%3E%3Ccircle cx='120' cy='95' r='75' fill='%23FDE8EE' opacity='0.75'/%3E%3Ccircle cx='155' cy='68' r='32' fill='%23E8EEF5' opacity='0.85'/%3E%3Cpath d='M30 148h180' stroke='%23CCD4E2' stroke-width='2.5' stroke-linecap='round'/%3E%3Cpath d='M65 148V88l55-38 55 38v60' stroke='%230F1E3D' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round' fill='%23FFFFFF'/%3E%3Cpath d='M55 92l65-45 65 45' stroke='%23C8235F' stroke-width='3.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M150 58V44h-12v17' stroke='%230F1E3D' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round' fill='%23FFFFFF'/%3E%3Crect x='80' y='94' width='24' height='24' rx='4' stroke='%230F1E3D' stroke-width='2.5' fill='%23FFF8EB'/%3E%3Cline x1='92' y1='94' x2='92' y2='118' stroke='%230F1E3D' stroke-width='1.8'/%3E%3Cline x1='80' y1='106' x2='104' y2='106' stroke='%230F1E3D' stroke-width='1.8'/%3E%3Cpath d='M120 148v-38a4 4 0 0 1 4-4h20a4 4 0 0 1 4 4v38' stroke='%230F1E3D' stroke-width='2.5' fill='%23FDEEF2'/%3E%3Ccircle cx='142' cy='128' r='2.2' fill='%23C8235F'/%3E%3Ccircle cx='172' cy='86' r='24' stroke='%230F1E3D' stroke-width='3.2' fill='%23FFFFFF'/%3E%3Cline x1='189' y1='103' x2='208' y2='122' stroke='%230F1E3D' stroke-width='4' stroke-linecap='round'/%3E%3Ctext x='172' y='94' font-family='sans-serif' font-size='18' font-weight='800' fill='%23C8235F' text-anchor='middle'%3E?%3C/text%3E%3Cpath d='M46 62l2 6 6 2-6 2-2 6-2-6-6-2 6-2z' fill='%23C8235F' opacity='0.75'/%3E%3Ccircle cx='198' cy='48' r='3.5' fill='%23F5A623'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 160' fill='none'%3E%3Cpath d='M20 138h160' stroke='%23CCD4E2' stroke-width='2.5' stroke-linecap='round'/%3E%3Cpath d='M45 138V78l55-38 55 38v60' stroke='%230F1E3D' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round' fill='%23FFFFFF'/%3E%3Cpath d='M35 82l65-45 65 45' stroke='%23C8235F' stroke-width='3.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M135 48V34h-12v17' stroke='%230F1E3D' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round' fill='%23FFFFFF'/%3E%3Crect x='60' y='84' width='22' height='22' rx='4' stroke='%230F1E3D' stroke-width='2.5' fill='%23FFF8EB'/%3E%3Cline x1='71' y1='84' x2='71' y2='106' stroke='%230F1E3D' stroke-width='1.8'/%3E%3Cline x1='60' y1='95' x2='82' y2='95' stroke='%230F1E3D' stroke-width='1.8'/%3E%3Cpath d='M100 138v-38a4 4 0 0 1 4-4h20a4 4 0 0 1 4 4v38' stroke='%230F1E3D' stroke-width='2.5' fill='%23FDEEF2'/%3E%3Ccircle cx='122' cy='118' r='2.2' fill='%23C8235F'/%3E%3C/svg%3E");
+}
+
+/* Orbiting / Scanning Magnifier */
+.motion-scanner {
+  position: absolute;
+  top: 36rpx;
+  right: 16rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  animation: scannerMotion 4.8s ease-in-out infinite;
+  will-change: transform;
+}
+
+.scanner-glass {
+  width: 64rpx;
+  height: 64rpx;
+  border-radius: 50%;
+  border: 4rpx solid #0F1E3D;
+  background-color: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 6rpx 16rpx rgba(15, 30, 61, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(4px);
+}
+
+.scanner-query {
+  font-size: 30rpx;
+  font-weight: 800;
+  color: #C8235F;
+}
+
+.scanner-handle {
+  width: 6rpx;
+  height: 22rpx;
+  background-color: #0F1E3D;
+  border-radius: 3rpx;
+  transform: rotate(-35deg) translate(-2rpx, -4rpx);
+}
+
+@keyframes scannerMotion {
+  0%, 100% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  25% {
+    transform: translate(-14rpx, -8rpx) rotate(-8deg);
+  }
+  50% {
+    transform: translate(-20rpx, 6rpx) rotate(-4deg);
+  }
+  75% {
+    transform: translate(-6rpx, 10rpx) rotate(6deg);
+  }
+}
+
+/* Floating Key Badge */
+.floating-key-pill {
+  position: absolute;
+  top: -8rpx;
+  left: 32rpx;
+  width: 62rpx;
+  height: 62rpx;
+  border-radius: 50%;
+  background-color: #FFFFFF;
+  border: 2rpx solid #F0F3F9;
+  box-shadow: 0 6rpx 18rpx rgba(200, 35, 95, 0.16);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: keyBob 3.2s ease-in-out infinite;
+}
+
+.key-emoji {
+  font-size: 28rpx;
+}
+
+@keyframes keyBob {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-8rpx) rotate(12deg);
+  }
+}
+
+/* Shimmering Sparkles */
+.shimmer-sparkle {
+  position: absolute;
+  color: #C8235F;
+  font-size: 26rpx;
+  font-weight: 700;
+  animation: shimmerTwinkle 2.4s ease-in-out infinite;
+}
+
+.sparkle-left {
+  top: 50rpx;
+  left: -12rpx;
+  animation-delay: 0.3s;
+}
+
+.sparkle-right {
+  top: 10rpx;
+  right: 80rpx;
+  color: #F5A623;
+  font-size: 20rpx;
+  animation-delay: 1.2s;
+}
+
+@keyframes shimmerTwinkle {
+  0%, 100% {
+    opacity: 0.3;
+    transform: scale(0.8);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.25);
+  }
+}
+
+/* ==========================================================================
+   STAGGERED PAGE ENTRANCE ANIMATIONS
+   ========================================================================== */
+
+.anim-fade-up-1 {
+  animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.anim-fade-up-2 {
+  animation: fadeUp 0.65s cubic-bezier(0.16, 1, 0.3, 1) 0.08s forwards;
+}
+
+.anim-fade-up-3 {
+  animation: fadeUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.16s forwards;
+}
+
+.anim-fade-up-4 {
+  animation: fadeUp 0.75s cubic-bezier(0.16, 1, 0.3, 1) 0.24s forwards;
+}
+
+.anim-fade-up-5 {
+  animation: fadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.32s forwards;
+}
+
+@keyframes fadeUp {
+  0% {
+    opacity: 0;
+    transform: translateY(24rpx);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* Badge Code */
@@ -170,8 +390,16 @@
 }
 
 .suggestions-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   margin-bottom: 24rpx;
   text-align: left;
+}
+
+.suggestions-header-left {
+  display: flex;
+  flex-direction: column;
 }
 
 .suggestions-title {
@@ -188,6 +416,35 @@
   color: #5B6475;
 }
 
+.suggestions-radar-badge {
+  display: flex;
+  align-items: center;
+  gap: 10rpx;
+  padding: 6rpx 18rpx;
+  background-color: #EAF8EF;
+  border-radius: 20rpx;
+}
+
+.radar-live-dot {
+  width: 12rpx;
+  height: 12rpx;
+  border-radius: 50%;
+  background-color: #007C3D;
+  animation: liveBlink 1.8s infinite;
+}
+
+@keyframes liveBlink {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.7); }
+}
+
+.radar-live-text {
+  font-size: 20rpx;
+  font-weight: 800;
+  color: #007C3D;
+  letter-spacing: 0.5rpx;
+}
+
 .zones-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -202,7 +459,13 @@
   border-radius: 20rpx;
   border: 2rpx solid #F0F3F9;
   box-sizing: border-box;
-  transition: all 0.2s ease;
+  transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.zone-card-hover {
+  transform: scale(0.97);
+  background-color: #FDE8EE;
+  border-color: #F8B4C8;
 }
 
 .zone-pin-circle {
@@ -244,6 +507,12 @@
   gap: 16rpx;
   border: none;
   box-shadow: 0 8rpx 24rpx rgba(15, 30, 61, 0.2);
+  transition: transform 0.15s ease;
+}
+
+.btn-hover {
+  transform: scale(0.98);
+  opacity: 0.94;
 }
 
 .btn-primary-text {
@@ -267,6 +536,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: transform 0.15s ease;
 }
 
 .btn-secondary-text {

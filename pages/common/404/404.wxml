@@ -18,28 +18,61 @@
   <scroll-view scroll-y class="scroll-content">
     <view class="content-wrapper">
       
-      <!-- Premium Hero Artwork -->
-      <view class="hero-illu-wrap">
-        <view class="hero-illu-art"></view>
+      <!-- Motion Design Hero Artwork -->
+      <view class="motion-hero-stage anim-fade-up-1">
+        <!-- Radar Scanning Waves -->
+        <view class="radar-wave wave-1"></view>
+        <view class="radar-wave wave-2"></view>
+        
+        <!-- Levitating House Composition -->
+        <view class="levitating-house">
+          <!-- House Illustration Vector Art -->
+          <view class="house-graphic-art"></view>
+
+          <!-- Scanning Magnifier with Gentle Rotation -->
+          <view class="motion-scanner">
+            <view class="scanner-glass">
+              <text class="scanner-query">?</text>
+            </view>
+            <view class="scanner-handle"></view>
+          </view>
+
+          <!-- Floating Key Pill Badge -->
+          <view class="floating-key-pill">
+            <text class="key-emoji">🔑</text>
+          </view>
+
+          <!-- Shimmering Sparkles -->
+          <view class="shimmer-sparkle sparkle-left">✦</view>
+          <view class="shimmer-sparkle sparkle-right">✦</view>
+        </view>
       </view>
 
       <!-- Badge Code -->
-      <view class="error-badge">
+      <view class="error-badge anim-fade-up-2">
         <text class="badge-dot">✦</text>
         <text class="badge-text">ERREUR 404 · LOGEMENT INTROUVABLE</text>
       </view>
 
       <!-- Clean Typography -->
-      <text class="main-title">Ce logement n'habite plus à cette adresse</text>
-      <text class="main-subtitle">
-        L'annonce a été retirée ou le lien n'est plus actif. Rassure-toi, ton futur chez-toi t'attend à Dakar !
-      </text>
+      <view class="anim-fade-up-3">
+        <text class="main-title">Ce logement n'habite plus à cette adresse</text>
+        <text class="main-subtitle">
+          L'annonce a été retirée ou le lien n'est plus actif. Rassure-toi, ton futur chez-toi t'attend à Dakar !
+        </text>
+      </view>
 
       <!-- Card Suggestions : Quartiers Populaires -->
-      <view class="suggestions-card">
+      <view class="suggestions-card anim-fade-up-4">
         <view class="suggestions-header">
-          <text class="suggestions-title">Où souhaites-tu chercher ?</text>
-          <text class="suggestions-sub">Quartiers populaires à Dakar</text>
+          <view class="suggestions-header-left">
+            <text class="suggestions-title">Où souhaites-tu chercher ?</text>
+            <text class="suggestions-sub">Quartiers populaires à Dakar</text>
+          </view>
+          <view class="suggestions-radar-badge">
+            <view class="radar-live-dot"></view>
+            <text class="radar-live-text">DIRECT</text>
+          </view>
         </view>
 
         <view class="zones-grid">
@@ -47,6 +80,7 @@
             wx:for="{{ popularZones }}" 
             wx:key="key" 
             class="zone-card"
+            hover-class="zone-card-hover"
             bindtap="onSelectZone"
             data-zone="{{ item.label }}"
           >
@@ -58,13 +92,13 @@
       </view>
 
       <!-- Action Buttons -->
-      <view class="actions-group">
-        <button class="btn-primary" bindtap="onSearchAll">
+      <view class="actions-group anim-fade-up-5">
+        <button class="btn-primary" hover-class="btn-hover" bindtap="onSearchAll">
           <text class="btn-primary-text">Trouver un logement</text>
           <text class="btn-arrow">→</text>
         </button>
 
-        <button class="btn-secondary" bindtap="onGoHome">
+        <button class="btn-secondary" hover-class="btn-hover" bindtap="onGoHome">
           <text class="btn-secondary-text">Retourner à l'accueil</text>
         </button>
 
