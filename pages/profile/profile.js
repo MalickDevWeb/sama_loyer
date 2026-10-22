@@ -1,3 +1,4 @@
+import { storage } from '../../utils/storage.js';
 import { STORAGE_KEYS } from '../../utils/constants/index';
 
 Page({
@@ -45,7 +46,8 @@ Page({
   },
 
   onNavFavoris() {
-    wx.switchTab({ url: '/pages/favoris/favoris' });
+    // Favoris n'est plus un onglet : navigateTo (switchTab échouerait)
+    wx.navigateTo({ url: '/pages/favoris/favoris' });
   },
 
   onNavVisites() {
@@ -64,7 +66,7 @@ Page({
 
   onSwitchToBailleur() {
     wx.showLoading({ title: 'Chargement...' });
-    wx.setStorageSync(STORAGE_KEYS.USER_ROLE, 'bailleur');
+    storage.set(STORAGE_KEYS.USER_ROLE, 'bailleur');
     
     setTimeout(() => {
       wx.hideLoading();

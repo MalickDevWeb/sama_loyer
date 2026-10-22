@@ -1,6 +1,0 @@
-
-.policy-desc { font-size: 14px; color: #4B5563; line-height: 1.5; margin-bottom: 20px; font-weight: 500; }
-.policy-section { margin-bottom: 20px; }
-.policy-section-title { font-size: 15px; font-weight: 600; color: #374151; margin-bottom: 6px; }
-.policy-section-text { font-size: 14px; color: #6B7280; line-height: 1.5; }
-.policy-footer-note { margin-top: 10px; padding: 16px; background: #fffdf0; border-radius: 12px; font-size: 13px; line-height: 1.5; color: #fad700; text-align: center; }

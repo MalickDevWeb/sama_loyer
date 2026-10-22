@@ -1,9 +1,0 @@
-.policy-rule { display: flex; justify-content: space-between; align-items: flex-start; padding: 24rpx 0; border-bottom: 1rpx dashed #E5E7EB; gap: 24rpx; }
-.policy-rule:last-of-type { border-bottom: none; }
-.policy-rule-title { font-size: 26rpx; font-weight: 500; color: #374151; flex: 1; line-height: 1.4; }
-.policy-rule-value { font-size: 26rpx; font-weight: 500; color: #6B7280; flex: 1; text-align: right; line-height: 1.4; }
-.policy-rule-value.success { color: #059669; font-weight: 600; }
-.policy-rule-value.warning { color: #b54708; font-weight: 600; }
-.policy-rule-value.danger { color: #DC2626; font-weight: 600; }
-.policy-rule--active { background-color: #f3f4f6; border-radius: 16rpx; padding: 24rpx 20rpx; margin-left: -20rpx; margin-right: -20rpx; border-bottom-color: transparent; }
-

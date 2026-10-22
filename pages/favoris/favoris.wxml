@@ -3,8 +3,11 @@
     
     <!-- En-tête -->
     <view class="fav-header" style="padding-top: {{ statusBarHeight + 14 }}px;">
-      <text class="page-title">Favoris</text>
-      <text class="page-subtitle">{{ favoritesList.length }} logements enregistrés</text>
+      <view class="fav-title-row">
+        <view class="btn-back" bindtap="onBackTap">‹</view>
+        <text class="page-title">{{ i18n.favoris.title }}</text>
+      </view>
+      <text class="page-subtitle">{{ subtitle }}</text>
 
       <!-- Filtres Tous / Encore disponibles -->
       <view class="fav-filter-pills">
@@ -13,14 +16,14 @@
           data-filter="tous"
           bindtap="onFilterSelect"
         >
-          Tous
+          {{ i18n.favoris.filterAll }}
         </view>
         <view 
           class="fav-pill {{ activeTabFilter === 'dispo' ? 'fav-pill--active' : '' }}"
           data-filter="dispo"
           bindtap="onFilterSelect"
         >
-          Encore disponibles
+          {{ i18n.favoris.filterAvailable }}
         </view>
       </view>
     </view>
@@ -33,7 +36,7 @@
           <view class="fav-thumb" style="background-color: {{ item.bg }};">
             <view class="fav-thumb__house"></view>
             <view wx:if="{{ item.isPremium }}" class="badge-premium-pill">
-              ★ Premium
+              {{ i18n.common.premium }}
             </view>
             <view class="fav-btn-heart" data-id="{{ item.id }}" catchtap="onRemoveFavorite">
               <text class="heart-icon">♥</text>
@@ -55,7 +58,7 @@
             <!-- Statuts conditionnels -->
             <view class="fav-status-row" wx:if="{{ item.status === 'disponible' }}">
               <view class="badge-dispo">
-                <text class="check-icon">✓</text> Disponible
+                <text class="check-icon">✓</text> {{ i18n.common.available }}
               </view>
             </view>
 

@@ -5,10 +5,6 @@
 
 import { Bus } from './utils/event/index';
 import { nativeService } from './utils/apis/native';
-import {
-  loadDestinations,
-  syncGlobalDestinations,
-} from './utils/helpers/catalog';
 
 /**
  * EventBus State Keys
@@ -94,16 +90,10 @@ App({
     Bus.setState(STATE_KEYS.USER_DATA, { msisdn, fullName });
     Bus.setState(STATE_KEYS.USER_NAME, fullName);
 
-    // Step 2: Load catalog data before pages consume globalData.DESTINATIONS.
-    this.globalData.CATALOG_ERROR = false;
-    const destinations = await loadDestinations({
-      fallback: [],
-      onError: () => { this.globalData.CATALOG_ERROR = true; },
-    });
-    syncGlobalDestinations(this, destinations);
-    Bus.emit(EVENTS.DATA_REFRESH, { key: 'destinations' });
+    // Step 2: Les logements sont encore fictifs (utils/mocks/logements.js).
+    // Charger ici les données backend quand l'API Sama Logement sera prête.
 
-    // Mark app as initialized after user and catalog data are ready.
+    // Mark app as initialized after user data is ready.
     Bus.setState(STATE_KEYS.APP_INITIALIZED, true);
     Bus.emit(EVENTS.USER_LOADED);
 
@@ -234,8 +224,5 @@ App({
 
     /** Event names for convenience */
     EVENTS,
-
-    DESTINATIONS: [],
-    CATALOG_ERROR: false,
   },
 });

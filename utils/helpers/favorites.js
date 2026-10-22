@@ -3,7 +3,7 @@
 // Source unique des favoris : liste d'IDs sous STORAGE_KEYS.FAVORITES.
 // ============================================================================
 
-import { storage } from '../storage';
+import { storage } from '../storage.js';
 import { STORAGE_KEYS } from '../constants/index';
 import { DEFAULT_FAVORITE_IDS } from '../mocks/logements';
 

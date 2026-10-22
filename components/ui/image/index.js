@@ -1,3 +1,5 @@
+import { storage } from '../../../utils/storage.js';
+import { STORAGE_KEYS } from '../../../utils/constants/index';
 /**
  * Image Component
  * Feature-rich image with lazy loading, automatic retry, local caching,
@@ -220,9 +222,9 @@ Component({
     },
 
     cacheImage(key) {
-      const cache = wx.getStorageSync('tc-image-cache') || {};
+      const cache = storage.get(STORAGE_KEYS.IMAGE_CACHE, {});
       cache[key] = { timestamp: Date.now() };
-      wx.setStorageSync('tc-image-cache', cache);
+      storage.set(STORAGE_KEYS.IMAGE_CACHE, cache);
     },
 
     emit(event, payload) {

@@ -1,5 +1,6 @@
 import { getLogementById } from '../../utils/mocks/logements';
 import { getFavoriteIds, toggleFavoriteId } from '../../utils/helpers/favorites';
+import { t, i18nBehavior } from '../../utils/i18n/index';
 
 function formatMoney(n) {
   return String(n || 0).replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
@@ -13,23 +14,26 @@ function buildFavoritesList() {
     .map((l) => ({
       id: l.id,
       isPremium: !!l.isPremium,
-      price: `${formatMoney(l.price)} FCFA`,
-      unit: '/ mois',
+      price: `${formatMoney(l.price)} ${t('common.currency')}`,
+      unit: t('common.perMonth'),
       title: l.title,
       place: l.place,
       status: l.status || 'disponible',
-      statusLabel: l.statusLabel || 'Disponible',
+      statusLabel: l.statusLabel || t('common.available'),
       priceDropLabel: l.priceDropLabel || '',
-      registeredAt: 'Enregistré',
+      registeredAt: t('favoris.saved'),
       bg: l.tint
     }));
 }
 
 Page({
+  behaviors: [i18nBehavior],
+
   data: {
     statusBarHeight: 44,
     activeTabFilter: 'tous', // 'tous' | 'dispo'
     favoritesList: [],
+    subtitle: '',
     filteredList: []
   },
 
@@ -43,12 +47,24 @@ Page({
   },
 
   onShow() {
-    if (typeof this.getTabBar === 'function' && this.getTabBar()) {
-      this.getTabBar().setData({ activeTab: 'favoris' });
-    }
     // Recharge à chaque affichage : les favoris changent sur les autres pages
-    this.setData({ favoritesList: buildFavoritesList() });
+    this.setFavorites(buildFavoritesList());
     this.applyFilter(this.data.activeTabFilter);
+  },
+
+  setFavorites(list) {
+    this.setData({
+      favoritesList: list,
+      subtitle: t('favoris.subtitle', { count: list.length })
+    });
+  },
+
+  onBackTap() {
+    wx.navigateBack({
+      fail: () => {
+        wx.switchTab({ url: '/pages/profile/profile' });
+      }
+    });
   },
 
   onFilterSelect(e) {
@@ -68,17 +84,17 @@ Page({
   onRemoveFavorite(e) {
     const id = e.currentTarget.dataset.id;
     wx.showModal({
-      title: 'Retirer des favoris ?',
-      content: 'Ce logement sera retiré de ta liste.',
-      confirmText: 'Retirer',
+      title: t('favoris.removeTitle'),
+      content: t('favoris.removeContent'),
+      confirmText: t('favoris.removeConfirm'),
       confirmColor: '#C8235F',
-      cancelText: 'Annuler',
+      cancelText: t('common.cancel'),
       success: (res) => {
         if (res.confirm) {
           toggleFavoriteId(id, false);
-          this.setData({ favoritesList: buildFavoritesList() });
+          this.setFavorites(buildFavoritesList());
           this.applyFilter(this.data.activeTabFilter);
-          wx.showToast({ title: 'Favori retiré', icon: 'success' });
+          wx.showToast({ title: t('favoris.removed'), icon: 'success' });
         }
       }
     });

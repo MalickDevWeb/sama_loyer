@@ -1,3 +1,4 @@
+import { storage } from '../../../utils/storage.js';
 import { STORAGE_KEYS } from '../../../utils/constants/index';
 
 Page({
@@ -69,7 +70,7 @@ Page({
 
   onSwitchToClient() {
     wx.showLoading({ title: 'Chargement...' });
-    wx.setStorageSync(STORAGE_KEYS.USER_ROLE, 'client');
+    storage.set(STORAGE_KEYS.USER_ROLE, 'client');
     setTimeout(() => {
       wx.hideLoading();
       wx.reLaunch({

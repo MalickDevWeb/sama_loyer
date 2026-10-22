@@ -7,9 +7,50 @@ export const __DEV__ = true;
 
 export const STORAGE_KEYS = {
   ACCESS_TOKEN: 'app_access_token',
+  TOKEN_EXPIRY: 'app_token_expiry',
   USER_ROLE: 'sama_user_role', // 'client' | 'bailleur'
   FAVORITES: 'sama_favorites',
   ACTIVE_TAB: 'sama_active_tab',
+  IMAGE_CACHE: 'tc-image-cache',
+};
+
+// ============================================================================
+// AUTH / HTTP — utilisés par utils/apis/auth.js et utils/apis/http.js
+// ============================================================================
+
+export const AUTH_CONFIG = {
+  /** Refresh token before expiry (milliseconds) */
+  REFRESH_BUFFER_MS: 5000,
+
+  /** Default token expiry if not provided (seconds) */
+  DEFAULT_EXPIRY_SEC: 200,
+
+  /** OAuth2 grant type */
+  GRANT_TYPE: 'client_credentials',
+};
+
+export const HTTP_CONFIG = {
+  /** Default request timeout (milliseconds) */
+  DEFAULT_TIMEOUT_MS: 30000,
+
+  /** Session ID prefix for tracking */
+  SESSION_PREFIX: 'APP',
+
+  /** Custom header for session tracking */
+  HEADER_CLIENT_REF: 'X-Client-Ref',
+
+  /** Custom header for request tracking */
+  HEADER_REQUEST_ID: 'X-Request-Id',
+};
+
+export const ERROR_MESSAGES = {
+  NETWORK_ERROR: 'Connexion impossible. Vérifiez votre réseau puis réessayez.',
+  AUTH_FAILED: 'La connexion a échoué. Réessayez.',
+  NOT_FOUND: 'La ressource demandée est introuvable.',
+  SERVER_ERROR: 'Le service rencontre un problème. Réessayez plus tard.',
+  UNKNOWN_ERROR: 'Une erreur inattendue est survenue.',
+  TIMEOUT: 'La requête a expiré. Réessayez.',
+  FEATURE_UNAVAILABLE: 'Cette fonctionnalité n’est pas encore disponible.',
 };
 
 // ============================================================================
@@ -22,9 +63,10 @@ export const CLIENT_TABS = [
     url: '/pages/home/home',
   },
   {
-    id: 'favoris',
-    label: 'Favoris',
-    url: '/pages/favoris/favoris',
+    id: 'loyers',
+    label: 'Mon loyer',
+    badge: '2',
+    url: '/pages/loyers/loyers',
   },
   {
     id: 'visites',

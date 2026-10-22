@@ -1,7 +1,0 @@
-{
-  "usingComponents": {
-    "osn-image": "/components/ui/image/index",
-    "app-icon": "/components/ui/icons/base/index",
-    "app-typography": "/components/ui/typography/index"
-  }
-}

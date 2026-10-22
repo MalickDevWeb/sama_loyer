@@ -1,3 +1,4 @@
+import { storage } from '../../../../utils/storage.js';
 import { CLIENT_TABS, BAILLEUR_TABS, STORAGE_KEYS } from '../../../../utils/constants/index';
 
 Component({
@@ -26,7 +27,7 @@ Component({
 
   methods: {
     syncTabs() {
-      const role = wx.getStorageSync(STORAGE_KEYS.USER_ROLE) || 'client';
+      const role = storage.get(STORAGE_KEYS.USER_ROLE, 'client');
       const currentTabs = role === 'bailleur' ? BAILLEUR_TABS : CLIENT_TABS;
       
       const pages = getCurrentPages();

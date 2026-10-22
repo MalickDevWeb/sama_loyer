@@ -1,3 +1,4 @@
+import { storage } from '../../utils/storage.js';
 import { setCustomTabBarActive } from '../../utils/helpers/tab-bar';
 import { STORAGE_KEYS } from '../../utils/constants/index';
 import { LOGEMENTS as LISTINGS } from '../../utils/mocks/logements';
@@ -112,7 +113,7 @@ Page({
     } catch (e) {}
 
     try {
-      const role = wx.getStorageSync(STORAGE_KEYS.USER_ROLE) || 'client';
+      const role = storage.get(STORAGE_KEYS.USER_ROLE, 'client');
       this.setData({ userRole: role });
     } catch (e) {}
 
@@ -395,7 +396,7 @@ Page({
         if (res.tapIndex === 0) {
           wx.switchTab({ url: '/pages/profile/profile' });
         } else {
-          wx.setStorageSync(STORAGE_KEYS.USER_ROLE, 'bailleur');
+          storage.set(STORAGE_KEYS.USER_ROLE, 'bailleur');
           this.setData({ userRole: 'bailleur' });
           wx.reLaunch({ url: '/pages/bailleur/home/home' });
         }

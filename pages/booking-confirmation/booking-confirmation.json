@@ -1,7 +1,0 @@
-{
-  "usingComponents": {
-    "app-button": "/components/ui/button/index",
-    "app-icon": "/components/ui/icons/base/index",
-    "app-typography": "/components/ui/typography/index"
-  }
-}

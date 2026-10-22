@@ -1,3 +1,4 @@
+import { storage } from '../../utils/storage.js';
 import { setCustomTabBarActive } from '../../utils/helpers/tab-bar';
 import { STORAGE_KEYS } from '../../utils/constants/index';
 
@@ -66,7 +67,7 @@ Page({
     } catch (e) {}
 
     try {
-      const role = wx.getStorageSync(STORAGE_KEYS.USER_ROLE) || 'client';
+      const role = storage.get(STORAGE_KEYS.USER_ROLE, 'client');
       this.setData({ currentRole: role });
     } catch (e) {}
   },
@@ -79,7 +80,7 @@ Page({
     const role = e.currentTarget.dataset.role;
     this.setData({ currentRole: role });
     try {
-      wx.setStorageSync(STORAGE_KEYS.USER_ROLE, role);
+      storage.set(STORAGE_KEYS.USER_ROLE, role);
     } catch (err) {}
     wx.showToast({
       title: role === 'bailleur' ? 'Espace Bailleur activé 🏢' : 'Mode Locataire activé 🏠',

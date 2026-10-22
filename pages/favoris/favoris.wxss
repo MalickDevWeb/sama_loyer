@@ -22,6 +22,21 @@
   border-bottom: 1rpx solid #ECEFF2;
 }
 
+.fav-title-row {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+}
+
+.btn-back {
+  font-size: 48rpx;
+  color: #0F1E3D;
+  font-weight: 700;
+  width: 60rpx;
+  line-height: 1;
+  margin-bottom: 6rpx;
+}
+
 .page-title {
   display: block;
   font-size: 44rpx;

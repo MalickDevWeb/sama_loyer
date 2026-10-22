@@ -3,6 +3,7 @@
 // OAuth2 token management with caching and auto-refresh
 // ============================================================================
 
+import { storage } from '../storage.js';
 import { httpClient } from './http.js';
 import { config } from '../config.js';
 import { STORAGE_KEYS, AUTH_CONFIG, ERROR_MESSAGES } from '../constants/index.js';
@@ -16,15 +17,15 @@ export function setAccessToken(token) {
     return null;
   }
 
-  wx.setStorageSync(STORAGE_KEYS.ACCESS_TOKEN, token);
+  storage.set(STORAGE_KEYS.ACCESS_TOKEN, token);
   httpClient.setToken(token);
 
   return token;
 }
 
 export function clearAccessToken() {
-  wx.removeStorageSync(STORAGE_KEYS.ACCESS_TOKEN);
-  wx.removeStorageSync(STORAGE_KEYS.TOKEN_EXPIRY);
+  storage.remove(STORAGE_KEYS.ACCESS_TOKEN);
+  storage.remove(STORAGE_KEYS.TOKEN_EXPIRY);
   runtimeToken = null;
   runtimeTokenExpiry = 0;
   httpClient.setToken(null);

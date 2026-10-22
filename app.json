@@ -24,8 +24,6 @@
     "osn-image": "/components/ui/image/index",
     "app-icon": "/components/ui/icons/base/index",
     "app-layout": "/components/custom/ui/layout/index",
-    "app-destination-card": "/components/custom/ui/destination-card/index",
-    "app-list-destination": "/components/custom/ui/list-destination/index",
     "app-input": "/components/ui/input/index",
     "app-chip-group": "/components/custom/ui/chip-group/index",
     "app-typography": "/components/ui/typography/index"
@@ -53,8 +51,8 @@
         "selectedIconPath": "assets/icons/home.png"
       },
       {
-        "pagePath": "pages/favoris/favoris",
-        "text": "Favoris",
+        "pagePath": "pages/loyers/loyers",
+        "text": "Mon loyer",
         "iconPath": "assets/icons/favoris.png",
         "selectedIconPath": "assets/icons/favoris.png"
       },
@@ -80,10 +78,10 @@
   },
   "permission": {
     "scope.camera": {
-      "desc": "Need camera access to take photos or videos"
+      "desc": "Pour prendre des photos ou vidéos de vos logements"
     },
     "scope.album": {
-      "desc": "Need photo album access to select media"
+      "desc": "Pour choisir des photos de vos logements dans votre galerie"
     }
   }
 }

@@ -1,24 +1,15 @@
 // ============================================================================
-// ATS BACKEND API SERVICE
-// Centralized access to ATS REST endpoints.
+// SAMA LOGEMENT BACKEND API SERVICE
+// Centralized access to the Sama Logement REST endpoints.
 // ============================================================================
 
 import { httpClient } from './http.js';
 import { authenticate } from './auth.js';
 import { sculpt } from '../json-sculpt/sculpt.js';
-import { CategorySchema } from '../mappers/category.sculpt.js';
-import { PackageCardSchema, PackageDetailSchema } from '../mappers/package.sculpt.js';
-import { ReservationDetailSchema, ReservationSchema } from '../mappers/reservation.sculpt.js';
-import { normalizeApiError, NotFoundError, ValidationError } from '../errors/index.js';
+import { normalizeApiError } from '../errors/index.js';
 
-
-const ENDPOINTS = {
-  CATEGORIES: '/categories',
-  PACKAGES: '/packages',
-  FEATURED_PACKAGES: '/packages?featured=true',
-  RECOMMENDED_PACKAGES: '/packages?recommended=true',
-  BOOKINGS: '/bookings',
-};
+// Ajouter ici les chemins des endpoints Sama Logement (ex. LOGEMENTS: '/logements')
+const ENDPOINTS = {};
 
 function extractApiResponse(res, fallbackMessage) {
   if (!res || res.success !== true) {
@@ -51,6 +42,16 @@ function extractApiResponse(res, fallbackMessage) {
  * Service for your application's API operations.
  * All methods automatically handle authentication.
  *
+ * Modèle d'une méthode (schéma json-sculpt dans utils/mappers/) :
+ *
+ *   async getLogements() {
+ *     await authenticate();
+ *     const res = await this.#client.get(ENDPOINTS.LOGEMENTS);
+ *     const body = extractApiResponse(res, 'Impossible de récupérer les logements');
+ *     const items = Array.isArray(body.data) ? body.data : [];
+ *     return this.#sculpt(items, LogementCardSchema, 'Impossible de transformer les logements reçus');
+ *   }
+ *
  * @class BackendAPI
  */
 class BackendAPI {
@@ -68,104 +69,6 @@ class BackendAPI {
         metadata: { cause: error },
       }, fallbackMessage);
     }
-  }
-
-  async getPackages(params = {}) {
-    await authenticate();
-
-    const res = await this.#client.get(ENDPOINTS.PACKAGES);
-    const body = extractApiResponse(res, 'Impossible de récupérer les packages');
-    const items = Array.isArray(body.data) ? body.data : [];
-
-    return this.#sculpt(items, PackageCardSchema, 'Impossible de transformer les packages reçus');
-  }
-
-  async getFeaturedPackages() {
-    await authenticate();
-    const res = await this.#client.get(ENDPOINTS.FEATURED_PACKAGES);
-    const body = extractApiResponse(res, 'Impossible de récupérer les packages à la une');
-    const items = Array.isArray(body.data) ? body.data : [];
-    return this.#sculpt(items, PackageCardSchema, 'Impossible de transformer les packages à la une reçus');
-  }
-
-  async getRecommendedPackages() {
-    await authenticate();
-
-    const res = await this.#client.get(ENDPOINTS.RECOMMENDED_PACKAGES);
-    const body = extractApiResponse(res, 'Impossible de récupérer les packages recommandés');
-    const items = Array.isArray(body.data) ? body.data : [];
-
-    return this.#sculpt(items, PackageCardSchema, 'Impossible de transformer les packages recommandés reçus');
-  }
-
-  async getPackage(id) {
-    if (id === '' || id === null || id === undefined || (typeof id === 'string' && !/^\d+$/.test(id)) || !Number.isSafeInteger(Number(id)) || Number(id) <= 0) {
-      throw new ValidationError('Identifiant du package invalide', { field: 'id', value: id });
-    }
-
-    await authenticate();
-
-    const res = await this.#client.get(`${ENDPOINTS.PACKAGES}/${id}`);
-    const body = extractApiResponse(res, 'Impossible de récupérer le détail du package');
-    const destination = this.#sculpt(body.data || body, PackageDetailSchema, 'Impossible de transformer le package reçu');
-
-    if (!Number.isSafeInteger(Number(destination.id)) || Number(destination.id) <= 0) {
-      throw new NotFoundError('Package introuvable', { id });
-    }
-
-    return destination;
-  }
-
-  async getCategories() {
-    await authenticate();
-
-    const res = await this.#client.get(ENDPOINTS.CATEGORIES);
-    const body = extractApiResponse(res, 'Impossible de récupérer les catégories');
-    const items = Array.isArray(body.data) ? body.data : [];
-
-    return this.#sculpt(items, CategorySchema, 'Impossible de transformer les catégories reçues');
-  }
-
-  async getBooking(reference) {
-    if (!reference) throw new ValidationError('Référence de réservation manquante');
-    await authenticate();
-    const res = await this.#client.get(`${ENDPOINTS.BOOKINGS}/${reference}`);
-    const body = extractApiResponse(res, 'Impossible de récupérer la réservation');
-    return this.#sculpt(body.data || body, ReservationDetailSchema, 'Impossible de transformer la réservation reçue');
-  }
-
-  async createBooking(payload) {
-    await authenticate();
-    const res = await this.#client.post(ENDPOINTS.BOOKINGS, payload);
-    const body = extractApiResponse(res, 'Impossible de créer la réservation');
-    return this.#sculpt(body.data || body, ReservationSchema, 'Impossible de transformer la réservation créée');
-  }
-
-  async listBookings(phone) {
-    if (!phone) throw new ValidationError('NumǸro de tǸlǸphone manquant pour lister les rǸservations');
-    await authenticate();
-    const res = await this.#client.get(`${ENDPOINTS.BOOKINGS}?phone=${encodeURIComponent(phone)}`);
-    const body = extractApiResponse(res, 'Impossible de rǸcupǸrer la liste des rǸservations');
-    const items = Array.isArray(body.data) ? body.data : (Array.isArray(body) ? body : []);
-    return items.map(item => this.#sculpt(item, ReservationSchema, 'Impossible de transformer la rǸservation'));
-  }
-
-  async cancelBooking(reference, phone) {
-    if (!reference) throw new ValidationError('RǸfǸrence de rǸservation manquante');
-    if (!phone) throw new ValidationError('NumǸro de tǸlǸphone manquant pour annuler la rǸservation');
-    await authenticate();
-    const res = await this.#client.delete(`${ENDPOINTS.BOOKINGS}/${reference}?phone=${encodeURIComponent(phone)}`);
-    return extractApiResponse(res, "Impossible d'annuler la réservation");
-  }
-
-  async confirmPayment(reference, transactionId) {
-    if (!reference) throw new ValidationError('RǸfǸrence de rǸservation manquante');
-    if (!transactionId) throw new ValidationError('ID de transaction manquant');
-    await authenticate();
-    const res = await this.#client.post(`${ENDPOINTS.BOOKINGS}/${reference}/payment`, {
-      transaction_id: transactionId
-    });
-    return extractApiResponse(res, 'Impossible de confirmer le paiement');
   }
 
   resetSession() {
