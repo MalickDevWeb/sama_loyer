@@ -9,10 +9,10 @@
         <text class="prof__phone">{{ userPhone }}</text>
         <view class="prof__verified">
           <view class="ic ic-check-green prof__verified-ic"></view>
-          <text>Numéro vérifié</text>
+          <text>Numéro vérifié · Max it</text>
         </view>
       </view>
-      <view class="sl-icon-btn sl-icon-btn--soft" hover-class="sl-hover" bindtap="onSoon" aria-label="Modifier le profil">
+      <view class="sl-icon-btn sl-icon-btn--soft" hover-class="sl-hover" bindtap="onOpenPersonalInfo" aria-label="Modifier le profil">
         <view class="ic ic-edit-navy prof__edit-ic"></view>
       </view>
     </view>
@@ -37,16 +37,19 @@
   <view class="prof__section">
     <text class="prof__section-title">MON COMPTE</text>
     <view class="prof__group">
-      <view class="prof__row" hover-class="prof__row--hover" bindtap="onSoon">
+      <view class="prof__row" hover-class="prof__row--hover" bindtap="onOpenPersonalInfo">
         <view class="ic ic-user-berry prof__row-ic"></view>
-        <text class="prof__row-label">Informations personnelles</text>
+        <view class="prof__row-text">
+          <text class="prof__row-label">Informations personnelles</text>
+          <text class="prof__row-sub">{{ userProfile.job ? userProfile.job + ' · ' + (userProfile.city || 'Dakar') : 'Modifier le nom, e-mail et profession' }}</text>
+        </view>
         <view class="ic ic-chevron-grey prof__chev"></view>
       </view>
-      <view class="prof__row" hover-class="prof__row--hover" bindtap="onSoon">
+      <view class="prof__row" hover-class="prof__row--hover" bindtap="onOpenPhone">
         <view class="ic ic-mobile-berry prof__row-ic"></view>
         <view class="prof__row-text">
           <text class="prof__row-label">Numéro de téléphone</text>
-          <text class="prof__row-sub">Sert à te connecter et à être contacté·e</text>
+          <text class="prof__row-sub">{{ userPhone }} · Certifié Orange</text>
         </view>
         <view class="ic ic-chevron-grey prof__chev"></view>
       </view>
@@ -90,14 +93,14 @@
           >{{ item.label }}</view>
         </view>
       </view>
-      <view class="prof__row prof__row--tall" hover-class="prof__row--hover" bindtap="onSoon">
+      <view class="prof__row prof__row--tall" hover-class="prof__row--hover" bindtap="onOpenZones">
         <view class="prof__row-text">
           <text class="prof__row-label">Quartiers préférés</text>
           <text class="prof__row-sub">{{ prefs.zones }}</text>
         </view>
         <view class="ic ic-chevron-grey prof__chev"></view>
       </view>
-      <view class="prof__row prof__row--tall" hover-class="prof__row--hover" bindtap="onSoon">
+      <view class="prof__row prof__row--tall" hover-class="prof__row--hover" bindtap="onOpenBudget">
         <view class="prof__row-text">
           <text class="prof__row-label">Budget habituel</text>
           <text class="prof__row-sub">{{ prefs.budget }}</text>
@@ -121,19 +124,19 @@
 
   <!-- Aide -->
   <view class="prof__section">
-    <text class="prof__section-title">AIDE</text>
+    <text class="prof__section-title">AIDE & SUPPORT</text>
     <view class="prof__group">
-      <view class="prof__row prof__row--short" hover-class="prof__row--hover" bindtap="onSoon">
+      <view class="prof__row prof__row--short" hover-class="prof__row--hover" bindtap="onOpenHelp">
         <view class="ic ic-help-berry prof__row-ic"></view>
         <text class="prof__row-label">Centre d'aide</text>
         <view class="ic ic-chevron-grey prof__chev"></view>
       </view>
-      <view class="prof__row prof__row--short" hover-class="prof__row--hover" bindtap="onSoon">
+      <view class="prof__row prof__row--short" hover-class="prof__row--hover" bindtap="onOpenSecurity">
         <view class="ic ic-shield-line-berry prof__row-ic"></view>
         <text class="prof__row-label">Conseils de sécurité</text>
         <view class="ic ic-chevron-grey prof__chev"></view>
       </view>
-      <view class="prof__row prof__row--short" hover-class="prof__row--hover" bindtap="onSoon">
+      <view class="prof__row prof__row--short" hover-class="prof__row--hover" bindtap="onOpenSupport">
         <view class="ic ic-chat-berry prof__row-ic"></view>
         <text class="prof__row-label">Contacter le support</text>
         <view class="ic ic-chevron-grey prof__chev"></view>
@@ -147,14 +150,345 @@
       <view class="ic ic-logout-danger prof__logout-ic"></view>
       <text>Se déconnecter</text>
     </view>
-    <text class="prof__version">SAMA LOYER · version 1.0</text>
+    <text class="prof__version">SAMA LOYER · version 1.0 (Orange Max it)</text>
   </view>
 
   <view class="prof__tab-spacer"></view>
 
+  <!-- =========================================================================
+       MODALS INTERACTIVES
+       ========================================================================= -->
+
+  <!-- Modal 1 : Informations personnelles -->
+  <view wx:if="{{ activeModal === 'info' }}" class="prof__sheet-overlay" catchtouchmove="noop" bindtap="onCloseModal">
+    <view class="prof__sheet" catchtap="noop">
+      <view class="prof__sheet-handle"></view>
+      <view class="prof__sheet-header">
+        <view class="prof__sheet-heading">
+          <text class="prof__sheet-title">Informations personnelles</text>
+          <text class="prof__sheet-sub">Renseignez vos coordonnées de locataire</text>
+        </view>
+        <view class="prof__sheet-close" hover-class="sl-hover" bindtap="onCloseModal">
+          <view class="ic ic-close-navy prof__sheet-close-ic"></view>
+        </view>
+      </view>
+
+      <view class="prof__sheet-body">
+        <view class="prof__field">
+          <text class="prof__field-label">Nom complet</text>
+          <input
+            class="prof__field-input"
+            value="{{ editForm.fullName }}"
+            placeholder="Ex: Awa Diop"
+            bindinput="onInputFullName"
+          />
+        </view>
+
+        <view class="prof__field">
+          <text class="prof__field-label">Adresse e-mail</text>
+          <input
+            class="prof__field-input"
+            value="{{ editForm.email }}"
+            placeholder="Ex: awa.diop@orange.sn"
+            bindinput="onInputEmail"
+          />
+        </view>
+
+        <view class="prof__field">
+          <text class="prof__field-label">Profession / Statut</text>
+          <input
+            class="prof__field-input"
+            value="{{ editForm.job }}"
+            placeholder="Ex: Ingénieure Télécoms, Étudiante..."
+            bindinput="onInputJob"
+          />
+        </view>
+
+        <view class="prof__field">
+          <text class="prof__field-label">Ville ou Commune</text>
+          <input
+            class="prof__field-input"
+            value="{{ editForm.city }}"
+            placeholder="Ex: Dakar, Pikine, Rufisque..."
+            bindinput="onInputCity"
+          />
+        </view>
+      </view>
+
+      <view class="prof__sheet-footer">
+        <button class="prof__btn-primary" hover-class="sl-hover" bindtap="onSavePersonalInfo">
+          Enregistrer les modifications
+        </button>
+      </view>
+    </view>
+  </view>
+
+  <!-- Modal 2 : Numéro de téléphone -->
+  <view wx:if="{{ activeModal === 'phone' }}" class="prof__sheet-overlay" catchtouchmove="noop" bindtap="onCloseModal">
+    <view class="prof__sheet" catchtap="noop">
+      <view class="prof__sheet-handle"></view>
+      <view class="prof__sheet-header">
+        <view class="prof__sheet-heading">
+          <text class="prof__sheet-title">Numéro de téléphone</text>
+          <text class="prof__sheet-sub">Identifiant certifié Orange Max it</text>
+        </view>
+        <view class="prof__sheet-close" hover-class="sl-hover" bindtap="onCloseModal">
+          <view class="ic ic-close-navy prof__sheet-close-ic"></view>
+        </view>
+      </view>
+
+      <view class="prof__sheet-body">
+        <!-- Badge certifié -->
+        <view class="prof__badge-maxit">
+          <view class="ic ic-shield-check-green prof__badge-ic"></view>
+          <view class="prof__badge-text">
+            <text class="prof__badge-title">Compte vérifié Orange Money</text>
+            <text class="prof__badge-desc">Ce numéro valide automatiquement vos paiements et vos visites.</text>
+          </view>
+        </view>
+
+        <view class="prof__field">
+          <text class="prof__field-label">Numéro de mobile (Sénégal)</text>
+          <view class="prof__phone-box">
+            <view class="prof__phone-prefix">
+              <text class="prof__phone-flag">🇸🇳</text>
+              <text class="prof__phone-code">+221</text>
+            </view>
+            <input
+              class="prof__field-input prof__field-input--phone"
+              type="number"
+              maxlength="12"
+              value="{{ editForm.phone }}"
+              placeholder="77 123 45 12"
+              bindinput="onInputPhone"
+            />
+          </view>
+          <text class="prof__field-hint">Exemple : 77 123 45 12 ou 78, 76, 75, 70</text>
+        </view>
+      </view>
+
+      <view class="prof__sheet-footer">
+        <button class="prof__btn-primary" hover-class="sl-hover" bindtap="onSavePhone">
+          Enregistrer ce numéro
+        </button>
+      </view>
+    </view>
+  </view>
+
+  <!-- Modal 3 : Quartiers préférés -->
+  <view wx:if="{{ activeModal === 'zones' }}" class="prof__sheet-overlay" catchtouchmove="noop" bindtap="onCloseModal">
+    <view class="prof__sheet" catchtap="noop">
+      <view class="prof__sheet-handle"></view>
+      <view class="prof__sheet-header">
+        <view class="prof__sheet-heading">
+          <text class="prof__sheet-title">Quartiers préférés</text>
+          <text class="prof__sheet-sub">Sélectionnez vos zones prioritaires à Dakar</text>
+        </view>
+        <view class="prof__sheet-close" hover-class="sl-hover" bindtap="onCloseModal">
+          <view class="ic ic-close-navy prof__sheet-close-ic"></view>
+        </view>
+      </view>
+
+      <view class="prof__sheet-body">
+        <view class="prof__chips-wrap">
+          <view
+            wx:for="{{ allZones }}"
+            wx:key="*this"
+            class="prof__chip {{ tempZones.includes(item) ? 'prof__chip--on' : '' }}"
+            data-zone="{{ item }}"
+            hover-class="sl-hover"
+            bindtap="onToggleZone"
+          >
+            <view wx:if="{{ tempZones.includes(item) }}" class="ic ic-check-green prof__chip-ic"></view>
+            <text>{{ item }}</text>
+          </view>
+        </view>
+      </view>
+
+      <view class="prof__sheet-footer">
+        <button class="prof__btn-primary" hover-class="sl-hover" bindtap="onSaveZones">
+          Valider la sélection ({{ tempZones.length }})
+        </button>
+      </view>
+    </view>
+  </view>
+
+  <!-- Modal 4 : Budget habituel -->
+  <view wx:if="{{ activeModal === 'budget' }}" class="prof__sheet-overlay" catchtouchmove="noop" bindtap="onCloseModal">
+    <view class="prof__sheet" catchtap="noop">
+      <view class="prof__sheet-handle"></view>
+      <view class="prof__sheet-header">
+        <view class="prof__sheet-heading">
+          <text class="prof__sheet-title">Budget habituel</text>
+          <text class="prof__sheet-sub">Votre tranche mensuelle de loyer</text>
+        </view>
+        <view class="prof__sheet-close" hover-class="sl-hover" bindtap="onCloseModal">
+          <view class="ic ic-close-navy prof__sheet-close-ic"></view>
+        </view>
+      </view>
+
+      <view class="prof__sheet-body">
+        <view class="prof__radios">
+          <view
+            wx:for="{{ budgetOptions }}"
+            wx:key="*this"
+            class="prof__radio-item {{ tempBudget === item ? 'prof__radio-item--on' : '' }}"
+            data-budget="{{ item }}"
+            hover-class="sl-hover"
+            bindtap="onSelectBudget"
+          >
+            <view class="prof__radio-circle {{ tempBudget === item ? 'prof__radio-circle--on' : '' }}">
+              <view wx:if="{{ tempBudget === item }}" class="prof__radio-dot"></view>
+            </view>
+            <text class="prof__radio-label">{{ item }}</text>
+          </view>
+        </view>
+      </view>
+
+      <view class="prof__sheet-footer">
+        <button class="prof__btn-primary" hover-class="sl-hover" bindtap="onSaveBudget">
+          Confirmer ce budget
+        </button>
+      </view>
+    </view>
+  </view>
+
+  <!-- Modal 5 : Centre d'aide -->
+  <view wx:if="{{ activeModal === 'help' }}" class="prof__sheet-overlay" catchtouchmove="noop" bindtap="onCloseModal">
+    <view class="prof__sheet" catchtap="noop">
+      <view class="prof__sheet-handle"></view>
+      <view class="prof__sheet-header">
+        <view class="prof__sheet-heading">
+          <text class="prof__sheet-title">Centre d'aide</text>
+          <text class="prof__sheet-sub">Questions fréquentes des locataires</text>
+        </view>
+        <view class="prof__sheet-close" hover-class="sl-hover" bindtap="onCloseModal">
+          <view class="ic ic-close-navy prof__sheet-close-ic"></view>
+        </view>
+      </view>
+
+      <view class="prof__sheet-body">
+        <view class="prof__faq-item">
+          <text class="prof__faq-q">🏡 Comment planifier une visite ?</text>
+          <text class="prof__faq-a">Parcourez les annonces, cliquez sur « Réserver une visite » et choisissez la date et l'horaire. Le bailleur reçoit une notification instantanée et confirme sous 24h.</text>
+        </view>
+
+        <view class="prof__faq-item">
+          <text class="prof__faq-q">💳 Comment payer mon loyer via Max it ?</text>
+          <text class="prof__faq-a">Dans l'onglet « Mes loyers », appuyez sur « Payer le loyer ». La transaction s'effectue en toute sécurité avec Orange Money et génère automatiquement un reçu horodaté officiel.</text>
+        </view>
+
+        <view class="prof__faq-item">
+          <text class="prof__faq-q">🔒 Comment ma caution est-elle sécurisée ?</text>
+          <text class="prof__faq-a">La caution est enregistrée dans votre contrat numérique Sama Loyer. En cas de départ, un préavis légal est déclenché et le remboursement est sécurisé post état des lieux.</text>
+        </view>
+      </view>
+
+      <view class="prof__sheet-footer">
+        <button class="prof__btn-primary" hover-class="sl-hover" bindtap="onCloseModal">
+          J'ai compris
+        </button>
+      </view>
+    </view>
+  </view>
+
+  <!-- Modal 6 : Conseils de sécurité -->
+  <view wx:if="{{ activeModal === 'security' }}" class="prof__sheet-overlay" catchtouchmove="noop" bindtap="onCloseModal">
+    <view class="prof__sheet" catchtap="noop">
+      <view class="prof__sheet-handle"></view>
+      <view class="prof__sheet-header">
+        <view class="prof__sheet-heading">
+          <text class="prof__sheet-title">Conseils de sécurité</text>
+          <text class="prof__sheet-sub">Protégez-vous contre les arnaques</text>
+        </view>
+        <view class="prof__sheet-close" hover-class="sl-hover" bindtap="onCloseModal">
+          <view class="ic ic-close-navy prof__sheet-close-ic"></view>
+        </view>
+      </view>
+
+      <view class="prof__sheet-body">
+        <view class="prof__security-card prof__security-card--warn">
+          <view class="ic ic-warn-amber prof__sec-ic"></view>
+          <view class="prof__sec-text">
+            <text class="prof__sec-title">Ne payez jamais avant la visite</text>
+            <text class="prof__sec-desc">N'acceptez aucun transfert d'avance sous prétexte de « réserver la clé » ou bloquer le logement.</text>
+          </view>
+        </view>
+
+        <view class="prof__security-card">
+          <view class="ic ic-shield-check-green prof__sec-ic"></view>
+          <view class="prof__sec-text">
+            <text class="prof__sec-title">Exigez le contrat numérique Sama Loyer</text>
+            <text class="prof__sec-desc">Chaque bail dispose d'un QR code infalsifiable et protège juridiquement le bailleur et le locataire.</text>
+          </view>
+        </view>
+
+        <view class="prof__security-card">
+          <view class="ic ic-check-green prof__sec-ic"></view>
+          <view class="prof__sec-text">
+            <text class="prof__sec-title">Payez toujours via Orange Max it</text>
+            <text class="prof__sec-desc">Les paiements intégrés constituent une preuve légale irréfutable en cas de litige.</text>
+          </view>
+        </view>
+      </view>
+
+      <view class="prof__sheet-footer">
+        <button class="prof__btn-primary" hover-class="sl-hover" bindtap="onCloseModal">
+          Compris, merci
+        </button>
+      </view>
+    </view>
+  </view>
+
+  <!-- Modal 7 : Support & Assistance -->
+  <view wx:if="{{ activeModal === 'support' }}" class="prof__sheet-overlay" catchtouchmove="noop" bindtap="onCloseModal">
+    <view class="prof__sheet" catchtap="noop">
+      <view class="prof__sheet-handle"></view>
+      <view class="prof__sheet-header">
+        <view class="prof__sheet-heading">
+          <text class="prof__sheet-title">Assistance Sama Loyer</text>
+          <text class="prof__sheet-sub">Notre équipe est là pour vous accompagner</text>
+        </view>
+        <view class="prof__sheet-close" hover-class="sl-hover" bindtap="onCloseModal">
+          <view class="ic ic-close-navy prof__sheet-close-ic"></view>
+        </view>
+      </view>
+
+      <view class="prof__sheet-body">
+        <view class="prof__support-opt" hover-class="sl-hover" bindtap="onCallSupport">
+          <view class="prof__support-opt-ic prof__support-opt-ic--berry">
+            <view class="ic ic-phone-call-berry" style="width: 44rpx; height: 44rpx;"></view>
+          </view>
+          <view class="prof__support-opt-text">
+            <text class="prof__support-opt-title">Appeler le service client (1444)</text>
+            <text class="prof__support-opt-sub">Appel gratuit depuis votre ligne Orange · 7j/7</text>
+          </view>
+          <view class="ic ic-chevron-grey prof__chev"></view>
+        </view>
+
+        <view class="prof__support-opt" hover-class="sl-hover" bindtap="onCopySupportWhatsApp">
+          <view class="prof__support-opt-ic prof__support-opt-ic--green">
+            <view class="ic ic-whatsapp-green" style="width: 44rpx; height: 44rpx;"></view>
+          </view>
+          <view class="prof__support-opt-text">
+            <text class="prof__support-opt-title">Assistance WhatsApp</text>
+            <text class="prof__support-opt-sub">Réponse rapide de 8h à 20h · +221 77 000 00 00</text>
+          </view>
+          <view class="ic ic-chevron-grey prof__chev"></view>
+        </view>
+      </view>
+
+      <view class="prof__sheet-footer">
+        <button class="prof__btn-secondary" hover-class="sl-hover" bindtap="onCloseModal">
+          Fermer
+        </button>
+      </view>
+    </view>
+  </view>
+
   <!-- Confirmation déconnexion -->
-  <view wx:if="{{ confirmLogout }}" class="prof__overlay" catchtouchmove="noop">
-    <view class="prof__dialog">
+  <view wx:if="{{ confirmLogout }}" class="prof__overlay" catchtouchmove="noop" bindtap="onCancelLogout">
+    <view class="prof__dialog" catchtap="noop">
       <text class="prof__dialog-title">Se déconnecter ?</text>
       <text class="prof__dialog-text">Tes favoris, visites et messages restent enregistrés. Tu les retrouveras en te reconnectant avec ton numéro.</text>
       <view class="prof__dialog-btn prof__dialog-btn--danger" hover-class="sl-hover" bindtap="onLogout">Se déconnecter</view>

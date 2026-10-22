@@ -18,6 +18,7 @@ export const STORAGE_KEYS = {
   CONVERSATIONS: 'sama_conversations',
   ACTIVE_TAB: 'sama_active_tab',
   RENT_PAID: 'sama_rent_paid', // { [logementId]: true } — loyer du mois payé
+  USER_PROFILE: 'sama_user_profile', // { fullName, phone, email, job, city }
   PROFILE_PREFS: 'sama_profile_prefs', // { notifs: { msg, visit, new, price }, lang }
   IMAGE_CACHE: 'tc-image-cache',
 };
