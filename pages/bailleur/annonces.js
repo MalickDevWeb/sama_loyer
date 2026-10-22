@@ -7,10 +7,13 @@ Page({
         id: 'a1',
         tag: 'En ligne · Premium',
         tagClass: 'tag-enligne',
+        thumbBg: '#FDE8EE',
         title: 'Chambre salon avec douche int...',
-        place: 'Icotaf, Pikine · 65 000 F',
+        placeName: 'Icotaf, Pikine · ',
+        price: '65 000 F',
         stats: '248 vues · 3 demandes',
         notice: "Disponibilité confirmée aujourd'hui. Les locataires le voient.",
+        noticeClass: 'notice-gray',
         isConfirmed: true,
         type: 'en_ligne'
       },
@@ -18,10 +21,13 @@ Page({
         id: 'a2',
         tag: 'En ligne · Premium',
         tagClass: 'tag-enligne',
+        thumbBg: '#E3E8F0',
         title: 'Studio meublé, entrée indépen...',
-        place: 'Pikine Rue 10 · 95 000 F',
+        placeName: 'Pikine Rue 10 · ',
+        price: '95 000 F',
         stats: '131 vues · 1 demandes',
         notice: "Disponibilité confirmée il y a 14 jours. Confirme-la pour rester bien visible.",
+        noticeClass: 'notice-yellow',
         isConfirmed: false,
         needsConfirm: true,
         type: 'en_ligne'
@@ -30,18 +36,24 @@ Page({
         id: 'a3',
         tag: 'En validation',
         tagClass: 'tag-validation',
+        thumbBg: '#F5EFE6',
         title: 'Appartement F2 neuf',
-        place: 'Pikine Technopole · 140 000 F',
+        placeName: 'Pikine Technopole · ',
+        price: '140 000 F',
         notice: 'Notre équipe vérifie les photos et les informations. Réponse sous 24 h.',
+        noticeClass: 'notice-yellow',
         type: 'validation'
       },
       {
         id: 'a4',
         tag: 'À corriger',
         tagClass: 'tag-corriger',
+        thumbBg: '#EFEBF5',
         title: 'Chambre avec balcon',
-        place: 'Dalifort · 50 000 F',
+        placeName: 'Dalifort · ',
+        price: '50 000 F',
         notice: 'Motif : 2 photos sont floues et le prix de la caution manque.',
+        noticeClass: 'notice-pink',
         canCorrect: true,
         type: 'validation'
       },
@@ -49,9 +61,12 @@ Page({
         id: 'a5',
         tag: 'Loué',
         tagClass: 'tag-loue',
+        thumbBg: '#FDE8EE',
         title: 'Chambre indépendante',
-        place: 'Thiaroye · 45 000 F',
+        placeName: 'Thiaroye · ',
+        price: '45 000 F',
         notice: 'Annonce retirée des recherches. Les locataires ne la voient plus.',
+        noticeClass: 'notice-gray',
         canRelist: true,
         type: 'loue'
       }
@@ -102,7 +117,8 @@ Page({
           ...a,
           isConfirmed: true,
           needsConfirm: false,
-          notice: "Disponibilité confirmée aujourd'hui. Les locataires le voient."
+          notice: "Disponibilité confirmée aujourd'hui. Les locataires le voient.",
+          noticeClass: 'notice-gray'
         };
       }
       return a;
@@ -111,7 +127,7 @@ Page({
     this.setData({ annonces: updated });
     this.applyFilter(this.data.activeFilter);
     wx.showToast({
-      title: 'Disponibilité confirmée pour 7 jours !',
+      title: 'Disponibilité confirmée (7 jours)',
       icon: 'success'
     });
   },
@@ -134,6 +150,7 @@ Page({
                 tagClass: 'tag-loue',
                 type: 'loue',
                 notice: 'Annonce retirée des recherches. Les locataires ne la voient plus.',
+                noticeClass: 'notice-gray',
                 canRelist: true,
                 isConfirmed: false,
                 needsConfirm: false
@@ -159,6 +176,7 @@ Page({
           tagClass: 'tag-enligne',
           type: 'en_ligne',
           notice: "Disponibilité confirmée aujourd'hui. Les locataires le voient.",
+          noticeClass: 'notice-gray',
           canRelist: false,
           isConfirmed: true,
           needsConfirm: false

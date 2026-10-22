@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Page Mes Annonces Bailleur - SAMA LOGEMENT (Page 12 Claude/PDF)
+   Page Mes Annonces Bailleur - SAMA LOGEMENT (Page 12 exact Claude/PDF)
    ========================================================================== */
 
 .annonces-page {
@@ -101,22 +101,65 @@
 
 .annonce-card {
   background-color: #FFFFFF;
-  border-radius: 24rpx;
+  border-radius: 28rpx;
   padding: 28rpx;
   border: 1rpx solid #ECEFF2;
   box-shadow: 0 4rpx 16rpx rgba(15, 30, 61, 0.04);
 }
 
-.annonce-top {
-  margin-bottom: 16rpx;
+/* Ligne Haute: Thumbnail à gauche + Infos à droite */
+.annonce-top-row {
+  display: flex;
+  gap: 24rpx;
+  align-items: flex-start;
+  margin-bottom: 22rpx;
+}
+
+.annonce-thumb {
+  width: 140rpx;
+  height: 140rpx;
+  border-radius: 24rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.thumb-house-shape {
+  width: 60rpx;
+  height: 48rpx;
+  border: 3.5rpx solid #5B6475;
+  border-top: none;
+  position: relative;
+  opacity: 0.5;
+}
+
+.thumb-house-shape::before {
+  content: '';
+  position: absolute;
+  top: -26rpx;
+  left: -8rpx;
+  border-left: 35rpx solid transparent;
+  border-right: 35rpx solid transparent;
+  border-bottom: 26rpx solid #5B6475;
+}
+
+.annonce-details-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.tag-wrap {
+  margin-bottom: 4rpx;
 }
 
 .badge-tag {
   display: inline-block;
-  font-size: 22rpx;
+  font-size: 20rpx;
   font-weight: 700;
-  padding: 6rpx 18rpx;
-  border-radius: 16rpx;
+  padding: 4rpx 16rpx;
+  border-radius: 12rpx;
 }
 
 .tag-enligne {
@@ -130,8 +173,8 @@
 }
 
 .tag-corriger {
-  background-color: #FDE8EC;
-  color: #D32F2F;
+  background-color: #FDE8EE;
+  color: #C8235F;
 }
 
 .tag-loue {
@@ -140,78 +183,109 @@
 }
 
 .annonce-title {
-  display: block;
-  font-size: 32rpx;
+  font-size: 28rpx;
   font-weight: 800;
   color: #0F1E3D;
-  margin-bottom: 8rpx;
+  line-height: 1.35;
+  margin: 6rpx 0 4rpx;
 }
 
-.annonce-place {
-  display: block;
-  font-size: 26rpx;
+.annonce-place-price-row {
+  display: flex;
+  align-items: baseline;
+  margin-bottom: 4rpx;
+}
+
+.annonce-place-part {
+  font-size: 24rpx;
   color: #5B6475;
-  margin-bottom: 12rpx;
+}
+
+.annonce-price-part {
+  font-size: 24rpx;
+  font-weight: 800;
+  color: #0F1E3D;
 }
 
 .annonce-stats {
-  display: block;
   font-size: 22rpx;
   color: #8C96A6;
-  margin-bottom: 18rpx;
 }
 
-/* Notice box */
+/* Notice box pleine largeur */
 .notice-box {
-  background-color: #F8F9FA;
-  border-radius: 16rpx;
-  padding: 18rpx 20rpx;
+  border-radius: 18rpx;
+  padding: 20rpx 24rpx;
   margin-bottom: 20rpx;
 }
 
-.notice-warning {
+.notice-gray {
+  background-color: #F8F9FA;
+  border: 1rpx solid #ECEFF2;
+}
+
+.notice-yellow {
   background-color: #FFF9ED;
   border: 1rpx solid #F5E8D3;
 }
 
-.notice-text {
-  font-size: 24rpx;
-  color: #5B6475;
-  line-height: 1.4;
+.notice-pink {
+  background-color: #FDF2F5;
+  border: 1rpx solid #F8D3DF;
 }
 
-.notice-warning .notice-text {
+.notice-text {
+  font-size: 24rpx;
+  line-height: 1.45;
+}
+
+.notice-gray .notice-text {
+  color: #5B6475;
+}
+
+.notice-yellow .notice-text {
   color: #8A5A00;
 }
 
-/* Confirmed Pill */
-.confirmed-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 8rpx;
-  padding: 10rpx 24rpx;
-  border-radius: 20rpx;
-  background-color: #E2F0EA;
+.notice-pink .notice-text {
+  color: #A82246;
+}
+
+/* Confirmed Bar */
+.confirmed-bar {
+  width: 100%;
+  height: 80rpx;
+  border-radius: 18rpx;
+  background-color: #EAF7EE;
   color: #007C3D;
-  font-size: 24rpx;
-  font-weight: 700;
-  margin-bottom: 24rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12rpx;
+  margin-bottom: 20rpx;
+  box-sizing: border-box;
 }
 
 .check-icon {
-  font-size: 24rpx;
+  font-size: 26rpx;
+  font-weight: 800;
+}
+
+.confirmed-bar-text {
+  font-size: 26rpx;
+  font-weight: 700;
 }
 
 /* Big Green Reconfirm Button */
 .reconfirm-action-box {
-  margin-bottom: 24rpx;
+  margin-bottom: 20rpx;
 }
 
 .btn-reconfirm {
   width: 100%;
   height: 88rpx;
-  border-radius: 44rpx;
-  background-color: #007C3D;
+  border-radius: 20rpx;
+  background-color: #0F6038;
   color: #FFFFFF;
   display: flex;
   align-items: center;
@@ -219,7 +293,7 @@
   font-size: 28rpx;
   font-weight: 700;
   border: none;
-  gap: 10rpx;
+  gap: 12rpx;
 }
 
 /* Correction button */
@@ -229,14 +303,14 @@
 
 .btn-correct {
   width: 100%;
-  height: 84rpx;
-  border-radius: 42rpx;
+  height: 88rpx;
+  border-radius: 20rpx;
   background-color: #C8235F;
   color: #FFFFFF;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 26rpx;
+  font-size: 28rpx;
   font-weight: 700;
   border: none;
 }
@@ -248,42 +322,45 @@
 
 .btn-relist {
   width: 100%;
-  height: 84rpx;
-  border-radius: 42rpx;
-  background-color: #0F1E3D;
-  color: #FFFFFF;
+  height: 88rpx;
+  border-radius: 20rpx;
+  background-color: #FFFFFF;
+  border: 1.5rpx solid #D5DAE1;
+  color: #0F1E3D;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 26rpx;
   font-weight: 700;
-  border: none;
 }
 
 /* Bottom Actions: Modifier | C'est loué */
 .card-bottom-actions {
   display: flex;
   gap: 20rpx;
-  border-top: 1rpx solid #F0F2F5;
-  padding-top: 20rpx;
 }
 
 .btn-subaction {
   flex: 1;
-  height: 72rpx;
-  border-radius: 36rpx;
-  background-color: #F4F6F9;
+  height: 80rpx;
+  border-radius: 18rpx;
+  background-color: #FFFFFF;
+  border: 1.5rpx solid #E2E8F0;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 24rpx;
-  font-weight: 700;
-  color: #0F1E3D;
-  gap: 8rpx;
+  gap: 10rpx;
 }
 
 .pencil-sub {
-  font-size: 24rpx;
+  font-size: 26rpx;
+  color: #0F1E3D;
+}
+
+.subaction-label {
+  font-size: 26rpx;
+  font-weight: 700;
+  color: #0F1E3D;
 }
 
 .scroll-spacer {

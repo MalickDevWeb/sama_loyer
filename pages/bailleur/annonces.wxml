@@ -52,26 +52,37 @@
     <view class="annonces-list">
       <block wx:for="{{ filteredAnnonces }}" wx:key="id">
         <view class="annonce-card">
-          <!-- Tag & Titre -->
-          <view class="annonce-top">
-            <view class="badge-tag {{ item.tagClass }}">{{ item.tag }}</view>
+          
+          <!-- Ligne Haute: Thumbnail à gauche + Infos à droite -->
+          <view class="annonce-top-row">
+            <!-- Thumbnail carrée avec icône maison douce -->
+            <view class="annonce-thumb" style="background-color: {{ item.thumbBg }};">
+              <view class="thumb-house-shape"></view>
+            </view>
+
+            <!-- Colonne détails à droite -->
+            <view class="annonce-details-col">
+              <view class="tag-wrap">
+                <text class="badge-tag {{ item.tagClass }}">{{ item.tag }}</text>
+              </view>
+              <text class="annonce-title">{{ item.title }}</text>
+              <view class="annonce-place-price-row">
+                <text class="annonce-place-part">{{ item.placeName }}</text>
+                <text class="annonce-price-part">{{ item.price }}</text>
+              </view>
+              <text wx:if="{{ item.stats }}" class="annonce-stats">{{ item.stats }}</text>
+            </view>
           </view>
 
-          <!-- Titre & Lieu -->
-          <text class="annonce-title">{{ item.title }}</text>
-          <text class="annonce-place">{{ item.place }}</text>
-
-          <!-- Stats vues / demandes si en ligne -->
-          <text wx:if="{{ item.stats }}" class="annonce-stats">{{ item.stats }}</text>
-
-          <!-- Notice contextuelle -->
-          <view class="notice-box {{ item.needsConfirm ? 'notice-warning' : '' }}">
+          <!-- Notice contextuelle pleine largeur -->
+          <view class="notice-box {{ item.noticeClass }}">
             <text class="notice-text">{{ item.notice }}</text>
           </view>
 
-          <!-- Statut confirmé vert -->
-          <view wx:if="{{ item.isConfirmed }}" class="confirmed-pill">
-            <text class="check-icon">✓</text> Disponibilité confirmée
+          <!-- Statut confirmé vert plein/centre -->
+          <view wx:if="{{ item.isConfirmed }}" class="confirmed-bar">
+            <text class="check-icon">✓</text>
+            <text class="confirmed-bar-text">Disponibilité confirmée</text>
           </view>
 
           <!-- Gros Bouton Vert Reconfirmation 7 jours -->
@@ -97,11 +108,12 @@
 
           <!-- Boutons Modifier / C'est loué pour annonces en ligne -->
           <view wx:if="{{ item.type === 'en_ligne' }}" class="card-bottom-actions">
-            <view class="btn-subaction">
-              <text class="pencil-sub">✎</text> Modifier
+            <view class="btn-subaction" bindtap="onGoAjouter">
+              <text class="pencil-sub">✎</text>
+              <text class="subaction-label">Modifier</text>
             </view>
             <view class="btn-subaction" data-id="{{ item.id }}" bindtap="onMarkLoue">
-              C'est loué
+              <text class="subaction-label">C'est loué</text>
             </view>
           </view>
         </view>
