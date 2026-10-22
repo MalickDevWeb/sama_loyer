@@ -31,7 +31,7 @@ Page({
   onBackTap() {
     wx.navigateBack({
       fail: () => {
-        wx.switchTab({ url: '/pages/home/home' });
+        wx.switchTab({ url: '/pages/client/home/home' });
       }
     });
   },
@@ -76,7 +76,7 @@ Page({
 
   onCloseReceipt() {
     this.setData({ showReceiptModal: false });
-    wx.switchTab({ url: '/pages/home/home' });
+    wx.switchTab({ url: '/pages/client/home/home' });
   },
 
   onShareReceipt() {

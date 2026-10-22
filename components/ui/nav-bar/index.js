@@ -81,7 +81,7 @@ Component({
       }
 
       wx.switchTab({
-        url: '/pages/home/home',
+        url: '/pages/client/home/home',
       });
     },
   },

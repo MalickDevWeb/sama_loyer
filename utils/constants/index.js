@@ -10,6 +10,7 @@ export const STORAGE_KEYS = {
   TOKEN_EXPIRY: 'app_token_expiry',
   USER_ROLE: 'sama_user_role', // 'client' | 'bailleur'
   FAVORITES: 'sama_favorites',
+  VISITES: 'sama_visites',
   ACTIVE_TAB: 'sama_active_tab',
   IMAGE_CACHE: 'tc-image-cache',
 };
@@ -60,29 +61,29 @@ export const CLIENT_TABS = [
   {
     id: 'home',
     label: 'Chercher',
-    url: '/pages/home/home',
+    url: '/pages/client/home/home',
   },
   {
     id: 'loyers',
     label: 'Mon loyer',
     badge: '2',
-    url: '/pages/loyers/loyers',
+    url: '/pages/client/loyers/loyers',
   },
   {
     id: 'visites',
     label: 'Visites',
-    url: '/pages/visites/visites',
+    url: '/pages/client/visites/visites',
   },
   {
     id: 'messages',
     label: 'Messages',
     badge: '3',
-    url: '/pages/messages/messages',
+    url: '/pages/client/messages/messages',
   },
   {
     id: 'profile',
     label: 'Profil',
-    url: '/pages/profile/profile',
+    url: '/pages/client/profile/profile',
   },
 ];
 

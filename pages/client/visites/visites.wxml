@@ -1,0 +1,98 @@
+<view class="visites-page">
+  <scroll-view class="visites-scroll" scroll-y="{{true}}" enhanced="{{true}}" show-scrollbar="{{false}}">
+    
+    <!-- En-tête -->
+    <view class="visites-header" style="padding-top: {{ statusBarHeight + 14 }}px;">
+      <text class="page-title">Mes visites</text>
+      <text class="page-subtitle">Suis tes demandes de visite</text>
+
+      <!-- Filtres -->
+      <scroll-view class="filters-scroll" scroll-x="{{true}}" enhanced="{{true}}" show-scrollbar="{{false}}">
+        <view class="filters-row">
+          <view 
+            class="filter-pill {{ activeFilter === 'all' ? 'filter-pill--active' : '' }}"
+            data-filter="all"
+            bindtap="onFilterTap"
+          >
+            Toutes (4)
+          </view>
+          <view 
+            class="filter-pill {{ activeFilter === 'pending' ? 'filter-pill--active' : '' }}"
+            data-filter="pending"
+            bindtap="onFilterTap"
+          >
+            En attente (2)
+          </view>
+          <view 
+            class="filter-pill {{ activeFilter === 'accepted' ? 'filter-pill--active' : '' }}"
+            data-filter="accepted"
+            bindtap="onFilterTap"
+          >
+            Acceptées (1)
+          </view>
+          <view 
+            class="filter-pill {{ activeFilter === 'rejected' ? 'filter-pill--active' : '' }}"
+            data-filter="rejected"
+            bindtap="onFilterTap"
+          >
+            Refusées (1)
+          </view>
+        </view>
+      </scroll-view>
+    </view>
+
+    <!-- Liste des cartes de visites -->
+    <view class="visites-list">
+      <block wx:for="{{ filteredList }}" wx:key="id">
+        <view class="visite-card">
+          <!-- Carte Header avec date & badge statut -->
+          <view class="visite-card__header">
+            <view class="visite-date-row">
+              <text class="visite-cal-icon">📅</text>
+              <text class="visite-date-text">{{ item.dateLabel }}</text>
+            </view>
+            <view class="visite-status-badge {{ item.statusClass }}">
+              {{ item.statusLabel }}
+            </view>
+          </view>
+
+          <!-- Détail du logement -->
+          <view class="visite-prop-box">
+            <view class="prop-icon-box">
+              <view class="prop-mini-roof"></view>
+            </view>
+            <view class="prop-text-box">
+              <text class="prop-name">{{ item.title }}</text>
+              <text class="prop-meta">{{ item.place }}</text>
+              <text class="prop-bailleur-name">{{ item.bailleur }}</text>
+            </view>
+          </view>
+
+          <!-- Bloc Note / Explication -->
+          <view class="visite-note-box {{ item.status === 'accepted' ? 'note-accepted' : 'note-info' }}">
+            <text class="note-text">{{ item.note }}</text>
+          </view>
+
+          <!-- Boutons d'action -->
+          <view class="visite-actions-row" wx:if="{{ item.status === 'accepted' }}">
+            <button class="btn-action btn-action-primary" bindtap="onOpenItineraire">
+              <text class="btn-icon">🧭</text> Itinéraire
+            </button>
+            <button class="btn-action btn-action-secondary" data-logement-id="{{ item.logementId }}" bindtap="onOpenMessage">
+              <text class="btn-icon">💬</text> Message
+            </button>
+          </view>
+
+          <view class="visite-actions-row" wx:elif="{{ item.canCancel }}">
+            <button class="btn-action btn-action-cancel" data-id="{{ item.id }}" bindtap="onCancelDemande">
+              Annuler la demande
+            </button>
+          </view>
+        </view>
+      </block>
+    </view>
+
+    <view class="scroll-spacer"></view>
+  </scroll-view>
+</view>
+

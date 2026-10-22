@@ -74,7 +74,7 @@ Page({
     setTimeout(() => {
       wx.hideLoading();
       wx.reLaunch({
-        url: '/pages/home/home'
+        url: '/pages/client/home/home'
       });
     }, 400);
   }

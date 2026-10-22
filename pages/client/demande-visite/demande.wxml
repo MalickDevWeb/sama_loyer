@@ -1,0 +1,90 @@
+<view class="demande-page">
+  <!-- Top Bar with Back Button -->
+  <view class="nav-bar-custom" style="padding-top: {{ statusBarHeight }}px; height: {{ navBarHeight }}px;">
+    <view class="btn-back" bindtap="onGoBack">
+      <text class="arrow-back">‹</text>
+    </view>
+    <text class="nav-title">Demande de visite</text>
+    <view class="nav-placeholder"></view>
+  </view>
+
+  <scroll-view class="demande-scroll" scroll-y="{{true}}" enhanced="{{true}}" show-scrollbar="{{false}}" style="padding-top: {{ statusBarHeight + navBarHeight }}px;">
+    
+    <!-- Résumé du logement -->
+    <view class="property-summary-card" wx:if="{{ logement }}">
+      <view class="property-thumb">
+        <view class="thumb-house-icon"></view>
+      </view>
+      <view class="property-info">
+        <text class="prop-title">{{ logement.title }}</text>
+        <text class="prop-sub">{{ logement.sub }}</text>
+        <text class="prop-bailleur">{{ logement.bailleur }}</text>
+      </view>
+    </view>
+
+    <!-- Titre section créneau -->
+    <view class="section-heading">
+      <text class="section-title">Choisis un créneau</text>
+      <text class="section-desc">Ce sont les horaires proposés par le bailleur. Une visite dure environ 30 minutes.</text>
+    </view>
+
+    <!-- Groupes de créneaux -->
+    <view class="slots-container">
+      <block wx:for="{{ slotGroups }}" wx:key="date">
+        <view class="slot-group">
+          <text class="slot-date-label">{{ item.date }}</text>
+          <view class="slot-chips-row">
+            <block wx:for="{{ item.times }}" wx:for-item="time" wx:key="*this">
+              <view 
+                class="slot-chip {{ selectedSlot === (item.date + ' · ' + time) ? 'slot-chip--active' : '' }}"
+                data-date="{{ item.date }}"
+                data-time="{{ time }}"
+                bindtap="onSelectSlot"
+              >
+                <text class="slot-chip-text">{{ time }}</text>
+              </view>
+            </block>
+          </view>
+        </view>
+      </block>
+    </view>
+
+    <!-- Champ message facultatif -->
+    <view class="message-section">
+      <text class="message-label">Message au bailleur (facultatif)</text>
+      <view class="input-card">
+        <textarea 
+          class="message-textarea" 
+          placeholder="Ex. Je viendrai avec ma sœur." 
+          placeholder-class="textarea-ph"
+          value="{{ message }}"
+          bindinput="onInputMessage"
+          maxlength="200"
+        />
+      </view>
+    </view>
+
+    <!-- Info box discrète -->
+    <view class="info-notice-box">
+      <view class="info-icon">ℹ</view>
+      <text class="info-text">L'adresse exacte te sera envoyée quand le bailleur aura accepté. La visite est gratuite.</text>
+    </view>
+
+    <!-- Espacement pour éviter le masquage par la barre fixe -->
+    <view class="bottom-spacer"></view>
+  </scroll-view>
+
+  <!-- Sticky Bottom CTA -->
+  <view class="bottom-action-bar">
+    <text class="selection-status-text">
+      {{ selectedSlot ? 'Créneau : ' + selectedSlot : 'Choisis un créneau pour continuer' }}
+    </text>
+    <button 
+      class="btn-submit-demande {{ selectedSlot ? 'btn-submit--active' : 'btn-submit--disabled' }}" 
+      bindtap="onSubmitDemande"
+    >
+      Envoyer la demande
+    </button>
+  </view>
+</view>
+

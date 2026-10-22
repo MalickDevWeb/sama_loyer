@@ -1,15 +1,15 @@
 {
   "pages": [
-    "pages/home/home",
-    "pages/search/results",
-    "pages/logement-detail/logement-detail",
-    "pages/visites/demande/demande",
-    "pages/visites/visites",
-    "pages/favoris/favoris",
-    "pages/messages/messages",
-    "pages/messages/chat/chat",
-    "pages/profile/profile",
-    "pages/loyers/loyers",
+    "pages/client/home/home",
+    "pages/client/search/results",
+    "pages/client/logement-detail/logement-detail",
+    "pages/client/loyers/loyers",
+    "pages/client/visites/visites",
+    "pages/client/demande-visite/demande",
+    "pages/client/favoris/favoris",
+    "pages/client/messages/messages",
+    "pages/client/chat/chat",
+    "pages/client/profile/profile",
     "pages/bailleur/home/home",
     "pages/bailleur/annonces/annonces",
     "pages/bailleur/ajouter/ajouter",
@@ -45,31 +45,31 @@
     "borderStyle": "white",
     "list": [
       {
-        "pagePath": "pages/home/home",
+        "pagePath": "pages/client/home/home",
         "text": "Chercher",
         "iconPath": "assets/icons/home.png",
         "selectedIconPath": "assets/icons/home.png"
       },
       {
-        "pagePath": "pages/loyers/loyers",
+        "pagePath": "pages/client/loyers/loyers",
         "text": "Mon loyer",
         "iconPath": "assets/icons/favoris.png",
         "selectedIconPath": "assets/icons/favoris.png"
       },
       {
-        "pagePath": "pages/visites/visites",
+        "pagePath": "pages/client/visites/visites",
         "text": "Visites",
         "iconPath": "assets/icons/booking.png",
         "selectedIconPath": "assets/icons/booking.png"
       },
       {
-        "pagePath": "pages/messages/messages",
+        "pagePath": "pages/client/messages/messages",
         "text": "Messages",
         "iconPath": "assets/icons/voyage.png",
         "selectedIconPath": "assets/icons/voyage.png"
       },
       {
-        "pagePath": "pages/profile/profile",
+        "pagePath": "pages/client/profile/profile",
         "text": "Profil",
         "iconPath": "assets/icons/profile.png",
         "selectedIconPath": "assets/icons/profile.png"
