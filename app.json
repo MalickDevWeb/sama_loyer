@@ -21,7 +21,8 @@
     "pages/bailleur/premium/premium",
     "pages/bailleur/messages/messages",
     "pages/bailleur/conversation/conversation",
-    "pages/bailleur/horaires/horaires"
+    "pages/bailleur/horaires/horaires",
+    "pages/common/404/404"
   ],
   "usingComponents": {
     "app-nav-bar": "/components/ui/nav-bar/index",

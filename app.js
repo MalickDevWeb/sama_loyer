@@ -147,7 +147,9 @@ App({
    */
   onPageNotFound(res) {
     console.warn('[App] Page not found:', res.path);
-    wx.switchTab({ url: '/pages/client/home/home' });
+    wx.redirectTo({
+      url: '/pages/common/404/404?path=' + encodeURIComponent(res.path || '')
+    });
   },
 
   // ==========================================================================
