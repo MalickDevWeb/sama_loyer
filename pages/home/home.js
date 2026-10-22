@@ -191,19 +191,117 @@ const LISTINGS = [
     equipements: ['Cour avant et arrière', 'Garage fermé', '3 chambres spacieuses'],
     description: 'Grande maison individuelle bien aérée à Keur Massar, quartier calme et sécurisé.',
     tint: '#FBE3EC'
+  },
+  // Listings Pikine / Prototype
+  {
+    id: 11,
+    title: 'Chambre salon avec douche intérieure',
+    typeLabel: 'Chambre salon',
+    place: 'Icotaf, Pikine',
+    zone: 'pikine',
+    price: 65000,
+    caution: 130000,
+    avance: 65000,
+    frais: 0,
+    verified: true,
+    verificationLevel: 'Bailleur vérifié',
+    dateConfirmation: 'Confirmé aujourd’hui',
+    phone: '771234567',
+    bailleurName: 'Moussa D.',
+    equipements: ['Douche intérieure', 'Eau courante', 'Woyofal'],
+    description: 'Chambre salon avec douche intérieure, disponible à Icotaf Pikine près de la pharmacie du marché.',
+    tint: '#FBE3EC'
+  },
+  {
+    id: 12,
+    title: 'Studio meublé, entrée indépendante',
+    typeLabel: 'Studio',
+    place: 'Pikine Rue 10',
+    zone: 'pikine',
+    price: 95000,
+    caution: 95000,
+    avance: 95000,
+    frais: 0,
+    verified: true,
+    verificationLevel: 'Bailleur vérifié',
+    dateConfirmation: 'Confirmé hier',
+    phone: '772345678',
+    bailleurName: 'Awa N.',
+    equipements: ['Entrée indépendante', 'Meublé', 'Compteur individuel'],
+    description: 'Joli studio meublé avec entrée indépendante à Pikine Rue 10.',
+    tint: '#E3E9F5'
+  },
+  {
+    id: 13,
+    title: 'Appartement F3 lumineux',
+    typeLabel: 'Appartement',
+    place: 'Pikine Technopole',
+    zone: 'pikine',
+    price: 180000,
+    caution: 180000,
+    avance: 180000,
+    frais: 0,
+    verified: true,
+    verificationLevel: 'Identité vérifiée',
+    dateConfirmation: 'Confirmé il y a 3 jours',
+    phone: '773456789',
+    bailleurName: 'Ibrahima S.',
+    equipements: ['F3 spacieux', 'Lumineux', 'Balcon'],
+    description: 'Grand F3 lumineux dans la zone calme du Technopole Pikine.',
+    tint: '#F3ECE1'
+  },
+  {
+    id: 14,
+    title: 'Chambre salon',
+    typeLabel: 'Chambre salon',
+    place: 'Thiaroye Azur, Pikine',
+    zone: 'pikine',
+    price: 55000,
+    caution: 55000,
+    avance: 55000,
+    frais: 0,
+    verified: true,
+    verificationLevel: 'Bailleur vérifié',
+    dateConfirmation: 'Confirmé hier',
+    phone: '775678901',
+    bailleurName: 'Mariama Sow',
+    equipements: ['Proche route', 'Eau SDE'],
+    description: 'Belle chambre salon propre à Thiaroye Azur, Pikine.',
+    tint: '#FBE3EC'
+  },
+  {
+    id: 15,
+    title: 'Chambre indépendante',
+    typeLabel: 'Chambre',
+    place: 'Guinaw Rails, Pikine',
+    zone: 'pikine',
+    price: 45000,
+    caution: 45000,
+    avance: 45000,
+    frais: 0,
+    verified: true,
+    verificationLevel: 'Bailleur vérifié',
+    dateConfirmation: 'Confirmé il y a 5 jours',
+    phone: '774567890',
+    bailleurName: 'Fatou K.',
+    equipements: ['Chambre autonome', 'Eau comprise'],
+    description: 'Chambre indépendante économique à Guinaw Rails.',
+    tint: '#E3E9F5'
   }
 ];
 
 const NEAR_ZONES = {
-  ouakam: ['ngor', 'mermoz', 'yoff'],
-  ngor: ['ouakam', 'yoff'],
+  ouakam: ['ngor', 'mermoz', 'yoff', 'almadies'],
+  ngor: ['ouakam', 'yoff', 'almadies'],
   yoff: ['ngor', 'ouakam', 'grand yoff'],
   mermoz: ['ouakam', 'sacre coeur', 'point e'],
   'point e': ['mermoz', 'sacre coeur'],
   'sacre coeur': ['mermoz', 'liberte', 'point e'],
   liberte: ['sacre coeur', 'grand yoff'],
   'grand yoff': ['liberte', 'yoff'],
-  'keur massar': []
+  pikine: ['thiaroye', 'keur massar', 'grand yoff'],
+  thiaroye: ['pikine', 'keur massar'],
+  'keur massar': ['pikine', 'thiaroye']
 };
 
 function formatMoney(n) {
@@ -216,6 +314,51 @@ function normalize(s) {
     .normalize('NFD')
     .replace(/[\u0300-\u036f]/g, '')
     .trim();
+}
+
+function parseNaturalQuery(text) {
+  const norm = normalize(text);
+  let place = '';
+  let budget = '';
+
+  const knownZones = [
+    { key: 'ouakam', label: 'Ouakam' },
+    { key: 'ngor', label: 'Ngor' },
+    { key: 'yoff', label: 'Yoff' },
+    { key: 'mermoz', label: 'Mermoz' },
+    { key: 'point e', label: 'Point E' },
+    { key: 'sacre coeur', label: 'Sacré-Cœur' },
+    { key: 'liberte', label: 'Liberté 6' },
+    { key: 'grand yoff', label: 'Grand Yoff' },
+    { key: 'pikine', label: 'Pikine' },
+    { key: 'icotaf', label: 'Pikine' },
+    { key: 'technopole', label: 'Pikine' },
+    { key: 'thiaroye', label: 'Pikine' },
+    { key: 'guinaw rails', label: 'Pikine' },
+    { key: 'keur massar', label: 'Keur Massar' },
+    { key: 'almadies', label: 'Almadies' }
+  ];
+
+  for (const z of knownZones) {
+    if (norm.includes(z.key)) {
+      place = z.label;
+      break;
+    }
+  }
+
+  // Look for budget numbers
+  const matchNum = text.match(/(\d[\d\s]{2,}\d)/);
+  if (matchNum) {
+    budget = matchNum[1].trim();
+  } else {
+    const simpleNum = text.match(/(\d+)\s*(?:f|cfa|fcfa|mille)?/i);
+    if (simpleNum) {
+      const val = parseInt(simpleNum[1], 10);
+      budget = formatMoney(val < 1000 ? val * 1000 : val);
+    }
+  }
+
+  return { place, budget };
 }
 
 Page({
@@ -235,11 +378,15 @@ Page({
     showDetailModal: false,
     selectedListing: null,
     totalInitialCost: 0,
+    isRecording: false,
+    voiceStatus: 'À l’écoute… (Wolof / Français)',
     voicePrompts: [
       { text: 'Chambre salon à Ouakam, budget 60 000 F', place: 'Ouakam', budget: '60 000', lang: 'FR' },
       { text: 'Dafa ma bëgg chambre 50 000 F ci Ngor', place: 'Ngor', budget: '50 000', lang: 'WO' },
-      { text: 'Studio meublé vers Point E ou Mermoz', place: 'Point E', budget: '150 000', lang: 'FR' },
-      { text: 'Appartement F3 Liberté 6 max 250 000 F', place: 'Liberté 6', budget: '250 000', lang: 'FR' }
+      { text: 'Chambre salon à Pikine Icotaf max 65 000 F', place: 'Pikine', budget: '65 000', lang: 'FR' },
+      { text: 'Studio meublé vers Pikine Rue 10, 95 000 F', place: 'Pikine', budget: '95 000', lang: 'FR' },
+      { text: 'Dafa ma bëgg appartement F3 Technopole 180 000 F', place: 'Pikine', budget: '180 000', lang: 'WO' },
+      { text: 'Studio meublé vers Point E ou Mermoz', place: 'Point E', budget: '150 000', lang: 'FR' }
     ]
   },
 
@@ -249,23 +396,18 @@ Page({
       if (sys && sys.statusBarHeight) {
         this.setData({ statusBarHeight: sys.statusBarHeight });
       }
-    } catch (e) {
-      // fallback
-    }
+    } catch (e) {}
 
-    // Load favorites from local storage
     try {
       const favs = wx.getStorageSync(STORAGE_KEYS.FAVORITES) || {};
       this.setData({ favorites: favs });
     } catch (e) {}
 
-    // Load user role
     try {
       const role = wx.getStorageSync(STORAGE_KEYS.USER_ROLE) || 'client';
       this.setData({ userRole: role });
     } catch (e) {}
 
-    // Run initial search
     this.runSearch();
   },
 
@@ -273,38 +415,162 @@ Page({
     setCustomTabBarActive(this, 'home');
   },
 
+  // ==========================================
+  // RECHERCHE ÉCRITE (EN DIRECT ET PAR ENTRÉE)
+  // ==========================================
   onPlaceInput(e) {
-    this.setData({ place: e.detail.value || '' });
+    const val = e.detail.value || '';
+    this.setData({ place: val }, () => {
+      // Recherche dynamique si plus de 2 caractères
+      if (val.trim().length >= 2) {
+        this.setData({
+          qPlace: val.trim(),
+          searched: true
+        });
+        this.runSearch();
+      }
+    });
   },
 
   onClearPlace() {
-    this.setData({ place: '' });
+    this.setData({ place: '', qPlace: '' }, () => {
+      this.runSearch();
+    });
   },
 
   onBudgetInput(e) {
     const raw = e.detail.value || '';
     const digits = raw.replace(/\D/g, '');
     const formatted = digits ? formatMoney(Number(digits)) : '';
-    this.setData({ budget: formatted });
+    this.setData({
+      budget: formatted,
+      qBudget: Number(digits) || 0
+    }, () => {
+      if (digits.length >= 4) {
+        this.runSearch();
+      }
+    });
   },
 
   onClearBudget() {
-    this.setData({ budget: '' });
+    this.setData({ budget: '', qBudget: 0 }, () => {
+      this.runSearch();
+    });
   },
 
   onSearchTap() {
+    const b = Number(String(this.data.budget).replace(/\D/g, '')) || 0;
     this.setData(
       {
-        qPlace: this.data.place,
-        qBudget: Number(String(this.data.budget).replace(/\D/g, '')) || 0,
+        qPlace: this.data.place.trim(),
+        qBudget: b,
         searched: true
       },
       () => {
+        this.runSearch();
+        wx.showToast({
+          title: `Recherche : ${this.data.place || 'Dakar'}`,
+          icon: 'none',
+          duration: 1200
+        });
+      }
+    );
+  },
+
+  // ==========================================
+  // RECHERCHE VOCALE (WOLOF ET FRANÇAIS)
+  // ==========================================
+  onVoiceTap() {
+    this.setData({
+      showVoiceModal: true,
+      isRecording: true,
+      voiceStatus: 'À l’écoute… Parlez en wolof ou en français'
+    });
+
+    if (wx.vibrateShort) {
+      wx.vibrateShort();
+    }
+
+    // Gestion de l'enregistreur vocal WeChat si disponible
+    try {
+      const rm = wx.getRecorderManager ? wx.getRecorderManager() : null;
+      if (rm) {
+        rm.onStart(() => {
+          this.setData({ isRecording: true, voiceStatus: 'Enregistrement en cours…' });
+        });
+        rm.onStop((res) => {
+          this.setData({ isRecording: false, voiceStatus: 'Traitement vocal IA…' });
+        });
+        rm.start({ duration: 6000, sampleRate: 16000, format: 'mp3' });
+      }
+    } catch (err) {}
+  },
+
+  onCloseVoiceModal() {
+    try {
+      const rm = wx.getRecorderManager ? wx.getRecorderManager() : null;
+      if (rm) rm.stop();
+    } catch (e) {}
+    this.setData({ showVoiceModal: false, isRecording: false });
+  },
+
+  onToggleRecord() {
+    if (this.data.isRecording) {
+      this.setData({
+        isRecording: false,
+        voiceStatus: 'Touchez un exemple ci-dessous pour lancer la recherche'
+      });
+      try {
+        const rm = wx.getRecorderManager ? wx.getRecorderManager() : null;
+        if (rm) rm.stop();
+      } catch (e) {}
+    } else {
+      this.setData({
+        isRecording: true,
+        voiceStatus: 'À l’écoute… Parlez maintenant'
+      });
+      if (wx.vibrateShort) wx.vibrateShort();
+    }
+  },
+
+  onApplyVoicePrompt(e) {
+    const item = e.currentTarget.dataset.item;
+    if (!item) return;
+
+    if (wx.vibrateShort) {
+      wx.vibrateShort();
+    }
+
+    // Extrait critères via moteur NLP Wolof/FR
+    const parsed = parseNaturalQuery(item.text);
+    const targetPlace = parsed.place || item.place || 'Ouakam';
+    const targetBudget = parsed.budget || item.budget || '60 000';
+    const numBudget = Number(String(targetBudget).replace(/\D/g, '')) || 0;
+
+    this.setData(
+      {
+        place: targetPlace,
+        budget: targetBudget,
+        qPlace: targetPlace,
+        qBudget: numBudget,
+        showVoiceModal: false,
+        isRecording: false,
+        searched: true
+      },
+      () => {
+        wx.showToast({
+          title: `Reconnu (${item.lang}) : ${targetPlace}`,
+          icon: 'success',
+          duration: 1500
+        });
         this.runSearch();
       }
     );
   },
 
+  // ==========================================
+  // MOTEUR DE MATCHING IA SAMA LOGEMENT
+  // ==========================================
   runSearch() {
     const q = normalize(this.data.qPlace);
     const budget = this.data.qBudget || 0;
@@ -323,6 +589,9 @@ Page({
       } else if (nearZone) {
         s += 30;
         why = `Juste à côté de ${this.data.qPlace || 'ta zone'}`;
+      } else if (!q) {
+        s += 25;
+        why = 'Recommandé à Dakar';
       } else {
         why = 'Bon rapport qualité-prix';
       }
@@ -372,37 +641,6 @@ Page({
     });
   },
 
-  onVoiceTap() {
-    this.setData({ showVoiceModal: true });
-  },
-
-  onCloseVoiceModal() {
-    this.setData({ showVoiceModal: false });
-  },
-
-  onApplyVoicePrompt(e) {
-    const item = e.currentTarget.dataset.item;
-    if (!item) return;
-
-    this.setData(
-      {
-        place: item.place,
-        budget: item.budget,
-        qPlace: item.place,
-        qBudget: Number(String(item.budget).replace(/\D/g, '')) || 0,
-        showVoiceModal: false
-      },
-      () => {
-        wx.showToast({
-          title: `Recherche : ${item.place}`,
-          icon: 'none',
-          duration: 1500
-        });
-        this.runSearch();
-      }
-    );
-  },
-
   onGoToAllResults() {
     wx.navigateTo({
       url: `/pages/search/results?place=${encodeURIComponent(this.data.place || 'Ouakam')}&budget=${encodeURIComponent(this.data.budget || '60 000')}`
@@ -447,62 +685,6 @@ Page({
     try {
       wx.setStorageSync(STORAGE_KEYS.FAVORITES, favorites);
     } catch (err) {}
-  },
-
-  onCallBailleur() {
-    const listing = this.data.selectedListing;
-    if (!listing || !listing.phone) return;
-    wx.makePhoneCall({
-      phoneNumber: listing.phone,
-      fail: () => {
-        wx.showToast({ title: `Numéro : ${listing.phone}`, icon: 'none' });
-      }
-    });
-  },
-
-  onWhatsAppBailleur() {
-    const listing = this.data.selectedListing;
-    if (!listing) return;
-    const msg = `Bonjour, je vous contacte depuis SAMA LOGEMENT pour l'annonce "${listing.title}" à ${listing.place} (${formatMoney(listing.price)} F CFA/mois). Est-il toujours disponible ?`;
-
-    wx.setClipboardData({
-      data: msg,
-      success: () => {
-        wx.showModal({
-          title: 'Message copié !',
-          content: `Le message pour le bailleur (${listing.phone}) a été copié. Vous pouvez le coller dans WhatsApp.`,
-          showCancel: false,
-          confirmText: 'D’accord'
-        });
-      }
-    });
-  },
-
-  onPayRentWithOrangeMoney() {
-    const listing = this.data.selectedListing;
-    if (!listing) return;
-
-    wx.showModal({
-      title: 'Payer mon loyer avec Orange Money',
-      content: `Échéance de loyer : ${formatMoney(listing.price)} F CFA\nBénéficiaire : ${listing.bailleurName}\nRéférence : SAMA-LOC-${listing.id}\n\nVoulez-vous initier le paiement sécurisé ?`,
-      confirmText: 'Payer via OM',
-      confirmColor: '#C8235F',
-      cancelText: 'Annuler',
-      success: (res) => {
-        if (res.confirm) {
-          wx.showLoading({ title: 'Connexion Orange Money...' });
-          setTimeout(() => {
-            wx.hideLoading();
-            wx.showModal({
-              title: 'Paiement Confirmé ! 🎉',
-              content: `Votre reçu de loyer N° OM-${Date.now().toString().slice(-6)} a été généré.\nMontant : ${formatMoney(listing.price)} F CFA.\nLe bailleur ${listing.bailleurName} a été notifié.`,
-              showCancel: false,
-              confirmText: 'Voir le reçu'
-            });
-          }, 1500);
-        }
-      }
-    });
   },
 
   onSwitchProfile() {

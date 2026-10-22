@@ -12,19 +12,26 @@
     <view class="search-bar-row">
       <view class="search-input-pill">
         <text class="search-lens">🔍</text>
-        <input class="search-input" value="{{ searchQuery }}" />
+        <input 
+          class="search-input" 
+          value="{{ searchQuery }}" 
+          bindinput="onSearchInput"
+          bindconfirm="onSearchConfirm"
+          confirm-type="search"
+          placeholder="Rechercher quartier ou type…"
+        />
       </view>
-      <view class="btn-mic-round">🎙</view>
-      <view class="btn-filter-icon">⚙</view>
+      <view class="btn-mic-round" bindtap="onMicTap">🎙</view>
+      <view class="btn-filter-icon" bindtap="onFilterTap">⚙</view>
     </view>
 
     <!-- Titre et compteur -->
     <view class="search-headline-row">
       <view class="headline-titles">
-        <text class="headline-main">Logements à Pikine</text>
-        <text class="headline-count">4 logements trouvés</text>
+        <text class="headline-main">{{ headlineText }}</text>
+        <text class="headline-count">{{ filteredListings.length }} logements trouvés</text>
       </view>
-      <text class="btn-modify-link">Modifier</text>
+      <text class="btn-modify-link" bindtap="onModifyTap">Modifier</text>
     </view>
 
     <!-- Pilules de filtres -->
@@ -85,7 +92,7 @@
 
       <!-- Liste verticale -->
       <view class="available-list">
-        <block wx:for="{{ listings }}" wx:key="id">
+        <block wx:for="{{ filteredListings }}" wx:key="id">
           <view class="avail-card" data-id="{{ item.id }}" bindtap="onCardTap">
             <view class="avail-thumb" style="background-color: {{ item.bg }};">
               <view class="thumb-house-outline-sm"></view>
@@ -114,3 +121,4 @@
     <view class="scroll-spacer"></view>
   </scroll-view>
 </view>
+

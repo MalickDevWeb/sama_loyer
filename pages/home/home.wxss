@@ -628,10 +628,73 @@
   animation: pulseAnim 1.8s infinite;
 }
 
+.pulse-fast {
+  animation: pulseAnim 0.9s infinite;
+  background-color: rgba(200, 35, 95, 0.28);
+}
+
 @keyframes pulseAnim {
   0% { transform: scale(0.9); opacity: 0.8; }
-  50% { transform: scale(1.3); opacity: 0.3; }
+  50% { transform: scale(1.35); opacity: 0.25; }
   100% { transform: scale(0.9); opacity: 0.8; }
+}
+
+.soundwave-bars {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8rpx;
+  height: 48rpx;
+  margin-bottom: 16rpx;
+}
+
+.wave-bar {
+  width: 6rpx;
+  border-radius: 3rpx;
+  background-color: #C8235F;
+  animation: wavePulse 1s ease-in-out infinite;
+}
+
+.bar-1 { height: 16rpx; animation-delay: 0.1s; }
+.bar-2 { height: 32rpx; animation-delay: 0.25s; }
+.bar-3 { height: 44rpx; animation-delay: 0.4s; }
+.bar-4 { height: 26rpx; animation-delay: 0.15s; }
+.bar-5 { height: 18rpx; animation-delay: 0.35s; }
+
+@keyframes wavePulse {
+  0%, 100% { transform: scaleY(0.4); opacity: 0.5; }
+  50% { transform: scaleY(1); opacity: 1; }
+}
+
+.input-clear-btn {
+  width: 44rpx;
+  height: 44rpx;
+  border-radius: 50%;
+  background-color: #E2E8F0;
+  color: #718096;
+  font-size: 20rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 12rpx;
+}
+
+.voice-modal-footer {
+  margin-top: 24rpx;
+}
+
+.btn-cancel-voice {
+  width: 100%;
+  height: 80rpx;
+  border-radius: 40rpx;
+  background-color: #F4F6F9;
+  color: #5B6475;
+  font-size: 26rpx;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
 }
 
 .icon-large {

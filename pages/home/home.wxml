@@ -43,9 +43,12 @@
             type="text"
             value="{{ place }}"
             bindinput="onPlaceInput"
-            placeholder="Ex. Ouakam, Mermoz, Yoff…"
+            bindconfirm="onSearchTap"
+            confirm-type="search"
+            placeholder="Ex. Ouakam, Pikine, Ngor, Yoff…"
             placeholder-class="input-placeholder"
           />
+          <view wx:if="{{ place }}" class="input-clear-btn" bindtap="onClearPlace">✕</view>
         </view>
       </view>
 
@@ -60,9 +63,12 @@
             type="number"
             value="{{ budget }}"
             bindinput="onBudgetInput"
+            bindconfirm="onSearchTap"
+            confirm-type="search"
             placeholder="Ex. 60 000"
             placeholder-class="input-placeholder"
           />
+          <view wx:if="{{ budget }}" class="input-clear-btn" bindtap="onClearBudget">✕</view>
           <text class="input-suffix">F CFA</text>
         </view>
       </view>
@@ -164,11 +170,21 @@
         <view class="modal-close" bindtap="onCloseVoiceModal">✕</view>
       </view>
 
-      <view class="voice-wave-container">
-        <view class="voice-circle pulse"></view>
+      <view class="voice-wave-container" bindtap="onToggleRecord">
+        <view class="voice-circle {{ isRecording ? 'pulse-fast' : 'pulse' }}"></view>
         <view class="icon-svg icon-mic-berry icon-large"></view>
       </view>
-      <text class="voice-listening-label">Je vous écoute... Choisissez ou dites :</text>
+
+      <!-- Barres d'onde sonore animées -->
+      <view wx:if="{{ isRecording }}" class="soundwave-bars">
+        <view class="wave-bar bar-1"></view>
+        <view class="wave-bar bar-2"></view>
+        <view class="wave-bar bar-3"></view>
+        <view class="wave-bar bar-4"></view>
+        <view class="wave-bar bar-5"></view>
+      </view>
+
+      <text class="voice-listening-label">{{ voiceStatus }}</text>
 
       <view class="voice-prompts-list">
         <block wx:for="{{ voicePrompts }}" wx:key="text">
@@ -181,10 +197,11 @@
         </block>
       </view>
 
-      <!-- Bouton Voir tous les logements (Page 1 prototype) -->
-      <button class="btn-see-all-listings" bindtap="onGoToAllResults">
-        Voir tous les logements
-      </button>
+      <view class="voice-modal-footer">
+        <button class="btn-cancel-voice" bindtap="onCloseVoiceModal">
+          Fermer l'assistant
+        </button>
+      </view>
     </view>
   </view>
 
