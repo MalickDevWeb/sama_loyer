@@ -1,4 +1,59 @@
 // pages/bailleur/locataires/locataires.js
+const INITIAL_LOCATAIRES = [
+  {
+    id: 'cheikh',
+    name: 'Cheikh Fall',
+    initials: 'CF',
+    avatarBg: '#5B45B2',
+    property: 'Studio · Pikine Rue 10 · 95 000 F',
+    status: 'a_confirmer',
+    statusLabel: 'À confirmer',
+    bannerType: 'warning',
+    bannerText: "Cheikh dit avoir payé 95 000 F en espèces le 20 oct. L'as-tu bien reçu ?",
+    cautionDetenue: '190 000 F',
+    phone: '77 456 78 90'
+  },
+  {
+    id: 'modou',
+    name: 'Modou Ndiaye',
+    initials: 'MN',
+    avatarBg: '#9A6A15',
+    property: 'Appartement F2 · Technopole · 85 000 F',
+    status: 'en_retard',
+    statusLabel: 'En retard',
+    bannerType: 'danger',
+    bannerText: 'Loyer attendu le 5 oct. · 17 jours de retard.',
+    cautionDetenue: '170 000 F',
+    phone: '78 123 45 67'
+  },
+  {
+    id: 'ibou',
+    name: 'Ibou Sarr',
+    initials: 'IS',
+    avatarBg: '#007C3D',
+    property: 'Chambre · Thiaroye · 45 000 F',
+    status: 'payes',
+    statusLabel: 'Payé',
+    bannerType: 'success',
+    bannerText: 'Payé le 3 oct. · Wave (payé par son frère) · reçu envoyé',
+    cautionDetenue: '45 000 F',
+    phone: '77 333 44 55'
+  },
+  {
+    id: 'famille_ba',
+    name: 'Famille Ba',
+    initials: 'FB',
+    avatarBg: '#0F1E3D',
+    property: 'Maison · Pikine Nord · 160 000 F',
+    status: 'payes',
+    statusLabel: 'Payé',
+    bannerType: 'success',
+    bannerText: 'Payé le 5 oct. · Orange Money · reçu envoyé',
+    cautionDetenue: '320 000 F',
+    phone: '77 555 66 77'
+  }
+];
+
 Page({
   data: {
     statusBarHeight: 44,
@@ -14,62 +69,8 @@ Page({
       totalCount: 4
     },
 
-    locataires: [
-      {
-        id: 'cheikh',
-        name: 'Cheikh Fall',
-        initials: 'CF',
-        avatarBg: '#5B45B2',
-        property: 'Studio · Pikine Rue 10 · 95 000 F',
-        status: 'a_confirmer',
-        statusLabel: 'À confirmer',
-        bannerType: 'warning',
-        bannerText: "Cheikh dit avoir payé 95 000 F en espèces le 20 oct. L'as-tu bien reçu ?",
-        cautionDetenue: '190 000 F',
-        phone: '77 456 78 90'
-      },
-      {
-        id: 'modou',
-        name: 'Modou Ndiaye',
-        initials: 'MN',
-        avatarBg: '#9A6A15',
-        property: 'Appartement F2 · Technopole · 85 000 F',
-        status: 'en_retard',
-        statusLabel: 'En retard',
-        bannerType: 'danger',
-        bannerText: 'Loyer attendu le 5 oct. · 17 jours de retard.',
-        cautionDetenue: '170 000 F',
-        phone: '78 123 45 67'
-      },
-      {
-        id: 'ibou',
-        name: 'Ibou Sarr',
-        initials: 'IS',
-        avatarBg: '#007C3D',
-        property: 'Chambre · Thiaroye · 45 000 F',
-        status: 'payes',
-        statusLabel: 'Payé',
-        bannerType: 'success',
-        bannerText: 'Payé le 3 oct. · Wave (payé par son frère) · reçu envoyé',
-        cautionDetenue: '45 000 F',
-        phone: '77 333 44 55'
-      },
-      {
-        id: 'famille_ba',
-        name: 'Famille Ba',
-        initials: 'FB',
-        avatarBg: '#0F1E3D',
-        property: 'Maison · Pikine Nord · 160 000 F',
-        status: 'payes',
-        statusLabel: 'Payé',
-        bannerType: 'success',
-        bannerText: 'Payé le 5 oct. · Orange Money · reçu envoyé',
-        cautionDetenue: '320 000 F',
-        phone: '77 555 66 77'
-      }
-    ],
-
-    filteredLocataires: [],
+    locataires: INITIAL_LOCATAIRES,
+    filteredLocataires: INITIAL_LOCATAIRES,
 
     problemes: [
       {

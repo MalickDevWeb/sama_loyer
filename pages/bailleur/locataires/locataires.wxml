@@ -68,7 +68,7 @@
 
     <!-- Liste des cartes Locataires -->
     <view class="locataires-cards-stack">
-      <block wx:for="{{ filteredLocataires }}" wx:key="id">
+      <block wx:for="{{ filteredLocataires }}" wx:for-item="item" wx:for-index="index" wx:key="id">
         <view class="locataire-item-card">
           
           <!-- Ligne haute : Avatar + Nom + Logement + Badge statut -->
@@ -131,7 +131,7 @@
       <text class="section-title-sub">Problèmes signalés</text>
       
       <view class="problemes-group">
-        <block wx:for="{{ problemes }}" wx:key="id">
+        <block wx:for="{{ problemes }}" wx:for-item="item" wx:for-index="index" wx:key="id">
           <view class="probleme-card-item">
             <view class="prob-icon-square">
               <view class="icon-drop-graphic"></view>
