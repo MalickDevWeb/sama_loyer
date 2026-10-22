@@ -194,7 +194,7 @@ Page({
 
   onGoClientsPage() {
     wx.navigateTo({
-      url: '/pages/bailleur/clients/clients'
+      url: '/pages/bailleur/locataires/locataires'
     });
   }
 });

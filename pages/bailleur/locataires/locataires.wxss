@@ -1,0 +1,400 @@
+/* pages/bailleur/locataires/locataires.wxss */
+.mes-locataires-page {
+  min-height: 100vh;
+  background-color: #F8F9FA;
+  box-sizing: border-box;
+}
+
+.locataires-scroll {
+  padding: 0 28rpx;
+  box-sizing: border-box;
+}
+
+/* En-tête */
+.locataires-top-header {
+  margin-top: 10rpx;
+  margin-bottom: 24rpx;
+}
+
+.page-title-main {
+  display: block;
+  font-size: 46rpx;
+  font-weight: 800;
+  color: #0F1E3D;
+  letter-spacing: -0.5rpx;
+  margin-bottom: 6rpx;
+}
+
+.page-sub-desc {
+  font-size: 26rpx;
+  color: #64748B;
+}
+
+/* Synthèse sombre (Loyers d'octobre) */
+.dark-kpi-summary-box {
+  background: #0F1E3D;
+  border-radius: 26rpx;
+  padding: 28rpx 28rpx 32rpx;
+  color: #FFFFFF;
+  margin-bottom: 24rpx;
+  box-shadow: 0 8rpx 24rpx rgba(15, 30, 61, 0.15);
+}
+
+.kpi-month-title {
+  font-size: 24rpx;
+  font-weight: 600;
+  color: #94A3B8;
+  display: block;
+  margin-bottom: 12rpx;
+}
+
+.kpi-amount-large-row {
+  display: flex;
+  align-items: baseline;
+  gap: 12rpx;
+  margin-bottom: 22rpx;
+}
+
+.kpi-amount-bold {
+  font-size: 56rpx;
+  font-weight: 900;
+  color: #FFFFFF;
+  letter-spacing: -1rpx;
+}
+
+.kpi-amount-total-label {
+  font-size: 24rpx;
+  color: #94A3B8;
+}
+
+/* Barre segmentée tricolore */
+.segmented-bar-track {
+  display: flex;
+  gap: 8rpx;
+  height: 10rpx;
+  width: 100%;
+  margin-bottom: 16rpx;
+}
+
+.seg-item {
+  height: 100%;
+  border-radius: 6rpx;
+}
+
+.seg-yellow {
+  flex: 2;
+  background: #F59E0B;
+}
+
+.seg-red {
+  flex: 1.2;
+  background: #EF4444;
+}
+
+.seg-green {
+  flex: 3;
+  background: #10B981;
+}
+
+.kpi-legend-row {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  font-size: 22rpx;
+  color: #CAD5E2;
+}
+
+.legend-dot {
+  color: #64748B;
+}
+
+/* Filtres en pilules */
+.filters-pills-scroll {
+  width: 100%;
+  white-space: nowrap;
+  margin-bottom: 24rpx;
+}
+
+.filters-pills-row {
+  display: flex;
+  gap: 16rpx;
+  padding-bottom: 6rpx;
+}
+
+.filter-pill {
+  font-size: 26rpx;
+  font-weight: 600;
+  padding: 16rpx 26rpx;
+  border-radius: 30rpx;
+  background: #FFFFFF;
+  color: #0F1E3D;
+  border: 1rpx solid #E2E8F0;
+  box-shadow: 0 2rpx 6rpx rgba(15, 30, 61, 0.02);
+}
+
+.pill--active-navy {
+  background: #0F1E3D;
+  color: #FFFFFF;
+  border-color: #0F1E3D;
+}
+
+/* Liste des cartes */
+.locataires-cards-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+  margin-bottom: 32rpx;
+}
+
+.locataire-item-card {
+  background: #FFFFFF;
+  border: 1rpx solid #EFEFEF;
+  border-radius: 24rpx;
+  padding: 26rpx 24rpx 22rpx;
+  box-shadow: 0 4rpx 14rpx rgba(15, 30, 61, 0.04);
+}
+
+.card-head-row {
+  display: flex;
+  align-items: center;
+  gap: 18rpx;
+  margin-bottom: 18rpx;
+}
+
+.avatar-round-wrap {
+  width: 72rpx;
+  height: 72rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.avatar-initials-txt {
+  font-size: 26rpx;
+  font-weight: 800;
+  color: #FFFFFF;
+}
+
+.locataire-meta-col {
+  flex: 1;
+}
+
+.locataire-name-title {
+  font-size: 28rpx;
+  font-weight: 800;
+  color: #0F1E3D;
+  display: block;
+  margin-bottom: 2rpx;
+}
+
+.locataire-prop-info {
+  font-size: 22rpx;
+  color: #64748B;
+}
+
+.locataire-badge-status {
+  font-size: 22rpx;
+  font-weight: 700;
+  padding: 6rpx 16rpx;
+  border-radius: 14rpx;
+}
+
+.badge-a-confirmer {
+  background: #FEF3C7;
+  color: #92400E;
+}
+
+.badge-en-retard {
+  background: #FEE2E2;
+  color: #B91C1C;
+}
+
+.badge-paye {
+  background: #E2F0EA;
+  color: #007C3D;
+}
+
+/* Bandeau d'alerte / confirmation */
+.banner-notice-box {
+  border-radius: 16rpx;
+  padding: 18rpx 20rpx;
+  margin-bottom: 20rpx;
+}
+
+.banner-cream-yellow {
+  background: #FEF9C3;
+  border-left: 6rpx solid #EAB308;
+}
+
+.banner-soft-red {
+  background: #FFF1F2;
+  border-left: 6rpx solid #F43F5E;
+}
+
+.banner-mint-green {
+  background: #ECFDF5;
+  border-left: 6rpx solid #10B981;
+}
+
+.banner-notice-text {
+  font-size: 23rpx;
+  line-height: 1.45;
+  color: #334155;
+  display: block;
+}
+
+/* Boutons d'action en paire */
+.action-buttons-pair-row {
+  display: flex;
+  gap: 16rpx;
+  margin-bottom: 20rpx;
+}
+
+.action-buttons-pair-row button {
+  flex: 1;
+  font-size: 26rpx;
+  font-weight: 700;
+  border-radius: 16rpx;
+  padding: 18rpx 0;
+  text-align: center;
+  border: none;
+}
+
+.btn-action-outline-red {
+  background: #FFFFFF;
+  color: #BE123C;
+  border: 2rpx solid #FECDD3 !important;
+}
+
+.btn-action-dark-green {
+  background: #0E6E45;
+  color: #FFFFFF;
+}
+
+.btn-action-outline-navy {
+  background: #FFFFFF;
+  color: #0F1E3D;
+  border: 2rpx solid #CBD5E1 !important;
+}
+
+.btn-action-dark-navy {
+  background: #0F1E3D;
+  color: #FFFFFF;
+}
+
+/* Ligne footer : Caution + Écrire */
+.card-foot-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1rpx dashed #E2E8F0;
+  padding-top: 16rpx;
+}
+
+.caution-detenue-txt {
+  font-size: 22rpx;
+  color: #64748B;
+  font-weight: 500;
+}
+
+.btn-ecrire-pill {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  background: #FFFFFF;
+  border: 1rpx solid #E2E8F0;
+  padding: 10rpx 20rpx;
+  border-radius: 14rpx;
+  box-shadow: 0 2rpx 6rpx rgba(0, 0, 0, 0.02);
+}
+
+.ecrire-chat-icon {
+  font-size: 22rpx;
+}
+
+.ecrire-label-txt {
+  font-size: 22rpx;
+  font-weight: 700;
+  color: #0F1E3D;
+}
+
+/* Section Problèmes signalés */
+.problemes-section {
+  margin-bottom: 30rpx;
+}
+
+.section-title-sub {
+  font-size: 30rpx;
+  font-weight: 800;
+  color: #0F1E3D;
+  margin-bottom: 16rpx;
+  display: block;
+}
+
+.problemes-group {
+  display: flex;
+  flex-direction: column;
+  gap: 14rpx;
+}
+
+.probleme-card-item {
+  background: #FFFFFF;
+  border: 1rpx solid #EFEFEF;
+  border-radius: 20rpx;
+  padding: 20rpx 22rpx;
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  box-shadow: 0 2rpx 10rpx rgba(15, 30, 61, 0.03);
+}
+
+.prob-icon-square {
+  width: 54rpx;
+  height: 54rpx;
+  background: #FEF3C7;
+  border-radius: 14rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26rpx;
+}
+
+.prob-info-col {
+  flex: 1;
+}
+
+.prob-main-title {
+  font-size: 25rpx;
+  font-weight: 700;
+  color: #0F1E3D;
+  display: block;
+  margin-bottom: 2rpx;
+}
+
+.prob-sub-meta {
+  font-size: 21rpx;
+  color: #94A3B8;
+}
+
+.prob-status-badge {
+  font-size: 20rpx;
+  font-weight: 700;
+  padding: 4rpx 14rpx;
+  border-radius: 12rpx;
+}
+
+.status-artisan {
+  background: #FEF3C7;
+  color: #B45309;
+}
+
+.status-resolu {
+  background: #E2F0EA;
+  color: #007C3D;
+}
+
+.bottom-spacer-bailleur {
+  height: 160rpx;
+}

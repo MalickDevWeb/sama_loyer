@@ -14,7 +14,7 @@
     "pages/bailleur/annonces/annonces",
     "pages/bailleur/ajouter/ajouter",
     "pages/bailleur/demandes/demandes",
-    "pages/bailleur/clients/clients",
+    "pages/bailleur/locataires/locataires",
     "pages/bailleur/premium/premium",
     "pages/paiement/index",
     "pages/index/index"

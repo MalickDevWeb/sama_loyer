@@ -108,15 +108,16 @@ export const BAILLEUR_TABS = [
     url: '/pages/bailleur/ajouter/ajouter',
   },
   {
-    id: 'b-demandes',
-    label: 'Demandes',
-    badge: '1',
-    url: '/pages/bailleur/demandes/demandes',
+    id: 'b-locataires',
+    label: 'Locataires',
+    badge: '2',
+    url: '/pages/bailleur/locataires/locataires',
   },
   {
-    id: 'b-premium',
-    label: 'Premium',
-    url: '/pages/bailleur/premium/premium',
+    id: 'b-messages',
+    label: 'Messages',
+    badge: '4',
+    url: '/pages/bailleur/demandes/demandes',
   },
 ];
 

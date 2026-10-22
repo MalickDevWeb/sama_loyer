@@ -1,0 +1,112 @@
+.offers {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px;
+}
+
+.offer {
+  padding: 16px;
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  opacity: 0.7;
+}
+
+.offer--on {
+  background: var(--berry-soft);
+  border-color: #f3c3d5;
+  opacity: 1;
+}
+
+.offer__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.offer__label {
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.offer__price {
+  font-size: 22px;
+  font-weight: 800;
+}
+
+.offer__sub {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.offer__sold {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-2);
+}
+
+.offer__edit {
+  align-self: flex-start;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  color: var(--berry);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.offer__edit:hover {
+  color: var(--berry-dark);
+}
+
+.premium__sponsored {
+  flex: 3 1 520px;
+}
+
+.premium__sponsored .card-subtitle {
+  margin-bottom: 14px;
+}
+
+.premium__why {
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--danger);
+}
+
+.premium__payments {
+  flex: 2 1 300px;
+}
+
+.payment {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 0;
+  border-top: 1px solid var(--divider);
+}
+
+.payment__text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.payment__who {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.payment__meta {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.payment__amount {
+  font-size: 13px;
+  font-weight: 800;
+}

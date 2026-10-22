@@ -1,0 +1,156 @@
+.search-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 0 12px;
+  height: 44px;
+  width: min(320px, 100%);
+  color: var(--muted);
+}
+
+.search-box input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  outline: none;
+  font-size: 14px;
+  height: 40px;
+  background: transparent;
+  color: var(--text);
+}
+
+.search-box:focus-within {
+  border-color: var(--navy);
+}
+
+.bailleurs__table {
+  flex: 2 1 520px;
+}
+
+.bailleurs__row {
+  cursor: pointer;
+}
+
+.bailleurs__row--on {
+  background: var(--berry-soft);
+}
+
+.bailleurs__who {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  text-align: left;
+  color: var(--text);
+}
+
+.bailleurs__meta {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+/* --- Fiche --------------------------------------------------------------- */
+.bailleur-card {
+  flex: 1 1 300px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.bailleur-card__head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.bailleur-card__name {
+  margin: 0 0 4px;
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.bailleur-card__h3 {
+  margin: 0 0 8px;
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.bailleur-card__hint {
+  margin: 8px 0 0;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.bailleur-card__actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  font-size: 13px;
+}
+
+.info-grid > div {
+  padding: 10px;
+  border-radius: 12px;
+  background: var(--surface-2);
+}
+
+.info-grid span {
+  display: block;
+  color: var(--muted);
+}
+
+.id-docs {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.id-docs > div {
+  height: 92px;
+  border-radius: 12px;
+  background: var(--info-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-2);
+}
+
+.note {
+  font-size: 13px;
+  line-height: 1.45;
+  padding: 10px 12px;
+  border-radius: 12px;
+}
+
+.note--success {
+  background: var(--success-soft);
+  color: var(--success-text);
+}
+
+.note--warning {
+  background: var(--warning-soft);
+  color: var(--warning-text);
+}
+
+.note--danger {
+  background: var(--danger-soft);
+  color: #8a2019;
+}
+
+.note--neutral {
+  background: var(--surface-2);
+  color: var(--text-2);
+}

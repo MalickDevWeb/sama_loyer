@@ -51,8 +51,8 @@ Page({
   },
 
   onGoClients() {
-    wx.navigateTo({
-      url: '/pages/bailleur/clients/clients'
+    wx.redirectTo({
+      url: '/pages/bailleur/locataires/locataires'
     });
   },
 
@@ -64,7 +64,7 @@ Page({
 
   onGoHistorique() {
     wx.navigateTo({
-      url: '/pages/bailleur/clients/clients'
+      url: '/pages/bailleur/locataires/locataires'
     });
   },
 

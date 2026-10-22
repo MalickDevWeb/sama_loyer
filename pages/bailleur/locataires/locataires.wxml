@@ -1,0 +1,158 @@
+<!-- pages/bailleur/locataires/locataires.wxml -->
+<view class="mes-locataires-page">
+  <scroll-view class="locataires-scroll" scroll-y="{{true}}" enhanced="{{true}}" show-scrollbar="{{false}}" style="padding-top: {{ statusBarHeight + 10 }}px;">
+    
+    <!-- En-tête -->
+    <view class="locataires-top-header">
+      <text class="page-title-main">Mes locataires</text>
+      <text class="page-sub-desc">4 logements loués · loyers et problèmes</text>
+    </view>
+
+    <!-- Synthèse sombre (Loyers d'octobre) -->
+    <view class="dark-kpi-summary-box">
+      <text class="kpi-month-title">{{ kpi.monthTitle }}</text>
+      
+      <view class="kpi-amount-large-row">
+        <text class="kpi-amount-bold">{{ kpi.montantRecu }}</text>
+        <text class="kpi-amount-total-label">reçus sur {{ kpi.montantTotal }}</text>
+      </view>
+
+      <!-- Barre segmentée tricolore (Jaune, Rouge, Vert) -->
+      <view class="segmented-bar-track">
+        <view class="seg-item seg-yellow"></view>
+        <view class="seg-item seg-red"></view>
+        <view class="seg-item seg-green"></view>
+      </view>
+
+      <!-- Légende sous la barre -->
+      <view class="kpi-legend-row">
+        <text class="legend-item">{{ kpi.nbPayes }} payé(s)</text>
+        <text class="legend-dot">·</text>
+        <text class="legend-item">{{ kpi.nbAConfirmer }} à confirmer</text>
+        <text class="legend-dot">·</text>
+        <text class="legend-item">{{ kpi.nbEnRetard }} en retard</text>
+      </view>
+    </view>
+
+    <!-- Filtres en pilules horizontales -->
+    <scroll-view class="filters-pills-scroll" scroll-x="{{true}}" show-scrollbar="{{false}}">
+      <view class="filters-pills-row">
+        <view 
+          class="filter-pill {{ activeFilter === 'all' ? 'pill--active-navy' : '' }}"
+          data-filter="all"
+          bindtap="onSelectFilter"
+        >
+          Tous (4)
+        </view>
+        <view 
+          class="filter-pill {{ activeFilter === 'a_confirmer' ? 'pill--active-navy' : '' }}"
+          data-filter="a_confirmer"
+          bindtap="onSelectFilter"
+        >
+          À confirmer (1)
+        </view>
+        <view 
+          class="filter-pill {{ activeFilter === 'en_retard' ? 'pill--active-navy' : '' }}"
+          data-filter="en_retard"
+          bindtap="onSelectFilter"
+        >
+          En retard (1)
+        </view>
+        <view 
+          class="filter-pill {{ activeFilter === 'payes' ? 'pill--active-navy' : '' }}"
+          data-filter="payes"
+          bindtap="onSelectFilter"
+        >
+          Payés (2)
+        </view>
+      </view>
+    </scroll-view>
+
+    <!-- Liste des cartes Locataires -->
+    <view class="locataires-cards-stack">
+      <block wx:for="{{ filteredLocataires }}" wx:key="id">
+        <view class="locataire-item-card">
+          
+          <!-- Ligne haute : Avatar + Nom + Logement + Badge statut -->
+          <view class="card-head-row">
+            <view class="avatar-round-wrap" style="background-color: {{ item.avatarBg }};">
+              <text class="avatar-initials-txt">{{ item.initials }}</text>
+            </view>
+
+            <view class="locataire-meta-col">
+              <text class="locataire-name-title">{{ item.name }}</text>
+              <text class="locataire-prop-info">{{ item.property }}</text>
+            </view>
+
+            <view class="locataire-badge-status {{ item.status === 'a_confirmer' ? 'badge-a-confirmer' : (item.status === 'en_retard' ? 'badge-en-retard' : 'badge-paye') }}">
+              {{ item.statusLabel }}
+            </view>
+          </view>
+
+          <!-- Bandeau d'alerte / confirmation -->
+          <view class="banner-notice-box {{ item.bannerType === 'warning' ? 'banner-cream-yellow' : (item.bannerType === 'danger' ? 'banner-soft-red' : 'banner-mint-green') }}">
+            <text class="banner-notice-text">{{ item.bannerText }}</text>
+          </view>
+
+          <!-- Boutons d'action conditionnels -->
+          <!-- Cas Cheikh Fall : À confirmer -->
+          <view wx:if="{{ item.status === 'a_confirmer' }}" class="action-buttons-pair-row">
+            <button class="btn-action-outline-red" bindtap="onRefuserPaiementCheikh">
+              Rien reçu
+            </button>
+            <button class="btn-action-dark-green" bindtap="onConfirmerPaiementCheikh">
+              Oui, j'ai reçu
+            </button>
+          </view>
+
+          <!-- Cas Modou Ndiaye : En retard -->
+          <view wx:elif="{{ item.status === 'en_retard' }}" class="action-buttons-pair-row">
+            <button class="btn-action-outline-navy" bindtap="onSendRappel">
+              Envoyer un rappel
+            </button>
+            <button class="btn-action-dark-navy" bindtap="onMarquerPayeModou">
+              Il a payé
+            </button>
+          </view>
+
+          <!-- Ligne footer : Caution détenue + Bouton Écrire -->
+          <view class="card-foot-row">
+            <text class="caution-detenue-txt">Caution détenue : {{ item.cautionDetenue }}</text>
+            <view class="btn-ecrire-pill" data-locataire="{{ item }}" bindtap="onEcrireLocataire">
+              <text class="ecrire-chat-icon">💬</text>
+              <text class="ecrire-label-txt">Écrire</text>
+            </view>
+          </view>
+
+        </view>
+      </block>
+    </view>
+
+    <!-- Section Problèmes signalés -->
+    <view class="problemes-section">
+      <text class="section-title-sub">Problèmes signalés</text>
+      
+      <view class="problemes-group">
+        <block wx:for="{{ problemes }}" wx:key="id">
+          <view class="probleme-card-item">
+            <view class="prob-icon-square">
+              <text>🔧</text>
+            </view>
+            <view class="prob-info-col">
+              <text class="prob-main-title">{{ item.title }}</text>
+              <text class="prob-sub-meta">{{ item.sub }}</text>
+            </view>
+            <view class="prob-status-badge {{ item.statusClass }}">
+              {{ item.statusLabel }}
+            </view>
+          </view>
+        </block>
+      </view>
+    </view>
+
+    <view class="bottom-spacer-bailleur"></view>
+  </scroll-view>
+
+  <!-- Bailleur Tab Bar -->
+  <app-custom-tab-bar activeTab="b-locataires" />
+</view>
