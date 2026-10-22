@@ -213,7 +213,7 @@
   </view>
 
   <!-- ======================================================== -->
-  <!-- ÉTAT 3 : RÉSULTATS RECOMMANDÉS (Image 3)                 -->
+  <!-- ÉTAT 3 : RÉSULTATS RECOMMANDÉS (Image 3 + Maquette)      -->
   <!-- ======================================================== -->
   <view wx:if="{{ searchState === 'results' }}" class="ai-results-screen">
     <scroll-view class="ai-results-scroll" scroll-y="{{true}}" enhanced="{{true}}" show-scrollbar="{{false}}">
@@ -230,13 +230,34 @@
         </view>
       </view>
 
+      <!-- Bandeau Dark "Tes 3 meilleurs logements" -->
+      <view class="results-hero-banner">
+        <view class="results-hero-top">
+          <view class="results-ia-tag">
+            <text class="ia-sparkle">✦</text>
+            <text class="ia-tag-text">CHOISIS PAR L'IA</text>
+          </view>
+          <view class="btn-close-results" bindtap="onModifyTap">✕</view>
+        </view>
+
+        <text class="results-hero-title">Tes 3 meilleurs logements</text>
+
+        <view class="results-filter-pills">
+          <view wx:if="{{ qPlace }}" class="filter-pill">{{ qPlace }}</view>
+          <view wx:if="{{ qBudget }}" class="filter-pill">{{ formattedBudget }} F max</view>
+        </view>
+      </view>
+
       <!-- Liste des 3 cartes logements recommandées -->
       <view class="ai-recs-container">
         <block wx:for="{{ recs }}" wx:key="id">
-          <view class="rec-card" data-item="{{ item }}" bindtap="onListingTap">
+          <view class="rec-card {{ item.rank === 1 ? 'rec-card--best' : '' }}" data-item="{{ item }}" bindtap="onListingTap">
             <!-- Bloc Hero avec couleur teintée et dessin architectural -->
             <view class="rec-card__hero" style="background-color: {{ item.tintBg }};">
-              <view class="rec-card__rank">{{ item.rank }}</view>
+              <view class="rec-card__rank-row">
+                <view class="rec-card__rank">{{ item.rank }}</view>
+                <view wx:if="{{ item.rank === 1 }}" class="rec-card__badge-best">Meilleur choix</view>
+              </view>
               <view class="rec-card__house-illu"></view>
             </view>
 
@@ -332,7 +353,9 @@
           <block wx:for="{{ fallbackListings }}" wx:key="id">
             <view class="rec-card" data-item="{{ item }}" bindtap="onListingTap">
               <view class="rec-card__hero" style="background-color: {{ item.tintBg }};">
-                <view class="rec-card__rank">{{ item.rank }}</view>
+                <view class="rec-card__rank-row">
+                  <view class="rec-card__rank">{{ item.rank }}</view>
+                </view>
                 <view class="rec-card__house-illu"></view>
               </view>
               <view class="rec-card__body">

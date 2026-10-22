@@ -82,6 +82,7 @@ Page({
     budget: '60 000',
     qPlace: 'Ouakam',
     qBudget: 60000,
+    formattedBudget: '60 000',
     searchState: 'form', // 'form' | 'loading' | 'results' | 'failed'
     step1Done: false,
     step2Done: false,
@@ -286,6 +287,7 @@ Page({
 
       this.setData({
         recs,
+        formattedBudget: formatMoney(budget),
         searchState: 'results'
       });
     } else {

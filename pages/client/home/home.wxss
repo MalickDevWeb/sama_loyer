@@ -502,8 +502,80 @@
   box-sizing: border-box;
 }
 
+/* Bandeau Dark "Tes 3 meilleurs logements" */
+.results-hero-banner {
+  margin: 12rpx 32rpx 28rpx;
+  background-color: #0E1B38;
+  border-radius: 36rpx;
+  padding: 32rpx;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 6rpx 20rpx rgba(14, 27, 56, 0.15);
+}
+
+.results-hero-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16rpx;
+}
+
+.results-ia-tag {
+  display: flex;
+  align-items: center;
+  gap: 10rpx;
+}
+
+.ia-sparkle {
+  color: #FF3366;
+  font-size: 26rpx;
+}
+
+.ia-tag-text {
+  color: #FF3366;
+  font-size: 22rpx;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+}
+
+.btn-close-results {
+  width: 60rpx;
+  height: 60rpx;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.14);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #FFFFFF;
+  font-size: 26rpx;
+}
+
+.results-hero-title {
+  color: #FFFFFF;
+  font-size: 44rpx;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin-bottom: 20rpx;
+}
+
+.results-filter-pills {
+  display: flex;
+  align-items: center;
+  gap: 14rpx;
+}
+
+.filter-pill {
+  background-color: rgba(255, 255, 255, 0.14);
+  border-radius: 999rpx;
+  padding: 8rpx 22rpx;
+  color: #FFFFFF;
+  font-size: 24rpx;
+  font-weight: 700;
+}
+
 .ai-recs-container {
-  padding: 16rpx 32rpx;
+  padding: 0 32rpx;
   display: flex;
   flex-direction: column;
   gap: 28rpx;
@@ -517,6 +589,30 @@
   box-shadow: 0 6rpx 24rpx rgba(15, 30, 61, 0.05);
 }
 
+.rec-card--best {
+  border: 3.5rpx solid #C8235F !important;
+}
+
+.rec-card__rank-row {
+  position: absolute;
+  top: 20rpx;
+  left: 24rpx;
+  display: flex;
+  align-items: center;
+  gap: 14rpx;
+  z-index: 2;
+}
+
+.rec-card__badge-best {
+  background-color: #C8235F;
+  color: #FFFFFF;
+  font-size: 20rpx;
+  font-weight: 800;
+  border-radius: 999rpx;
+  padding: 6rpx 18rpx;
+  box-shadow: 0 2rpx 8rpx rgba(200, 35, 95, 0.3);
+}
+
 .rec-card__hero {
   height: 240rpx;
   position: relative;
@@ -528,9 +624,6 @@
 }
 
 .rec-card__rank {
-  position: absolute;
-  top: 20rpx;
-  left: 24rpx;
   width: 48rpx;
   height: 48rpx;
   border-radius: 50%;
@@ -541,7 +634,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 2;
+  flex-shrink: 0;
 }
 
 .rec-card__house-illu {
