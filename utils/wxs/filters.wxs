@@ -1,0 +1,120 @@
+// ============================================================================
+// WXS FILTERS
+// Template-level scripting that runs in the VIEW thread (not JS thread).
+//
+// WHY WXS?
+// - Normal JS functions (in .js files) cannot be called directly from WXML
+// - WXS runs in the render thread, so it's faster for display-only logic
+// - Perfect for: formatting, computed classes, conditional display
+//
+// LIMITATIONS:
+// - ES5 only (no arrow functions, no let/const, no template literals)
+// - Cannot call wx.* APIs or import normal JS modules
+// - Cannot modify page data — read-only
+//
+// USAGE in WXML:
+//   <wxs src="../../utils/wxs/filters.wxs" module="f" />
+//   <text>{{ f.formatDate('2024-12-15') }}</text>
+//   <text>{{ f.truncate(item.name, 20) }}</text>
+//   <view class="{{ f.statusClass(item.status) }}">...</view>
+// ============================================================================
+
+/**
+ * Formats an ISO date string for display.
+ * @param {string} dateStr - ISO date (e.g., '2024-12-15' or '2024-12-15T10:30:00Z')
+ * @returns {string} Formatted date (e.g., '15/12/2024')
+ */
+function formatDate(dateStr) {
+  if (!dateStr) return '';
+  var d = getDate(dateStr);
+  var day = d.getDate();
+  var month = d.getMonth() + 1;
+  var year = d.getFullYear();
+  return (day < 10 ? '0' : '') + day + '/' + (month < 10 ? '0' : '') + month + '/' + year;
+}
+
+/**
+ * Formats a number as a price string.
+ * @param {number} amount - Numeric amount
+ * @param {string} [currency] - Currency suffix (e.g., 'USD', 'FCFA')
+ * @returns {string} Formatted price (e.g., '2,000 USD')
+ */
+function formatPrice(amount, currency) {
+  if (typeof amount !== 'number') return '0';
+  // Simple thousands separator
+  var parts = amount.toFixed(0).split('');
+  var result = '';
+  for (var i = 0; i < parts.length; i++) {
+    if (i > 0 && (parts.length - i) % 3 === 0) {
+      result += ',';
+    }
+    result += parts[i];
+  }
+  return currency ? result + ' ' + currency : result;
+}
+
+/**
+ * Truncates a string to a max length with ellipsis.
+ * @param {string} str - Input string
+ * @param {number} max - Max length
+ * @returns {string} Truncated string
+ */
+function truncate(str, max) {
+  if (!str) return '';
+  if (!max) max = 50;
+  if (str.length <= max) return str;
+  return str.substring(0, max) + '...';
+}
+
+/**
+ * Returns a CSS class name based on a status string.
+ * Useful for status badges, indicators, etc.
+ * @param {string} status - Status value
+ * @returns {string} CSS class name
+ */
+function statusClass(status) {
+  if (!status) return '';
+  var s = status.toLowerCase();
+  if (s === 'active' || s === 'success' || s === 'completed') return 'status--success';
+  if (s === 'pending' || s === 'processing' || s === 'loading') return 'status--warning';
+  if (s === 'error' || s === 'failed' || s === 'rejected') return 'status--danger';
+  if (s === 'inactive' || s === 'disabled') return 'status--muted';
+  return 'status--default';
+}
+
+/**
+ * Capitalizes the first letter of a string.
+ * @param {string} str
+ * @returns {string}
+ */
+function capitalize(str) {
+  if (!str) return '';
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+/**
+ * Returns a relative time string (e.g., '3 min ago').
+ * @param {string} dateStr - ISO date string
+ * @returns {string} Relative time
+ */
+function timeAgo(dateStr) {
+  if (!dateStr) return '';
+  var now = getDate();
+  var then = getDate(dateStr);
+  var diff = (now.getTime() - then.getTime()) / 1000; // seconds
+
+  if (diff < 60) return 'just now';
+  if (diff < 3600) return Math.floor(diff / 60) + ' min ago';
+  if (diff < 86400) return Math.floor(diff / 3600) + 'h ago';
+  if (diff < 2592000) return Math.floor(diff / 86400) + 'd ago';
+  return formatDate(dateStr);
+}
+
+module.exports = {
+  formatDate: formatDate,
+  formatPrice: formatPrice,
+  truncate: truncate,
+  statusClass: statusClass,
+  capitalize: capitalize,
+  timeAgo: timeAgo,
+};

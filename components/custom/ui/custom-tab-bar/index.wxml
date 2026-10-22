@@ -1,0 +1,5 @@
+<app-tab-bar
+  tabs="{{ tabs }}"
+  activeTab="{{ activeTab }}"
+  bind:change="handleChange"
+/>

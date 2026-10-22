@@ -1,0 +1,194 @@
+<view class="booking-confirmation-page">
+  <view class="booking-confirmation-header"></view>
+
+  <view
+    wx:if="{{ showIntroSuccess }}"
+    class="booking-confirmation-intro-success {{ introDocked ? 'booking-confirmation-intro-success--dock' : '' }} {{ introLeaving ? 'booking-confirmation-intro-success--leaving' : '' }}"
+  >
+    <view class="booking-confirmation-intro-success__inner" animation="{{ introSuccessAnimation }}">
+      <view class="booking-confirmation-success__circle">
+        <app-icon
+          icon="confirmation"
+          width="{{128}}"
+          height="{{128}}"
+          enableBg="{{false}}"
+          containerStyle="padding: 0 !important;"
+        />
+      </view>
+    </view>
+  </view>
+
+  <scroll-view
+    class="booking-confirmation-scroll"
+    scroll-y="{{true}}"
+    enhanced="{{true}}"
+    show-scrollbar="{{false}}"
+  >
+    <view class="booking-confirmation-content">
+      <view class="booking-confirmation-success {{ isStaticSuccessVisible ? 'booking-confirmation-success--visible' : '' }}">
+        <view class="booking-confirmation-success__circle">
+          <app-icon
+            icon="confirmation"
+            width="{{128}}"
+            height="{{128}}"
+            enableBg="{{false}}"
+            containerStyle="padding: 0 !important;"
+          />
+        </view>
+      </view>
+
+      <view class="booking-confirmation-body {{ isContentVisible ? 'booking-confirmation-body--visible' : '' }}">
+        <view class="booking-confirmation-title">
+          <app-typography
+            fontSize="58rpx"
+            weight="700"
+            color="#1C1C1C"
+            lineHeight="68rpx"
+            align="center"
+          >
+            Réservation
+          </app-typography>
+          <app-typography
+            fontSize="58rpx"
+            weight="700"
+            color="#1C1C1C"
+            lineHeight="68rpx"
+            align="center"
+          >
+            {{ statusTitle }}
+          </app-typography>
+        </view>
+
+        <app-typography
+          containerClass="booking-confirmation-subtitle"
+          fontSize="36rpx"
+          weight="400"
+          color="#4A5565"
+          lineHeight="58rpx"
+          align="center"
+        >
+          {{ statusSubtitle }}
+        </app-typography>
+
+        <view class="booking-confirmation-reference-card">
+          <app-typography
+            fontSize="28rpx"
+            weight="400"
+            color="#6A7282"
+            lineHeight="40rpx"
+            align="center"
+          >
+            Référence de Réservation
+          </app-typography>
+          <app-typography
+            containerClass="booking-confirmation-reference-card__code"
+            fontSize="48rpx"
+            weight="700"
+            color="#FAD700"
+            lineHeight="64rpx"
+            align="center"
+          >
+            {{ reference }}
+          </app-typography>
+          <app-typography
+            fontSize="24rpx"
+            weight="400"
+            color="#6A7282"
+            lineHeight="34rpx"
+            align="center"
+          >
+            Confirmation envoyée par email
+          </app-typography>
+        </view>
+
+        <view class="booking-confirmation-actions">
+          <app-button
+            type="primary"
+            buttonClass="booking-confirmation-button booking-confirmation-button--download"
+            bind:onPress="handleDownloadReceipt"
+          >
+            <view class="booking-confirmation-button__content">
+              <app-icon
+                icon="download"
+                width="{{34}}"
+                height="{{34}}"
+                enableBg="{{false}}"
+                containerStyle="padding: 0 !important;"
+              />
+              <app-typography
+                fontSize="31rpx"
+                weight="600"
+                color="#1C1C1C"
+                lineHeight="44rpx"
+                align="center"
+              >
+                Télécharger le Reçu
+              </app-typography>
+            </view>
+          </app-button>
+
+          <app-button
+            type="secondary"
+            buttonClass="booking-confirmation-button booking-confirmation-button--whatsapp"
+            bind:onPress="handleContactWhatsApp"
+          >
+            <view class="booking-confirmation-button__content">
+              <app-icon
+                icon="chat"
+                width="{{32}}"
+                height="{{32}}"
+                enableBg="{{false}}"
+                containerStyle="padding: 0 !important;"
+              />
+              <app-typography
+                fontSize="31rpx"
+                weight="600"
+                color="#FAD700"
+                lineHeight="44rpx"
+                align="center"
+              >
+                Contacter par WhatsApp
+              </app-typography>
+            </view>
+          </app-button>
+
+          <app-button
+            type="secondary"
+            buttonClass="booking-confirmation-button booking-confirmation-button--home"
+            bind:onPress="handleGoHome"
+          >
+            <view class="booking-confirmation-button__content">
+              <app-icon
+                icon="home"
+                width="{{31}}"
+                height="{{33}}"
+                enableBg="{{false}}"
+                containerStyle="padding: 0 !important;"
+              />
+              <app-typography
+                fontSize="31rpx"
+                weight="500"
+                color="#1C1C1C"
+                lineHeight="44rpx"
+                align="center"
+              >
+                Retour à l'Accueil
+              </app-typography>
+            </view>
+          </app-button>
+        </view>
+
+        <app-typography
+          containerClass="booking-confirmation-help"
+          fontSize="24rpx"
+          weight="400"
+          color="#6A7282"
+          lineHeight="38rpx"
+          align="center"
+        >
+          Besoin d'aide ? Notre équipe de support est disponible 24h/24 et 7j/7 pour vous assister avec votre réservation.
+        </app-typography>
+      </view>
+    </view>
+  </scroll-view>
+</view>

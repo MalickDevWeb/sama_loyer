@@ -1,0 +1,26 @@
+<view class="osn-stepper osn-stepper--{{ variant }}">
+  <block wx:for="{{ normalizedSteps }}" wx:key="value">
+    <view
+      class="osn-stepper__step {{ currentIndex > index ? 'osn-stepper__step--completed' : '' }} {{ currentIndex === index ? 'osn-stepper__step--active' : '' }} {{ currentIndex < index ? 'osn-stepper__step--pending' : '' }} {{ item.disabled ? 'osn-stepper__step--disabled' : '' }} {{ clickable && !item.disabled ? 'osn-stepper__step--clickable' : '' }}"
+      data-index="{{ index }}"
+      bind:tap="onStepTap"
+    >
+      <!-- Step indicator (number or check) -->
+      <view class="osn-stepper__indicator">
+        <view wx:if="{{ currentIndex > index }}" class="osn-stepper__check">
+          <text class="osn-stepper__check-icon">&#x2713;</text>
+        </view>
+        <text wx:else class="osn-stepper__number">{{ index + 1 }}</text>
+      </view>
+
+      <!-- Step label -->
+      <text class="osn-stepper__label">{{ item.label }}</text>
+    </view>
+
+    <!-- Connector line -->
+    <view
+      wx:if="{{ showLines && index < normalizedSteps.length - 1 }}"
+      class="osn-stepper__line {{ currentIndex > index ? 'osn-stepper__line--completed' : '' }}"
+    />
+  </block>
+</view>

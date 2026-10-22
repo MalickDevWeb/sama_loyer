@@ -1,0 +1,74 @@
+/* ============================================================================
+   MODAL
+   ============================================================================ */
+
+.osn-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+  animation: osnOverlayIn 0.25s ease-out both;
+}
+
+@keyframes osnOverlayIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.osn-modal-container {
+  background: #fff;
+  border-radius: 32rpx;
+  overflow: hidden;
+  width: 100%;
+  box-shadow: 0 16rpx 48rpx rgba(0, 0, 0, 0.15);
+  animation: osnSlideUp 0.35s ease-out both;
+}
+
+@keyframes osnSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(40rpx);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Bottom sheet: flat bottom corners */
+.osn-modal-container--bottom {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  align-self: flex-end;
+}
+
+/* Drag handle for bottom sheets */
+.osn-modal-handle {
+  width: 64rpx;
+  height: 8rpx;
+  background: #e5e7eb;
+  border-radius: 4rpx;
+  margin: 16rpx auto 8rpx;
+}
+
+.osn-modal-header {
+  padding: 28rpx 32rpx 20rpx;
+  font-weight: 700;
+  font-size: 30rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.osn-modal-body {
+  padding: 32rpx;
+  font-size: 26rpx;
+}
+
+.osn-modal-footer {
+  padding: 24rpx 32rpx;
+  border-top: 1rpx solid #f0f0f0;
+}

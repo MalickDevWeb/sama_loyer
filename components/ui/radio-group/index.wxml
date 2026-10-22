@@ -1,0 +1,16 @@
+<view class="osn-radio-group {{containerClass}}">
+  <block wx:for="{{options}}" wx:key="value">
+    <view
+      class="osn-radio-option d-flex justify-content-between {{itemClass}} {{value === item.value ? activeClass : inactiveClass}}"
+      data-value="{{item.value}}"
+      bindtap="onSelect"
+    >
+      <view class="osn-radio-label">
+        <slot name="{{item.slot}}" />
+      </view>
+      <view class="osn-radio-circle {{value === item.value ? 'active' : ''}}">
+        <view class="osn-radio-inner {{value === item.value ? 'active' : ''}}"></view>
+      </view>
+    </view>
+  </block>
+</view>

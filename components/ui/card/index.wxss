@@ -1,0 +1,62 @@
+/* Local fallbacks keep cards stable in stricter iOS mini-program WebViews. */
+.app-card {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  box-sizing: border-box;
+  border-radius: 15rpx;
+}
+
+.d-flex {
+  display: flex !important;
+}
+
+.flex-column {
+  flex-direction: column !important;
+}
+
+.w-100 {
+  width: 100% !important;
+}
+
+.h-100 {
+  min-height: 100% !important;
+  height: auto !important;
+}
+
+.br-15 {
+  border-radius: 15rpx !important;
+}
+
+.card-gap {
+  gap: 24rpx;
+  box-sizing: border-box;
+}
+
+.p-0 {
+  padding: 0 !important;
+}
+
+.p-1 {
+  padding: 16rpx !important;
+}
+
+.p-2 {
+  padding: 24rpx !important;
+}
+
+.p-3 {
+  padding: 32rpx !important;
+}
+
+.p-4 {
+  padding: 48rpx !important;
+}
+
+.p-5 {
+  padding: 64rpx !important;
+}
+
+.card-padding {
+  padding: 24rpx 24rpx 32rpx 24rpx !important;
+}

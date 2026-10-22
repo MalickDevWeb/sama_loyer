@@ -1,0 +1,7 @@
+.header {
+    color: #fff;
+    font-size: 20rpx;  
+    border:#180c0c solid 1rpx;  
+    width: 100%;
+    height: 200rpx;
+}

@@ -1,0 +1,11 @@
+
+{
+  "component": true,
+  "externalClasses": [
+    "container-class",
+    "item-class",
+    "active-item-class",
+    "icon-class",
+    "label-class"
+  ]
+}

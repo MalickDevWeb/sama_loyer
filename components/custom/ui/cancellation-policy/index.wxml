@@ -1,0 +1,11 @@
+<view class="policy-desc">
+  {{TEXTS.intro}}
+</view>
+
+<app-cancellation-schedule />
+
+<view class="policy-footer-note">
+  {{TEXTS.note}}
+</view>
+
+

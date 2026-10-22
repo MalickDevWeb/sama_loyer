@@ -1,0 +1,16 @@
+<view class="osn-layout">
+  <!-- Nav Bar -->
+  <app-nav-bar 
+    title="{{ title }}" 
+    showBack="{{ showBack }}" 
+    transparent="{{ transparent }}" 
+    showLogo="{{ showLogo }}" 
+    logoSrc="{{ logoSrc }}" 
+    showBorder="{{ showNavBorder }}"
+  />
+
+  <!-- Main Content Slot -->
+  <view class="osn-layout__content" style="padding-top: {{ navContentOffset }}px;">
+    <slot></slot>
+  </view>
+</view>

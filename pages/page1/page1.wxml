@@ -1,0 +1,20 @@
+<view class="header">
+    Profile
+</view>
+
+<button class="button" type="primary" bindtap="direBonjour">cliquer</button>
+
+<view style="margin-top: 50px;">
+    <!-- Ceci affichera OUVERT (si true) ou FERMÉ (si false) -->
+    <view style="font-size: 20px; font-weight: bold; margin-bottom: 20px;">
+        Le magasin est :
+        {{ magasinEstOuvert ? 'OUVERT 🟢' : 'FERMÉ 🔴' }}
+    </view>
+    <!-- Fais bien attention : pas de parenthèses ! -->
+    <button bindtap="ouvrirLeMagasin" type="primary">Ouvrir le Magasin</button>
+    <button bindtap="fermerLeMagasin" type="warn" style="margin-top: 10px;">Fermer le Magasin</button>
+</view>
+
+<button bindtap="quitterLaPiece" type="default" style="margin-top: 30px;">
+    🚪 Quitter la pièce
+</button>

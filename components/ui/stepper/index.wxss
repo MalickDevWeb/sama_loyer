@@ -1,0 +1,179 @@
+/* ============================================================================
+   STEPPER
+   ============================================================================ */
+
+.osn-stepper {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0;
+  width: 100%;
+  padding: 8rpx 0;
+}
+
+/* --- Step container --- */
+.osn-stepper__step {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  padding: 14rpx 22rpx;
+  border-radius: 50rpx;
+  transition: all 0.3s ease-out;
+  flex-shrink: 0;
+}
+
+.osn-stepper__step--active {
+  background: #fff;
+  border: 2rpx solid var(--bs-primary, #085EBD);
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.08);
+}
+
+.osn-stepper__step--completed {
+  background-color: transparent;
+}
+
+.osn-stepper__step--pending {
+  background-color: transparent;
+  opacity: 0.6;
+}
+
+.osn-stepper__step--disabled {
+  opacity: 0.3;
+}
+
+.osn-stepper__step--clickable {
+  cursor: pointer;
+}
+
+/* --- Indicator circle --- */
+.osn-stepper__indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44rpx;
+  height: 44rpx;
+  border-radius: 50%;
+  font-size: 24rpx;
+  font-weight: bold;
+  flex-shrink: 0;
+  transition: all 0.3s ease-out;
+}
+
+.osn-stepper__step--active .osn-stepper__indicator {
+  background-color: var(--bs-primary, #085EBD);
+  color: #fff;
+}
+
+.osn-stepper__step--completed .osn-stepper__indicator {
+  background-color: var(--bs-primary, #085EBD);
+  border: none;
+  color: #fff;
+}
+
+.osn-stepper__step--pending .osn-stepper__indicator {
+  background-color: transparent;
+  border: 2rpx solid #9ca3af;
+  color: #9ca3af;
+}
+
+/* --- Number & check --- */
+.osn-stepper__number {
+  font-size: 24rpx;
+  font-weight: bold;
+  line-height: 1;
+}
+
+.osn-stepper__check {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.osn-stepper__check-icon {
+  font-size: 22rpx;
+  font-weight: bold;
+  color: #fff;
+}
+
+/* --- Labels --- */
+.osn-stepper__label {
+  font-size: 26rpx;
+  white-space: nowrap;
+  transition: color 0.25s ease-out;
+}
+
+.osn-stepper__step--active .osn-stepper__label {
+  color: var(--bs-primary, #085EBD);
+  font-weight: 700;
+}
+
+.osn-stepper__step--completed .osn-stepper__label {
+  color: var(--bs-primary, #085EBD);
+  font-weight: 600;
+}
+
+.osn-stepper__step--pending .osn-stepper__label {
+  color: #9ca3af;
+  font-weight: 500;
+}
+
+/* --- Connector line --- */
+.osn-stepper__line {
+  flex: 0 0 auto;
+  width: 24rpx;
+  height: 3rpx;
+  background-color: #e5e7eb;
+  margin: 0 4rpx;
+  border-radius: 2rpx;
+  transition: background-color 0.3s ease-out;
+}
+
+.osn-stepper__line--completed {
+  background: var(--bs-primary, #085EBD);
+}
+
+/* ============================================================================
+   VARIANT: PILL
+   ============================================================================ */
+
+.osn-stepper--pill .osn-stepper__step {
+  padding: 16rpx 24rpx;
+  border: 2rpx solid #e5e7eb;
+  border-radius: 50rpx;
+}
+
+.osn-stepper--pill .osn-stepper__step--active {
+  border-color: var(--bs-primary, #085EBD);
+  background: #fff;
+}
+
+.osn-stepper--pill .osn-stepper__step--completed {
+  border-color: var(--bs-primary, #085EBD);
+  background-color: rgba(8, 94, 189, 0.05);
+}
+
+.osn-stepper--pill .osn-stepper__step--pending {
+  border-color: #e5e7eb;
+  background-color: transparent;
+}
+
+.osn-stepper--pill .osn-stepper__line {
+  width: 16rpx;
+}
+
+/* ============================================================================
+   VARIANT: COMPACT
+   ============================================================================ */
+
+.osn-stepper--compact .osn-stepper__step {
+  padding: 8rpx 16rpx;
+}
+
+.osn-stepper--compact .osn-stepper__indicator {
+  width: 36rpx;
+  height: 36rpx;
+}
+
+.osn-stepper--compact .osn-stepper__label {
+  font-size: 24rpx;
+}

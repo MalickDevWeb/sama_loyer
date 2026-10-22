@@ -1,0 +1,17 @@
+<view class="reservation-card-skeleton">
+  <app-card containerClass="reservation-card-skeleton__shell">
+    <view class="reservation-card-skeleton__body">
+      <view class="reservation-card-skeleton__image shimmer"></view>
+      <view class="reservation-card-skeleton__content">
+        <view class="reservation-card-skeleton__title shimmer"></view>
+        <view class="reservation-card-skeleton__line reservation-card-skeleton__location shimmer"></view>
+        <view class="reservation-card-skeleton__line reservation-card-skeleton__date shimmer"></view>
+        <view class="reservation-card-skeleton__line reservation-card-skeleton__travelers shimmer"></view>
+      </view>
+    </view>
+    <view class="reservation-card-skeleton__footer">
+      <view class="reservation-card-skeleton__amount shimmer"></view>
+      <view class="reservation-card-skeleton__reference shimmer"></view>
+    </view>
+  </app-card>
+</view>

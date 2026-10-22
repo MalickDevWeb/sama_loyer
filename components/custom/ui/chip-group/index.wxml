@@ -1,0 +1,23 @@
+<view class="chip-scroll-wrap">
+  <scroll-view
+    class="chip-scroll"
+    scroll-x="true"
+    enhanced="{{true}}"
+    show-scrollbar="false"
+  >
+    <view class="chip-row" style="padding-left: {{edgeInset}}rpx; padding-right: {{edgeInset}}rpx;">
+      <view
+        wx:for="{{items}}"
+        wx:key="id"
+        class="chip {{index === 0 ? 'chip-first' : ''}} {{index === items.length - 1 ? 'chip-last' : ''}} {{activeId === item.id ? 'chip-active' : ''}}"
+        data-id="{{item.id}}"
+        bindtap="handleTap"
+      >
+        <text
+          class="chip-text {{activeId === item.id ? 'chip-text-active' : ''}}"
+        >{{item.label}}</text>
+      </view>
+
+    </view>
+  </scroll-view>
+</view>

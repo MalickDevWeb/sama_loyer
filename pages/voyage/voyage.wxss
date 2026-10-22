@@ -1,0 +1,39 @@
+@import "../shared-tab-page.wxss";
+
+.voyages-page {
+  width: auto;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 32rpx;
+  margin-right: 32rpx;
+  margin-left: 32rpx;
+  background: transparent !important;
+  padding-bottom: calc(160rpx + env(safe-area-inset-bottom));
+}
+
+.voyages-page__header {
+  margin-bottom: 22rpx;
+  padding-top: 34rpx;
+  padding-right: 0;
+  padding-left: 0;
+}
+
+.voyages-page__list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  padding-right: 0;
+  padding-left: 0;
+}
+
+.voyages-page__empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 360rpx;
+  padding: 48rpx 0 80rpx;
+  text-align: center;
+  color: #7a8094;
+}

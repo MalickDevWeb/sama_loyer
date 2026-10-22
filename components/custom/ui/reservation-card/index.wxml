@@ -1,0 +1,30 @@
+<view class="reservation-card" bindtap="handleTap">
+  <app-card
+    containerClass="reservation-card__shell {{ reservation.showAction ? 'reservation-card__shell--with-action' : 'reservation-card__shell--compact' }}"
+    containerStyle="padding: 2rpx; border: 2rpx solid #E5E7EB; border-radius: 32rpx !important; background: #FFFFFF; box-shadow: 0 2rpx 8rpx rgba(16, 24, 40, 0.06); overflow: hidden; gap: 0 !important; {{ reservation.showAction ? 'min-height: 365rpx;' : 'min-height: 0;' }}"
+  >
+    <view class="reservation-card__body">
+      <view class="reservation-card__image-wrap">
+        <osn-image src="{{ reservation.image }}" mode="aspectFill" containerStyle="width: 100%; height: 100%; display: block;" imageStyle="width: 100%; height: 100%; border-radius: 26rpx;" />
+      </view>
+      <view class="reservation-card__content">
+        <view class="reservation-card__title-row">
+          <app-typography size="18" weight="600" color="#1C1C1C" lineHeight="45rpx">{{ reservation.cardTitle }}</app-typography>
+          <view class="reservation-card__status {{ reservation.status }}"><text class="reservation-card__status-text">{{ reservation.statusLabel }}</text></view>
+        </view>
+        <view class="reservation-card__meta">
+          <view class="reservation-card__meta-row"><view class="reservation-card__location-pin"></view><app-typography size="14" color="#667085">{{ reservation.subtitle }}</app-typography></view>
+          <view class="reservation-card__meta-row"><app-icon icon="calendrier" width="{{20}}" height="{{20}}" containerStyle="padding: 0;" /><app-typography size="14" color="#667085">{{ reservation.dateLabel }}</app-typography></view>
+          <view class="reservation-card__meta-row"><app-icon icon="users" width="{{20}}" height="{{20}}" containerStyle="padding: 0;" /><app-typography size="14" color="#667085">{{ reservation.travelersLabel }}</app-typography></view>
+        </view>
+        <view class="reservation-card__price-row">
+          <app-typography size="16" weight="700" color="#0AA347">{{ reservation.price }}</app-typography>
+          <app-typography size="13" color="#667085">Réf: {{ reservation.reference }}</app-typography>
+        </view>
+      </view>
+    </view>
+    <view wx:if="{{ reservation.showAction }}" class="reservation-card__footer">
+      <view class="reservation-card__action"><app-typography size="14" weight="600" color="#0AA347">{{ reservation.actionLabel }}</app-typography><text class="reservation-card__action-arrow">›</text></view>
+    </view>
+  </app-card>
+</view>

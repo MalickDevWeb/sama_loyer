@@ -1,0 +1,23 @@
+
+<view class="policy-desc">
+  Bienvenue sur ATS. En finalisant votre réservation, vous acceptez les conditions générales suivantes :
+</view>
+<view class="policy-section">
+  <view class="policy-section-title">1. Réservation et Paiement</view>
+  <view class="policy-section-text">Toutes les réservations sont soumises à la disponibilité. Le paiement complet est requis pour confirmer votre place.</view>
+</view>
+<view class="policy-section">
+  <view class="policy-section-title">2. Responsabilités du voyageur</view>
+  <view class="policy-section-text">Le voyageur doit se présenter à l'heure au point de départ avec des documents d'identité valides. ATS décline toute responsabilité en cas de retard.</view>
+</view>
+<view class="policy-section">
+  <view class="policy-section-title">3. Modifications par ATS</view>
+  <view class="policy-section-text">ATS se réserve le droit de modifier ou d'annuler un trajet en cas de force majeure (météo, sécurité). Un remboursement intégral sera alors proposé.</view>
+</view>
+<view class="policy-section">
+  <view class="policy-section-title">4. Politique de confidentialité</view>
+  <view class="policy-section-text">Vos informations personnelles sont traitées de manière sécurisée via Max It et ne sont utilisées que dans le cadre de votre voyage.</view>
+</view>
+<view class="policy-footer-note">
+  Pour toute question, veuillez contacter le service client ATS.
+</view>

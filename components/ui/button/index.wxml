@@ -1,0 +1,33 @@
+<button
+  wx:if="{{ type == 'primary' }}"
+  disabled="{{ disabled || loading }}"
+  class="osn-btn-primary {{ buttonClass }} {{ disabled || loading ? 'osn-btn-primary--disabled' : '' }} {{ pressed ? 'osn-btn-primary--pressed' : '' }}"
+  style="{{ buttonStyle }}"
+  bind:tap="executionAction"
+  bind:touchstart="onPressStart"
+  bind:touchend="onPressEnd"
+  bind:touchcancel="onPressEnd"
+>
+  <view wx:if="{{ loading }}" class="osn-btn__loading">
+    <view class="osn-spinner"></view>
+    <slot />
+  </view>
+  <slot wx:else />
+</button>
+
+<button
+  wx:if="{{ type == 'secondary' }}"
+  disabled="{{ disabled || loading }}"
+  class="osn-btn-secondary {{ disabled || loading ? 'osn-btn-secondary--disabled' : '' }} {{ pressed ? 'osn-btn-secondary--pressed' : '' }} {{ buttonClass }}"
+  style="{{ buttonStyle }}"
+  bind:tap="executionAction"
+  bind:touchstart="onPressStart"
+  bind:touchend="onPressEnd"
+  bind:touchcancel="onPressEnd"
+>
+  <view wx:if="{{ loading }}" class="osn-btn__loading">
+    <view class="osn-spinner"></view>
+    <slot />
+  </view>
+  <slot wx:else />
+</button>

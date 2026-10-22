@@ -1,0 +1,157 @@
+/* ============================================================================
+   BUTTON SYSTEM
+   ============================================================================ */
+
+:host {
+  display: block;
+  width: 100%;
+}
+
+/* Reset WeChat native <button> defaults */
+.osn-btn-primary,
+.osn-btn-secondary {
+  margin: 0 !important;
+  padding: 0 !important;
+  line-height: normal;
+  box-sizing: border-box;
+  width: 100% !important;
+  -webkit-appearance: none;
+}
+.osn-btn-primary::after,
+.osn-btn-secondary::after {
+  border: none;
+}
+
+/* --- PRIMARY BUTTON --- */
+.osn-btn-primary {
+  width: 100%;
+  padding: 24rpx 0 !important;
+  border: none;
+  border-radius: 16rpx;
+  background: var(--bs-primary, #085EBD);
+  color: #fff;
+  font-size: 28rpx;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-align: center;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.1);
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.15s ease-out,
+              box-shadow 0.15s ease-out,
+              opacity 0.15s ease-out;
+}
+
+.osn-btn-primary--pressed {
+  transform: scale(0.97);
+  box-shadow: 0 2rpx 6rpx rgba(0, 0, 0, 0.1);
+}
+
+.osn-btn-primary--disabled {
+  opacity: 0.45;
+  box-shadow: none;
+  pointer-events: none;
+}
+
+.booking-reserve-button {
+  height: 112rpx !important;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  padding: 0 !important;
+  border-radius: 32rpx !important;
+  background: #16A34A !important;
+  background-color: #16A34A !important;
+  color: #FFFFFF !important;
+  font-size: 32rpx !important;
+  font-weight: 700 !important;
+  line-height: 40rpx !important;
+  box-shadow: 0 18rpx 32rpx rgba(22, 163, 74, 0.18) !important;
+}
+
+.booking-reserve-button[disabled],
+.booking-reserve-button.osn-btn-primary--disabled {
+  background: #95CFA5 !important;
+  background-color: #95CFA5 !important;
+  box-shadow: 0 18rpx 32rpx rgba(22, 163, 74, 0.12) !important;
+}
+
+.destination-card-details-button {
+  height: 68rpx !important;
+  padding: 0 !important;
+  border-radius: 60rpx !important;
+  background: #01953e !important;
+  font-size: 28rpx !important;
+  font-weight: 600 !important;
+  line-height: 68rpx !important;
+  box-shadow: none !important;
+  letter-spacing: 0 !important;
+}
+
+.destination-detail-booking-button {
+  height: 112rpx !important;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  border-radius: 32rpx !important;
+  background: #01953e !important;
+  font-size: 32rpx !important;
+  font-weight: 600 !important;
+  line-height: 48rpx !important;
+  box-shadow: 0 8rpx 12rpx -8rpx rgba(0, 0, 0, 0.1), 0 20rpx 30rpx -6rpx rgba(0, 0, 0, 0.1) !important;
+}
+
+/* --- SECONDARY BUTTON --- */
+.osn-btn-secondary {
+  width: 100%;
+  padding: 24rpx 0 !important;
+  border: 2rpx solid var(--bs-dark, #333);
+  border-radius: 16rpx;
+  background: transparent;
+  color: var(--bs-dark, #333);
+  font-size: 28rpx;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-align: center;
+  box-shadow: none;
+  position: relative;
+  transition: transform 0.15s ease-out,
+              background-color 0.15s ease-out,
+              border-color 0.15s ease-out;
+}
+
+.osn-btn-secondary--pressed {
+  transform: scale(0.97);
+  background-color: rgba(0, 0, 0, 0.04);
+}
+
+.osn-btn-secondary--disabled {
+  opacity: 0.35;
+  pointer-events: none;
+}
+
+/* --- LOADING STATE --- */
+.osn-btn__loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12rpx;
+}
+
+.osn-spinner {
+  width: 32rpx;
+  height: 32rpx;
+  border: 4rpx solid rgba(255, 255, 255, 0.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+}
+
+.osn-btn-secondary .osn-spinner {
+  border-color: rgba(0, 0, 0, 0.15);
+  border-top-color: var(--bs-dark, #333);
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}

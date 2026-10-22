@@ -1,0 +1,10 @@
+<view 
+  class="policy-rule {{ band.active ? 'policy-rule--active' : '' }}" 
+  wx:for="{{ bands }}" 
+  wx:key="label" 
+  wx:for-item="band"
+>
+  <view class="policy-rule-title">{{ band.label }}</view>
+  <view class="policy-rule-value {{ band.defaultClass }}">{{ band.value }}</view>
+</view>
+

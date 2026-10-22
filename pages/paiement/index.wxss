@@ -1,0 +1,132 @@
+.payment-scroll {
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  background: transparent;
+  box-sizing: border-box;
+}
+
+.payment-page {
+  width: auto;
+  padding-top: 40rpx;
+  margin-right: 38rpx;
+  margin-left: 38rpx;
+  padding-bottom: 160rpx;
+  box-sizing: border-box;
+  background: transparent !important;
+}
+
+.payment-summary-card {
+  width: 100%;
+  min-height: 434rpx;
+  padding: 36rpx 40rpx;
+  box-sizing: border-box;
+  border-radius: 28rpx;
+  background: linear-gradient(180deg, #01953e 0%, #008437 100%);
+  box-shadow: 0 20rpx 36rpx rgba(1, 149, 62, 0.22);
+}
+
+.payment-summary-card__label {
+  margin-bottom: 2rpx;
+}
+
+.payment-summary-card__title {
+  margin-top: 2rpx;
+}
+
+.payment-summary-card__divider {
+  width: 100%;
+  height: 1rpx;
+  margin: 36rpx 0 28rpx;
+  background: rgba(255, 255, 255, 0.26);
+}
+
+.payment-summary-card__meta {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 28rpx;
+}
+
+.payment-summary-card__meta-item {
+  flex: 1;
+  min-width: 0;
+}
+
+.payment-summary-card__total {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24rpx;
+}
+
+.payment-section-title {
+  margin-top: 52rpx;
+  margin-bottom: 54rpx;
+}
+
+.payment-secure-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 22rpx;
+  width: 100%;
+  padding: 30rpx 32rpx 32rpx;
+  box-sizing: border-box;
+  border: 1.6rpx solid #cfe0ff;
+  border-radius: 24rpx;
+  background: #edf5ff;
+}
+
+.payment-secure-card__icon {
+  flex: 0 0 auto;
+  width: 40rpx;
+  min-height: 44rpx;
+  padding-top: 2rpx;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.payment-secure-card__copy {
+  flex: 1;
+  min-width: 0;
+}
+
+.payment-secure-card__description {
+  margin-top: 8rpx;
+}
+
+.payment-terms {
+  margin-top: 52rpx;
+}
+
+.payment-terms__link {
+  color: #fad700;
+  font-weight: 700;
+}
+
+.payment-footer {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 40;
+  padding: 24rpx 38rpx;
+  box-sizing: border-box;
+  background: #ffffff;
+  border-top: 1rpx solid #f3f4f6;
+  box-shadow: 0 -20rpx 50rpx rgba(0, 0, 0, 0.08);
+}
+
+.payment-pay-button {
+  width: 100% !important;
+  min-height: 112rpx !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 0 !important;
+  border-radius: 32rpx !important;
+  background: #01953e !important;
+  background-color: #01953e !important;
+  box-shadow: 0 8rpx 12rpx -8rpx rgba(0, 0, 0, 0.1), 0 20rpx 30rpx -6rpx rgba(0, 0, 0, 0.1) !important;
+}

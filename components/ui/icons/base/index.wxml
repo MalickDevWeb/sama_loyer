@@ -1,0 +1,7 @@
+
+<view 
+  class="osn-icon {{ containerClass }}" 
+  style="height: {{ CONTAINER.HEIGHT }}rpx !important; width: {{ CONTAINER.WIDTH }}rpx !important; background: {{ enableBg ? bgColor : '' }}; {{ containerStyle }}"
+  bind:tap="handleTap">
+  <osn-image mode="widthFix" src="{{ BASE_URL }}{{ icon }}.png" imageStyle="height: {{ height }}rpx; width: {{ width }}rpx;" />
+</view>

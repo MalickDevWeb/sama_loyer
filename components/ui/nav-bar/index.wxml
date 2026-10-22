@@ -1,0 +1,23 @@
+<view class="osn-nav-bar {{ transparent ? 'osn-nav-bar--transparent' : '' }} {{ showBorder ? '' : 'osn-nav-bar--no-border' }}" style="padding-top: {{ statusBarHeight }}px; height: {{ navContentHeight }}px;">
+  <view class="osn-nav-bar__content">
+    <block wx:if="{{ displayMode === 'logo' }}">
+      <view class="osn-nav-bar__logo">
+        <osn-image
+          src="{{ logoSrc }}"
+          mode="aspectFit"
+          imageStyle="width: 117.04rpx; height: 64rpx;"
+          containerStyle="display: flex; align-items: center; justify-content: center;"
+        />
+      </view>
+    </block>
+
+    <block wx:else>
+      <view wx:if="{{ showBack }}" class="osn-nav-bar__back" hover-class="osn-nav-bar__back--hover" bind:tap="goBack">
+        <app-icon icon="arrow-left" width="45" height="45" enableBg="{{false}}" />
+      </view>
+      <view wx:if="{{ title }}" class="osn-nav-bar__title-wrap">
+        <text class="osn-nav-bar__title">{{ title }}</text>
+      </view>
+    </block>
+  </view>
+</view>

@@ -1,0 +1,9 @@
+{
+  "component": true,
+  "usingComponents": {
+    "app-destination-card": "/components/custom/ui/destination-card/index",
+    "app-destination-card-skeleton": "/components/custom/ux/destination-card-skeleton/index",
+    "app-typography": "/components/ui/typography/index",
+    "osn-icon": "/components/ui/icons/base/index"
+  }
+}

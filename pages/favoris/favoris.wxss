@@ -1,0 +1,29 @@
+@import "../shared-tab-page.wxss";
+
+.favorites-page {
+  width: auto;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 32rpx;
+  padding-top: 34rpx;
+  margin-right: 32rpx;
+  margin-left: 32rpx;
+  background: transparent !important;
+  padding-bottom: calc(160rpx + env(safe-area-inset-bottom));
+}
+
+.favorites-page__header {
+  width: 100%;
+  min-height: 60rpx;
+}
+
+.favorites-page__empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 360rpx;
+  text-align: center;
+  color: #7a8094;
+}

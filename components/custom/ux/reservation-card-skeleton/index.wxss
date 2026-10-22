@@ -1,0 +1,15 @@
+.reservation-card-skeleton { width: 100%; margin-bottom: 22rpx; }
+.reservation-card-skeleton__shell { min-height: 365rpx; padding: 2rpx; border: 2rpx solid #e5e7eb; border-radius: 32rpx !important; background: #fff; overflow: hidden; gap: 0 !important; }
+.reservation-card-skeleton__body { display: flex; gap: 20rpx; align-items: flex-start; padding: 22rpx; }
+.reservation-card-skeleton__image { width: 192rpx; height: 192rpx; flex: 0 0 192rpx; border-radius: 32rpx; }
+.reservation-card-skeleton__content { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 18rpx; padding-top: 4rpx; }
+.reservation-card-skeleton__line, .reservation-card-skeleton__title, .reservation-card-skeleton__amount, .reservation-card-skeleton__reference { height: 22rpx; border-radius: 999rpx; }
+.reservation-card-skeleton__title { width: 72%; height: 34rpx; }
+.reservation-card-skeleton__location { width: 82%; }
+.reservation-card-skeleton__date { width: 62%; }
+.reservation-card-skeleton__travelers { width: 70%; }
+.reservation-card-skeleton__footer { display: flex; justify-content: space-between; align-items: center; gap: 16rpx; padding: 18rpx 22rpx; border-top: 2rpx solid #f3f4f6; }
+.reservation-card-skeleton__amount { width: 34%; height: 28rpx; }
+.reservation-card-skeleton__reference { width: 38%; height: 20rpx; }
+.shimmer { background: linear-gradient(90deg,#f0f1f3 25%,#f8f9fa 38%,#f0f1f3 62%); background-size: 400% 100%; animation: reservation-skeleton-shimmer 1.5s ease-in-out infinite; }
+@keyframes reservation-skeleton-shimmer { 0% { background-position: 100% 0; } 100% { background-position: 0 0; } }

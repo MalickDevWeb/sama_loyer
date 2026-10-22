@@ -1,0 +1,116 @@
+.destination-detail-skeleton {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  background: #ffffff;
+}
+
+.destination-detail-skeleton__scroll {
+  width: 100%;
+  height: 100vh;
+}
+
+.destination-detail-skeleton__inner {
+  padding-bottom: 210rpx;
+  box-sizing: border-box;
+}
+
+.destination-detail-skeleton__hero-wrap {
+  width: 100%;
+  height: 840rpx;
+  padding: 32rpx;
+  box-sizing: border-box;
+}
+
+.destination-detail-skeleton__hero {
+  position: relative;
+  width: 100%;
+  height: 776rpx;
+  border-radius: 40rpx;
+}
+
+.destination-detail-skeleton__floating {
+  position: absolute;
+  top: 32rpx;
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 50%;
+}
+
+.destination-detail-skeleton__floating--back { left: 32rpx; }
+.destination-detail-skeleton__floating--favorite { right: 32rpx; }
+
+.destination-detail-skeleton__content {
+  padding: 40rpx;
+  box-sizing: border-box;
+}
+
+.destination-detail-skeleton__title {
+  width: 72%;
+  height: 58rpx;
+  border-radius: 999rpx;
+}
+
+.destination-detail-skeleton__rating-row,
+.destination-detail-skeleton__meta-row {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  margin-top: 28rpx;
+}
+
+.destination-detail-skeleton__stars { width: 150rpx; height: 32rpx; border-radius: 999rpx; }
+.destination-detail-skeleton__rating { width: 58rpx; height: 34rpx; border-radius: 999rpx; }
+.destination-detail-skeleton__reviews { width: 120rpx; height: 32rpx; border-radius: 999rpx; }
+.destination-detail-skeleton__meta { width: 210rpx; height: 34rpx; border-radius: 999rpx; }
+
+.destination-detail-skeleton__section { margin-top: 48rpx; }
+.destination-detail-skeleton__section-title { width: 58%; height: 44rpx; border-radius: 999rpx; }
+.destination-detail-skeleton__line { height: 28rpx; margin-top: 22rpx; border-radius: 999rpx; }
+.destination-detail-skeleton__line--wide { width: 100%; }
+.destination-detail-skeleton__line--medium { width: 68%; }
+
+.destination-detail-skeleton__category {
+  width: 240rpx;
+  height: 56rpx;
+  margin-top: 54rpx;
+  border-radius: 999rpx;
+}
+
+.destination-detail-skeleton__gallery { margin-top: 50rpx; }
+.destination-detail-skeleton__gallery-main { width: 100%; height: 384rpx; margin-top: 28rpx; border-radius: 28rpx; }
+.destination-detail-skeleton__gallery-grid { display: flex; gap: 24rpx; margin-top: 24rpx; }
+.destination-detail-skeleton__gallery-tile { width: calc((100% - 24rpx) / 2); height: 254rpx; border-radius: 24rpx; }
+
+.destination-detail-skeleton__booking-bar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20rpx;
+  min-height: 180rpx;
+  padding: 34rpx 32rpx;
+  box-sizing: border-box;
+  background: #ffffff;
+  border-top: 1rpx solid #f3f4f6;
+}
+
+.destination-detail-skeleton__price-copy { flex: 1; }
+.destination-detail-skeleton__price-label { width: 150rpx; height: 30rpx; border-radius: 999rpx; }
+.destination-detail-skeleton__price { width: 220rpx; height: 54rpx; margin-top: 10rpx; border-radius: 999rpx; }
+.destination-detail-skeleton__booking-button { width: 267rpx; max-width: 42%; height: 112rpx; border-radius: 32rpx; }
+
+.shimmer {
+  background: linear-gradient(90deg, #f0f1f3 25%, #f8f9fa 38%, #f0f1f3 62%);
+  background-size: 400% 100%;
+  animation: destination-detail-skeleton-shimmer 1.5s ease-in-out infinite;
+}
+
+@keyframes destination-detail-skeleton-shimmer {
+  0% { background-position: 100% 0; }
+  100% { background-position: 0 0; }
+}

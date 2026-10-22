@@ -1,0 +1,10 @@
+<view class="detail-skeleton">
+  <view class="detail-skeleton__image shimmer"></view>
+  <view class="detail-skeleton__title-row"><view class="detail-skeleton__title shimmer"></view><view class="detail-skeleton__status shimmer"></view></view>
+  <view class="detail-skeleton__reference"><view class="detail-skeleton__line detail-skeleton__line--short shimmer"></view><view class="detail-skeleton__line detail-skeleton__line--ref shimmer"></view></view>
+  <view class="detail-skeleton__info"><view class="detail-skeleton__icon shimmer"></view><view class="detail-skeleton__copy"><view class="detail-skeleton__line detail-skeleton__line--medium shimmer"></view><view class="detail-skeleton__line detail-skeleton__line--wide shimmer"></view></view></view>
+  <view class="detail-skeleton__info"><view class="detail-skeleton__icon shimmer"></view><view class="detail-skeleton__copy"><view class="detail-skeleton__line detail-skeleton__line--medium shimmer"></view><view class="detail-skeleton__line detail-skeleton__line--wide shimmer"></view></view></view>
+  <view class="detail-skeleton__info"><view class="detail-skeleton__icon shimmer"></view><view class="detail-skeleton__copy"><view class="detail-skeleton__line detail-skeleton__line--medium shimmer"></view><view class="detail-skeleton__line detail-skeleton__line--wide shimmer"></view></view></view>
+  <view class="detail-skeleton__total"><view class="detail-skeleton__line detail-skeleton__line--medium shimmer"></view><view class="detail-skeleton__line detail-skeleton__line--amount shimmer"></view></view>
+  <view class="detail-skeleton__support shimmer"></view>
+</view>

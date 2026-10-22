@@ -1,0 +1,52 @@
+<view class="destination-detail-skeleton">
+  <scroll-view class="destination-detail-skeleton__scroll" scroll-y="{{true}}" enhanced="{{true}}" show-scrollbar="{{false}}">
+    <view class="destination-detail-skeleton__inner" style="padding-top: {{ pageTopOffset }}px;">
+      <view class="destination-detail-skeleton__hero-wrap">
+        <view class="destination-detail-skeleton__hero shimmer">
+          <view class="destination-detail-skeleton__floating destination-detail-skeleton__floating--back shimmer"></view>
+          <view class="destination-detail-skeleton__floating destination-detail-skeleton__floating--favorite shimmer"></view>
+        </view>
+      </view>
+
+      <view class="destination-detail-skeleton__content">
+        <view class="destination-detail-skeleton__title shimmer"></view>
+        <view class="destination-detail-skeleton__rating-row">
+          <view class="destination-detail-skeleton__stars shimmer"></view>
+          <view class="destination-detail-skeleton__rating shimmer"></view>
+          <view class="destination-detail-skeleton__reviews shimmer"></view>
+        </view>
+
+        <view class="destination-detail-skeleton__meta-row">
+          <view class="destination-detail-skeleton__meta shimmer"></view>
+          <view class="destination-detail-skeleton__meta shimmer"></view>
+        </view>
+
+        <view class="destination-detail-skeleton__section">
+          <view class="destination-detail-skeleton__section-title shimmer"></view>
+          <view class="destination-detail-skeleton__line destination-detail-skeleton__line--wide shimmer"></view>
+          <view class="destination-detail-skeleton__line destination-detail-skeleton__line--wide shimmer"></view>
+          <view class="destination-detail-skeleton__line destination-detail-skeleton__line--medium shimmer"></view>
+        </view>
+
+        <view class="destination-detail-skeleton__category shimmer"></view>
+
+        <view class="destination-detail-skeleton__section destination-detail-skeleton__gallery">
+          <view class="destination-detail-skeleton__section-title shimmer"></view>
+          <view class="destination-detail-skeleton__gallery-main shimmer"></view>
+          <view class="destination-detail-skeleton__gallery-grid">
+            <view class="destination-detail-skeleton__gallery-tile shimmer"></view>
+            <view class="destination-detail-skeleton__gallery-tile shimmer"></view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </scroll-view>
+
+  <view class="destination-detail-skeleton__booking-bar">
+    <view class="destination-detail-skeleton__price-copy">
+      <view class="destination-detail-skeleton__price-label shimmer"></view>
+      <view class="destination-detail-skeleton__price shimmer"></view>
+    </view>
+    <view class="destination-detail-skeleton__booking-button shimmer"></view>
+  </view>
+</view>

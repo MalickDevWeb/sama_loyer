@@ -1,0 +1,6 @@
+<view 
+  class="osn-center {{ customClass }}" 
+  style="{{ computedStyle }}"
+>
+  <slot></slot>
+</view>

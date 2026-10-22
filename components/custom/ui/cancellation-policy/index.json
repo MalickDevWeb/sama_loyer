@@ -1,0 +1,9 @@
+{
+  "component": true,
+  "usingComponents": {
+    "app-cancellation-schedule": "/components/custom/ui/cancellation-schedule/index"
+  }
+}
+
+
+

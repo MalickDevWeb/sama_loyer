@@ -1,0 +1,78 @@
+@import "../shared-tab-page.wxss";
+
+.h-300rpx  { height: 300rpx !important; }
+.h-350rpx  { height: 350rpx !important; }
+.fs-0 {font-size: 26rpx !important;}
+.inp{background-color: rgb(236, 234, 234);}
+
+.home {
+  width: auto;
+  box-sizing: border-box;
+  background: transparent !important;
+  padding-bottom: calc(144rpx + env(safe-area-inset-bottom));
+}
+
+.home .padding-space {
+  padding-right: 0;
+  padding-left: 0;
+}
+
+.greetings-container {
+  min-height: 363rpx;
+}
+
+.greetings-container__content{
+  min-height: 136rpx;
+  gap: 8rpx;
+}
+
+.chip-container{
+  min-height: 285rpx;
+  gap: 32rpx;
+}
+
+.destination-list-container{
+  min-height: 776rpx;
+  gap: 32rpx;
+}
+
+.destination-list-head{
+  padding-top: 48rpx;
+  padding-right: 32rpx;
+  padding-left: 32rpx;
+}
+
+.destination-list-body{
+  padding-bottom: 32rpx;
+}
+
+.recomandation-list-container{
+  min-height: 280rpx;
+  gap: 32rpx;
+}
+
+.recomandation-list-body{
+  padding-right: 0;
+  padding-left: 0;
+  padding-bottom: 0;
+}
+
+.home-section-title {
+  color: #1c1c1c;
+  font-size: 36rpx;
+  font-weight: 600;
+  line-height: 56rpx;
+  letter-spacing: 0;
+}
+
+.card-padding {
+  padding: 24rpx 24rpx 32rpx 24rpx;
+}
+
+.catalog-state {
+  min-height: 160rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20rpx;
+}

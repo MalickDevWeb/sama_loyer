@@ -1,0 +1,21 @@
+.osn-layout {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  min-height: 100vh;
+  width: 100%;
+  box-sizing: border-box;
+  background-color: transparent !important;
+  overflow: visible;
+}
+
+.osn-layout__content {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  box-sizing: border-box;
+  background-color: transparent !important;
+  overflow: hidden;
+}

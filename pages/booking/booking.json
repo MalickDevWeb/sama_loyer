@@ -1,0 +1,13 @@
+{
+  "usingComponents": {
+    "app-layout": "/components/custom/ui/layout/index",
+    "app-button": "/components/ui/button/index",
+    "app-card": "/components/ui/card/index",
+    "app-typography": "/components/ui/typography/index",
+    "app-modal": "/components/ui/modal/index",
+    "app-terms-of-use": "/components/custom/ui/terms-of-use/index",
+    "app-cancellation-policy": "/components/custom/ui/cancellation-policy/index"
+  }
+}
+
+

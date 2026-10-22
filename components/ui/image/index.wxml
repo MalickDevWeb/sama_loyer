@@ -1,0 +1,34 @@
+<view class="tc-image-container {{ containerClass }}" style="{{ containerStyle }}">
+  <image
+    wx:if="{{ computedSrc && !error }}"
+    class="tc-image {{ imageClass }}"
+    style="{{ imageStyle }}"
+    src="{{ computedSrc }}"
+    mode="{{ mode }}"
+    lazy-load="{{ lazyLoad }}"
+    show-menu-by-longpress="{{ showMenuByLongpress }}"
+    bind:load="onImageLoad"
+    bind:error="onImageError"
+    bind:tap="onImageTap"
+    bind:longpress="onImageLongpress"
+  />
+
+  <view wx:if="{{ loading }}" class="tc-image-loading">
+    <view class="tc-image-spinner" />
+    <text wx:if="{{ loadingText }}">{{ loadingText }}</text>
+  </view>
+
+  <view wx:if="{{ error }}" class="tc-image-error" bind:tap="onErrorTap">
+    <text class="tc-image-error-icon">{{ errorIcon }}</text>
+    <text wx:if="{{ errorText }}">{{ errorText }}</text>
+    <text wx:if="{{ retryText }}">{{ retryText }}</text>
+  </view>
+
+  <view wx:if="{{ hasOverlay }}" class="tc-image-overlay {{ overlayClass }}">
+    <slot name="overlay" />
+  </view>
+
+  <view wx:if="{{ badge }}" class="tc-image-badge {{ badgeClass }}" style="{{ badgeStyle }}">
+    {{ badge }}
+  </view>
+</view>

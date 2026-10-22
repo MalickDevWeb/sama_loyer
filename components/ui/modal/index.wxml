@@ -1,0 +1,27 @@
+<view
+  wx:if="{{ visible }}"
+  class="osn-modal-overlay {{ overlayClass }}"
+  style="background-color: {{ overlayRGBA }}; backdrop-filter: blur({{ blur }}px);"
+  bindtap="onOverlayTap"
+>
+  <view
+    class="osn-modal-container {{ placement === 'bottom' ? 'osn-modal-container--bottom' : '' }} {{ containerClass }}"
+    style="{{ computedStyle }}"
+    catch:tap="noop"
+  >
+    <!-- Drag handle for bottom sheets -->
+    <view wx:if="{{ placement === 'bottom' }}" class="osn-modal-handle"></view>
+
+    <view wx:if="{{ hasHeader }}" class="osn-modal-header">
+      <slot name="header"></slot>
+    </view>
+
+    <view wx:if="{{ hasContent }}" class="osn-modal-body">
+      <slot name="content"></slot>
+    </view>
+
+    <view wx:if="{{ hasFooter }}" class="osn-modal-footer">
+      <slot name="footer"></slot>
+    </view>
+  </view>
+</view>

@@ -1,0 +1,6 @@
+{
+  "component": true,
+  "usingComponents": {
+    "app-nav-bar": "/components/ui/nav-bar/index"
+  }
+}

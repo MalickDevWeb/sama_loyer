@@ -1,0 +1,18 @@
+<view class="destination-card-skeleton" style="width: {{ cardWidth }}; {{ cardContainerStyle }}">
+  <app-card containerClass="h-100 {{ cardPaddingClass }} destination-card-skeleton__card" containerStyle="{{ cardStyle }}">
+    <view class="destination-card-skeleton__image shimmer" style="height: {{ imageHeight }}; border-radius: {{ imageRadius }};">
+      <view class="destination-card-skeleton__heart shimmer"></view>
+    </view>
+    <view class="destination-card-skeleton__content">
+      <view class="destination-card-skeleton__line destination-card-skeleton__line--title shimmer"></view>
+      <view class="destination-card-skeleton__location">
+        <view class="destination-card-skeleton__pin shimmer"></view>
+        <view class="destination-card-skeleton__line destination-card-skeleton__line--location shimmer"></view>
+      </view>
+      <view class="destination-card-skeleton__price-row">
+        <view class="destination-card-skeleton__line destination-card-skeleton__line--price shimmer"></view>
+        <view wx:if="{{ showDetailsButton }}" class="destination-card-skeleton__button shimmer"></view>
+      </view>
+    </view>
+  </app-card>
+</view>

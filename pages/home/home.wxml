@@ -1,0 +1,102 @@
+<app-layout
+  title="Page d'Accueil"
+  showBack="{{false}}"
+  logoSrc="/assets/images/logo.png"
+  showLogo="{{true}}"
+  transparent="{{true}}"
+  showNavBorder="{{false}}"
+  activeTab="{{activeTab}}"
+>
+  <scroll-view class="content home d-flex flex-column" scroll-y="{{true}}" enhanced="{{true}}" show-scrollbar="{{false}}">
+    <view class="greetings-container d-flex flex-column px-3 py-3 pb-3 pt-4">
+      <view class="greetings-container__content d-flex flex-column">
+          <app-typography size="30" weight="bold" lineHeight="72rpx" color="#1C1C1C" containerStyle="min-height: 72rpx;">
+            Bonjour 👋
+          </app-typography>
+          <app-typography size="20" weight="400" color="#1C1C1C" lineHeight="48rpx" containerStyle="min-height: 55.98rpx; display: inline-block;">
+            Explorons le <app-typography size="20" weight="400" color="#fad700" lineHeight="48rpx" containerStyle="display: inline-block;">Sénégal</app-typography> !
+          </app-typography>
+      </view>
+        <app-input
+        containerClass="search-input mt-4"
+        value="{{ query }}"
+        placeholder=" Où voulez-vous allez ?"
+        field-style="font-size: 28rpx;"
+        placeholder-style="font-size: 28rpx; color: #9CA3AF;"
+        icon="search"
+        bind:input="onInput"
+        bind:iconTap="onSearch"
+        iconPosition="left"/>
+    </view>
+    <view class="chip-container d-flex flex-column">
+        <app-typography size="18" weight="600" color="#1C1C1C" lineHeight="52rpx"  class="destination-list-head">Destinations Populaires</app-typography>
+        <app-chip-group
+          items="{{filters}}"
+          activeId="{{activeFilter}}"
+          edgeInset="{{0}}"
+          bind:change="handleFilterChange"
+        />
+    </view>
+    <view class="destination-list-container d-flex flex-column">
+      <view class="destination-list-head d-flex justify-content-between px-3 py-3 pb-3 pt-4">
+        <app-typography size="18" weight="600" color="#1C1C1C" lineHeight="52rpx">
+          Destinations à la Une
+        </app-typography>
+        <view class="d-flex align-items-center">
+          <app-typography  size="14" weight="600" color="#01953E" bindtap="handleShowAll">
+            voir tout
+          </app-typography>
+          <app-icon icon="arrow" width="{{20}}" height="{{20}}" color="#01953E"/>
+        </view>
+      </view>
+      <view class="destination-list-body">
+        <app-list-destination
+          wx:if="{{ featuredLoading || featuredDestinations.length }}"
+          destinations="{{ featuredDestinations }}"
+          loading="{{ featuredLoading }}"
+          layout="scroll"
+          cardWidth="500rpx"
+          imageHeight="287.98rpx"
+          cardPaddingClass="card-padding"
+          cardContainerStyle="border-radius: 32rpx !important; box-shadow: 0 2rpx 4rpx -2rpx rgba(0, 0, 0, 0.1), 0 2rpx 6rpx rgba(0, 0, 0, 0.1) !important; border-top: none;"
+          containerClass="featured-destination-list"
+          showDetailsButton="{{ true }}"
+          bind:toggleLike="handleDestinationLike"
+          bind:onCardPress="handleCardPress" />
+        <view wx:elif="{{ featuredError }}" class="catalog-state">
+          <app-typography size="14" color="#667085">Impossible de charger les destinations.</app-typography>
+          <app-typography size="14" weight="600" color="#01953E" bindtap="retryFeatured">Réessayer</app-typography>
+        </view>
+        <view wx:else class="catalog-state">
+          <app-typography size="14" color="#667085">Aucune destination à la une pour le moment.</app-typography>
+        </view>
+      </view>
+    </view>
+    <view class="recomandation-list-container d-flex flex-column px-3 py-3 pt-4">
+        <app-typography size="18" weight="600" color="#1C1C1C" lineHeight="52rpx" class="">Recommandations</app-typography>
+        <view class="recomandation-list-body">
+          <app-list-destination
+          wx:if="{{ recommendedLoading || destinationsRecommended.length }}"
+          destinations="{{ destinationsRecommended }}"
+          loading="{{ recommendedLoading }}"
+          layout="grid"
+          cardWidth="100%"
+          imageHeight="288rpx"
+          cardPaddingClass="p-2"
+          cardStyle=""
+          cardContainerStyle="border-radius: 32rpx !important; box-shadow: 0 2rpx 4rpx -2rpx rgba(0, 0, 0, 0.1), 0 2rpx 6rpx rgba(0, 0, 0, 0.1) !important;"
+          imageRadius="32rpx"
+          showDetailsButton="{{ false }}"
+          bind:toggleLike="handleDestinationLike"
+          bind:onCardPress="handleCardPress" />
+          <view wx:elif="{{ recommendedError }}" class="catalog-state">
+            <app-typography size="14" color="#667085">Impossible de charger les recommandations.</app-typography>
+            <app-typography size="14" weight="600" color="#01953E" bindtap="retryRecommendations">Réessayer</app-typography>
+          </view>
+          <view wx:else class="catalog-state">
+            <app-typography size="14" color="#667085">Aucune recommandation disponible.</app-typography>
+          </view>
+        </view>
+    </view>
+  </scroll-view>
+</app-layout>

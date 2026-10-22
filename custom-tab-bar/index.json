@@ -1,0 +1,6 @@
+{
+  "component": true,
+  "usingComponents": {
+    "app-custom-tab-bar": "/components/custom/ui/custom-tab-bar/index"
+  }
+}

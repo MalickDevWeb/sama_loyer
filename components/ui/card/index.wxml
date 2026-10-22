@@ -1,0 +1,3 @@
+<view class="app-card d-flex flex-column card-gap br-15 w-100 {{ containerClass }}" style="{{ containerStyle }}">
+  <slot />
+</view>

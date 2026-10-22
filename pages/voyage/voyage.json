@@ -1,0 +1,7 @@
+{
+  "usingComponents": {
+    "app-typography": "/components/ui/typography/index",
+    "reservation-card": "/components/custom/ui/reservation-card/index",
+    "reservation-card-skeleton": "/components/custom/ux/reservation-card-skeleton/index"
+  }
+}

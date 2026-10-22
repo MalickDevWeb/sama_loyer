@@ -1,0 +1,19 @@
+<view class="osn-quantity-input {{containerClass}}">
+  <view
+    class="osn-quantity-icon {{iconClass}}"
+    style="opacity: {{value <= min ? 0.3 : 1}}; pointer-events: {{value <= min ? 'none' : 'auto'}};"
+    bindtap="minus"
+  >
+    <osn-icon icon="circle-minus" height="40" width="40" />
+  </view>
+  <view class="osn-quantity-value {{valueClass}}">
+    {{value}}
+  </view>
+  <view
+    class="osn-quantity-icon {{iconClass}}"
+    style="opacity: {{value >= max ? 0.3 : 1}}; pointer-events: {{value >= max ? 'none' : 'auto'}};"
+    bindtap="plus"
+  >
+    <osn-icon icon="circle-plus" height="40" width="40" />
+  </view>
+</view>

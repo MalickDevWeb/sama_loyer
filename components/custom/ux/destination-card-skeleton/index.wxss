@@ -1,0 +1,90 @@
+.destination-card-skeleton {
+  min-height: 580rpx;
+  box-sizing: border-box;
+}
+
+.destination-card-skeleton__card {
+  height: 100%;
+  overflow: hidden;
+}
+
+.destination-card-skeleton__image {
+  position: relative;
+  width: 100%;
+}
+
+.destination-card-skeleton__heart {
+  position: absolute;
+  top: 40rpx;
+  right: 24rpx;
+  width: 68rpx;
+  height: 68rpx;
+  border-radius: 50%;
+  background-color: #f0f1f3;
+}
+
+.destination-card-skeleton__content {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  padding-top: 32rpx;
+}
+
+.destination-card-skeleton__line {
+  height: 26rpx;
+  border-radius: 999rpx;
+}
+
+.destination-card-skeleton__line--title {
+  width: 72%;
+  height: 35rpx;
+}
+
+.destination-card-skeleton__location {
+  min-height: 72rpx;
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+}
+
+.destination-card-skeleton__pin {
+  width: 32rpx;
+  height: 32rpx;
+  flex: 0 0 32rpx;
+  border-radius: 50%;
+}
+
+.destination-card-skeleton__line--location {
+  width: 54%;
+}
+
+.destination-card-skeleton__line--price {
+  width: 42%;
+  margin-top: 2rpx;
+}
+
+.destination-card-skeleton__price-row {
+  min-height: 68rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16rpx;
+}
+
+.destination-card-skeleton__button {
+  width: 176rpx;
+  height: 68rpx;
+  flex: 0 0 176rpx;
+  border-radius: 60rpx;
+}
+
+.shimmer {
+  background: linear-gradient(90deg, #f0f1f3 25%, #f8f9fa 38%, #f0f1f3 62%);
+  background-size: 400% 100%;
+  animation: destination-skeleton-shimmer 1.5s ease-in-out infinite;
+}
+
+@keyframes destination-skeleton-shimmer {
+  0% { background-position: 100% 0; }
+  100% { background-position: 0 0; }
+}

@@ -1,0 +1,13 @@
+.osn-quantity-input {
+  /* Minimal styling: layout is up to parent via classes */
+}
+
+.osn-quantity-icon {
+  transition: opacity 0.2s;
+  /* Add hover/touch effect if needed */
+}
+
+.osn-quantity-value {
+  text-align: center;
+  font-size: 64rpx;
+}

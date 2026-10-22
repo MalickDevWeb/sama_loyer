@@ -1,0 +1,26 @@
+.reservation-card {
+  width: 100%;
+  margin-bottom: 22rpx;
+}
+.reservation-card:last-child { margin-bottom: 0; }
+.reservation-card__shell { padding: 2rpx; border: 2rpx solid #e5e7eb; border-radius: 32rpx !important; background: #fff; box-shadow: 0 2rpx 8rpx rgba(16,24,40,.06); overflow: hidden; gap: 0 !important; }
+.reservation-card__shell--with-action { min-height: 365rpx; }
+.reservation-card__shell--compact { min-height: 0; }
+.reservation-card__body { display: flex; gap: 20rpx; align-items: flex-start; padding: 22rpx; }
+.reservation-card__image-wrap { width: 192rpx; height: 192rpx; flex: 0 0 192rpx; border-radius: 32rpx; overflow: hidden; background: #f3f4f6; }
+.reservation-card__image-wrap image { border-radius: 32rpx; }
+.reservation-card__content { flex: 1; min-width: 0; }
+.reservation-card__title-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 16rpx; margin-bottom: 10rpx; }
+.reservation-card__status { flex: 0 0 auto; padding: 8rpx 18rpx; border-radius: 999rpx; background: #eaf8ef; }
+.reservation-card__status.done { background: #f2f4f7; }
+.reservation-card__status-text { display: block; font-size: 24rpx; line-height: 1.2; color: #0aa347; }
+.reservation-card__status.done .reservation-card__status-text { color: #667085; }
+.reservation-card__meta { display: flex; flex-direction: column; gap: 10rpx; margin-bottom: 14rpx; }
+.reservation-card__meta-row { display: flex; align-items: center; gap: 10rpx; }
+.reservation-card__location-pin { position: relative; width: 24rpx; height: 30rpx; flex: 0 0 24rpx; }
+.reservation-card__location-pin::before { content: ""; position: absolute; left: 3rpx; top: 2rpx; width: 18rpx; height: 18rpx; border: 3rpx solid #c4cad5; border-radius: 50% 50% 50% 0; box-sizing: border-box; transform: rotate(-45deg); }
+.reservation-card__location-pin::after { content: ""; position: absolute; left: 10rpx; top: 9rpx; width: 5rpx; height: 5rpx; border-radius: 50%; background: #c4cad5; }
+.reservation-card__price-row { display: flex; align-items: baseline; justify-content: space-between; gap: 16rpx; margin-top: 2rpx; }
+.reservation-card__footer { margin-top: 0; padding: 18rpx 22rpx; border-top: 2rpx solid #f3f4f6; background: #fff; }
+.reservation-card__action { display: flex; align-items: center; justify-content: space-between; }
+.reservation-card__action-arrow { color: #0aa347; font-size: 34rpx; line-height: 1; font-weight: 700; }
