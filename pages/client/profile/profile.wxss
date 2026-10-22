@@ -402,7 +402,7 @@ page {
   right: 0;
   bottom: 0;
   left: 0;
-  z-index: 300;
+  z-index: 2000;
   background: rgba(15, 30, 61, 0.55);
   display: flex;
   flex-direction: column;
@@ -837,4 +837,211 @@ page {
   font-size: 24rpx;
   color: #7A8294;
   margin-top: 4rpx;
+}
+
+/* --- Profil Certifié Max it & Carte Identité ---------------------------- */
+.prof__id-card {
+  display: flex;
+  align-items: center;
+  gap: 24rpx;
+  padding: 28rpx;
+  border-radius: 32rpx;
+  background: #F4F6FB;
+  border: 2rpx solid #E2E6F0;
+}
+
+.prof__id-avatar {
+  width: 104rpx;
+  height: 104rpx;
+  flex: 0 0 104rpx;
+  border-radius: 52rpx;
+  background: #0F1E3D;
+  color: #FFFFFF;
+  font-size: 38rpx;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.prof__id-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+}
+
+.prof__id-name {
+  font-size: 34rpx;
+  font-weight: 800;
+  color: #0F1E3D;
+}
+
+.prof__id-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8rpx;
+  font-size: 22rpx;
+  font-weight: 700;
+  color: #11643F;
+}
+
+.prof__id-badge-ic {
+  width: 24rpx;
+  height: 24rpx;
+}
+
+.prof__id-rows {
+  display: flex;
+  flex-direction: column;
+  border-radius: 28rpx;
+  background: #F8F9FC;
+  border: 2rpx solid #E8EBF2;
+  overflow: hidden;
+}
+
+.prof__id-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24rpx 28rpx;
+  border-bottom: 2rpx solid #EDF0F7;
+}
+
+.prof__id-row:last-child {
+  border-bottom: 0;
+}
+
+.prof__id-label {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: #5B6475;
+}
+
+.prof__id-val {
+  font-size: 26rpx;
+  font-weight: 700;
+  color: #0F1E3D;
+}
+
+.prof__id-val--green {
+  color: #11643F;
+}
+
+.prof__sec-note {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  padding: 20rpx 24rpx;
+  border-radius: 20rpx;
+  background: #EAF7EE;
+  border: 2rpx solid #C4EED0;
+}
+
+.prof__sec-note-ic {
+  width: 36rpx;
+  height: 36rpx;
+  flex: 0 0 36rpx;
+}
+
+.prof__sec-note-text {
+  font-size: 23rpx;
+  line-height: 1.4;
+  color: #11643F;
+  font-weight: 600;
+}
+
+/* --- Carte Numéro Orange Max it ----------------------------------------- */
+.prof__phone-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 36rpx 28rpx;
+  border-radius: 36rpx;
+  background: linear-gradient(135deg, #0F1E3D 0%, #1D3567 100%);
+  color: #FFFFFF;
+  box-shadow: 0 12rpx 32rpx rgba(15, 30, 61, 0.2);
+}
+
+.prof__phone-card-top {
+  margin-bottom: 16rpx;
+}
+
+.prof__phone-sim-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 10rpx;
+  padding: 10rpx 22rpx;
+  border-radius: 20rpx;
+  background: rgba(255, 255, 255, 0.14);
+  font-size: 22rpx;
+  font-weight: 700;
+  color: #E2E6F0;
+}
+
+.prof__phone-number {
+  font-size: 46rpx;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  margin-bottom: 10rpx;
+  color: #FFFFFF;
+}
+
+.prof__phone-status {
+  font-size: 24rpx;
+  font-weight: 600;
+  color: #6EE7B7;
+}
+
+.prof__sec-box {
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+  padding: 24rpx 28rpx;
+  border-radius: 28rpx;
+  background: #F7F8FA;
+  border: 2rpx solid #E4E7EE;
+}
+
+.prof__sec-box-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 16rpx;
+}
+
+.prof__sec-bullet {
+  width: 12rpx;
+  height: 12rpx;
+  border-radius: 6rpx;
+  background: #C8235F;
+  margin-top: 10rpx;
+  flex: 0 0 12rpx;
+}
+
+.prof__sec-box-text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4rpx;
+}
+
+.prof__sec-box-title {
+  font-size: 26rpx;
+  font-weight: 800;
+  color: #0F1E3D;
+}
+
+.prof__sec-box-sub {
+  font-size: 23rpx;
+  line-height: 1.45;
+  color: #5B6475;
+}
+
+.prof__sec-info {
+  font-size: 23rpx;
+  line-height: 1.45;
+  color: #7A8294;
+  padding: 0 12rpx;
 }

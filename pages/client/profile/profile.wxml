@@ -166,7 +166,7 @@
       <view class="prof__sheet-header">
         <view class="prof__sheet-heading">
           <text class="prof__sheet-title">Informations personnelles</text>
-          <text class="prof__sheet-sub">Renseignez vos coordonnées de locataire</text>
+          <text class="prof__sheet-sub">Identité certifiée via Orange Max it</text>
         </view>
         <view class="prof__sheet-close" hover-class="sl-hover" bindtap="onCloseModal">
           <view class="ic ic-close-navy prof__sheet-close-ic"></view>
@@ -174,50 +174,55 @@
       </view>
 
       <view class="prof__sheet-body">
-        <view class="prof__field">
-          <text class="prof__field-label">Nom complet</text>
+        <!-- Carte Identité Certifiée Max it -->
+        <view class="prof__id-card">
+          <view class="prof__id-avatar">{{ userInitials }}</view>
+          <view class="prof__id-info">
+            <text class="prof__id-name">{{ userName }}</text>
+            <view class="prof__id-badge">
+              <view class="ic ic-shield-check-green prof__id-badge-ic"></view>
+              <text>Identité certifiée Max it</text>
+            </view>
+          </view>
+        </view>
+
+        <!-- Liste des détails du compte vérifié -->
+        <view class="prof__id-rows">
+          <view class="prof__id-row">
+            <text class="prof__id-label">Numéro titulaire</text>
+            <text class="prof__id-val">{{ userPhone }}</text>
+          </view>
+          <view class="prof__id-row">
+            <text class="prof__id-label">Statut du compte</text>
+            <text class="prof__id-val prof__id-val--green">KYC Vérifié · Niveau 2</text>
+          </view>
+          <view class="prof__id-row">
+            <text class="prof__id-label">Rôle sur Sama Loyer</text>
+            <text class="prof__id-val">Locataire certifié·e</text>
+          </view>
+        </view>
+
+        <!-- Champ d'ajustement du nom d'affichage -->
+        <view class="prof__field" style="margin-top: 10rpx;">
+          <text class="prof__field-label">Nom d'affichage (visible par les bailleurs)</text>
           <input
             class="prof__field-input"
             value="{{ editForm.fullName }}"
-            placeholder="Ex: Awa Diop"
+            placeholder="Awa Diop"
             bindinput="onInputFullName"
           />
         </view>
 
-        <view class="prof__field">
-          <text class="prof__field-label">Adresse e-mail</text>
-          <input
-            class="prof__field-input"
-            value="{{ editForm.email }}"
-            placeholder="Ex: awa.diop@orange.sn"
-            bindinput="onInputEmail"
-          />
-        </view>
-
-        <view class="prof__field">
-          <text class="prof__field-label">Profession / Statut</text>
-          <input
-            class="prof__field-input"
-            value="{{ editForm.job }}"
-            placeholder="Ex: Ingénieure Télécoms, Étudiante..."
-            bindinput="onInputJob"
-          />
-        </view>
-
-        <view class="prof__field">
-          <text class="prof__field-label">Ville ou Commune</text>
-          <input
-            class="prof__field-input"
-            value="{{ editForm.city }}"
-            placeholder="Ex: Dakar, Pikine, Rufisque..."
-            bindinput="onInputCity"
-          />
+        <!-- Message de réassurance sécurité -->
+        <view class="prof__sec-note">
+          <view class="ic ic-shield-check-green prof__sec-note-ic"></view>
+          <text class="prof__sec-note-text">Votre compte est protégé par l'authentification forte Orange Max it. Vos données sont sécurisées.</text>
         </view>
       </view>
 
       <view class="prof__sheet-footer">
         <button class="prof__btn-primary" hover-class="sl-hover" bindtap="onSavePersonalInfo">
-          Enregistrer les modifications
+          Valider
         </button>
       </view>
     </view>
@@ -230,7 +235,7 @@
       <view class="prof__sheet-header">
         <view class="prof__sheet-heading">
           <text class="prof__sheet-title">Numéro de téléphone</text>
-          <text class="prof__sheet-sub">Identifiant certifié Orange Max it</text>
+          <text class="prof__sheet-sub">Ligne certifiée Orange Sénégal</text>
         </view>
         <view class="prof__sheet-close" hover-class="sl-hover" bindtap="onCloseModal">
           <view class="ic ic-close-navy prof__sheet-close-ic"></view>
@@ -238,38 +243,44 @@
       </view>
 
       <view class="prof__sheet-body">
-        <!-- Badge certifié -->
-        <view class="prof__badge-maxit">
-          <view class="ic ic-shield-check-green prof__badge-ic"></view>
-          <view class="prof__badge-text">
-            <text class="prof__badge-title">Compte vérifié Orange Money</text>
-            <text class="prof__badge-desc">Ce numéro valide automatiquement vos paiements et vos visites.</text>
+        <!-- Carte Grand Numéro Sécurisé -->
+        <view class="prof__phone-card">
+          <view class="prof__phone-card-top">
+            <view class="prof__phone-sim-badge">
+              <view class="ic ic-check-green prof__badge-ic"></view>
+              <text>SIM & Wallet Orange Money</text>
+            </view>
+          </view>
+          <text class="prof__phone-number">{{ userPhone }}</text>
+          <text class="prof__phone-status">● Numéro actif et vérifié</text>
+        </view>
+
+        <!-- Explication de sécurité Max it -->
+        <view class="prof__sec-box">
+          <view class="prof__sec-box-item">
+            <view class="prof__sec-bullet"></view>
+            <view class="prof__sec-box-text">
+              <text class="prof__sec-box-title">Authentification automatique</text>
+              <text class="prof__sec-box-sub">Ce numéro est relié à votre session Max it. Aucun mot de passe requis.</text>
+            </view>
+          </view>
+          <view class="prof__sec-box-item">
+            <view class="prof__sec-bullet"></view>
+            <view class="prof__sec-box-text">
+              <text class="prof__sec-box-title">Paiements de loyers sécurisés</text>
+              <text class="prof__sec-box-sub">Toutes vos quittances et débits Orange Money sont envoyés vers ce numéro.</text>
+            </view>
           </view>
         </view>
 
-        <view class="prof__field">
-          <text class="prof__field-label">Numéro de mobile (Sénégal)</text>
-          <view class="prof__phone-box">
-            <view class="prof__phone-prefix">
-              <text class="prof__phone-flag">🇸🇳</text>
-              <text class="prof__phone-code">+221</text>
-            </view>
-            <input
-              class="prof__field-input prof__field-input--phone"
-              type="number"
-              maxlength="12"
-              value="{{ editForm.phone }}"
-              placeholder="77 123 45 12"
-              bindinput="onInputPhone"
-            />
-          </view>
-          <text class="prof__field-hint">Exemple : 77 123 45 12 ou 78, 76, 75, 70</text>
+        <view class="prof__sec-info">
+          <text>ℹ️ Pour changer de numéro principal, modifiez directement votre compte dans l'application Orange Max it.</text>
         </view>
       </view>
 
       <view class="prof__sheet-footer">
-        <button class="prof__btn-primary" hover-class="sl-hover" bindtap="onSavePhone">
-          Enregistrer ce numéro
+        <button class="prof__btn-primary" hover-class="sl-hover" bindtap="onCloseModal">
+          Compris
         </button>
       </view>
     </view>
