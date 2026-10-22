@@ -161,5 +161,165 @@
 
     <view class="scroll-spacer"></view>
   </scroll-view>
+
+  <!-- Custom Voice Search Bottom Sheet (Design 100% SAMA LOYER) -->
+  <view wx:if="{{ showVoiceModal }}" class="custom-sheet-mask" bindtap="onCloseVoiceModal">
+    <view class="custom-bottom-sheet" catchtap="noop">
+      <view class="sheet-drag-handle"></view>
+
+      <!-- Sheet Header -->
+      <view class="sheet-header">
+        <view class="sheet-header-left">
+          <view class="voice-icon-pulse">
+            <text class="voice-mic-char">🎙</text>
+          </view>
+          <view class="sheet-title-col">
+            <text class="sheet-main-title">Recherche Vocale IA</text>
+            <text class="sheet-sub-title">Comprend le Wolof et le Français</text>
+          </view>
+        </view>
+        <view class="sheet-close-btn" bindtap="onCloseVoiceModal">✕</view>
+      </view>
+
+      <!-- Soundwave Visual Banner -->
+      <view class="voice-soundwave-banner">
+        <view class="soundwave-bars">
+          <view class="wave-bar w-1"></view>
+          <view class="wave-bar w-2"></view>
+          <view class="wave-bar w-3"></view>
+          <view class="wave-bar w-4"></view>
+          <view class="wave-bar w-5"></view>
+          <view class="wave-bar w-4"></view>
+          <view class="wave-bar w-2"></view>
+        </view>
+        <text class="soundwave-text">Dis une phrase ou sélectionne un exemple :</text>
+      </view>
+
+      <!-- 3 Voice Cards -->
+      <view class="voice-cards-list">
+        <!-- Wolof Example -->
+        <view 
+          class="voice-card-item" 
+          hover-class="voice-card-hover"
+          bindtap="onSelectVoiceQuery"
+          data-query="Chambre à Pikine 65 000 F"
+          data-display="Dafa ma bëgg chambre ci Pikine 65 000 F"
+          data-cat="chambre"
+        >
+          <view class="voice-card-top">
+            <view class="lang-tag lang-wolof">🇸🇳 WOLOF</view>
+            <text class="voice-arrow-pill">Sélectionner →</text>
+          </view>
+          <text class="voice-quote">« Dafa ma bëgg chambre ci Pikine 65 000 F »</text>
+          <view class="voice-translation">
+            <text class="ai-sparkle">✦ IA :</text>
+            <text class="ai-meaning">Chambre à Pikine · 65 000 FCFA max</text>
+          </view>
+        </view>
+
+        <!-- French Example 1 -->
+        <view 
+          class="voice-card-item" 
+          hover-class="voice-card-hover"
+          bindtap="onSelectVoiceQuery"
+          data-query="Chambre ou studio à Pikine"
+          data-display="Recherche chambre ou studio à Pikine"
+          data-cat="chambre"
+        >
+          <view class="voice-card-top">
+            <view class="lang-tag lang-fr">🇫🇷 FRANÇAIS</view>
+            <text class="voice-arrow-pill">Sélectionner →</text>
+          </view>
+          <text class="voice-quote">« Recherche chambre ou studio à Pikine »</text>
+          <view class="voice-translation">
+            <text class="ai-sparkle">✦ IA :</text>
+            <text class="ai-meaning">Logements disponibles à Pikine</text>
+          </view>
+        </view>
+
+        <!-- French Example 2 -->
+        <view 
+          class="voice-card-item" 
+          hover-class="voice-card-hover"
+          bindtap="onSelectVoiceQuery"
+          data-query="Studio meublé à Pikine"
+          data-display="Studio meublé 95 000 F max"
+          data-cat="studio"
+        >
+          <view class="voice-card-top">
+            <view class="lang-tag lang-fr">🇫🇷 DAKAR</view>
+            <text class="voice-arrow-pill">Sélectionner →</text>
+          </view>
+          <text class="voice-quote">« Studio meublé 95 000 F max »</text>
+          <view class="voice-translation">
+            <text class="ai-sparkle">✦ IA :</text>
+            <text class="ai-meaning">Studios meublés avec entrée indépendante</text>
+          </view>
+        </view>
+      </view>
+
+      <button class="sheet-cancel-btn" bindtap="onCloseVoiceModal">
+        Fermer
+      </button>
+    </view>
+  </view>
+
+  <!-- Custom Filter Bottom Sheet -->
+  <view wx:if="{{ showFilterModal }}" class="custom-sheet-mask" bindtap="onCloseFilterModal">
+    <view class="custom-bottom-sheet" catchtap="noop">
+      <view class="sheet-drag-handle"></view>
+
+      <view class="sheet-header">
+        <view class="sheet-header-left">
+          <text class="sheet-main-title">Type de logement</text>
+        </view>
+        <view class="sheet-close-btn" bindtap="onCloseFilterModal">✕</view>
+      </view>
+
+      <view class="category-options-list">
+        <view 
+          class="category-option-row {{ activeCategory === 'tous' ? 'cat-active' : '' }}"
+          bindtap="onSelectCategoryModal"
+          data-cat="tous"
+        >
+          <view class="cat-text-col">
+            <text class="cat-title">Tous les logements</text>
+            <text class="cat-sub">Toutes les offres disponibles à Pikine</text>
+          </view>
+          <view class="cat-radio-circle {{ activeCategory === 'tous' ? 'cat-radio-active' : '' }}">
+            <text wx:if="{{ activeCategory === 'tous' }}" class="cat-radio-dot"></text>
+          </view>
+        </view>
+
+        <view 
+          class="category-option-row {{ activeCategory === 'chambre' ? 'cat-active' : '' }}"
+          bindtap="onSelectCategoryModal"
+          data-cat="chambre"
+        >
+          <view class="cat-text-col">
+            <text class="cat-title">Chambres</text>
+            <text class="cat-sub">Chambre simple ou chambre salon</text>
+          </view>
+          <view class="cat-radio-circle {{ activeCategory === 'chambre' ? 'cat-radio-active' : '' }}">
+            <text wx:if="{{ activeCategory === 'chambre' }}" class="cat-radio-dot"></text>
+          </view>
+        </view>
+
+        <view 
+          class="category-option-row {{ activeCategory === 'studio' ? 'cat-active' : '' }}"
+          bindtap="onSelectCategoryModal"
+          data-cat="studio"
+        >
+          <view class="cat-text-col">
+            <text class="cat-title">Studios</text>
+            <text class="cat-sub">Studio meublé avec entrée indépendante</text>
+          </view>
+          <view class="cat-radio-circle {{ activeCategory === 'studio' ? 'cat-radio-active' : '' }}">
+            <text wx:if="{{ activeCategory === 'studio' }}" class="cat-radio-dot"></text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
 </view>
 

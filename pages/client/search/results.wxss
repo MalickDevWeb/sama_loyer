@@ -614,4 +614,324 @@
   box-shadow: 0 6rpx 18rpx rgba(200, 35, 95, 0.25);
 }
 
+/* ==========================================================================
+   CUSTOM SAMA LOYER BOTTOM SHEETS (Voice & Filter)
+   ========================================================================== */
+
+.custom-sheet-mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(15, 30, 61, 0.55);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  z-index: 999;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  animation: maskFadeIn 0.25s ease forwards;
+}
+
+@keyframes maskFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.custom-bottom-sheet {
+  background-color: #FFFFFF;
+  border-top-left-radius: 40rpx;
+  border-top-right-radius: 40rpx;
+  padding: 24rpx 36rpx;
+  padding-bottom: calc(44rpx + env(safe-area-inset-bottom));
+  box-shadow: 0 -8rpx 36rpx rgba(15, 30, 61, 0.16);
+  animation: sheetSlideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  max-height: 82vh;
+  box-sizing: border-box;
+}
+
+@keyframes sheetSlideUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+.sheet-drag-handle {
+  width: 72rpx;
+  height: 8rpx;
+  background-color: #E2E6EE;
+  border-radius: 4rpx;
+  margin: 0 auto 24rpx;
+}
+
+.sheet-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24rpx;
+}
+
+.sheet-header-left {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+}
+
+.voice-icon-pulse {
+  width: 72rpx;
+  height: 72rpx;
+  border-radius: 50%;
+  background-color: #C8235F;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4rpx 16rpx rgba(200, 35, 95, 0.35);
+  animation: micPulse 2s infinite ease-in-out;
+}
+
+@keyframes micPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.08); box-shadow: 0 6rpx 22rpx rgba(200, 35, 95, 0.5); }
+}
+
+.voice-mic-char {
+  font-size: 36rpx;
+}
+
+.sheet-title-col {
+  display: flex;
+  flex-direction: column;
+}
+
+.sheet-main-title {
+  font-size: 34rpx;
+  font-weight: 800;
+  color: #0F1E3D;
+  line-height: 1.2;
+}
+
+.sheet-sub-title {
+  font-size: 24rpx;
+  color: #5B6475;
+  margin-top: 4rpx;
+}
+
+.sheet-close-btn {
+  width: 56rpx;
+  height: 56rpx;
+  border-radius: 50%;
+  background-color: #F4F6FA;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28rpx;
+  font-weight: 700;
+  color: #5B6475;
+}
+
+/* Soundwave Banner */
+.voice-soundwave-banner {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  padding: 18rpx 24rpx;
+  background-color: #FAFBFD;
+  border-radius: 20rpx;
+  border: 2rpx solid #EAEFF7;
+  margin-bottom: 24rpx;
+}
+
+.soundwave-bars {
+  display: flex;
+  align-items: center;
+  gap: 6rpx;
+  height: 32rpx;
+}
+
+.wave-bar {
+  width: 6rpx;
+  background-color: #C8235F;
+  border-radius: 3rpx;
+  animation: equalizer 1.2s ease-in-out infinite alternate;
+}
+
+.w-1 { height: 12rpx; animation-delay: 0.1s; }
+.w-2 { height: 24rpx; animation-delay: 0.3s; }
+.w-3 { height: 32rpx; animation-delay: 0.5s; }
+.w-4 { height: 20rpx; animation-delay: 0.2s; }
+.w-5 { height: 28rpx; animation-delay: 0.4s; }
+
+@keyframes equalizer {
+  0% { transform: scaleY(0.4); }
+  100% { transform: scaleY(1); }
+}
+
+.soundwave-text {
+  font-size: 24rpx;
+  font-weight: 600;
+  color: #0F1E3D;
+}
+
+/* Voice Cards */
+.voice-cards-list {
+  display: flex;
+  flex-direction: column;
+  gap: 18rpx;
+  margin-bottom: 28rpx;
+}
+
+.voice-card-item {
+  background-color: #FFFFFF;
+  border-radius: 24rpx;
+  border: 2rpx solid #EAEFF7;
+  padding: 24rpx;
+  box-shadow: 0 4rpx 14rpx rgba(15, 30, 61, 0.04);
+  transition: all 0.2s ease;
+}
+
+.voice-card-hover {
+  background-color: #FDE8EE;
+  border-color: #F8B4C8;
+  transform: scale(0.98);
+}
+
+.voice-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12rpx;
+}
+
+.lang-tag {
+  font-size: 20rpx;
+  font-weight: 800;
+  padding: 6rpx 18rpx;
+  border-radius: 14rpx;
+  letter-spacing: 0.5rpx;
+}
+
+.lang-wolof {
+  background-color: #EAF8EF;
+  color: #007C3D;
+}
+
+.lang-fr {
+  background-color: #E8EEF5;
+  color: #0F1E3D;
+}
+
+.voice-arrow-pill {
+  font-size: 22rpx;
+  font-weight: 700;
+  color: #C8235F;
+}
+
+.voice-quote {
+  display: block;
+  font-size: 28rpx;
+  font-weight: 800;
+  color: #0F1E3D;
+  line-height: 1.35;
+  margin-bottom: 12rpx;
+}
+
+.voice-translation {
+  display: flex;
+  align-items: center;
+  gap: 10rpx;
+}
+
+.ai-sparkle {
+  font-size: 22rpx;
+  font-weight: 800;
+  color: #C8235F;
+}
+
+.ai-meaning {
+  font-size: 24rpx;
+  color: #5B6475;
+  font-weight: 600;
+}
+
+.sheet-cancel-btn {
+  width: 100%;
+  height: 88rpx;
+  border-radius: 44rpx;
+  background-color: #F4F6FA;
+  color: #5B6475;
+  font-size: 28rpx;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+}
+
+/* Category Filter Bottom Sheet */
+.category-options-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+  margin-top: 10rpx;
+}
+
+.category-option-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24rpx 28rpx;
+  background-color: #FAFBFD;
+  border-radius: 24rpx;
+  border: 2rpx solid #EAEFF7;
+  transition: all 0.2s ease;
+}
+
+.cat-active {
+  background-color: #FDE8EE;
+  border-color: #C8235F;
+}
+
+.cat-text-col {
+  display: flex;
+  flex-direction: column;
+}
+
+.cat-title {
+  font-size: 30rpx;
+  font-weight: 800;
+  color: #0F1E3D;
+  margin-bottom: 4rpx;
+}
+
+.cat-active .cat-title {
+  color: #C8235F;
+}
+
+.cat-sub {
+  font-size: 24rpx;
+  color: #5B6475;
+}
+
+.cat-radio-circle {
+  width: 44rpx;
+  height: 44rpx;
+  border-radius: 50%;
+  border: 3rpx solid #CCD2E0;
+  background-color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cat-radio-active {
+  border-color: #C8235F;
+}
+
+.cat-radio-dot {
+  width: 22rpx;
+  height: 22rpx;
+  border-radius: 50%;
+  background-color: #C8235F;
+}
+
 

@@ -86,6 +86,8 @@ Page({
     listings: ALL_SEARCH_LISTINGS,
     filteredListings: ALL_SEARCH_LISTINGS,
     sortOption: 'Plus récents',
+    showVoiceModal: false,
+    showFilterModal: false,
     toast: {
       visible: false,
       hiding: false,
@@ -182,51 +184,53 @@ Page({
   },
 
   onMicTap() {
-    wx.showActionSheet({
-      itemList: [
-        '🇸🇳 Dafa ma bëgg chambre ci Pikine 65 000 F',
-        '🇫🇷 Recherche chambre ou studio à Pikine',
-        '🇫🇷 Studio meublé 95 000 F max'
-      ],
-      success: (res) => {
-        const queries = [
-          'Chambre à Pikine 65 000 F',
-          'Chambre ou studio à Pikine',
-          'Studio meublé à Pikine'
-        ];
-        const selected = queries[res.tapIndex] || 'Chambre à Pikine';
-        this.setData({
-          searchQuery: selected,
-          activeCategory: res.tapIndex === 2 ? 'studio' : 'chambre'
-        }, () => {
-          this.filterListings();
-          const count = this.data.filteredListings.length;
-          this.showMagnifiqueToast({
-            title: `Reconnu : ${selected}`,
-            subtitle: `${count} logement${count > 1 ? 's' : ''} trouvé${count > 1 ? 's' : ''}`,
-            type: 'voice',
-            iconClass: 'icon-toast-mic',
-            duration: 2600
-          });
-        });
-      }
+    this.setData({ showVoiceModal: true });
+  },
+
+  onCloseVoiceModal() {
+    this.setData({ showVoiceModal: false });
+  },
+
+  onSelectVoiceQuery(e) {
+    const { query, display, cat } = e.currentTarget.dataset;
+    const selected = query || 'Chambre à Pikine';
+    this.setData({
+      showVoiceModal: false,
+      searchQuery: selected,
+      activeCategory: cat || 'chambre'
+    }, () => {
+      this.filterListings();
+      const count = this.data.filteredListings.length;
+      this.showMagnifiqueToast({
+        title: `Reconnu : ${display || selected}`,
+        subtitle: `${count} logement${count > 1 ? 's' : ''} trouvé${count > 1 ? 's' : ''}`,
+        type: 'voice',
+        iconClass: 'icon-toast-mic',
+        duration: 2600
+      });
     });
   },
 
-  // Bouton ⚙ (sans fonction jusqu'ici) : choix rapide du type de logement
+  // Bouton ⚙ : ouverture du bottom sheet de choix rapide du type
   onFilterTap() {
-    const cats = [
-      { id: 'tous', label: 'Tous les logements' },
-      { id: 'chambre', label: 'Chambres' },
-      { id: 'studio', label: 'Studios' }
-    ];
-    wx.showActionSheet({
-      itemList: cats.map((c) => c.label),
-      success: (res) => {
-        this.setData({ activeCategory: cats[res.tapIndex].id }, () => this.filterListings());
-      }
+    this.setData({ showFilterModal: true });
+  },
+
+  onCloseFilterModal() {
+    this.setData({ showFilterModal: false });
+  },
+
+  onSelectCategoryModal(e) {
+    const cat = e.currentTarget.dataset.cat || 'tous';
+    this.setData({
+      activeCategory: cat,
+      showFilterModal: false
+    }, () => {
+      this.filterListings();
     });
   },
+
+  noop() {},
 
   onCategorySelect(e) {
     const cat = e.currentTarget.dataset.cat;
