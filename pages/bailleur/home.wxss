@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Page Accueil Bailleur - SAMA LOGEMENT (Page 10 Claude/PDF)
+   Page Accueil Bailleur - SAMA LOGEMENT (Page 10 exact Claude/PDF screenshots)
    ========================================================================== */
 
 .bailleur-home-page {
@@ -78,7 +78,7 @@
   margin-top: -24rpx;
 }
 
-/* KPI Grid */
+/* KPI Grid (4 cards) */
 .kpi-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -179,36 +179,38 @@
 
 /* Section À faire maintenant */
 .todo-section {
-  margin-bottom: 32rpx;
+  margin-bottom: 36rpx;
 }
 
 .section-heading-title {
   display: block;
-  font-size: 32rpx;
+  font-size: 34rpx;
   font-weight: 800;
   color: #0F1E3D;
-  margin-bottom: 16rpx;
+  margin-bottom: 20rpx;
 }
 
-.todo-card-list {
+.todo-cards-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 18rpx;
+}
+
+.todo-card-item {
   background-color: #FFFFFF;
-  border-radius: 24rpx;
+  border-radius: 20rpx;
+  padding: 24rpx 28rpx;
   border: 1rpx solid #ECEFF2;
-  box-shadow: 0 4rpx 16rpx rgba(15, 30, 61, 0.04);
-  overflow: hidden;
-}
-
-.todo-item {
+  box-shadow: 0 2rpx 10rpx rgba(15, 30, 61, 0.03);
   display: flex;
   align-items: center;
-  padding: 24rpx 20rpx;
 }
 
 .todo-bullet {
-  width: 16rpx;
-  height: 16rpx;
+  width: 18rpx;
+  height: 18rpx;
   border-radius: 50%;
-  margin-right: 20rpx;
+  margin-right: 22rpx;
   flex-shrink: 0;
 }
 
@@ -222,7 +224,7 @@
 }
 
 .todo-item-title {
-  font-size: 26rpx;
+  font-size: 28rpx;
   font-weight: 700;
   color: #0F1E3D;
   margin-bottom: 4rpx;
@@ -234,69 +236,160 @@
 }
 
 .todo-chevron {
-  font-size: 36rpx;
-  color: #A0AAB8;
-}
-
-.todo-divider {
-  height: 1rpx;
-  background-color: #F0F2F5;
-  margin: 0 20rpx;
-}
-
-/* Loyers bar card */
-.loyers-bar-card {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background-color: #FFFFFF;
-  border-radius: 20rpx;
-  padding: 24rpx;
-  border: 1rpx solid #ECEFF2;
-  margin-bottom: 32rpx;
-}
-
-.loyers-title {
-  font-size: 28rpx;
-  font-weight: 700;
-  color: #0F1E3D;
-}
-
-.loyers-link {
-  display: flex;
-  align-items: center;
-  gap: 6rpx;
-}
-
-.loyers-link-text {
-  font-size: 24rpx;
+  font-size: 34rpx;
   color: #5B6475;
 }
 
-.loyers-link-chev {
-  font-size: 30rpx;
-  color: #A0AAB8;
+/* Section Loyers d'octobre */
+.loyers-section {
+  margin-bottom: 32rpx;
+}
+
+.loyers-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 18rpx;
+}
+
+.loyers-section-title {
+  font-size: 34rpx;
+  font-weight: 800;
+  color: #0F1E3D;
+}
+
+.loyers-history-link {
+  font-size: 26rpx;
+  font-weight: 700;
+  color: #C8235F;
+}
+
+.loyers-card-box {
+  background-color: #FFFFFF;
+  border-radius: 24rpx;
+  border: 1rpx solid #ECEFF2;
+  box-shadow: 0 4rpx 16rpx rgba(15, 30, 61, 0.04);
+  padding: 6rpx 24rpx;
+}
+
+.loyer-item-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 22rpx 0;
+}
+
+.loyer-item-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.loyer-prop-title {
+  font-size: 28rpx;
+  font-weight: 700;
+  color: #0F1E3D;
+  margin-bottom: 4rpx;
+}
+
+.loyer-prop-sub {
+  font-size: 22rpx;
+  color: #5B6475;
+}
+
+.loyer-item-amount-col {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.loyer-amount {
+  font-size: 28rpx;
+  font-weight: 800;
+  color: #0F1E3D;
+  margin-bottom: 4rpx;
+}
+
+.loyer-badge-status {
+  font-size: 20rpx;
+  font-weight: 700;
+}
+
+.badge-recu {
+  color: #007C3D;
+}
+
+.badge-a-venir {
+  color: #B56200;
+}
+
+.loyer-divider {
+  height: 1rpx;
+  background-color: #F0F2F5;
+}
+
+/* Carte Premium Actif */
+.premium-active-card {
+  background-color: #FDF2F5;
+  border: 1.5rpx solid #F8D3DF;
+  border-radius: 24rpx;
+  padding: 24rpx 28rpx;
+  display: flex;
+  align-items: center;
+  margin-bottom: 32rpx;
+}
+
+.star-icon-wrap {
+  margin-right: 20rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.star-pink {
+  font-size: 32rpx;
+  color: #C8235F;
+}
+
+.premium-card-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.premium-card-title {
+  font-size: 28rpx;
+  font-weight: 800;
+  color: #0F1E3D;
+  margin-bottom: 4rpx;
+}
+
+.premium-card-sub {
+  font-size: 22rpx;
+  color: #5B6475;
+}
+
+.premium-chevron {
+  font-size: 34rpx;
+  color: #5B6475;
 }
 
 /* Switch back to client */
 .switch-role-bar {
-  margin-bottom: 20rpx;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 24rpx;
 }
 
 .btn-switch-client {
-  width: 100%;
-  height: 88rpx;
-  border-radius: 44rpx;
-  background-color: #FFFFFF;
-  border: 1.5rpx solid #D5DAE1;
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  justify-content: center;
   gap: 12rpx;
+  padding: 16rpx 28rpx;
 }
 
 .switch-client-icon {
-  font-size: 28rpx;
+  font-size: 30rpx;
+  color: #5B6475;
 }
 
 .switch-client-text {

@@ -49,6 +49,18 @@ Page({
     });
   },
 
+  onGoPremium() {
+    wx.redirectTo({
+      url: '/pages/bailleur/premium'
+    });
+  },
+
+  onGoHistorique() {
+    wx.redirectTo({
+      url: '/pages/bailleur/premium'
+    });
+  },
+
   onSwitchToClient() {
     wx.showLoading({ title: 'Chargement...' });
     wx.setStorageSync(STORAGE_KEYS.USER_ROLE, 'client');
@@ -60,3 +72,4 @@ Page({
     }, 400);
   }
 });
+
