@@ -48,6 +48,26 @@ body {
   background: var(--bg);
 }
 
+/* Barre de défilement principale fine et discrète */
+html {
+  scrollbar-width: thin;
+  scrollbar-color: #c9cfda transparent;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c9cfda;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
 a {
   color: var(--berry);
   text-decoration: none;
@@ -204,8 +224,14 @@ a.kpi:hover {
 }
 
 /* --- Tableaux ------------------------------------------------------------ */
+/* Défilement horizontal conservé, barre masquée */
 .table-scroll {
   overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.table-scroll::-webkit-scrollbar {
+  display: none;
 }
 
 .table {

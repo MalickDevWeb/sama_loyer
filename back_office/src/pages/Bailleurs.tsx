@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
-import { Avatar, Badge, Icon, ICONS, Pills, norm } from '../components/ui'
+import { Avatar, Badge, Icon, Pills } from '../components/ui'
+import { ICONS, norm } from '../lib/utils'
 import { BAILLEURS, BAILLEUR_STATUS, type BailleurStatus } from '../data/mock'
 import './Bailleurs.css'
 

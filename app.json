@@ -15,9 +15,7 @@
     "pages/bailleur/ajouter/ajouter",
     "pages/bailleur/demandes/demandes",
     "pages/bailleur/locataires/locataires",
-    "pages/bailleur/premium/premium",
-    "pages/paiement/index",
-    "pages/index/index"
+    "pages/bailleur/premium/premium"
   ],
   "usingComponents": {
     "app-nav-bar": "/components/ui/nav-bar/index",

@@ -1,5 +1,5 @@
 import type { ReactElement } from 'react'
-import { ICONS } from './components/ui'
+import { ICONS } from './lib/utils'
 import Dashboard from './pages/Dashboard'
 import Bailleurs from './pages/Bailleurs'
 import Validation from './pages/Validation'

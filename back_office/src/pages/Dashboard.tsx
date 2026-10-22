@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Badge, Icon, ICONS, fmt } from '../components/ui'
+import { Badge, Icon } from '../components/ui'
+import { ICONS, fmt } from '../lib/utils'
 import { DASHBOARD_KPIS, SIGNUP_MONTHS, SIGNUPS, TODO, TRANSACTIONS, TX_TONE, ZONES } from '../data/mock'
 import './Dashboard.css'
 

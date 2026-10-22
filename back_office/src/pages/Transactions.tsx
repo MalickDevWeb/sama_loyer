@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Badge, Icon, ICONS, Pills } from '../components/ui'
+import { Badge, Icon, Pills } from '../components/ui'
+import { ICONS } from '../lib/utils'
 import { TRANSACTIONS, TX_TONE, type Transaction, type TxStatus, type TxType } from '../data/mock'
 import './Transactions.css'
 

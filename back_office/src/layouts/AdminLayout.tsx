@@ -1,5 +1,6 @@
 import { NavLink, Outlet } from 'react-router-dom'
-import { Icon, ICONS } from '../components/ui'
+import { Icon } from '../components/ui'
+import { ICONS } from '../lib/utils'
 import { NAV_ITEMS } from '../routes'
 import './AdminLayout.css'
 

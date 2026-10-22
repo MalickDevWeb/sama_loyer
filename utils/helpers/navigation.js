@@ -126,7 +126,7 @@ export const navigateBack = (delta = 1) => {
     if (pages.length <= 1) {
       // Nothing to go back to — go home instead
       console.warn('[Nav] No pages to go back to, reLaunching home');
-      wx.reLaunch({ url: '/pages/index/index', success: resolve, fail: reject });
+      wx.reLaunch({ url: '/pages/client/home/home', success: resolve, fail: reject });
       return;
     }
 
@@ -135,7 +135,7 @@ export const navigateBack = (delta = 1) => {
       success: resolve,
       fail: (err) => {
         console.warn('[Nav] navigateBack failed:', err.errMsg);
-        wx.reLaunch({ url: '/pages/index/index', success: resolve, fail: reject });
+        wx.reLaunch({ url: '/pages/client/home/home', success: resolve, fail: reject });
       },
     });
   });
