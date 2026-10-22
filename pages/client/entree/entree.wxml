@@ -1,0 +1,326 @@
+<view class="entree">
+  <!-- ================= BARRE DU HAUT + PROGRESSION ================= -->
+  <view class="sl-topbar" style="padding-top: {{ statusBarHeight }}px;">
+    <view class="entree__top">
+      <view class="sl-icon-btn" hover-class="sl-hover" bindtap="onBackHeader" aria-label="Retour à l'annonce">
+        <view class="ic ic-back-navy"></view>
+      </view>
+      <text class="entree__title">Entrer dans le logement</text>
+      <text class="entree__step-count">{{ done ? '' : step + '/3' }}</text>
+    </view>
+    <view class="entree__bars">
+      <view class="entree__bar {{ done || step >= 1 ? 'entree__bar--on' : '' }}"></view>
+      <view class="entree__bar {{ done || step >= 2 ? 'entree__bar--on' : '' }}"></view>
+      <view class="entree__bar {{ done || step >= 3 ? 'entree__bar--on' : '' }}"></view>
+    </view>
+  </view>
+
+  <view class="entree__body" style="padding-top: {{ statusBarHeight + 76 }}px;">
+    <!-- Logement concerné -->
+    <view wx:if="{{ !done }}" class="entree__home">
+      <view class="entree__home-thumb" style="background: {{ logement.tint }};"></view>
+      <view class="entree__home-text">
+        <text class="entree__home-title">{{ logement.title }}</text>
+        <text class="entree__muted">{{ logement.place }} · {{ logement.bailleur }}</text>
+      </view>
+    </view>
+
+    <!-- ================= 1 : RÉCAPITULATIF ================= -->
+    <block wx:if="{{ !done && step === 1 }}">
+      <text class="entree__h2">Ce que tu paies à l'entrée</text>
+      <text class="entree__lead">En une fois ou en deux fois, avant de recevoir les clés.</text>
+      <view class="entree__recap">
+        <view class="entree__recap-row">
+          <view class="entree__recap-label">
+            <text class="entree__recap-name">Avance</text>
+            <text class="entree__recap-sub">1er mois de loyer (novembre)</text>
+          </view>
+          <text class="entree__recap-value">{{ avanceText }}</text>
+        </view>
+        <view class="entree__recap-row">
+          <view class="entree__recap-label">
+            <text class="entree__recap-name">Caution</text>
+            <text class="entree__recap-sub">{{ cautionSub }}</text>
+          </view>
+          <text class="entree__recap-value">{{ cautionText }}</text>
+        </view>
+        <view class="entree__recap-row">
+          <text class="entree__recap-name">Frais d'agence</text>
+          <text class="entree__recap-value">{{ fraisText }}</text>
+        </view>
+        <view class="entree__recap-row entree__recap-row--total">
+          <text class="entree__total-label">Total</text>
+          <text class="entree__total-value">{{ totalText }}</text>
+        </view>
+      </view>
+      <view class="entree__infos">
+        <view class="entree__info">
+          <text class="entree__recap-sub">Date d'entrée</text>
+          <text class="entree__info-value">1er nov. 2026</text>
+        </view>
+        <view class="entree__info">
+          <text class="entree__recap-sub">Loyer ensuite</text>
+          <text class="entree__info-value">{{ loyerText }} / mois</text>
+        </view>
+      </view>
+    </block>
+
+    <!-- ================= 2 : CONTRAT ================= -->
+    <block wx:if="{{ !done && step === 2 }}">
+      <text class="entree__h2">Le contrat de location</text>
+      <text class="entree__lead">Les points importants, en clair :</text>
+      <view class="sl-keys">
+        <view wx:for="{{ contrat.keys }}" wx:key="label" class="sl-key">
+          <text class="sl-key__label">{{ item.label }}</text>
+          <text class="sl-key__value">{{ item.value }}</text>
+          <text class="sl-key__sub">{{ item.sub }}</text>
+        </view>
+      </view>
+      <view class="entree__read" hover-class="sl-hover" bindtap="onOpenContract">
+        <view class="entree__read-icon">
+          <view class="ic ic-doc-white"></view>
+        </view>
+        <view class="entree__read-text">
+          <text class="entree__read-title">Lire le contrat complet</text>
+          <text class="entree__read-sub">8 articles · résumé audio en wolof</text>
+        </view>
+        <view class="ic ic-chevron-white entree__read-chev"></view>
+      </view>
+      <view class="sl-check-row sl-check-row--berry entree__agree {{ agree ? 'sl-check-row--on' : '' }}" bindtap="onToggleAgree">
+        <view class="sl-check-box">
+          <view wx:if="{{ agree }}" class="ic ic-check-white"></view>
+        </view>
+        <text>J'ai lu le contrat et je l'accepte</text>
+      </view>
+    </block>
+
+    <!-- ================= 3 : PAIEMENT ================= -->
+    <block wx:if="{{ !done && step === 3 }}">
+      <text class="entree__h2">Comment veux-tu payer ?</text>
+      <text class="entree__lead">Avec Max it. L'argent va directement à {{ logement.bailleur }}.</text>
+
+      <view class="entree__pay {{ mode === 'full' ? 'entree__pay--on' : '' }}" bindtap="onPickFull">
+        <view class="entree__radio {{ mode === 'full' ? 'entree__radio--on' : '' }}"></view>
+        <view class="entree__pay-text">
+          <text class="entree__pay-title">Tout payer maintenant</text>
+          <text class="entree__muted">Avance + caution · c'est réglé</text>
+        </view>
+        <text class="entree__pay-amount">{{ totalText }}</text>
+      </view>
+
+      <view class="entree__pay {{ mode === 'part' ? 'entree__pay--on' : '' }}" bindtap="onPickPart">
+        <view class="entree__radio {{ mode === 'part' ? 'entree__radio--on' : '' }}"></view>
+        <view class="entree__pay-text">
+          <text class="entree__pay-title">Payer en 2 fois</text>
+          <text class="entree__muted">Une partie maintenant, le reste avant le 1er nov.</text>
+        </view>
+      </view>
+
+      <view wx:if="{{ mode === 'part' }}" class="entree__part">
+        <text class="entree__part-title">Combien maintenant ?</text>
+        <view class="entree__presets">
+          <view
+            wx:for="{{ presets }}"
+            wx:key="value"
+            class="entree__preset {{ !other && amount === item.value ? 'entree__preset--on' : '' }}"
+            data-value="{{ item.value }}"
+            bindtap="onPickAmount"
+          >
+            <text class="entree__preset-label">{{ item.label }}</text>
+            <text class="entree__preset-sub">{{ item.sub }}</text>
+          </view>
+        </view>
+        <text class="entree__other-label">Ou un autre montant (minimum {{ minText }})</text>
+        <view class="entree__other">
+          <input
+            class="entree__other-input"
+            type="number"
+            value="{{ other }}"
+            placeholder="Ex. 80 000"
+            placeholder-class="entree__placeholder"
+            bindinput="onOtherInput"
+          />
+          <text class="entree__muted">F</text>
+        </view>
+        <text wx:if="{{ badAmount }}" class="entree__error">Le minimum est l'avance : {{ minText }}.</text>
+        <view class="entree__split">
+          <view class="entree__split-row"><text class="entree__muted">Maintenant</text><text class="entree__strong">{{ chosenText }}</text></view>
+          <view class="entree__split-row"><text class="entree__muted">Reste avant le 1er nov.</text><text class="entree__strong entree__berry">{{ restBeforeText }}</text></view>
+        </view>
+        <text class="entree__part-note">Le logement est réservé pour toi. Les clés sont remises quand tout est payé.</text>
+      </view>
+    </block>
+
+    <!-- ================= TERMINÉ ================= -->
+    <block wx:if="{{ done }}">
+      <view class="entree__done">
+        <view class="entree__done-icon">
+          <view class="ic ic-home-door-berry"></view>
+        </view>
+        <text class="entree__done-title">{{ doneTitle }}</text>
+        <text class="entree__lead entree__done-text">{{ doneText }}</text>
+      </view>
+      <view class="entree__paid">
+        <view class="entree__paid-head"><text>Payé</text><text>sur {{ totalText }}</text></view>
+        <text class="entree__paid-amount">{{ paidText }}</text>
+        <view class="entree__progress"><view class="entree__progress-bar" style="width: {{ progress }}%;"></view></view>
+        <text wx:if="{{ hasRest }}" class="entree__paid-rest">Reste {{ restText }} à payer avant le 1er novembre</text>
+      </view>
+      <view class="entree__receipts">
+        <view wx:for="{{ receipts }}" wx:key="label" class="entree__receipt">
+          <view class="entree__receipt-text">
+            <text class="entree__receipt-label">{{ item.label }}</text>
+            <text class="entree__recap-sub">{{ item.sub }}</text>
+          </view>
+          <text class="entree__receipt-badge">Reçu</text>
+        </view>
+      </view>
+    </block>
+
+    <view class="sl-bottom-spacer"></view>
+  </view>
+
+  <!-- ================= BARRE DU BAS ================= -->
+  <view class="sl-bottombar">
+    <view wx:if="{{ !done && step > 1 }}" class="sl-btn sl-btn--outline entree__back" hover-class="sl-hover" bindtap="onPrevStep">Retour</view>
+    <view wx:if="{{ !done }}" class="sl-btn {{ nextEnabled ? 'sl-btn--berry' : 'sl-btn--soft' }}" hover-class="{{ nextEnabled ? 'sl-hover' : 'none' }}" bindtap="onNext">{{ nextText }}</view>
+    <view wx:if="{{ hasRest }}" class="sl-btn sl-btn--berry" hover-class="sl-hover" bindtap="onPayRest">Payer le reste ({{ restText }})</view>
+    <view wx:if="{{ done && !hasRest }}" class="sl-btn sl-btn--berry" hover-class="sl-hover" bindtap="onSeeLoyer">Voir mon loyer</view>
+  </view>
+
+  <!-- ================= CONTRAT COMPLET (plein écran) ================= -->
+  <view wx:if="{{ contractOpen }}" class="entree__sheet" catchtouchmove="noop">
+    <scroll-view class="entree__sheet-scroll" scroll-y="{{ true }}" enhanced="{{ true }}" show-scrollbar="{{ false }}">
+      <view class="entree__sheet-hero" style="padding-top: {{ statusBarHeight + 14 }}px;">
+        <view class="entree__sheet-top">
+          <view class="sl-icon-btn sl-icon-btn--glass" hover-class="sl-hover" bindtap="onCloseContract" aria-label="Fermer le contrat">
+            <view class="ic ic-close-white"></view>
+          </view>
+          <text class="entree__sheet-num">{{ contrat.numero }}</text>
+        </view>
+        <view class="entree__sheet-title-row">
+          <view class="entree__read-icon entree__sheet-doc">
+            <view class="ic ic-doc-white"></view>
+          </view>
+          <view>
+            <text class="entree__sheet-title">Contrat de location</text>
+            <text class="entree__sheet-sub">{{ contrat.subtitle }}</text>
+          </view>
+        </view>
+        <text class="entree__sheet-tag">À signer par toi</text>
+      </view>
+
+      <view class="entree__sheet-card">
+        <text class="entree__sheet-h3">L'essentiel</text>
+        <view class="sl-keys">
+          <view wx:for="{{ contrat.keys }}" wx:key="label" class="sl-key">
+            <text class="sl-key__label">{{ item.label }}</text>
+            <text class="sl-key__value">{{ item.value }}</text>
+            <text class="sl-key__sub">{{ item.sub }}</text>
+          </view>
+        </view>
+        <view class="sl-audio {{ playing ? 'sl-audio--playing' : '' }}" hover-class="sl-hover" bindtap="onToggleAudio">
+          <view wx:if="{{ !playing }}" class="ic ic-play-berrydark"></view>
+          <view wx:else class="sl-wave">
+            <view class="sl-wave__bar"></view>
+            <view class="sl-wave__bar"></view>
+            <view class="sl-wave__bar"></view>
+          </view>
+          <text class="sl-audio__label">{{ playing ? 'Lecture du résumé en wolof…' : 'Écouter le résumé en wolof' }}</text>
+        </view>
+      </view>
+
+      <view class="entree__sheet-section">
+        <view class="entree__parties">
+          <view class="entree__party">
+            <text class="entree__eyebrow">BAILLEUR</text>
+            <text class="entree__party-name">{{ contrat.bailleur }}</text>
+            <text class="entree__party-sub">Identité vérifiée</text>
+          </view>
+          <view class="entree__party">
+            <text class="entree__eyebrow">LOCATAIRE</text>
+            <text class="entree__party-name">Awa Diop</text>
+            <text class="entree__party-sub">Numéro vérifié</text>
+          </view>
+        </view>
+      </view>
+
+      <view class="entree__sheet-section">
+        <view class="sl-articles">
+          <view wx:for="{{ contrat.articles }}" wx:key="title" class="sl-article {{ open[index] ? 'sl-article--open' : '' }}">
+            <view class="sl-article__head" hover-class="sl-hover" data-index="{{ index }}" bindtap="onToggleArticle">
+              <text class="sl-article__num">{{ index + 1 }}</text>
+              <view class="sl-article__titles">
+                <text class="sl-article__title">{{ item.title }}</text>
+                <text class="sl-article__hint">{{ item.hint }}</text>
+              </view>
+              <view class="ic ic-chevron-down-grey sl-article__chev"></view>
+            </view>
+            <text wx:if="{{ open[index] }}" class="sl-article__text">{{ item.text }}</text>
+          </view>
+        </view>
+      </view>
+
+      <view class="entree__sheet-section entree__sheet-section--last">
+        <view class="entree__parties">
+          <view class="entree__party">
+            <text class="entree__sig-label">Le bailleur</text>
+            <text class="entree__sig">{{ contrat.bailleur }}</text>
+            <text class="entree__party-sub">Signé le 22 oct. 2026</text>
+          </view>
+          <view class="entree__party {{ signed ? '' : 'entree__party--to-sign' }}">
+            <text class="entree__sig-label">Toi</text>
+            <text class="{{ signed ? 'entree__sig' : 'entree__sig-todo' }}">{{ signed ? 'Awa Diop' : 'À signer' }}</text>
+            <text class="entree__party-sub">{{ signed ? 'Signé aujourd’hui' : 'Touche « J’ai lu, je signe »' }}</text>
+          </view>
+        </view>
+      </view>
+      <view class="sl-bottom-spacer"></view>
+    </scroll-view>
+
+    <view class="sl-bottombar">
+      <view class="sl-icon-btn entree__dl" hover-class="sl-hover" bindtap="onDownloadContract" aria-label="Télécharger le contrat en PDF">
+        <view class="ic ic-download-navy"></view>
+      </view>
+      <view class="sl-btn sl-btn--berry" hover-class="sl-hover" bindtap="onSignContract">J'ai lu, je signe</view>
+    </view>
+  </view>
+
+  <!-- ================= MAX IT (simulation) ================= -->
+  <view wx:if="{{ mx }}" class="sl-mx-backdrop" catchtouchmove="noop">
+    <view class="sl-mx" aria-label="Paiement avec Max it">
+      <block wx:if="{{ mx === 'confirm' }}">
+        <view class="sl-mx-icon"><view class="ic ic-maxit-berry"></view></view>
+        <text class="sl-mx-title">Payer avec Max it</text>
+        <text class="sl-mx-amount">{{ mxAmountText }} F</text>
+        <text class="sl-mx-to">À {{ logement.bailleur }} · {{ mxLabel }}</text>
+        <text class="sl-mx-note">Tu vas être redirigé·e vers l'application Max it pour valider avec ton code secret.</text>
+        <view class="sl-btn sl-btn--berry sl-mx-btn" hover-class="sl-hover" bindtap="onMxGo">Continuer vers Max it</view>
+        <view class="sl-mx-cancel" hover-class="sl-hover" bindtap="onMxClose">Annuler</view>
+      </block>
+
+      <block wx:if="{{ mx === 'redirect' }}">
+        <view class="sl-mx-spinner"></view>
+        <text class="sl-mx-title sl-mx-title--sm">Ouverture de Max it…</text>
+        <text class="sl-mx-muted">Ne ferme pas l'application.</text>
+      </block>
+
+      <block wx:if="{{ mx === 'maxit' }}">
+        <text class="sl-mx-sim">SIMULATION · ÉCRAN MAX IT</text>
+        <view class="sl-mx-box">
+          <text class="sl-mx-brand">Max it</text>
+          <text class="sl-mx-muted">Demande de paiement</text>
+          <view class="sl-mx-row"><text class="sl-mx-muted">Marchand</text><text class="sl-mx-strong">SAMA LOYER</text></view>
+          <view class="sl-mx-row"><text class="sl-mx-muted">Bénéficiaire</text><text class="sl-mx-strong">{{ logement.bailleur }}</text></view>
+          <view class="sl-mx-row"><text class="sl-mx-muted">Motif</text><text class="sl-mx-strong sl-mx-right">{{ mxLabel }}</text></view>
+          <view class="sl-mx-row sl-mx-row--total"><text class="sl-mx-strong">Montant</text><text class="sl-mx-strong">{{ mxAmountText }} F</text></view>
+        </view>
+        <text class="sl-mx-small">Dans la vraie application, tu tapes ici ton code secret Max it. SAMA LOYER ne voit jamais ton code.</text>
+        <view class="sl-btn sl-btn--navy sl-mx-btn" hover-class="sl-hover" bindtap="onMxValidate">Valider le paiement</view>
+        <view class="sl-btn sl-btn--outline sl-mx-refuse" hover-class="sl-hover" bindtap="onMxClose">Refuser et revenir</view>
+      </block>
+    </view>
+  </view>
+
+  <view wx:if="{{ toast }}" class="sl-toast">{{ toast }}</view>
+</view>

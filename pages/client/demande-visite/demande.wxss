@@ -1,305 +1,499 @@
-/* ==========================================================================
-   Demande de Visite - SAMA LOYER Style Guide
-   ========================================================================== */
+@import "/styles/sama-ui.wxss";
 
-.demande-page {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-  background-color: #F8F9FA;
-  box-sizing: border-box;
-}
+/* ============================================================================
+   SAMA LOYER — Demande de visite, d'après la maquette DemandeVisite
+   ============================================================================ */
 
-/* Custom Navigation Bar */
-.nav-bar-custom {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 32rpx;
-  background-color: #FFFFFF;
-  border-bottom: 1rpx solid #EAECEF;
-  z-index: 100;
-}
-
-.btn-back {
-  width: 72rpx;
-  height: 72rpx;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  background-color: #F0F2F5;
-}
-
-.arrow-back {
-  font-size: 52rpx;
-  color: #0F1E3D;
-  line-height: 1;
-  margin-top: -6rpx;
-}
-
-.nav-title {
-  font-size: 34rpx;
-  font-weight: 700;
-  color: #0F1E3D;
-}
-
-.nav-placeholder {
-  width: 72rpx;
-}
-
-/* Scroll area */
-.demande-scroll {
-  flex: 1;
-  padding: 24rpx 32rpx;
-  box-sizing: border-box;
-}
-
-/* Property Summary Card */
-.property-summary-card {
-  display: flex;
-  align-items: center;
-  background-color: #FFFFFF;
-  border-radius: 24rpx;
-  padding: 24rpx;
-  box-shadow: 0 4rpx 16rpx rgba(15, 30, 61, 0.04);
-  border: 1rpx solid #ECEFF2;
-  margin-bottom: 36rpx;
-}
-
-.property-thumb {
-  width: 120rpx;
+.dv__topbar-space {
   height: 120rpx;
-  border-radius: 18rpx;
-  background-color: #FCE8EF;
+}
+
+/* --- Logement concerné --------------------------------------------------- */
+.dv__logement {
+  margin: 32rpx 32rpx 0;
+  padding: 20rpx;
+  border-radius: 36rpx;
+  background: #F7F8FA;
   display: flex;
   align-items: center;
-  justify-content: center;
-  margin-right: 24rpx;
-  flex-shrink: 0;
+  gap: 24rpx;
 }
 
-.thumb-house-icon {
-  width: 52rpx;
-  height: 48rpx;
-  border: 4rpx solid #C8235F;
-  border-top: none;
-  position: relative;
+.dv__thumb {
+  width: 112rpx;
+  height: 112rpx;
+  flex: 0 0 112rpx;
+  border-radius: 28rpx;
 }
 
-.thumb-house-icon::before {
-  content: '';
-  position: absolute;
-  top: -26rpx;
-  left: -8rpx;
-  border-left: 30rpx solid transparent;
-  border-right: 30rpx solid transparent;
-  border-bottom: 26rpx solid #C8235F;
-}
-
-.property-info {
+.dv__logement-text {
+  flex: 1;
+  min-width: 0;
   display: flex;
   flex-direction: column;
+  gap: 4rpx;
 }
 
-.prop-title {
+.dv__logement-title {
   font-size: 28rpx;
-  font-weight: 700;
-  color: #0F1E3D;
-  margin-bottom: 8rpx;
-}
-
-.prop-sub {
-  font-size: 24rpx;
-  color: #5B6475;
-  margin-bottom: 6rpx;
-}
-
-.prop-bailleur {
-  font-size: 22rpx;
-  color: #8C96A6;
-  font-weight: 500;
-}
-
-/* Section Heading */
-.section-heading {
-  margin-bottom: 28rpx;
-}
-
-.section-title {
-  display: block;
-  font-size: 36rpx;
   font-weight: 800;
-  color: #0F1E3D;
-  margin-bottom: 8rpx;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.section-desc {
-  display: block;
+.dv__logement-price {
   font-size: 26rpx;
   color: #5B6475;
-  line-height: 1.4;
 }
 
-/* Slots */
-.slots-container {
+.dv__logement-owner {
   display: flex;
-  flex-direction: column;
-  gap: 24rpx;
-  margin-bottom: 36rpx;
-}
-
-.slot-group {
-  background-color: #FFFFFF;
-  border-radius: 20rpx;
-  padding: 24rpx;
-  border: 1rpx solid #ECEFF2;
-}
-
-.slot-date-label {
-  display: block;
-  font-size: 28rpx;
+  align-items: center;
+  gap: 8rpx;
+  font-size: 24rpx;
   font-weight: 700;
-  color: #0F1E3D;
-  margin-bottom: 18rpx;
+  color: #11643F;
 }
 
-.slot-chips-row {
+.dv__owner-ic {
+  width: 24rpx;
+  height: 24rpx;
+}
+
+/* --- Étapes -------------------------------------------------------------- */
+.dv__step {
+  padding: 44rpx 40rpx 20rpx;
   display: flex;
-  flex-wrap: wrap;
+  align-items: center;
+  gap: 20rpx;
+}
+
+.dv__step--first {
+  padding: 44rpx 32rpx 8rpx 40rpx;
+}
+
+.dv__num {
+  width: 52rpx;
+  height: 52rpx;
+  flex: 0 0 52rpx;
+  border-radius: 26rpx;
+  background: #0F1E3D;
+  color: #FFFFFF;
+  font-size: 26rpx;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dv__step-title {
+  flex: 1;
+  font-size: 34rpx;
+  font-weight: 800;
+}
+
+.dv__nav {
+  width: 80rpx;
+  height: 80rpx;
+  box-sizing: border-box;
+  border-radius: 40rpx;
+  border: 2rpx solid #E4E7EE;
+  background: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dv__nav-ic {
+  width: 36rpx;
+  height: 36rpx;
+}
+
+.dv__hint {
+  display: block;
+  margin: 0 40rpx 20rpx 112rpx;
+  font-size: 24rpx;
+  color: #5B6475;
+}
+
+/* --- Jours --------------------------------------------------------------- */
+.dv__days {
+  padding: 0 32rpx;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 16rpx;
 }
 
-.slot-chip {
-  padding: 16rpx 36rpx;
-  border-radius: 16rpx;
-  background-color: #F4F6F9;
-  border: 2rpx solid transparent;
-  transition: all 0.2s ease;
-}
-
-.slot-chip--active {
-  background-color: #FCE8EF;
-  border-color: #C8235F;
-}
-
-.slot-chip-text {
-  font-size: 28rpx;
-  font-weight: 600;
-  color: #0F1E3D;
-}
-
-.slot-chip--active .slot-chip-text {
-  color: #C8235F;
-  font-weight: 700;
-}
-
-/* Message Section */
-.message-section {
-  margin-bottom: 30rpx;
-}
-
-.message-label {
-  display: block;
-  font-size: 28rpx;
-  font-weight: 700;
-  color: #0F1E3D;
-  margin-bottom: 14rpx;
-}
-
-.input-card {
-  background-color: #FFFFFF;
-  border-radius: 20rpx;
-  border: 1rpx solid #ECEFF2;
-  padding: 20rpx;
-}
-
-.message-textarea {
-  width: 100%;
-  height: 130rpx;
-  font-size: 26rpx;
-  color: #0F1E3D;
-}
-
-.textarea-ph {
-  color: #A0AAB8;
-}
-
-/* Info Notice Box */
-.info-notice-box {
-  display: flex;
-  align-items: flex-start;
-  gap: 14rpx;
-  background-color: #F1F4F9;
-  border-radius: 16rpx;
-  padding: 20rpx;
-  margin-bottom: 40rpx;
-}
-
-.info-icon {
-  font-size: 26rpx;
-  color: #5B6475;
-  font-weight: 700;
-  margin-top: 2rpx;
-}
-
-.info-text {
-  flex: 1;
-  font-size: 24rpx;
-  color: #5B6475;
-  line-height: 1.4;
-}
-
-.bottom-spacer {
-  height: 220rpx;
-}
-
-/* Sticky Bottom Action Bar */
-.bottom-action-bar {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background-color: #FFFFFF;
-  padding: 20rpx 32rpx;
-  padding-bottom: calc(20rpx + env(safe-area-inset-bottom));
-  box-shadow: 0 -4rpx 20rpx rgba(15, 30, 61, 0.08);
-  border-top: 1rpx solid #EAECEF;
+.dv__day {
   display: flex;
   flex-direction: column;
   align-items: center;
-  z-index: 100;
+  gap: 4rpx;
+  padding: 20rpx 8rpx;
+  border-radius: 32rpx;
+  border: 4rpx solid #E4E7EE;
+  background: #FFFFFF;
+  color: #0F1E3D;
 }
 
-.selection-status-text {
-  font-size: 24rpx;
-  color: #5B6475;
-  margin-bottom: 14rpx;
-}
-
-.btn-submit-demande {
-  width: 100%;
-  height: 96rpx;
-  border-radius: 48rpx;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 32rpx;
-  font-weight: 700;
-  border: none;
-}
-
-.btn-submit--active {
-  background-color: #C8235F;
+.dv__day--on {
+  background: #0F1E3D;
+  border-color: #0F1E3D;
   color: #FFFFFF;
 }
 
-.btn-submit--disabled {
-  background-color: #E2E6EC;
-  color: #8C96A6;
+.dv__day--off {
+  background: #F7F8FA;
+  border-color: #F7F8FA;
+  color: #A3AAB8;
 }
 
+.dv__dow {
+  font-size: 24rpx;
+  font-weight: 700;
+}
+
+.dv__date {
+  font-size: 40rpx;
+  font-weight: 800;
+  line-height: 1.1;
+}
+
+.dv__count {
+  margin-top: 4rpx;
+  padding: 4rpx 14rpx;
+  border-radius: 999rpx;
+  font-size: 22rpx;
+  font-weight: 800;
+  background: #E2F0EA;
+  color: #0D4F31;
+}
+
+.dv__day--on .dv__count {
+  background: rgba(255, 255, 255, 0.16);
+  color: #FFFFFF;
+}
+
+.dv__day--off .dv__count {
+  background: transparent;
+  color: #A3AAB8;
+}
+
+/* --- Heures -------------------------------------------------------------- */
+.dv__slots {
+  padding: 0 32rpx;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20rpx;
+}
+
+.dv__slot {
+  height: 112rpx;
+  box-sizing: border-box;
+  border-radius: 32rpx;
+  border: 4rpx solid #E4E7EE;
+  background: #FFFFFF;
+  font-size: 34rpx;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12rpx;
+}
+
+.dv__slot--on {
+  background: #C8235F;
+  border-color: #C8235F;
+  color: #FFFFFF;
+}
+
+.dv__slot-ic {
+  width: 32rpx;
+  height: 32rpx;
+}
+
+.dv__write {
+  margin: 24rpx 40rpx 0;
+  min-height: 80rpx;
+  display: inline-flex;
+  align-items: center;
+  gap: 12rpx;
+  font-size: 26rpx;
+  font-weight: 700;
+  color: #C8235F;
+}
+
+.dv__write-ic {
+  width: 32rpx;
+  height: 32rpx;
+}
+
+/* --- Message ------------------------------------------------------------- */
+.dv__msg {
+  padding: 28rpx 32rpx 0;
+}
+
+.dv__msg-add {
+  height: 100rpx;
+  border-radius: 28rpx;
+  border: 2rpx dashed #C9CFDA;
+  background: #FFFFFF;
+  font-size: 28rpx;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dv__msg-label {
+  display: block;
+  margin: 0 8rpx 16rpx;
+  font-size: 28rpx;
+  font-weight: 800;
+}
+
+.dv__quick {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16rpx;
+  margin-bottom: 16rpx;
+}
+
+.dv__quick-chip {
+  height: 72rpx;
+  padding: 0 24rpx;
+  box-sizing: border-box;
+  border-radius: 999rpx;
+  border: 2rpx solid #F3C3D5;
+  background: #FDF1F5;
+  color: #9E1749;
+  font-size: 26rpx;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+}
+
+.dv__textarea {
+  width: 100%;
+  height: 180rpx;
+  box-sizing: border-box;
+  padding: 24rpx;
+  border-radius: 28rpx;
+  border: 2rpx solid #E4E7EE;
+  font-size: 30rpx;
+  color: #0F1E3D;
+}
+
+.dv__placeholder {
+  color: #7A8294;
+}
+
+/* --- Louer sans visite --------------------------------------------------- */
+.dv__remote {
+  margin: 36rpx 32rpx 0;
+  padding: 28rpx;
+  border-radius: 36rpx;
+  background: #0F1E3D;
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  gap: 24rpx;
+}
+
+.dv__remote-ic {
+  width: 88rpx;
+  height: 88rpx;
+  flex: 0 0 88rpx;
+  border-radius: 28rpx;
+  background: rgba(255, 255, 255, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dv__remote-text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.dv__remote-title {
+  font-size: 30rpx;
+  font-weight: 800;
+}
+
+.dv__remote-sub {
+  font-size: 24rpx;
+  color: #C9D0DE;
+}
+
+.dv__remote-chev {
+  width: 32rpx;
+  height: 32rpx;
+}
+
+.dv__bottom-spacer {
+  height: calc(280rpx + env(safe-area-inset-bottom));
+}
+
+/* --- Barre d'envoi ------------------------------------------------------- */
+.dv__bar {
+  flex-direction: column;
+  gap: 16rpx;
+  padding-top: 20rpx;
+}
+
+.dv__choice {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12rpx;
+  font-size: 28rpx;
+  font-weight: 700;
+}
+
+.dv__choice-ic {
+  width: 32rpx;
+  height: 32rpx;
+}
+
+.dv__send {
+  flex: none;
+  height: 108rpx;
+  font-size: 32rpx;
+}
+
+/* --- Confirmation -------------------------------------------------------- */
+.dv__done {
+  min-height: calc(100vh - 240rpx);
+  box-sizing: border-box;
+  padding: 52rpx 40rpx calc(48rpx + env(safe-area-inset-bottom));
+  display: flex;
+  flex-direction: column;
+}
+
+.dv__done-ic {
+  align-self: center;
+  width: 144rpx;
+  height: 144rpx;
+  border-radius: 72rpx;
+  background: #E2F0EA;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dv__done-check {
+  width: 68rpx;
+  height: 68rpx;
+}
+
+.dv__done-title {
+  margin: 32rpx 0 12rpx;
+  font-size: 44rpx;
+  font-weight: 800;
+  text-align: center;
+}
+
+.dv__done-text {
+  font-size: 28rpx;
+  line-height: 1.5;
+  color: #5B6475;
+  text-align: center;
+}
+
+.dv__done-when {
+  margin-top: 44rpx;
+  padding: 28rpx 32rpx;
+  border-radius: 36rpx;
+  background: #F7F8FA;
+  display: flex;
+  align-items: center;
+  gap: 24rpx;
+}
+
+.dv__done-cal {
+  width: 96rpx;
+  height: 96rpx;
+  flex: 0 0 96rpx;
+  border-radius: 28rpx;
+  background: #0F1E3D;
+  color: #FFFFFF;
+  line-height: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.dv__done-dow {
+  font-size: 20rpx;
+  font-weight: 700;
+}
+
+.dv__done-num {
+  font-size: 36rpx;
+  font-weight: 800;
+}
+
+.dv__done-when-text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.dv__done-full {
+  font-size: 30rpx;
+  font-weight: 800;
+}
+
+.dv__done-place {
+  font-size: 26rpx;
+  color: #5B6475;
+}
+
+.dv__done-status {
+  margin-top: 28rpx;
+  padding: 28rpx 32rpx;
+  border-radius: 32rpx;
+  border: 2rpx solid #E4E7EE;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.dv__done-status-label {
+  font-size: 28rpx;
+  font-weight: 800;
+}
+
+.dv__done-badge {
+  font-size: 24rpx;
+  font-weight: 800;
+  color: #6B4A00;
+  background: #FFF4E0;
+  padding: 10rpx 20rpx;
+  border-radius: 999rpx;
+}
+
+.dv__done-actions {
+  margin-top: auto;
+  padding-top: 40rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.dv__done-follow {
+  flex: none;
+  height: 112rpx;
+  font-size: 32rpx;
+}
+
+.dv__done-edit {
+  flex: none;
+  height: 96rpx;
+  border-radius: 28rpx;
+  font-size: 28rpx;
+}

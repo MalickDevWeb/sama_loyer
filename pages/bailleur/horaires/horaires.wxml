@@ -1,0 +1,101 @@
+<view class="hor">
+  <!-- Barre du haut -->
+  <view class="sl-topbar" style="padding-top: {{ statusBarHeight }}px;">
+    <view class="sl-topbar__inner">
+      <view class="sl-icon-btn" hover-class="sl-hover" bindtap="onBack" aria-label="Retour aux demandes">
+        <view class="ic ic-back-navy"></view>
+      </view>
+      <text class="sl-topbar__title">Mes horaires de visite</text>
+    </view>
+  </view>
+
+  <view class="hor__body" style="padding-top: {{ statusBarHeight + 60 }}px;">
+    <text class="hor__intro">Choisis quand tu peux faire visiter. Les locataires voient seulement ces horaires.</text>
+
+    <!-- Logement -->
+    <text class="hor__label">Pour quel logement ?</text>
+    <scroll-view class="hor__homes" scroll-x="{{ true }}" enhanced="{{ true }}" show-scrollbar="{{ false }}">
+      <view class="hor__homes-row">
+        <view
+          wx:for="{{ homes }}"
+          wx:key="*this"
+          class="hor__home {{ home === index ? 'hor__home--on' : '' }}"
+          data-index="{{ index }}"
+          bindtap="onPickHome"
+        >{{ item }}</view>
+      </view>
+    </scroll-view>
+
+    <!-- Semaine type -->
+    <view class="hor__card">
+      <view class="hor__card-head">
+        <text class="hor__card-title">Chaque semaine</text>
+        <text class="hor__muted">{{ totalText }}</text>
+      </view>
+      <view wx:for="{{ week }}" wx:for-item="day" wx:for-index="d" wx:key="name" class="hor__day">
+        <view class="hor__day-head">
+          <text class="hor__day-name">{{ day.name }}</text>
+          <view
+            class="sl-switch {{ day.open ? 'sl-switch--on' : '' }}"
+            data-index="{{ d }}"
+            bindtap="onToggleDay"
+            aria-label="Visites le {{ day.name }}"
+          >
+            <view class="sl-switch__knob"></view>
+          </view>
+        </view>
+        <view wx:if="{{ day.open }}" class="hor__hours">
+          <view
+            wx:for="{{ day.hours }}"
+            wx:for-item="h"
+            wx:key="label"
+            class="hor__hour {{ h.on ? 'hor__hour--on' : '' }}"
+            data-day="{{ d }}"
+            data-hour="{{ h.label }}"
+            bindtap="onToggleHour"
+          >{{ h.label }}</view>
+        </view>
+        <text wx:else class="hor__closed">Pas de visite ce jour-là</text>
+      </view>
+    </view>
+
+    <!-- Jours bloqués -->
+    <view class="hor__card hor__card--pad">
+      <view class="hor__card-head hor__card-head--flat">
+        <text class="hor__card-title">Jours où je suis absent</text>
+        <view class="hor__add" hover-class="sl-hover" bindtap="onAddBlock">+ Ajouter</view>
+      </view>
+      <view wx:for="{{ blocks }}" wx:key="*this" class="hor__block">
+        <text>{{ item }}</text>
+        <view class="hor__block-remove" hover-class="sl-hover" data-index="{{ index }}" bindtap="onRemoveBlock" aria-label="Retirer {{ item }}">
+          <view class="ic ic-close-red"></view>
+        </view>
+      </view>
+      <text wx:if="{{ !blocks.length }}" class="hor__muted">Aucun jour bloqué.</text>
+    </view>
+
+    <!-- Location sans visite -->
+    <view class="hor__card hor__card--pad hor__remote">
+      <view class="hor__remote-text">
+        <text class="hor__card-title">Accepter la location sans visite</text>
+        <text class="hor__remote-sub">Pour les locataires à distance (diaspora, autres villes). Il faut une vidéo de visite dans l'annonce.</text>
+      </view>
+      <view
+        class="sl-switch {{ remote ? 'sl-switch--on' : '' }}"
+        bindtap="onToggleRemote"
+        aria-label="Accepter la location sans visite"
+      >
+        <view class="sl-switch__knob"></view>
+      </view>
+    </view>
+
+    <view class="sl-bottom-spacer"></view>
+  </view>
+
+  <!-- Barre du bas -->
+  <view class="sl-bottombar">
+    <view class="sl-btn {{ saved ? 'sl-btn--success-soft' : 'sl-btn--berry' }}" hover-class="sl-hover" bindtap="onSave">
+      {{ saved ? 'Horaires enregistrés · visibles par les locataires' : 'Enregistrer mes horaires' }}
+    </view>
+  </view>
+</view>

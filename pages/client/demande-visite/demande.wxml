@@ -1,90 +1,155 @@
-<view class="demande-page">
-  <!-- Top Bar with Back Button -->
-  <view class="nav-bar-custom" style="padding-top: {{ statusBarHeight }}px; height: {{ navBarHeight }}px;">
-    <view class="btn-back" bindtap="onGoBack">
-      <text class="arrow-back">‹</text>
+<view class="dv">
+  <!-- Barre du haut -->
+  <view class="sl-topbar" style="padding-top: {{ statusBarHeight }}px;">
+    <view class="sl-topbar__inner">
+      <view class="sl-icon-btn" hover-class="sl-hover" bindtap="onGoBack" aria-label="Retour à l'annonce">
+        <view class="ic ic-back-navy"></view>
+      </view>
+      <text class="sl-topbar__title">{{ sent ? 'Visite demandée' : 'Demande de visite' }}</text>
     </view>
-    <text class="nav-title">Demande de visite</text>
-    <view class="nav-placeholder"></view>
   </view>
+  <view style="height: {{ statusBarHeight }}px;"></view>
+  <view class="dv__topbar-space"></view>
 
-  <scroll-view class="demande-scroll" scroll-y="{{true}}" enhanced="{{true}}" show-scrollbar="{{false}}" style="padding-top: {{ statusBarHeight + navBarHeight }}px;">
-    
-    <!-- Résumé du logement -->
-    <view class="property-summary-card" wx:if="{{ logement }}">
-      <view class="property-thumb">
-        <view class="thumb-house-icon"></view>
-      </view>
-      <view class="property-info">
-        <text class="prop-title">{{ logement.title }}</text>
-        <text class="prop-sub">{{ logement.sub }}</text>
-        <text class="prop-bailleur">{{ logement.bailleur }}</text>
-      </view>
-    </view>
-
-    <!-- Titre section créneau -->
-    <view class="section-heading">
-      <text class="section-title">Choisis un créneau</text>
-      <text class="section-desc">Ce sont les horaires proposés par le bailleur. Une visite dure environ 30 minutes.</text>
-    </view>
-
-    <!-- Groupes de créneaux -->
-    <view class="slots-container">
-      <block wx:for="{{ slotGroups }}" wx:key="date">
-        <view class="slot-group">
-          <text class="slot-date-label">{{ item.date }}</text>
-          <view class="slot-chips-row">
-            <block wx:for="{{ item.times }}" wx:for-item="time" wx:key="*this">
-              <view 
-                class="slot-chip {{ selectedSlot === (item.date + ' · ' + time) ? 'slot-chip--active' : '' }}"
-                data-date="{{ item.date }}"
-                data-time="{{ time }}"
-                bindtap="onSelectSlot"
-              >
-                <text class="slot-chip-text">{{ time }}</text>
-              </view>
-            </block>
-          </view>
+  <!-- ===== FORMULAIRE ===== -->
+  <block wx:if="{{ !sent }}">
+    <view class="dv__logement">
+      <view class="dv__thumb" style="background: {{ logement.tint }};"></view>
+      <view class="dv__logement-text">
+        <text class="dv__logement-title">{{ logement.title }}</text>
+        <text class="dv__logement-price">{{ logement.price }}</text>
+        <view class="dv__logement-owner">
+          <view class="ic ic-shield-check-green dv__owner-ic"></view>
+          <text>{{ logement.owner }}</text>
         </view>
+      </view>
+    </view>
+
+    <!-- Étape 1 : jour -->
+    <view class="dv__step dv__step--first">
+      <text class="dv__num">1</text>
+      <text class="dv__step-title">Quel jour ?</text>
+      <view class="dv__nav" hover-class="{{ page > 0 ? 'sl-hover' : 'none' }}" bindtap="onPrevWeek" aria-label="Jours précédents">
+        <view class="ic {{ page > 0 ? 'ic-back-navy' : 'ic-back-line' }} dv__nav-ic"></view>
+      </view>
+      <view class="dv__nav" hover-class="{{ page < pageCount - 1 ? 'sl-hover' : 'none' }}" bindtap="onNextWeek" aria-label="Jours suivants">
+        <view class="ic {{ page < pageCount - 1 ? 'ic-chevron-navy' : 'ic-chevron-line' }} dv__nav-ic"></view>
+      </view>
+    </view>
+    <text class="dv__hint">{{ weekLabel }} · horaires fixés par le bailleur</text>
+    <view class="dv__days">
+      <view
+        wx:for="{{ days }}"
+        wx:key="index"
+        class="dv__day {{ item.on ? 'dv__day--on' : '' }} {{ item.off ? 'dv__day--off' : '' }}"
+        data-index="{{ item.index }}"
+        bindtap="onPickDay"
+        aria-label="{{ item.aria }}"
+      >
+        <text class="dv__dow">{{ item.dow }}</text>
+        <text class="dv__date">{{ item.num }}</text>
+        <text class="dv__count">{{ item.count }}</text>
+      </view>
+    </view>
+
+    <!-- Étape 2 : heure -->
+    <view class="dv__step">
+      <text class="dv__num">2</text>
+      <text class="dv__step-title">À quelle heure ?</text>
+    </view>
+    <text class="dv__hint">{{ dayFull }}</text>
+    <view class="dv__slots">
+      <view
+        wx:for="{{ slots }}"
+        wx:key="label"
+        class="dv__slot {{ item.on ? 'dv__slot--on' : '' }}"
+        data-index="{{ index }}"
+        bindtap="onPickSlot"
+      >
+        <view wx:if="{{ item.on }}" class="ic ic-check-white dv__slot-ic"></view>
+        <text>{{ item.label }}</text>
+      </view>
+    </view>
+    <view class="dv__write" hover-class="sl-hover" bindtap="onWriteOwner">
+      <view class="ic ic-chat-berry dv__write-ic"></view>
+      <text>Aucun horaire ne me convient : écrire au bailleur</text>
+    </view>
+
+    <!-- Message facultatif -->
+    <view class="dv__msg">
+      <view wx:if="{{ !msgOpen }}" class="dv__msg-add" hover-class="sl-hover" bindtap="onShowMessage">+ Ajouter un message (facultatif)</view>
+      <block wx:else>
+        <text class="dv__msg-label">Message au bailleur</text>
+        <view class="dv__quick">
+          <view
+            wx:for="{{ quick }}"
+            wx:key="*this"
+            class="dv__quick-chip"
+            hover-class="sl-hover"
+            data-text="{{ item }}"
+            bindtap="onQuickMessage"
+          >{{ item }}</view>
+        </view>
+        <textarea
+          class="dv__textarea"
+          value="{{ message }}"
+          placeholder="Écris ton message…"
+          placeholder-class="dv__placeholder"
+          maxlength="300"
+          auto-height="{{ false }}"
+          bindinput="onInputMessage"
+        />
       </block>
     </view>
 
-    <!-- Champ message facultatif -->
-    <view class="message-section">
-      <text class="message-label">Message au bailleur (facultatif)</text>
-      <view class="input-card">
-        <textarea 
-          class="message-textarea" 
-          placeholder="Ex. Je viendrai avec ma sœur." 
-          placeholder-class="textarea-ph"
-          value="{{ message }}"
-          bindinput="onInputMessage"
-          maxlength="200"
-        />
+    <!-- Louer sans visite -->
+    <view class="dv__remote" hover-class="sl-hover" bindtap="onRentRemote">
+      <view class="dv__remote-ic"><view class="ic ic-video-white"></view></view>
+      <view class="dv__remote-text">
+        <text class="dv__remote-title">Tu ne peux pas venir ?</text>
+        <text class="dv__remote-sub">Loue sans visite, grâce aux photos et à la vidéo</text>
+      </view>
+      <view class="ic ic-chevron-white dv__remote-chev"></view>
+    </view>
+
+    <view class="dv__bottom-spacer"></view>
+
+    <view class="sl-bottombar dv__bar">
+      <view class="dv__choice">
+        <view class="ic ic-cal-berry dv__choice-ic"></view>
+        <text>{{ choiceText }}</text>
+      </view>
+      <view class="sl-btn {{ hasSlot ? 'sl-btn--berry' : 'sl-btn--soft' }} dv__send" hover-class="{{ hasSlot ? 'sl-hover' : 'none' }}" bindtap="onSubmitDemande">
+        {{ hasSlot ? 'Envoyer ma demande' : 'Choisis une heure' }}
+      </view>
+    </view>
+  </block>
+
+  <!-- ===== CONFIRMATION ===== -->
+  <view wx:else class="dv__done">
+    <view class="dv__done-ic"><view class="ic ic-check-green dv__done-check"></view></view>
+    <text class="dv__done-title">Demande envoyée !</text>
+    <text class="dv__done-text">{{ logement.ownerName }} a reçu ta demande. Tu seras prévenu·e dès qu'il répond.</text>
+
+    <view class="dv__done-when">
+      <view class="dv__done-cal">
+        <text class="dv__done-dow">{{ selDow }}</text>
+        <text class="dv__done-num">{{ selNum }}</text>
+      </view>
+      <view class="dv__done-when-text">
+        <text class="dv__done-full">{{ selFull }}</text>
+        <text class="dv__done-place">{{ logement.title }}</text>
       </view>
     </view>
 
-    <!-- Info box discrète -->
-    <view class="info-notice-box">
-      <view class="info-icon">ℹ</view>
-      <text class="info-text">L'adresse exacte te sera envoyée quand le bailleur aura accepté. La visite est gratuite.</text>
+    <view class="dv__done-status">
+      <text class="dv__done-status-label">Statut</text>
+      <text class="dv__done-badge">En attente du bailleur</text>
     </view>
 
-    <!-- Espacement pour éviter le masquage par la barre fixe -->
-    <view class="bottom-spacer"></view>
-  </scroll-view>
-
-  <!-- Sticky Bottom CTA -->
-  <view class="bottom-action-bar">
-    <text class="selection-status-text">
-      {{ selectedSlot ? 'Créneau : ' + selectedSlot : 'Choisis un créneau pour continuer' }}
-    </text>
-    <button 
-      class="btn-submit-demande {{ selectedSlot ? 'btn-submit--active' : 'btn-submit--disabled' }}" 
-      bindtap="onSubmitDemande"
-    >
-      Envoyer la demande
-    </button>
+    <view class="dv__done-actions">
+      <view class="sl-btn sl-btn--berry dv__done-follow" hover-class="sl-hover" bindtap="onFollowVisits">Suivre mes visites</view>
+      <view class="sl-btn sl-btn--outline dv__done-edit" hover-class="sl-hover" bindtap="onEditSlot">Changer l'horaire</view>
+    </view>
   </view>
 </view>
-

@@ -1,82 +1,76 @@
-<view class="favorites-page">
-  <scroll-view class="favorites-scroll" scroll-y="{{true}}" enhanced="{{true}}" show-scrollbar="{{false}}">
-    
-    <!-- En-tête -->
-    <view class="fav-header" style="padding-top: {{ statusBarHeight + 14 }}px;">
-      <view class="fav-title-row">
-        <view class="btn-back" bindtap="onBackTap">‹</view>
-        <text class="page-title">{{ i18n.favoris.title }}</text>
-      </view>
-      <text class="page-subtitle">{{ subtitle }}</text>
+<view class="fav">
+  <!-- En-tête -->
+  <view class="fav__header" style="padding-top: {{ statusBarHeight + 12 }}px;">
+    <view class="sl-icon-btn fav__back" hover-class="sl-hover" bindtap="onBackTap" aria-label="Retour">
+      <view class="ic ic-back-navy"></view>
+    </view>
+    <text class="fav__title">{{ i18n.favoris.title }}</text>
+    <text class="fav__subtitle">{{ subtitle }}</text>
+  </view>
 
-      <!-- Filtres Tous / Encore disponibles -->
-      <view class="fav-filter-pills">
-        <view 
-          class="fav-pill {{ activeTabFilter === 'tous' ? 'fav-pill--active' : '' }}"
-          data-filter="tous"
-          bindtap="onFilterSelect"
-        >
-          {{ i18n.favoris.filterAll }}
-        </view>
-        <view 
-          class="fav-pill {{ activeTabFilter === 'dispo' ? 'fav-pill--active' : '' }}"
-          data-filter="dispo"
-          bindtap="onFilterSelect"
-        >
-          {{ i18n.favoris.filterAvailable }}
-        </view>
+  <!-- Tous / Encore disponibles -->
+  <view class="fav__tabs">
+    <view
+      class="fav__pill {{ filter === 'tous' ? 'fav__pill--on' : '' }}"
+      data-filter="tous"
+      bindtap="onFilterSelect"
+    >{{ i18n.favoris.filterAll }}</view>
+    <view
+      class="fav__pill {{ filter === 'dispo' ? 'fav__pill--on' : '' }}"
+      data-filter="dispo"
+      bindtap="onFilterSelect"
+    >{{ i18n.favoris.filterAvailable }}</view>
+  </view>
+
+  <!-- Liste -->
+  <view class="fav__list">
+    <view
+      wx:for="{{ visible }}"
+      wx:key="id"
+      class="fav__card {{ item.status === 'rented' ? 'fav__card--gone' : '' }}"
+      hover-class="fav__card--hover"
+      data-id="{{ item.id }}"
+      bindtap="onCardTap"
+      aria-label="Ouvrir l’annonce : {{ item.title }}"
+    >
+      <view class="fav__thumb" style="background: {{ item.bg }};">
+        <view class="fav__house"></view>
+        <text wx:if="{{ item.isPremium }}" class="fav__premium">{{ i18n.common.premium }}</text>
+      </view>
+
+      <view class="fav__info">
+        <view class="fav__price">{{ item.price }} <text class="fav__unit">FCFA / mois</text></view>
+        <text class="fav__name">{{ item.title }}</text>
+        <text class="fav__place">{{ item.place }}</text>
+        <text class="fav__status fav__status--{{ item.status }}">{{ item.statusText }}</text>
+        <text class="fav__saved">{{ item.saved }}</text>
+      </view>
+
+      <view
+        class="fav__heart"
+        hover-class="sl-hover"
+        data-id="{{ item.id }}"
+        catchtap="onRemoveFavorite"
+        aria-label="Retirer {{ item.title }} des favoris"
+      >
+        <view class="ic ic-heart-fill-berry fav__heart-ic"></view>
       </view>
     </view>
 
-    <!-- Liste des logements favoris -->
-    <view class="fav-list">
-      <block wx:for="{{ filteredList }}" wx:key="id">
-        <view class="fav-card" data-id="{{ item.id }}" bindtap="onCardTap">
-          <!-- Thumbnail illustration maison avec bouton coeur -->
-          <view class="fav-thumb" style="background-color: {{ item.bg }};">
-            <view class="fav-thumb__house"></view>
-            <view wx:if="{{ item.isPremium }}" class="badge-premium-pill">
-              {{ i18n.common.premium }}
-            </view>
-            <view class="fav-btn-heart" data-id="{{ item.id }}" catchtap="onRemoveFavorite">
-              <text class="heart-icon">♥</text>
-            </view>
-          </view>
-
-          <!-- Détails -->
-          <view class="fav-content">
-            <!-- Prix -->
-            <view class="fav-price-row">
-              <text class="fav-price">{{ item.price }}</text>
-              <text class="fav-unit">{{ item.unit }}</text>
-            </view>
-
-            <!-- Titre & Localisation -->
-            <text class="fav-title">{{ item.title }}</text>
-            <text class="fav-place">{{ item.place }}</text>
-
-            <!-- Statuts conditionnels -->
-            <view class="fav-status-row" wx:if="{{ item.status === 'disponible' }}">
-              <view class="badge-dispo">
-                <text class="check-icon">✓</text> {{ i18n.common.available }}
-              </view>
-            </view>
-
-            <view class="fav-status-row" wx:elif="{{ item.status === 'price-drop' }}">
-              <text class="price-drop-text">{{ item.priceDropLabel }}</text>
-            </view>
-
-            <view class="fav-status-row" wx:elif="{{ item.status === 'rented' }}">
-              <text class="rented-text">{{ item.statusLabel }}</text>
-            </view>
-
-            <!-- Date d'enregistrement -->
-            <text class="fav-registered-text">{{ item.registeredAt }}</text>
-          </view>
-        </view>
-      </block>
+    <!-- Vide -->
+    <view wx:if="{{ !visible.length }}" class="fav__empty">
+      <view class="fav__empty-ic"><view class="ic ic-heart-berry fav__empty-heart"></view></view>
+      <text class="fav__empty-title">{{ i18n.favoris.emptyTitle }}</text>
+      <text class="fav__empty-text">{{ i18n.favoris.emptyText }}</text>
+      <view class="sl-btn sl-btn--berry fav__empty-btn" hover-class="sl-hover" bindtap="onSearchHome">{{ i18n.favoris.emptyCta }}</view>
     </view>
+  </view>
 
-    <view class="scroll-spacer"></view>
-  </scroll-view>
+  <!-- Annuler la suppression -->
+  <view wx:if="{{ lastRemoved }}" class="fav__undo">
+    <text class="fav__undo-text">{{ i18n.favoris.removed }}</text>
+    <view class="fav__undo-btn" hover-class="sl-hover" bindtap="onUndo">{{ i18n.favoris.undo }}</view>
+  </view>
+
+  <view class="fav__bottom"></view>
 </view>

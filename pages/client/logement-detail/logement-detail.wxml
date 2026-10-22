@@ -85,6 +85,16 @@
         </view>
       </view>
 
+      <!-- Louer à distance -->
+      <view class="remote-card" hover-class="remote-card--hover" bindtap="onLouerSansVisite">
+        <view class="ic ic-video-white remote-card__icon"></view>
+        <view class="remote-card__text">
+          <text class="remote-card__title">Tu es loin ? Loue sans visite</text>
+          <text class="remote-card__sub">Accepté par ce bailleur · vidéo disponible</text>
+        </view>
+        <view class="ic ic-chevron-white remote-card__chev"></view>
+      </view>
+
       <!-- SECTION : Prix et conditions -->
       <view class="section-block">
         <text class="section-title">Prix et conditions</text>
@@ -214,15 +224,30 @@
   <!-- ======================================================== -->
   <!-- BARRE D'ACTIONS FIXE INFÉRIEURE -->
   <!-- ======================================================== -->
-  <view class="fixed-action-bar">
-    <button class="btn-contact-outline" bindtap="onContactTap">
-      <view class="icon-svg icon-chat-navy"></view>
-      <text>Contacter</text>
-    </button>
-    <button class="btn-visit-primary" bindtap="onOpenVisitModal">
-      <view class="icon-svg icon-calendar-white"></view>
-      <text>Demander une visite</text>
-    </button>
+  <view class="fixed-action-bar fixed-action-bar--entry">
+    <view class="entry-summary">
+      <view class="entry-summary__left">
+        <text class="entry-summary__label">À payer pour entrer</text>
+        <text class="entry-summary__total">{{ logement.totalEntreeShort }}</text>
+      </view>
+      <view class="entry-summary__right">
+        <text>{{ logement.entreeDetail }}</text>
+        <text class="entry-summary__maxit">Payable avec Max it</text>
+      </view>
+    </view>
+    <view class="entry-actions">
+      <button class="btn-contact-square" bindtap="onContactTap" aria-label="Contacter le bailleur">
+        <view class="ic ic-chat-navy"></view>
+      </button>
+      <button class="btn-contact-outline" bindtap="onOpenVisitModal">
+        <view class="ic ic-cal-navy entry-actions__icon"></view>
+        <text>Visiter</text>
+      </button>
+      <button class="btn-visit-primary" bindtap="onLouerSansVisite">
+        <view class="ic ic-home-door-white entry-actions__icon"></view>
+        <text>Louer sans visite</text>
+      </button>
+    </view>
   </view>
 
   <!-- ======================================================== -->

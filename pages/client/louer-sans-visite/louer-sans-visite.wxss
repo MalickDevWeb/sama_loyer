@@ -1,0 +1,161 @@
+@import "/styles/sama-ui.wxss";
+
+.lsv__body {
+  padding-left: 32rpx;
+  padding-right: 32rpx;
+  box-sizing: border-box;
+}
+
+.lsv__intro {
+  padding: 36rpx 8rpx 32rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+}
+
+.lsv__h2 {
+  font-size: 44rpx;
+  font-weight: 800;
+}
+
+.lsv__lead {
+  font-size: 28rpx;
+  line-height: 1.5;
+  color: #5B6475;
+}
+
+/* Étapes numérotées */
+.lsv__step {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+  margin: 0 8rpx 20rpx;
+}
+
+.lsv__step--spaced {
+  margin-top: 44rpx;
+}
+
+.lsv__step-num {
+  width: 52rpx;
+  height: 52rpx;
+  border-radius: 26rpx;
+  background: #0F1E3D;
+  color: #FFFFFF;
+  font-size: 26rpx;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.lsv__step-title {
+  font-size: 32rpx;
+  font-weight: 800;
+}
+
+/* Photos et vidéo */
+.lsv__media-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.lsv__media {
+  display: flex;
+  align-items: center;
+  gap: 24rpx;
+  padding: 20rpx;
+  border-radius: 32rpx;
+  background: #FFFFFF;
+  border: 4rpx solid #E4E7EE;
+}
+
+.lsv__media--seen {
+  background: #EEF7F2;
+  border-color: #BFDDCD;
+}
+
+.lsv__media-thumb {
+  width: 104rpx;
+  height: 104rpx;
+  flex: 0 0 104rpx;
+  border-radius: 24rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.lsv__media-text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.lsv__media-label {
+  font-size: 30rpx;
+  font-weight: 800;
+}
+
+.lsv__media-sub {
+  font-size: 24rpx;
+  color: #5B6475;
+}
+
+.lsv__video-call {
+  margin-top: 20rpx;
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+  padding: 24rpx 28rpx;
+  border-radius: 32rpx;
+  border: 2rpx dashed #C9CFDA;
+}
+
+.lsv__video-call .ic {
+  width: 40rpx;
+  height: 40rpx;
+}
+
+.lsv__call-title {
+  font-size: 28rpx;
+  font-weight: 800;
+}
+
+/* Garanties */
+.lsv__guards {
+  border-radius: 36rpx;
+  background: #F7F8FA;
+  padding: 12rpx 28rpx;
+}
+
+.lsv__guard {
+  display: flex;
+  gap: 20rpx;
+  align-items: flex-start;
+  padding: 20rpx 0;
+  border-bottom: 2rpx solid #E4E7EE;
+}
+
+.lsv__guard-icon {
+  width: 36rpx;
+  height: 36rpx;
+  margin-top: 2rpx;
+}
+
+.lsv__guard-title {
+  font-size: 28rpx;
+  font-weight: 800;
+}
+
+.lsv__guard-desc {
+  font-size: 24rpx;
+  line-height: 1.45;
+  color: #5B6475;
+}
+
+.lsv__checks {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}

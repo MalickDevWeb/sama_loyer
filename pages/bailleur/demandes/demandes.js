@@ -106,7 +106,7 @@ Page({
 
   onShow() {
     if (typeof this.getTabBar === 'function' && this.getTabBar()) {
-      this.getTabBar().setData({ activeTab: 'b-demandes' });
+      this.getTabBar().setData({ activeTab: 'b-messages' });
     }
   },
 
@@ -155,16 +155,20 @@ Page({
     });
   },
 
+  onOpenHoraires() {
+    wx.navigateTo({ url: '/pages/bailleur/horaires/horaires' });
+  },
+
   onProposeHoraire(e) {
     wx.navigateTo({
-      url: '/pages/client/chat/chat?id=AD'
+      url: '/pages/bailleur/conversation/conversation?id=AD'
     });
   },
 
   onOpenChat(e) {
-    const id = e.currentTarget.dataset.id;
+    const { id, name } = e.currentTarget.dataset;
     wx.navigateTo({
-      url: `/pages/client/chat/chat?id=${id}`
+      url: `/pages/bailleur/conversation/conversation?id=${id}&name=${encodeURIComponent(name || '')}`
     });
   },
 

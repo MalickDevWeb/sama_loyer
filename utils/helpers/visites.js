@@ -11,7 +11,8 @@ import { getLogementById } from '../mocks/logements';
 const STATUS_META = {
   pending: { statusLabel: 'En attente', statusClass: 'status-pending' },
   accepted: { statusLabel: 'Acceptée', statusClass: 'status-accepted' },
-  rejected: { statusLabel: 'Refusée', statusClass: 'status-rejected' }
+  rejected: { statusLabel: 'Refusée', statusClass: 'status-rejected' },
+  cancelled: { statusLabel: 'Annulée', statusClass: 'status-cancelled' }
 };
 
 function formatMoney(n) {
@@ -40,6 +41,7 @@ export function getVisites() {
         title: l.title,
         place: `${l.place} · ${formatMoney(l.price)} F`,
         bailleur: `Bailleur : ${l.bailleurName}`,
+        tint: l.tint,
         canNavigate: v.status === 'accepted',
         canMessage: v.status === 'accepted',
         canCancel: v.status === 'pending'
@@ -68,9 +70,11 @@ export function addVisite(logementId, slotLabel, message = '') {
 }
 
 /**
- * Supprime une demande de visite.
+ * Annule une demande de visite : elle reste visible avec le statut « Annulée ».
  * @param {string} id
  */
 export function cancelVisite(id) {
-  storage.set(STORAGE_KEYS.VISITES, getRawVisites().filter((v) => v.id !== id));
+  storage.set(STORAGE_KEYS.VISITES, getRawVisites().map((v) => (
+    v.id === id ? Object.assign({}, v, { status: 'cancelled', note: 'Tu as annulé cette demande.' }) : v
+  )));
 }

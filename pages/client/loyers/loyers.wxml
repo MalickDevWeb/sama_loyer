@@ -1,367 +1,197 @@
-<!-- pages/loyers/loyers.wxml -->
-<view class="mon-loyer-page">
-  <scroll-view class="mon-loyer-scroll" scroll-y="{{true}}" enhanced="{{true}}" show-scrollbar="{{false}}" style="padding-top: {{ statusBarHeight + 12 }}px;">
-    
-    <!-- En-tête de la page -->
-    <view class="page-top-header">
-      <text class="page-main-heading">Mon loyer</text>
-      <text class="page-sub-heading">2 logements · chacun avec son bailleur et ses reçus</text>
-    </view>
+<view class="loy">
+  <!-- En-tête -->
+  <view class="loy__header" style="padding-top: {{ statusBarHeight + 22 }}px;">
+    <text class="loy__title">Mon loyer</text>
+    <text class="loy__subtitle">{{ subtitle }}</text>
+  </view>
 
-    <!-- Synthèse Dark Card (Novembre - tous mes logements) -->
-    <view class="dark-synthese-card">
-      <view class="synthese-top-row">
-        <text class="synthese-month-label">Novembre · tous mes logements</text>
-        <text class="synthese-counter-badge">{{ nbPayes }} / {{ nbTotal }} payé(s)</text>
+  <!-- Synthèse du mois -->
+  <view class="loy__section">
+    <view class="loy__summary">
+      <view class="loy__summary-top">
+        <text class="loy__summary-label">Novembre · tous mes logements</text>
+        <text class="loy__summary-count">{{ paidCount }}</text>
       </view>
-      
-      <view class="synthese-amount-row">
-        <text class="synthese-amount-num">{{ totalRestant }}</text>
-        <text class="synthese-amount-desc">restent à payer sur {{ totalGlobal }}</text>
+      <view class="loy__summary-amount">
+        <text class="loy__summary-left">{{ totalLeft }}</text>
+        <text class="loy__summary-label">{{ totalLeftLabel }}</text>
       </view>
-
-      <!-- Barre de progression à 2 segments -->
-      <view class="progress-bar-track">
-        <block wx:for="{{ logements }}" wx:key="id">
-          <view class="progress-bar-segment {{ item.isPaid ? 'segment-paid' : 'segment-unpaid' }}"></view>
-        </block>
+      <view class="loy__segments">
+        <view
+          wx:for="{{ segments }}"
+          wx:key="id"
+          class="loy__segment {{ item.paid ? 'loy__segment--paid' : '' }}"
+          style="flex: {{ item.weight }} 1 0;"
+        ></view>
       </view>
     </view>
+  </view>
 
-    <!-- Sélecteur horizontal : Mes logements -->
-    <view class="section-mes-logements">
-      <text class="section-block-title">Mes logements</text>
-      <scroll-view class="logements-horizontal-scroll" scroll-x="{{true}}" show-scrollbar="{{false}}">
-        <view class="logements-row">
-          <block wx:for="{{ logements }}" wx:key="id">
-            <view 
-              class="logement-tab-card {{ selectedLogementId === item.id ? 'tab-card--selected' : '' }}"
-              data-id="{{ item.id }}"
-              bindtap="onSelectLogementTab"
-            >
-              <view class="logement-thumb-square" style="background-color: {{ item.avatarBg }};">
-                <text class="thumb-house-icon">⌂</text>
-              </view>
-              <view class="logement-tab-info">
-                <text class="tab-logement-title">{{ item.shortTitle }}</text>
-                <text class="tab-logement-price">{{ item.loyerFormatted }} / mois</text>
-                <view class="tab-status-chip {{ item.isPaid ? 'chip-paid' : 'chip-due' }}">
-                  {{ item.isPaid ? '✓ Réglé' : 'À payer' }}
-                </view>
-              </view>
-            </view>
-          </block>
-        </view>
-      </scroll-view>
-    </view>
-
-    <!-- Carte descriptive du logement sélectionné -->
-    <view class="current-selected-card">
-      <text class="selected-prop-title">{{ currentLogement.fullTitle }}</text>
-      <text class="selected-prop-sub">{{ currentLogement.place }} · Bailleur : {{ currentLogement.bailleurNom }}</text>
-      <text class="selected-prop-date">{{ currentLogement.depuis }}</text>
-    </view>
-
-    <!-- Grosse Carte Berry Pink "Loyer de novembre" -->
-    <view class="pink-due-card">
-      <view class="pink-card-header">
-        <text class="pink-card-month">{{ currentLogement.moisActuel }}</text>
-        <view class="pink-due-badge {{ currentLogement.isPaid ? 'badge-green-pill' : 'badge-white-pill' }}">
-          {{ currentLogement.isPaid ? '✓ Payé' : 'À payer' }}
-        </view>
-      </view>
-
-      <view class="pink-amount-value">
-        {{ currentLogement.loyerFormatted }}
-      </view>
-
-      <text class="pink-deadline-txt">
-        {{ currentLogement.isPaid ? 'Loyer de novembre réglé avec succès' : currentLogement.echeance }}
-      </text>
-
-      <button 
-        wx:if="{{ !currentLogement.isPaid }}" 
-        class="btn-white-pay-cta" 
-        bindtap="onOpenPayModal"
-      >
-        Payer ce loyer
-      </button>
-      <view wx:else class="paid-success-banner">
-        <text class="paid-check-symbol">✓</text>
-        <text class="paid-check-label">Reçu officiel disponible ci-dessous</text>
-      </view>
-    </view>
-
-    <!-- Deux cartes côte-à-côte (Caution & Contrat) -->
-    <view class="two-columns-row">
-      <!-- Colonne 1 : Caution -->
-      <view class="sub-info-card">
-        <text class="sub-card-label">Caution</text>
-        <text class="sub-card-value">{{ currentLogement.cautionMontant }}</text>
-        <text class="sub-card-detail">{{ currentLogement.cautionDetail }}</text>
-        <view class="mint-confirmed-badge">
-          {{ currentLogement.cautionBadge }}
-        </view>
-      </view>
-
-      <!-- Colonne 2 : Contrat -->
-      <view class="sub-info-card">
-        <text class="sub-card-label">Contrat</text>
-        <text class="sub-card-value font-navy">{{ currentLogement.contratStatut }}</text>
-        <text class="sub-card-detail">{{ currentLogement.contratDetail }}</text>
-        <view class="link-voir-contrat" bindtap="onViewContrat">
-          Voir le contrat
-        </view>
-      </view>
-    </view>
-
-    <!-- Mention légale / note de protection -->
-    <view class="disclaimer-note-wrap">
-      <text class="disclaimer-note-txt">La caution n'est pas un loyer. Elle te sera rendue à ton départ, moins les réparations prévues au contrat.</text>
-    </view>
-
-    <!-- 3 Boutons d'action rapide -->
-    <view class="three-actions-row">
-      <view class="action-card-btn" bindtap="onWriteBailleur">
-        <view class="action-icon-circle">💬</view>
-        <text class="action-btn-title">Écrire au bailleur</text>
-      </view>
-
-      <view class="action-card-btn" bindtap="onReportProblem">
-        <view class="action-icon-circle">🔧</view>
-        <text class="action-btn-title">Signaler un problème</text>
-      </view>
-
-      <view class="action-card-btn" bindtap="onPrevenirDepart">
-        <view class="action-icon-circle">🚪</view>
-        <text class="action-btn-title">Prévenir de mon départ</text>
-      </view>
-    </view>
-
-    <!-- SECTION : Historique des paiements -->
-    <view class="history-section">
-      <text class="section-block-title">Historique des paiements</text>
-      
-      <view class="payments-history-group">
-        <block wx:for="{{ currentLogement.historique }}" wx:key="id">
-          <view class="history-item-row" data-receipt="{{ item }}" bindtap="onViewReceipt">
-            <!-- Rond avec coche -->
-            <view class="history-circle {{ item.isEntry ? 'circle-slate' : 'circle-mint' }}">
-              <text class="circle-check">✓</text>
-            </view>
-
-            <!-- Infos loyer & mode -->
-            <view class="history-item-center">
-              <text class="history-item-title">{{ item.title }}</text>
-              <text class="history-item-sub">{{ item.date }}</text>
-            </view>
-
-            <!-- Montant & Reçu -->
-            <view class="history-item-right">
-              <text class="history-item-amount">{{ item.amount }}</text>
-              <text class="history-recu-link">Reçu</text>
-            </view>
-          </view>
-        </block>
-      </view>
-    </view>
-
-    <view class="bottom-spacer"></view>
-  </scroll-view>
-
-  <!-- MODALE 1 : CHOIX DU PAIEMENT (ORANGE MONEY / WAVE) -->
-  <view wx:if="{{ showPayModal }}" class="modal-backdrop" bindtap="onClosePayModal">
-    <view class="modal-sheet" catchtap="true">
-      <view class="sheet-handle"></view>
-      <text class="sheet-title">Régler {{ currentLogement.moisActuel }}</text>
-      <text class="sheet-subtitle">{{ currentLogement.fullTitle }} · {{ currentLogement.loyerFormatted }}</text>
-
-      <view class="payment-methods-grid">
-        <view 
-          class="method-choice-card {{ selectedPaymentMethod === 'orange_money' ? 'card--active' : '' }}"
-          data-method="orange_money"
-          bindtap="onSelectMethod"
+  <!-- Mes logements -->
+  <view class="loy__homes-wrap">
+    <text class="loy__h2 loy__h2--homes">Mes logements</text>
+    <scroll-view class="loy__homes" scroll-x="{{ true }}" enhanced="{{ true }}" show-scrollbar="{{ false }}">
+      <view class="loy__homes-row">
+        <view
+          wx:for="{{ homes }}"
+          wx:key="id"
+          class="loy__home {{ item.on ? 'loy__home--on' : '' }}"
+          data-id="{{ item.id }}"
+          bindtap="onSelectHome"
         >
-          <view class="om-circle">OM</view>
-          <view class="method-meta">
-            <text class="method-title-txt">Orange Money</text>
-            <text class="method-sub-txt">Paiement marchand direct</text>
+          <view class="loy__home-thumb" style="background: {{ item.tint }};"></view>
+          <view class="loy__home-text">
+            <text class="loy__home-name">{{ item.name }}</text>
+            <text class="loy__home-rent">{{ item.rent }} F / mois</text>
+            <text class="loy__home-badge {{ item.paid ? 'loy__home-badge--paid' : '' }}">{{ item.paid ? 'Payé' : 'À payer' }}</text>
           </view>
-          <text wx:if="{{ selectedPaymentMethod === 'orange_money' }}" class="choice-check">✓</text>
-        </view>
-
-        <view 
-          class="method-choice-card {{ selectedPaymentMethod === 'wave' ? 'card--active' : '' }}"
-          data-method="wave"
-          bindtap="onSelectMethod"
-        >
-          <view class="wave-circle">🌊</view>
-          <view class="method-meta">
-            <text class="method-title-txt">Wave</text>
-            <text class="method-sub-txt">1% sans frais cachés</text>
-          </view>
-          <text wx:if="{{ selectedPaymentMethod === 'wave' }}" class="choice-check">✓</text>
         </view>
       </view>
+    </scroll-view>
+  </view>
 
-      <button class="btn-primary-confirm" bindtap="onConfirmPayment">
-        Confirmer et payer {{ currentLogement.loyerFormatted }}
-      </button>
-      <button class="btn-secondary-cancel" bindtap="onClosePayModal">
-        Annuler
-      </button>
+  <!-- Logement choisi -->
+  <view class="loy__section loy__section--tight">
+    <view class="loy__card loy__current">
+      <text class="loy__current-name">{{ cur.name }}</text>
+      <text class="loy__current-place">{{ cur.place }} · Bailleur : {{ cur.owner }}</text>
+      <text class="loy__current-since">{{ cur.since }}</text>
     </view>
   </view>
 
-  <!-- MODALE 2 : QUITTANCE OFFICIELLE CERTIFIÉE -->
-  <view wx:if="{{ showReceiptModal }}" class="modal-backdrop" bindtap="onCloseReceiptModal">
-    <view class="receipt-sheet-container" catchtap="true">
-      <view class="official-quittance-paper">
-        <view class="paper-top-header">
-          <view class="paper-brand-tag">SAMA LOYER</view>
-          <text class="paper-heading-title">QUITTANCE DE LOYER</text>
-          <text class="paper-legal-note">Décret de mars 2023 · République du Sénégal</text>
-        </view>
-
-        <view class="paper-body-details">
-          <view class="paper-detail-row">
-            <text class="p-label">N° Reçu :</text>
-            <text class="p-value font-mono">#{{ activeReceipt.ref }}</text>
-          </view>
-          <view class="paper-detail-row">
-            <text class="p-label">Transaction :</text>
-            <text class="p-value font-mono">{{ activeReceipt.txId }}</text>
-          </view>
-          <view class="paper-detail-row">
-            <text class="p-label">Objet :</text>
-            <text class="p-value font-bold">{{ activeReceipt.title }}</text>
-          </view>
-          <view class="paper-detail-row">
-            <text class="p-label">Logement :</text>
-            <text class="p-value">{{ currentLogement.fullTitle }} ({{ currentLogement.place }})</text>
-          </view>
-          <view class="paper-detail-row">
-            <text class="p-label">Locataire :</text>
-            <text class="p-value">Awa Diop</text>
-          </view>
-          <view class="paper-detail-row">
-            <text class="p-label">Bailleur bénéficiaire :</text>
-            <text class="p-value">{{ currentLogement.bailleurNom }}</text>
-          </view>
-          <view class="paper-sep-line"></view>
-          <view class="paper-detail-row total-highlight-row">
-            <text class="p-label font-bold">Montant acquitté :</text>
-            <text class="p-value price-green">{{ activeReceipt.amount }}</text>
-          </view>
-          <view class="paper-detail-row">
-            <text class="p-label">Mode :</text>
-            <text class="p-value">{{ activeReceipt.date }}</text>
-          </view>
-        </view>
-
-        <!-- Cachet officiel vert -->
-        <view class="paper-stamp-box">
-          <view class="stamp-oval">
-            <text class="stamp-top-txt">SAMA LOYER DAKAR</text>
-            <text class="stamp-main-txt">✓ CERTIFIÉ CONFORME</text>
-            <text class="stamp-sub-txt">PAIEMENT SÉCURISÉ</text>
-          </view>
-        </view>
-
-        <view class="paper-actions-col">
-          <button class="btn-download-pdf" bindtap="onDownloadPDF">
-            📥 Télécharger le PDF officiel
-          </button>
-          <button class="btn-close-paper" bindtap="onCloseReceiptModal">
-            Fermer
-          </button>
-        </view>
+  <!-- Loyer du mois -->
+  <view class="loy__section loy__section--tight">
+    <view class="loy__due {{ cur.paid ? 'loy__due--paid' : '' }}">
+      <view class="loy__due-top">
+        <text class="loy__due-label">Loyer de novembre</text>
+        <text class="loy__due-status">{{ cur.paid ? 'Payé' : 'À payer' }}</text>
+      </view>
+      <text class="loy__due-amount">{{ cur.rentText }} F</text>
+      <text class="loy__due-text">{{ cur.paid ? 'Payé aujourd’hui via Max it. Merci !' : cur.due }}</text>
+      <view wx:if="{{ !cur.paid }}" class="loy__due-pay" hover-class="sl-hover" bindtap="onOpenPay">Payer avec Max it</view>
+      <view wx:else class="loy__due-receipt" hover-class="sl-hover" data-index="0" bindtap="onViewReceipt">
+        <view class="ic ic-download-white loy__due-receipt-ic"></view>
+        <text>Télécharger le reçu</text>
       </view>
     </view>
   </view>
 
-  <!-- MODALE 3 : CONTRAT DE BAIL -->
-  <view wx:if="{{ showContratModal }}" class="modal-backdrop" bindtap="onCloseContratModal">
-    <view class="modal-sheet" catchtap="true">
-      <view class="sheet-handle"></view>
-      <text class="sheet-title">Contrat de bail certifié</text>
-      <text class="sheet-subtitle">{{ currentLogement.fullTitle }} · {{ currentLogement.bailleurNom }}</text>
-      
-      <view class="contrat-summary-box">
-        <view class="c-item">
-          <text class="c-label">Statut du bail :</text>
-          <text class="c-val text-green">En cours de validité (Signé)</text>
-        </view>
-        <view class="c-item">
-          <text class="c-label">Durée :</text>
-          <text class="c-val">{{ currentLogement.contratDetail }}</text>
-        </view>
-        <view class="c-item">
-          <text class="c-label">Loyer mensuel :</text>
-          <text class="c-val font-bold">{{ currentLogement.loyerFormatted }} / mois</text>
-        </view>
-        <view class="c-item">
-          <text class="c-label">Caution consignée :</text>
-          <text class="c-val">{{ currentLogement.cautionMontant }} ({{ currentLogement.cautionDetail }})</text>
-        </view>
-        <view class="c-item">
-          <text class="c-label">Préavis légal de départ :</text>
-          <text class="c-val">1 mois (Conforme loi sénégalaise)</text>
-        </view>
-      </view>
-
-      <button class="btn-primary-confirm" bindtap="onCloseContratModal">
-        Fermer l'aperçu
-      </button>
+  <!-- Caution + contrat -->
+  <view class="loy__section loy__section--tight loy__duo">
+    <view class="loy__card loy__tile">
+      <text class="loy__tile-label">Caution</text>
+      <text class="loy__tile-value">{{ cur.depositText }} F</text>
+      <text class="loy__tile-sub">{{ cur.depositInfo }}</text>
+      <text class="loy__tile-badge">Payée via Max it</text>
+    </view>
+    <view class="loy__card loy__tile" hover-class="loy__card--hover" bindtap="onViewContrat">
+      <text class="loy__tile-label">Contrat</text>
+      <text class="loy__tile-value loy__tile-value--sm">Signé</text>
+      <text class="loy__tile-sub">{{ cur.contract }}</text>
+      <text class="loy__tile-link">Voir le contrat</text>
     </view>
   </view>
 
-  <!-- MODALE 4 : SIGNALER UN PROBLÈME -->
-  <view wx:if="{{ showProblemModal }}" class="modal-backdrop" bindtap="onCloseProblemModal">
-    <view class="modal-sheet" catchtap="true">
-      <view class="sheet-handle"></view>
-      <text class="sheet-title">Signaler un problème 🔧</text>
-      <text class="sheet-subtitle">Votre bailleur {{ currentLogement.bailleurNom }} sera notifié</text>
-
-      <view class="problem-chips-grid">
-        <block wx:for="{{ problemCategories }}" wx:key="*this">
-          <view 
-            class="problem-chip {{ selectedProblem === item ? 'chip--active' : '' }}"
-            data-cat="{{ item }}"
-            bindtap="onSelectProblemCategory"
-          >
-            {{ item }}
-          </view>
-        </block>
-      </view>
-
-      <button class="btn-primary-confirm" bindtap="onSubmitProblem">
-        Envoyer le signalement
-      </button>
-      <button class="btn-secondary-cancel" bindtap="onCloseProblemModal">
-        Annuler
-      </button>
+  <!-- Actions -->
+  <view class="loy__section loy__section--tight loy__actions">
+    <view class="loy__card loy__action" hover-class="loy__card--hover" bindtap="onWriteBailleur">
+      <view class="ic ic-chat-berry loy__action-ic"></view>
+      <text>Écrire au bailleur</text>
+    </view>
+    <view class="loy__card loy__action" hover-class="loy__card--hover" bindtap="onReportProblem">
+      <view class="ic ic-tool-berry loy__action-ic"></view>
+      <text>Signaler un problème</text>
+    </view>
+    <view class="loy__card loy__action" hover-class="loy__card--hover" bindtap="onPrevenirDepart">
+      <view class="ic ic-logout-berry loy__action-ic"></view>
+      <text>Prévenir de mon départ</text>
     </view>
   </view>
 
-  <!-- MODALE 5 : PRÉVENIR DE MON DÉPART -->
-  <view wx:if="{{ showDepartModal }}" class="modal-backdrop" bindtap="onCloseDepartModal">
-    <view class="modal-sheet" catchtap="true">
-      <view class="sheet-handle"></view>
-      <text class="sheet-title">Prévenir de mon départ 🚪</text>
-      <text class="sheet-subtitle">Notification de préavis légal d'un mois</text>
-
-      <view class="notice-info-card">
-        <text class="notice-info-text">Conformément à la réglementation sénégalaise, un préavis d'un mois débute à compter de la date d'envoi. Un état des lieux de sortie sera planifié avec {{ currentLogement.bailleurNom }}, puis votre caution de {{ currentLogement.cautionMontant }} vous sera restituée.</text>
+  <!-- Historique -->
+  <view class="loy__section loy__history">
+    <text class="loy__h2">Historique · {{ cur.name }}</text>
+    <view class="loy__card loy__history-list">
+      <view wx:for="{{ history }}" wx:key="id" class="loy__history-row">
+        <view class="loy__history-ic {{ item.kind === 'entry' ? 'loy__history-ic--entry' : '' }}">
+          <view class="ic {{ item.kind === 'entry' ? 'ic-check-navy' : 'ic-check-berry' }}"></view>
+        </view>
+        <view class="loy__history-text">
+          <text class="loy__history-label">{{ item.label }}</text>
+          <text class="loy__history-sub">{{ item.sub }}</text>
+        </view>
+        <view class="loy__history-right">
+          <text class="loy__history-amount">{{ item.amountText }}</text>
+          <text class="loy__history-receipt" data-index="{{ index }}" bindtap="onViewReceipt">Reçu</text>
+        </view>
       </view>
+    </view>
+    <text class="loy__note">Tous les paiements passent par Max it. Chaque logement a son bailleur, son contrat, sa caution et ses reçus.</text>
+  </view>
 
-      <button class="btn-depart-confirm" bindtap="onConfirmDepart">
-        Confirmer et notifier le bailleur
-      </button>
-      <button class="btn-secondary-cancel" bindtap="onCloseDepartModal">
-        Annuler
-      </button>
+  <view class="loy__tab-spacer"></view>
+
+  <!-- ================= MAX IT (simulation) ================= -->
+  <view wx:if="{{ mx }}" class="sl-mx-backdrop" catchtouchmove="noop">
+    <view class="sl-mx" aria-label="Paiement avec Max it">
+      <block wx:if="{{ mx === 'confirm' }}">
+        <view class="sl-mx-icon"><view class="ic ic-maxit-berry"></view></view>
+        <text class="sl-mx-title">Payer avec Max it</text>
+        <text class="sl-mx-amount">{{ cur.rentText }} F</text>
+        <text class="sl-mx-to">À {{ cur.owner }} · {{ mxLabel }}</text>
+        <text class="sl-mx-note">Tu vas être redirigé·e vers l'application Max it pour valider le paiement avec ton code secret.</text>
+        <view class="sl-btn sl-btn--berry sl-mx-btn" hover-class="sl-hover" bindtap="onMxGo">Continuer vers Max it</view>
+        <view class="sl-mx-cancel" hover-class="sl-hover" bindtap="onMxClose">Annuler</view>
+      </block>
+
+      <block wx:if="{{ mx === 'redirect' }}">
+        <view class="sl-mx-spinner"></view>
+        <text class="sl-mx-title sl-mx-title--sm">Ouverture de Max it…</text>
+        <text class="sl-mx-muted">Ne ferme pas l'application.</text>
+      </block>
+
+      <block wx:if="{{ mx === 'maxit' }}">
+        <text class="sl-mx-sim">SIMULATION · ÉCRAN MAX IT</text>
+        <view class="sl-mx-box">
+          <text class="sl-mx-brand">Max it</text>
+          <text class="sl-mx-muted">Demande de paiement</text>
+          <view class="sl-mx-row"><text class="sl-mx-muted">Marchand</text><text class="sl-mx-strong">SAMA LOYER</text></view>
+          <view class="sl-mx-row"><text class="sl-mx-muted">Bénéficiaire</text><text class="sl-mx-strong">{{ cur.owner }}</text></view>
+          <view class="sl-mx-row"><text class="sl-mx-muted">Motif</text><text class="sl-mx-strong sl-mx-right">{{ mxLabel }}</text></view>
+          <view class="sl-mx-row sl-mx-row--total"><text class="sl-mx-strong">Montant</text><text class="sl-mx-strong">{{ cur.rentText }} F</text></view>
+        </view>
+        <text class="sl-mx-small">Dans la vraie application, tu tapes ici ton code secret Max it. SAMA LOYER ne voit jamais ton code.</text>
+        <view class="sl-btn sl-btn--navy sl-mx-btn" hover-class="sl-hover" bindtap="onMxValidate">Valider le paiement</view>
+        <view class="sl-btn sl-btn--outline sl-mx-refuse" hover-class="sl-hover" bindtap="onMxClose">Refuser et revenir</view>
+      </block>
+
+      <block wx:if="{{ mx === 'done' }}">
+        <view class="sl-mx-icon"><view class="ic ic-check-berry"></view></view>
+        <text class="sl-mx-title">Paiement validé</text>
+        <text class="sl-mx-to">{{ cur.rentText }} F payés à {{ cur.owner }} via Max it. Ton reçu est prêt.</text>
+        <view class="sl-btn sl-btn--berry sl-mx-btn" hover-class="sl-hover" bindtap="onMxClose">Retour à Mon loyer</view>
+      </block>
     </view>
   </view>
 
+  <!-- ================= REÇU ================= -->
+  <view wx:if="{{ receipt }}" class="sl-mx-backdrop" catchtouchmove="noop" bindtap="onCloseReceipt">
+    <view class="sl-mx loy__receipt" catchtap="noop" aria-label="Reçu de paiement">
+      <view class="sl-mx-icon"><view class="ic ic-doc-navy"></view></view>
+      <text class="sl-mx-title">Reçu de paiement</text>
+      <text class="sl-mx-amount">{{ receipt.amountText }}</text>
+      <view class="sl-mx-box">
+        <view class="sl-mx-row"><text class="sl-mx-muted">Motif</text><text class="sl-mx-strong sl-mx-right">{{ receipt.label }}</text></view>
+        <view class="sl-mx-row"><text class="sl-mx-muted">Logement</text><text class="sl-mx-strong sl-mx-right">{{ cur.name }}</text></view>
+        <view class="sl-mx-row"><text class="sl-mx-muted">Bailleur</text><text class="sl-mx-strong">{{ cur.owner }}</text></view>
+        <view class="sl-mx-row"><text class="sl-mx-muted">Paiement</text><text class="sl-mx-strong sl-mx-right">{{ receipt.sub }}</text></view>
+        <view class="sl-mx-row sl-mx-row--total"><text class="sl-mx-muted">Référence</text><text class="sl-mx-strong">{{ receipt.ref }}</text></view>
+      </view>
+      <view class="sl-btn sl-btn--navy sl-mx-btn" hover-class="sl-hover" bindtap="onDownloadReceipt">
+        <view class="ic ic-download-white"></view>
+        <text>Télécharger le PDF</text>
+      </view>
+      <view class="sl-mx-cancel" hover-class="sl-hover" bindtap="onCloseReceipt">Fermer</view>
+    </view>
+  </view>
 </view>

@@ -1,0 +1,93 @@
+<view class="lsv">
+  <!-- Barre du haut -->
+  <view class="sl-topbar" style="padding-top: {{ statusBarHeight }}px;">
+    <view class="sl-topbar__inner">
+      <view class="sl-icon-btn" hover-class="sl-hover" bindtap="onBack" aria-label="Retour à l'annonce">
+        <view class="ic ic-back-navy"></view>
+      </view>
+      <text class="sl-topbar__title">Louer sans visite</text>
+    </view>
+  </view>
+
+  <view class="lsv__body" style="padding-top: {{ statusBarHeight + 60 }}px;">
+    <view class="lsv__intro">
+      <text class="lsv__h2">Tu es loin ? Pas de souci.</text>
+      <text class="lsv__lead">Tu peux louer ce logement en te basant sur ses photos et sa vidéo. Prends le temps de tout regarder.</text>
+    </view>
+
+    <!-- 1 : Regarder -->
+    <view class="lsv__step">
+      <text class="lsv__step-num">1</text>
+      <text class="lsv__step-title">Regarde tout le logement</text>
+    </view>
+    <view class="lsv__media-list">
+      <view
+        wx:for="{{ media }}"
+        wx:key="id"
+        class="lsv__media {{ item.seen ? 'lsv__media--seen' : '' }}"
+        hover-class="sl-hover"
+        data-id="{{ item.id }}"
+        bindtap="onOpenMedia"
+      >
+        <view class="lsv__media-thumb" style="background: {{ item.tint }};">
+          <view class="ic ic-{{ item.icon }}-navy"></view>
+        </view>
+        <view class="lsv__media-text">
+          <text class="lsv__media-label">{{ item.label }}</text>
+          <text class="lsv__media-sub">{{ item.sub }}</text>
+        </view>
+        <text class="sl-badge {{ item.seen ? 'sl-badge--green' : 'sl-badge--navy' }}">{{ item.seen ? 'Vu' : 'Regarder' }}</text>
+      </view>
+    </view>
+    <view class="lsv__video-call" hover-class="sl-hover" bindtap="onVideoCall">
+      <view class="ic ic-video-berry"></view>
+      <view class="lsv__media-text">
+        <text class="lsv__call-title">Demander une visite vidéo en direct</text>
+        <text class="lsv__media-sub">Le bailleur te montre le logement par appel vidéo</text>
+      </view>
+    </view>
+
+    <!-- 2 : Garanties -->
+    <view class="lsv__step lsv__step--spaced">
+      <text class="lsv__step-num">2</text>
+      <text class="lsv__step-title">Ce qui te protège</text>
+    </view>
+    <view class="lsv__guards">
+      <view wx:for="{{ guards }}" wx:key="t" class="lsv__guard">
+        <view class="ic ic-shield-green lsv__guard-icon"></view>
+        <view class="lsv__media-text">
+          <text class="lsv__guard-title">{{ item.t }}</text>
+          <text class="lsv__guard-desc">{{ item.d }}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 3 : Confirmer -->
+    <view class="lsv__step lsv__step--spaced">
+      <text class="lsv__step-num">3</text>
+      <text class="lsv__step-title">Je confirme</text>
+    </view>
+    <view class="lsv__checks">
+      <view
+        wx:for="{{ checks }}"
+        wx:key="label"
+        class="sl-check-row {{ item.on ? 'sl-check-row--on' : '' }} {{ item.locked ? 'sl-check-row--locked' : '' }}"
+        data-index="{{ index }}"
+        bindtap="onToggleCheck"
+      >
+        <view class="sl-check-box">
+          <view wx:if="{{ item.on }}" class="ic ic-check-white"></view>
+        </view>
+        <text>{{ item.label }}</text>
+      </view>
+    </view>
+
+    <view class="sl-bottom-spacer"></view>
+  </view>
+
+  <!-- Barre du bas -->
+  <view class="sl-bottombar">
+    <view wx:if="{{ ready }}" class="sl-btn sl-btn--berry" hover-class="sl-hover" bindtap="onContinue">Continuer vers la location</view>
+    <view wx:else class="sl-btn sl-btn--soft">{{ todoText }}</view>
+  </view>
+</view>

@@ -235,7 +235,9 @@ Page({
         if (res.tapIndex === 0) {
           wx.makePhoneCall({ phoneNumber: locataire.phone.replace(/\s+/g, '') });
         } else if (res.tapIndex === 1) {
-          wx.navigateTo({ url: `/pages/client/chat/chat?id=${locataire.id}` });
+          wx.navigateTo({
+            url: `/pages/bailleur/conversation/conversation?id=${locataire.id}&name=${encodeURIComponent(locataire.name)}`
+          });
         } else if (res.tapIndex === 2) {
           wx.setClipboardData({
             data: `Bonjour ${locataire.name}, message de votre bailleur Sama Loyer.`,

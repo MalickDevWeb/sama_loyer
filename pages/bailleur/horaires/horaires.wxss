@@ -1,0 +1,205 @@
+@import "/styles/sama-ui.wxss";
+
+page {
+  background: #F7F8FA;
+}
+
+.hor__body {
+  padding-left: 32rpx;
+  padding-right: 32rpx;
+  box-sizing: border-box;
+}
+
+.hor__intro {
+  display: block;
+  margin: 32rpx 8rpx 24rpx;
+  font-size: 28rpx;
+  line-height: 1.5;
+  color: #3A4458;
+}
+
+.hor__label {
+  display: block;
+  margin: 0 8rpx 16rpx;
+  font-size: 26rpx;
+  font-weight: 800;
+}
+
+.hor__muted {
+  font-size: 24rpx;
+  color: #5B6475;
+}
+
+/* --- Choix du logement --------------------------------------------------- */
+.hor__homes {
+  margin: 0 -32rpx;
+  width: calc(100% + 64rpx);
+  white-space: nowrap;
+}
+
+.hor__homes-row {
+  display: inline-flex;
+  gap: 16rpx;
+  padding: 0 32rpx 8rpx;
+}
+
+.hor__home {
+  flex: 0 0 auto;
+  height: 84rpx;
+  line-height: 80rpx;
+  padding: 0 28rpx;
+  border-radius: 999rpx;
+  font-size: 26rpx;
+  font-weight: 700;
+  background: #FFFFFF;
+  color: #0F1E3D;
+  border: 2rpx solid #E4E7EE;
+  box-sizing: border-box;
+}
+
+.hor__home--on {
+  background: #0F1E3D;
+  color: #FFFFFF;
+  border-color: #0F1E3D;
+}
+
+/* --- Cartes -------------------------------------------------------------- */
+.hor__card {
+  margin-top: 28rpx;
+  border-radius: 40rpx;
+  background: #FFFFFF;
+  border: 2rpx solid #E4E7EE;
+  overflow: hidden;
+}
+
+.hor__card--pad {
+  padding: 28rpx;
+}
+
+.hor__card-head {
+  padding: 28rpx 28rpx 12rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.hor__card-head--flat {
+  padding: 0 0 16rpx;
+}
+
+.hor__card-title {
+  font-size: 30rpx;
+  font-weight: 800;
+}
+
+/* --- Semaine ------------------------------------------------------------- */
+.hor__day {
+  padding: 20rpx 28rpx;
+  border-top: 2rpx solid #EEF0F4;
+}
+
+.hor__day-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.hor__day-name {
+  font-size: 28rpx;
+  font-weight: 800;
+}
+
+.hor__hours {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12rpx;
+  margin-top: 16rpx;
+}
+
+.hor__hour {
+  height: 76rpx;
+  min-width: 112rpx;
+  padding: 0 20rpx;
+  box-sizing: border-box;
+  border-radius: 20rpx;
+  font-size: 26rpx;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #FFFFFF;
+  color: #3A4458;
+  border: 2rpx solid #E4E7EE;
+}
+
+.hor__hour--on {
+  background: #C8235F;
+  color: #FFFFFF;
+  border-color: #C8235F;
+}
+
+.hor__closed {
+  display: block;
+  margin-top: 4rpx;
+  font-size: 24rpx;
+  color: #7A8294;
+}
+
+/* --- Jours bloqués ------------------------------------------------------- */
+.hor__add {
+  height: 72rpx;
+  line-height: 72rpx;
+  padding: 0 24rpx;
+  border-radius: 20rpx;
+  background: #0F1E3D;
+  color: #FFFFFF;
+  font-size: 24rpx;
+  font-weight: 800;
+}
+
+.hor__block {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16rpx 20rpx;
+  margin-top: 12rpx;
+  border-radius: 24rpx;
+  background: #FDF3F3;
+  font-size: 26rpx;
+  font-weight: 700;
+  color: #8A2019;
+}
+
+.hor__block-remove {
+  width: 64rpx;
+  height: 64rpx;
+  border-radius: 32rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hor__block-remove .ic {
+  width: 32rpx;
+  height: 32rpx;
+}
+
+/* --- Location sans visite ------------------------------------------------ */
+.hor__remote {
+  display: flex;
+  gap: 24rpx;
+  align-items: center;
+}
+
+.hor__remote-text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4rpx;
+}
+
+.hor__remote-sub {
+  font-size: 24rpx;
+  line-height: 1.45;
+  color: #5B6475;
+}

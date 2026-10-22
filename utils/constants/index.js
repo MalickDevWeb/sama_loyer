@@ -12,6 +12,8 @@ export const STORAGE_KEYS = {
   FAVORITES: 'sama_favorites',
   VISITES: 'sama_visites',
   ACTIVE_TAB: 'sama_active_tab',
+  RENT_PAID: 'sama_rent_paid', // { [logementId]: true } — loyer du mois payé
+  PROFILE_PREFS: 'sama_profile_prefs', // { notifs: { msg, visit, new, price }, lang }
   IMAGE_CACHE: 'tc-image-cache',
 };
 
@@ -117,7 +119,7 @@ export const BAILLEUR_TABS = [
     id: 'b-messages',
     label: 'Messages',
     badge: '4',
-    url: '/pages/bailleur/demandes/demandes',
+    url: '/pages/bailleur/messages/messages',
   },
 ];
 

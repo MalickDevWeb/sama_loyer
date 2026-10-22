@@ -1,0 +1,103 @@
+<view class="bconv">
+  <!-- En-tête : contact + annonce -->
+  <view class="bconv__head" style="padding-top: {{ statusBarHeight }}px;">
+    <view class="bconv__contact">
+      <view class="sl-icon-btn" hover-class="sl-hover" bindtap="onBack" aria-label="Retour aux messages">
+        <view class="ic ic-back-navy"></view>
+      </view>
+      <view class="bconv__avatar" style="background: {{ conv.color }};">{{ conv.initials }}</view>
+      <view class="bconv__who">
+        <text class="bconv__name">{{ conv.name }}</text>
+        <text class="bconv__tag {{ tagHired ? 'bconv__tag--hired' : '' }}">{{ tag }}</text>
+      </view>
+      <view class="sl-icon-btn sl-icon-btn--soft" hover-class="sl-hover" bindtap="onCall" aria-label="Appeler {{ conv.name }}">
+        <view class="ic ic-phone-navy"></view>
+      </view>
+    </view>
+    <view wx:if="{{ conv.listing }}" class="bconv__listing">
+      <view class="bconv__listing-thumb"></view>
+      <view class="bconv__listing-text">
+        <text class="bconv__listing-title">{{ conv.listing }}</text>
+        <text class="bconv__listing-sub">{{ conv.visit }}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- Messages -->
+  <scroll-view
+    class="bconv__messages"
+    scroll-y="{{ true }}"
+    enhanced="{{ true }}"
+    show-scrollbar="{{ false }}"
+    scroll-into-view="{{ scrollTo }}"
+    scroll-with-animation="{{ true }}"
+  >
+    <view class="bconv__day">Aujourd'hui</view>
+    <block wx:for="{{ messages }}" wx:key="id">
+      <view wx:if="{{ item.event }}" class="bconv__event">
+        <view class="bconv__event-icon {{ item.tone === 'green' ? 'bconv__event-icon--green' : '' }}">
+          <view class="ic ic-{{ item.icon }}-{{ item.tone === 'green' ? 'green' : 'navy' }}"></view>
+        </view>
+        <view class="bconv__event-text">
+          <text class="bconv__event-title">{{ item.text }}</text>
+          <text class="bconv__event-sub">{{ item.sub }}</text>
+        </view>
+      </view>
+      <view wx:else class="bconv__row {{ item.from === 'me' ? 'bconv__row--me' : '' }}">
+        <view class="bconv__bubble {{ item.from === 'me' ? 'bconv__bubble--me' : '' }}">
+          <text>{{ item.text }}</text>
+          <text class="bconv__meta">{{ item.time }}</text>
+        </view>
+      </view>
+    </block>
+    <view wx:if="{{ !messages.length }}" class="bconv__empty">Écris le premier message à {{ conv.name }}.</view>
+    <view id="msg-end" class="bconv__end"></view>
+  </scroll-view>
+
+  <!-- Actions + réponses rapides + saisie -->
+  <view class="bconv__footer">
+    <scroll-view class="bconv__chips" scroll-x="{{ true }}" enhanced="{{ true }}" show-scrollbar="{{ false }}">
+      <view class="bconv__chips-row">
+        <view
+          wx:for="{{ actions }}"
+          wx:key="id"
+          class="bconv__action {{ item.done ? 'bconv__action--done' : '' }}"
+          hover-class="sl-hover"
+          data-id="{{ item.id }}"
+          bindtap="onAction"
+        >
+          <view class="ic ic-{{ item.icon }}-{{ item.done ? 'green' : 'white' }} bconv__action-icon"></view>
+          <text>{{ item.label }}</text>
+        </view>
+      </view>
+    </scroll-view>
+    <scroll-view class="bconv__chips bconv__chips--quick" scroll-x="{{ true }}" enhanced="{{ true }}" show-scrollbar="{{ false }}">
+      <view class="bconv__chips-row">
+        <view
+          wx:for="{{ quick }}"
+          wx:key="*this"
+          class="bconv__quick"
+          hover-class="sl-hover"
+          data-text="{{ item }}"
+          bindtap="onQuick"
+        >{{ item }}</view>
+      </view>
+    </scroll-view>
+    <view class="bconv__composer">
+      <view class="bconv__input-wrap">
+        <input
+          class="bconv__input"
+          value="{{ draft }}"
+          placeholder="Écrire à {{ firstName }}…"
+          placeholder-class="bconv__placeholder"
+          confirm-type="send"
+          bindinput="onDraft"
+          bindconfirm="onSend"
+        />
+      </view>
+      <view class="bconv__send" hover-class="sl-hover" bindtap="onSend" aria-label="{{ draft ? 'Envoyer' : 'Envoyer un message vocal' }}">
+        <view class="ic {{ draft ? 'ic-send-white' : 'ic-mic-white' }} bconv__send-icon"></view>
+      </view>
+    </view>
+  </view>
+</view>

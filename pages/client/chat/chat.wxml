@@ -1,104 +1,105 @@
-<view class="chat-page">
-  
-  <!-- En-tête de chat -->
-  <view class="chat-top-header" style="padding-top: {{ statusBarHeight + 10 }}px;">
-    <view class="btn-chat-back" bindtap="onBackTap">‹</view>
-    <view class="chat-user-info">
-      <view class="user-avatar-round">
+<view class="chat">
+  <!-- En-tête : bailleur + annonce liée -->
+  <view class="chat__head" style="padding-top: {{ statusBarHeight }}px;">
+    <view class="chat__contact">
+      <view class="sl-icon-btn" hover-class="sl-hover" bindtap="onBackTap" aria-label="Retour aux messages">
+        <view class="ic ic-back-navy"></view>
+      </view>
+      <view class="chat__avatar" style="background: {{ conversation.avatarBg }};">
         <text>{{ conversation.initial }}</text>
-        <view class="online-dot"></view>
+        <view class="chat__online"></view>
       </view>
-      <view class="user-meta-col">
-        <text class="user-chat-name">{{ conversation.name }}</text>
-        <text class="user-status-text">{{ conversation.verified ? '✓ Bailleur vérifié · ' : '' }}en ligne</text>
+      <view class="chat__who">
+        <text class="chat__name">{{ conversation.name }}</text>
+        <view class="chat__status">
+          <view wx:if="{{ conversation.verified }}" class="ic ic-shield-check-green chat__status-ic"></view>
+          <text>{{ conversation.verified ? 'Bailleur vérifié · en ligne' : 'En ligne' }}</text>
+        </view>
+      </view>
+      <view class="sl-icon-btn sl-icon-btn--soft" hover-class="sl-hover" bindtap="onCall" aria-label="Appeler {{ conversation.name }}">
+        <view class="ic ic-phone-navy chat__head-ic"></view>
+      </view>
+      <view class="sl-icon-btn chat__wa" hover-class="sl-hover" bindtap="onWhatsApp" aria-label="Écrire à {{ conversation.name }} sur WhatsApp">
+        <view class="ic ic-whatsapp-green chat__head-ic"></view>
       </view>
     </view>
-    <view class="chat-header-actions">
-      <view class="action-circle-icon" bindtap="onCall">📞</view>
-      <view class="action-circle-icon whatsapp-color" bindtap="onWhatsApp">💬</view>
+
+    <view class="chat__listing" hover-class="chat__listing--hover" bindtap="onPropertyBannerTap">
+      <view class="chat__listing-thumb"><view class="chat__listing-house"></view></view>
+      <view class="chat__listing-text">
+        <text class="chat__listing-title">{{ conversation.logementTitle }}</text>
+        <view class="chat__listing-sub">{{ conversation.logementPlace }} · <text class="chat__listing-price">{{ conversation.logementPrice }}</text></view>
+      </view>
+      <view class="ic ic-chevron-grey chat__listing-chev"></view>
     </view>
   </view>
 
-  <!-- Bandeau Logement concerné -->
-  <view class="property-context-bar" bindtap="onPropertyBannerTap">
-    <view class="prop-mini-thumb">
-      <view class="prop-house-mini"></view>
+  <!-- Messages -->
+  <scroll-view
+    class="chat__messages"
+    scroll-y="{{ true }}"
+    enhanced="{{ true }}"
+    show-scrollbar="{{ false }}"
+    scroll-into-view="{{ scrollTo }}"
+    scroll-with-animation="{{ true }}"
+  >
+    <view class="chat__safety">
+      <view class="ic ic-warn-amber chat__safety-ic"></view>
+      <text><text class="chat__safety-strong">Sécurité :</text> ne payez jamais de caution ou d'avance avant d'avoir visité le logement et signé un contrat.</text>
     </view>
-    <view class="prop-meta-col">
-      <text class="prop-meta-title">{{ conversation.logementTitle }}</text>
-      <text class="prop-meta-price">{{ conversation.logementPlace }} · {{ conversation.logementPrice }}</text>
-    </view>
-    <text class="prop-arrow">›</text>
-  </view>
+    <view class="chat__day">Aujourd'hui</view>
 
-  <!-- Alerte Sécurité Jaune -->
-  <view class="security-banner-box">
-    <text class="security-icon">⚠️</text>
-    <text class="security-text">Sécurité : ne payez jamais de caution ou d’avance avant d’avoir visité le logement et signé un contrat.</text>
-  </view>
-
-  <!-- Zone de défilement des messages -->
-  <scroll-view class="chat-conversation-scroll" scroll-y="{{true}}">
-    <view class="chat-date-pill">Aujourd'hui</view>
-
-    <view class="messages-flow">
-      <block wx:for="{{ messages }}" wx:key="id">
-        
-        <!-- Bulle Client -->
-        <view wx:if="{{ item.sender === 'client' }}" class="chat-bubble-row row-right">
-          <view class="chat-bubble bubble-pink">
-            <text class="bubble-content-text">{{ item.text }}</text>
-            <text class="bubble-timestamp">{{ item.time }}</text>
-          </view>
+    <block wx:for="{{ messages }}" wx:key="id">
+      <view wx:if="{{ item.isEvent }}" class="chat__event">
+        <view class="chat__event-icon"><view class="ic ic-cal-navy"></view></view>
+        <view class="chat__event-text">
+          <text class="chat__event-title">{{ item.eventTitle }}</text>
+          <text class="chat__event-sub">{{ item.eventDate }}</text>
         </view>
-
-        <!-- Bulle Bailleur -->
-        <view wx:elif="{{ item.sender === 'bailleur' }}" class="chat-bubble-row row-left">
-          <view class="chat-bubble bubble-white">
-            <text class="bubble-content-text">{{ item.text }}</text>
-            <text class="bubble-timestamp text-dark">{{ item.time }}</text>
-          </view>
+      </view>
+      <view wx:else class="chat__row {{ item.mine ? 'chat__row--me' : '' }}">
+        <view class="chat__bubble {{ item.mine ? 'chat__bubble--me' : '' }}">
+          <text>{{ item.text }}</text>
+          <text class="chat__meta">{{ item.meta }}</text>
         </view>
-
-        <!-- Carte Événement Visite -->
-        <view wx:elif="{{ item.isEvent }}" class="chat-event-card">
-          <view class="event-icon-circle">📅</view>
-          <view class="event-text-col">
-            <text class="event-title-bold">{{ item.eventTitle }}</text>
-            <text class="event-date-sub">{{ item.eventDate }}</text>
-          </view>
-        </view>
-
-      </block>
-    </view>
+      </view>
+    </block>
+    <view wx:if="{{ !messages.length }}" class="chat__empty">Écris le premier message à {{ conversation.name }}.</view>
+    <view id="msg-end" class="chat__end"></view>
   </scroll-view>
 
-  <!-- Suggestions rapides -->
-  <scroll-view class="quick-replies-scroll" scroll-x="{{true}}">
-    <view class="quick-replies-row">
-      <block wx:for="{{ quickReplies }}" wx:key="*this">
-        <view class="quick-chip" data-text="{{ item }}" bindtap="onQuickReplyTap">
-          {{ item }}
-        </view>
-      </block>
-    </view>
-  </scroll-view>
-
-  <!-- Barre de saisie -->
-  <view class="chat-bottom-input-bar">
-    <view class="btn-attach-image">🖼</view>
-    <input
-      class="chat-input-pill"
-      placeholder="Écrire un message..."
-      value="{{ inputText }}"
-      bindinput="onInput"
-      confirm-type="send"
-      bindconfirm="onSendTap"
-    />
-    <view class="btn-send-round" bindtap="onSendTap">
-      <text class="send-char">➤</text>
+  <!-- Réponses rapides + saisie -->
+  <view class="chat__footer">
+    <scroll-view class="chat__chips" scroll-x="{{ true }}" enhanced="{{ true }}" show-scrollbar="{{ false }}">
+      <view class="chat__chips-row">
+        <view
+          wx:for="{{ quickReplies }}"
+          wx:key="*this"
+          class="chat__quick"
+          hover-class="sl-hover"
+          data-text="{{ item }}"
+          bindtap="onQuickReplyTap"
+        >{{ item }}</view>
+      </view>
+    </scroll-view>
+    <view class="chat__composer">
+      <view class="sl-icon-btn sl-icon-btn--soft" hover-class="sl-hover" bindtap="onAttach" aria-label="Joindre une photo">
+        <view class="ic ic-image-navy chat__attach-ic"></view>
+      </view>
+      <view class="chat__input-wrap">
+        <input
+          class="chat__input"
+          value="{{ inputText }}"
+          placeholder="Écrire un message…"
+          placeholder-class="chat__placeholder"
+          confirm-type="send"
+          bindinput="onInput"
+          bindconfirm="onSendTap"
+        />
+      </view>
+      <view class="chat__send" hover-class="sl-hover" bindtap="onSendTap" aria-label="{{ inputText ? 'Envoyer' : 'Envoyer un message vocal' }}">
+        <view class="ic {{ inputText ? 'ic-send-white' : 'ic-mic-white' }} chat__send-ic"></view>
+      </view>
     </view>
   </view>
-
 </view>
-

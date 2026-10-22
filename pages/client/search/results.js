@@ -197,6 +197,21 @@ Page({
     });
   },
 
+  // Bouton ⚙ (sans fonction jusqu'ici) : choix rapide du type de logement
+  onFilterTap() {
+    const cats = [
+      { id: 'tous', label: 'Tous les logements' },
+      { id: 'chambre', label: 'Chambres' },
+      { id: 'studio', label: 'Studios' }
+    ];
+    wx.showActionSheet({
+      itemList: cats.map((c) => c.label),
+      success: (res) => {
+        this.setData({ activeCategory: cats[res.tapIndex].id }, () => this.filterListings());
+      }
+    });
+  },
+
   onCategorySelect(e) {
     const cat = e.currentTarget.dataset.cat;
     this.setData({ activeCategory: cat }, () => {

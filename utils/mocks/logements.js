@@ -324,12 +324,20 @@ export const LOGEMENTS = [
     bailleurName: 'Fatou K.',
     equipements: ['Chambre autonome', 'Eau comprise'],
     description: 'Chambre indépendante économique à Guinaw Rails.',
-    tint: '#E3E9F5'
+    tint: '#E2F0EA'
   }
 ];
 
 // Favoris présents au premier lancement (démo)
 export const DEFAULT_FAVORITE_IDS = ['icotaf-01', 'pikine-rue10', 'technopole-01', 'guinaw-01'];
+
+// Date d'enregistrement affichée sur la page Favoris (démo)
+export const FAVORITE_SAVED_LABELS = {
+  'icotaf-01': 'Enregistré aujourd’hui',
+  'pikine-rue10': 'Enregistré hier',
+  'technopole-01': 'Enregistré il y a 3 j',
+  'guinaw-01': 'Enregistré il y a 5 j'
+};
 
 const DEFAULT_CONDITIONS = [
   'Contrat de location écrit, durée minimale 6 mois',
@@ -398,6 +406,9 @@ export function toLogementDetail(l) {
     avance: `${formatMoney(l.avance)} FCFA`,
     fraisAgence: l.frais ? `${formatMoney(l.frais)} FCFA` : 'Aucun',
     totalEntree: `${formatMoney(total)} FCFA`,
+    // Formats courts pour la barre « À payer pour entrer »
+    totalEntreeShort: `${formatMoney(total)} F`,
+    entreeDetail: `Avance ${formatMoney(l.avance)} + caution ${formatMoney(l.caution)}`,
     conditions: DEFAULT_CONDITIONS,
     descriptionShort: desc.length > 110 ? `${desc.slice(0, 110)}...` : desc,
     descriptionFull: desc,

@@ -1,0 +1,55 @@
+<view class="bmsg">
+  <view class="bmsg__header" style="padding-top: {{ statusBarHeight + 22 }}px;">
+    <text class="bmsg__title">Messages</text>
+    <text class="bmsg__subtitle">Tes échanges avec les candidats et tes locataires</text>
+  </view>
+
+  <!-- Conversations / Demandes de visite -->
+  <view class="bmsg__segmented">
+    <view class="bmsg__segment bmsg__segment--on">Conversations</view>
+    <view class="bmsg__segment" hover-class="sl-hover" bindtap="onOpenVisits">
+      <text>Demandes de visite</text>
+      <text class="bmsg__count">{{ pendingVisits }}</text>
+    </view>
+  </view>
+
+  <!-- Filtres -->
+  <view class="bmsg__filters">
+    <view
+      wx:for="{{ tabs }}"
+      wx:key="id"
+      class="bmsg__pill {{ filter === item.id ? 'bmsg__pill--on' : '' }}"
+      data-id="{{ item.id }}"
+      bindtap="onFilter"
+    >{{ item.label }}</view>
+  </view>
+
+  <!-- Conversations -->
+  <view class="bmsg__list">
+    <view
+      wx:for="{{ conversations }}"
+      wx:key="id"
+      class="bmsg__conv"
+      hover-class="bmsg__conv--hover"
+      data-id="{{ item.id }}"
+      bindtap="onOpenConversation"
+      aria-label="Conversation avec {{ item.name }}"
+    >
+      <view class="bmsg__avatar" style="background: {{ item.color }};">{{ item.initials }}</view>
+      <view class="bmsg__conv-body">
+        <view class="bmsg__conv-top">
+          <text class="bmsg__name {{ item.unread ? 'bmsg__name--unread' : '' }}">{{ item.name }}</text>
+          <text class="bmsg__time {{ item.unread ? 'bmsg__time--unread' : '' }}">{{ item.time }}</text>
+        </view>
+        <text class="bmsg__tag {{ item.kind === 'loc' ? 'bmsg__tag--loc' : 'bmsg__tag--cand' }}">{{ item.tag }}</text>
+        <view class="bmsg__conv-bottom">
+          <text class="bmsg__last {{ item.unread ? 'bmsg__last--unread' : '' }}">{{ item.last }}</text>
+          <text wx:if="{{ item.unread }}" class="bmsg__unread">{{ item.unread }}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="bmsg__tab-spacer"></view>
+  <app-custom-tab-bar activeTab="b-messages" />
+</view>

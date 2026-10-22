@@ -1,889 +1,471 @@
-/* pages/loyers/loyers.wxss */
-.mon-loyer-page {
-  min-height: 100vh;
-  background-color: #F8F9FA;
-  box-sizing: border-box;
+@import "/styles/sama-ui.wxss";
+
+/* ============================================================================
+   SAMA LOYER — Mon loyer, d'après la maquette MonLoyer
+   ============================================================================ */
+
+page {
+  background: #F7F8FA;
 }
 
-.mon-loyer-scroll {
-  padding: 0 28rpx;
-  box-sizing: border-box;
+.loy__header {
+  padding-left: 40rpx;
+  padding-right: 40rpx;
 }
 
-/* Page top header */
-.page-top-header {
-  margin-top: 10rpx;
-  margin-bottom: 24rpx;
-}
-
-.page-main-heading {
+.loy__title {
   display: block;
-  font-size: 46rpx;
-  font-weight: 800;
-  color: #0F1E3D;
-  margin-bottom: 6rpx;
-  letter-spacing: -0.5rpx;
-}
-
-.page-sub-heading {
-  font-size: 26rpx;
-  color: #666666;
-  line-height: 1.4;
-}
-
-/* Dark Synthese Card */
-.dark-synthese-card {
-  background: #0F1E3D;
-  border-radius: 24rpx;
-  padding: 28rpx 28rpx 32rpx;
-  color: #FFFFFF;
-  margin-bottom: 28rpx;
-  box-shadow: 0 8rpx 24rpx rgba(15, 30, 61, 0.15);
-}
-
-.synthese-top-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 14rpx;
-}
-
-.synthese-month-label {
-  font-size: 24rpx;
-  font-weight: 600;
-  color: #CAD5E2;
-}
-
-.synthese-counter-badge {
-  font-size: 22rpx;
-  font-weight: 700;
-  color: #6EE7B7;
-  background: rgba(110, 231, 183, 0.15);
-  padding: 4rpx 14rpx;
-  border-radius: 20rpx;
-}
-
-.synthese-amount-row {
-  display: flex;
-  align-items: baseline;
-  gap: 12rpx;
-  margin-bottom: 22rpx;
-}
-
-.synthese-amount-num {
   font-size: 52rpx;
   font-weight: 800;
-  color: #FFFFFF;
+  letter-spacing: -0.02em;
 }
 
-.synthese-amount-desc {
-  font-size: 24rpx;
-  color: #94A3B8;
+.loy__subtitle {
+  display: block;
+  margin-top: 8rpx;
+  font-size: 28rpx;
+  color: #5B6475;
 }
 
-/* Progress bar track */
-.progress-bar-track {
-  display: flex;
-  gap: 12rpx;
-  height: 10rpx;
-  width: 100%;
+.loy__section {
+  padding: 32rpx 32rpx 0;
 }
 
-.progress-bar-segment {
-  flex: 1;
-  height: 100%;
-  border-radius: 6rpx;
+.loy__section--tight {
+  padding-top: 24rpx;
 }
 
-.segment-paid {
-  background: #10B981;
-}
-
-.segment-unpaid {
-  background: rgba(255, 255, 255, 0.2);
-}
-
-/* Section Mes logements */
-.section-mes-logements {
-  margin-bottom: 24rpx;
-}
-
-.section-block-title {
+.loy__h2 {
+  display: block;
+  margin: 0 0 24rpx 8rpx;
   font-size: 32rpx;
   font-weight: 800;
-  color: #0F1E3D;
-  margin-bottom: 18rpx;
-  display: block;
 }
 
-.logements-horizontal-scroll {
-  width: 100%;
+.loy__card {
+  border-radius: 36rpx;
+  background: #FFFFFF;
+  border: 2rpx solid #E4E7EE;
+}
+
+.loy__card--hover {
+  background: #F7F8FA;
+}
+
+/* --- Synthèse ------------------------------------------------------------ */
+.loy__summary {
+  border-radius: 44rpx;
+  background: #0F1E3D;
+  color: #FFFFFF;
+  padding: 32rpx 36rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+}
+
+.loy__summary-top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.loy__summary-label {
+  font-size: 26rpx;
+  font-weight: 700;
+  color: #C9D0DE;
+}
+
+.loy__summary-amount .loy__summary-label {
+  font-weight: 400;
+}
+
+.loy__summary-count {
+  font-size: 24rpx;
+  font-weight: 800;
+  color: #F08DB2;
+}
+
+.loy__summary-amount {
+  display: flex;
+  align-items: baseline;
+  gap: 16rpx;
+}
+
+.loy__summary-left {
+  font-size: 56rpx;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.loy__segments {
+  display: flex;
+  gap: 8rpx;
+  height: 16rpx;
+}
+
+.loy__segment {
+  border-radius: 8rpx;
+  background: rgba(255, 255, 255, 0.22);
+}
+
+.loy__segment--paid {
+  background: #F08DB2;
+}
+
+/* --- Mes logements ------------------------------------------------------- */
+.loy__homes-wrap {
+  padding-top: 36rpx;
+}
+
+.loy__h2--homes {
+  margin: 0 40rpx 20rpx;
+  font-size: 30rpx;
+}
+
+.loy__homes {
   white-space: nowrap;
 }
 
-.logements-row {
-  display: flex;
+.loy__homes-row {
+  display: inline-flex;
   gap: 20rpx;
-  padding-bottom: 8rpx;
+  padding: 0 32rpx 8rpx;
 }
 
-.logement-tab-card {
-  display: flex;
-  align-items: center;
-  gap: 16rpx;
-  background: #FFFFFF;
-  border: 3rpx solid transparent;
-  border-radius: 22rpx;
-  padding: 20rpx 22rpx;
-  min-width: 320rpx;
-  box-shadow: 0 4rpx 14rpx rgba(15, 30, 61, 0.04);
+.loy__home {
+  flex: 0 0 472rpx;
+  width: 472rpx;
   box-sizing: border-box;
-}
-
-.tab-card--selected {
-  border-color: #0F1E3D;
-  background: #FFFFFF;
-}
-
-.logement-thumb-square {
-  width: 76rpx;
-  height: 76rpx;
-  border-radius: 16rpx;
   display: flex;
   align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-.thumb-house-icon {
-  font-size: 44rpx;
-  color: #64748B;
-  line-height: 1;
-}
-
-.logement-tab-info {
-  display: flex;
-  flex-direction: column;
-  gap: 4rpx;
-}
-
-.tab-logement-title {
-  font-size: 26rpx;
-  font-weight: 700;
-  color: #0F1E3D;
-}
-
-.tab-logement-price {
-  font-size: 22rpx;
-  color: #64748B;
-}
-
-.tab-status-chip {
-  align-self: flex-start;
-  font-size: 20rpx;
-  font-weight: 700;
-  padding: 2rpx 12rpx;
-  border-radius: 12rpx;
-  margin-top: 4rpx;
-}
-
-.chip-due {
-  background: #FFF0F4;
-  color: #C8235F;
-}
-
-.chip-paid {
-  background: #E2F0EA;
-  color: #007C3D;
-}
-
-/* Selected prop card */
-.current-selected-card {
-  background: #FFFFFF;
-  border: 1rpx solid #EFEFEF;
-  border-radius: 22rpx;
-  padding: 24rpx;
-  margin-bottom: 22rpx;
-  box-shadow: 0 2rpx 10rpx rgba(15, 30, 61, 0.03);
-}
-
-.selected-prop-title {
-  font-size: 30rpx;
-  font-weight: 800;
-  color: #0F1E3D;
-  display: block;
-  margin-bottom: 4rpx;
-}
-
-.selected-prop-sub {
-  font-size: 24rpx;
-  color: #64748B;
-  display: block;
-  margin-bottom: 4rpx;
-}
-
-.selected-prop-date {
-  font-size: 22rpx;
-  color: #94A3B8;
-  display: block;
-}
-
-/* Pink Due Card */
-.pink-due-card {
-  background: #C8235F;
-  border-radius: 26rpx;
-  padding: 32rpx 28rpx;
-  color: #FFFFFF;
-  margin-bottom: 22rpx;
-  box-shadow: 0 8rpx 24rpx rgba(200, 35, 95, 0.25);
-}
-
-.pink-card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 12rpx;
-}
-
-.pink-card-month {
-  font-size: 28rpx;
-  font-weight: 700;
-  color: #FFFFFF;
-}
-
-.pink-due-badge {
-  font-size: 22rpx;
-  font-weight: 800;
-  padding: 6rpx 20rpx;
-  border-radius: 30rpx;
-}
-
-.badge-white-pill {
-  background: #FFFFFF;
-  color: #C8235F;
-}
-
-.badge-green-pill {
-  background: #E2F0EA;
-  color: #007C3D;
-}
-
-.pink-amount-value {
-  font-size: 64rpx;
-  font-weight: 900;
-  color: #FFFFFF;
-  letter-spacing: -1rpx;
-  margin-bottom: 6rpx;
-}
-
-.pink-deadline-txt {
-  font-size: 24rpx;
-  color: rgba(255, 255, 255, 0.9);
-  display: block;
-  margin-bottom: 26rpx;
-}
-
-.btn-white-pay-cta {
-  background: #FFFFFF;
-  color: #C8235F;
-  font-size: 30rpx;
-  font-weight: 800;
-  border-radius: 20rpx;
-  padding: 22rpx 0;
-  text-align: center;
-  border: none;
-  box-shadow: 0 6rpx 16rpx rgba(0, 0, 0, 0.08);
-}
-
-.paid-success-banner {
-  display: flex;
-  align-items: center;
-  gap: 12rpx;
-  background: rgba(255, 255, 255, 0.18);
-  border-radius: 16rpx;
-  padding: 16rpx 20rpx;
-}
-
-.paid-check-symbol {
-  font-size: 32rpx;
-  font-weight: 800;
-  color: #FFFFFF;
-}
-
-.paid-check-label {
-  font-size: 24rpx;
-  color: #FFFFFF;
-  font-weight: 600;
-}
-
-/* Two Columns (Caution & Contrat) */
-.two-columns-row {
-  display: flex;
-  gap: 18rpx;
-  margin-bottom: 18rpx;
-}
-
-.sub-info-card {
-  flex: 1;
-  background: #FFFFFF;
-  border: 1rpx solid #EFEFEF;
-  border-radius: 22rpx;
-  padding: 24rpx 20rpx;
-  box-shadow: 0 2rpx 10rpx rgba(15, 30, 61, 0.03);
-  display: flex;
-  flex-direction: column;
-}
-
-.sub-card-label {
-  font-size: 22rpx;
-  color: #64748B;
-  margin-bottom: 8rpx;
-}
-
-.sub-card-value {
-  font-size: 34rpx;
-  font-weight: 800;
-  color: #0F1E3D;
-  margin-bottom: 6rpx;
-}
-
-.font-navy {
-  color: #0F1E3D;
-}
-
-.sub-card-detail {
-  font-size: 20rpx;
-  color: #94A3B8;
-  line-height: 1.3;
-  margin-bottom: 14rpx;
-  flex: 1;
-}
-
-.mint-confirmed-badge {
-  align-self: flex-start;
-  background: #E2F0EA;
-  color: #007C3D;
-  font-size: 20rpx;
-  font-weight: 700;
-  padding: 6rpx 14rpx;
-  border-radius: 12rpx;
-}
-
-.link-voir-contrat {
-  font-size: 22rpx;
-  font-weight: 700;
-  color: #C8235F;
-  cursor: pointer;
-}
-
-/* Disclaimer text */
-.disclaimer-note-wrap {
-  margin-bottom: 24rpx;
-  padding: 0 4rpx;
-}
-
-.disclaimer-note-txt {
-  font-size: 22rpx;
-  color: #8C96A6;
-  line-height: 1.4;
-}
-
-/* 3 Quick Action buttons */
-.three-actions-row {
-  display: flex;
-  gap: 14rpx;
-  margin-bottom: 30rpx;
-}
-
-.action-card-btn {
-  flex: 1;
-  background: #FFFFFF;
-  border: 1rpx solid #EFEFEF;
-  border-radius: 20rpx;
-  padding: 22rpx 12rpx;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  box-shadow: 0 2rpx 10rpx rgba(15, 30, 61, 0.03);
-}
-
-.action-icon-circle {
-  font-size: 34rpx;
-  margin-bottom: 8rpx;
-}
-
-.action-btn-title {
-  font-size: 22rpx;
-  font-weight: 700;
-  color: #0F1E3D;
-  line-height: 1.25;
-}
-
-/* History section */
-.history-section {
-  margin-bottom: 30rpx;
-}
-
-.payments-history-group {
-  background: #FFFFFF;
-  border-radius: 24rpx;
-  border: 1rpx solid #EFEFEF;
-  overflow: hidden;
-  box-shadow: 0 2rpx 10rpx rgba(15, 30, 61, 0.03);
-}
-
-.history-item-row {
-  display: flex;
-  align-items: center;
-  padding: 24rpx;
-  border-bottom: 1rpx solid #F1F3F6;
-}
-
-.history-item-row:last-child {
-  border-bottom: none;
-}
-
-.history-circle {
-  width: 52rpx;
-  height: 52rpx;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-right: 18rpx;
-  flex-shrink: 0;
-}
-
-.circle-mint {
-  background: #D1FAE5;
-  color: #059669;
-}
-
-.circle-slate {
-  background: #E2E8F0;
-  color: #475569;
-}
-
-.circle-check {
-  font-size: 26rpx;
-  font-weight: 800;
-}
-
-.history-item-center {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 4rpx;
-}
-
-.history-item-title {
-  font-size: 26rpx;
-  font-weight: 700;
-  color: #0F1E3D;
-}
-
-.history-item-sub {
-  font-size: 22rpx;
-  color: #94A3B8;
-}
-
-.history-item-right {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 4rpx;
-}
-
-.history-item-amount {
-  font-size: 26rpx;
-  font-weight: 800;
-  color: #0F1E3D;
-}
-
-.history-recu-link {
-  font-size: 22rpx;
-  font-weight: 700;
-  color: #C8235F;
-}
-
-.bottom-spacer {
-  height: 120rpx;
-}
-
-/* MODALES */
-.modal-backdrop {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(15, 30, 61, 0.65);
-  z-index: 99999;
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-}
-
-.modal-sheet {
-  width: 100%;
-  background: #FFFFFF;
-  border-radius: 36rpx 36rpx 0 0;
-  padding: 28rpx 36rpx calc(150rpx + env(safe-area-inset-bottom));
-  box-sizing: border-box;
-  max-height: 85vh;
-  overflow-y: auto;
-  box-shadow: 0 -8rpx 30rpx rgba(0, 0, 0, 0.15);
-}
-
-.sheet-handle {
-  width: 72rpx;
-  height: 8rpx;
-  background: #E2E8F0;
-  border-radius: 4rpx;
-  margin: 0 auto 24rpx;
-}
-
-.sheet-title {
-  font-size: 34rpx;
-  font-weight: 800;
-  color: #0F1E3D;
-  display: block;
-  margin-bottom: 6rpx;
-}
-
-.sheet-subtitle {
-  font-size: 24rpx;
-  color: #64748B;
-  display: block;
-  margin-bottom: 28rpx;
-}
-
-/* Grille méthodes de paiement */
-.payment-methods-grid {
-  display: flex;
-  flex-direction: column;
-  gap: 16rpx;
-  margin-bottom: 28rpx;
-}
-
-.method-choice-card {
-  display: flex;
-  align-items: center;
-  padding: 20rpx 24rpx;
-  border: 2rpx solid #E2E8F0;
-  border-radius: 20rpx;
-  background: #FFFFFF;
-}
-
-.card--active {
-  border-color: #C8235F;
-  background: #FFF5F8;
-}
-
-.om-circle {
-  width: 60rpx;
-  height: 60rpx;
-  border-radius: 50%;
-  background: #FF6600;
-  color: #FFFFFF;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 24rpx;
-  font-weight: 800;
-  margin-right: 18rpx;
-}
-
-.wave-circle {
-  width: 60rpx;
-  height: 60rpx;
-  border-radius: 50%;
-  background: #1BA2EC;
-  color: #FFFFFF;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 28rpx;
-  margin-right: 18rpx;
-}
-
-.method-meta {
-  flex: 1;
-}
-
-.method-title-txt {
-  font-size: 28rpx;
-  font-weight: 700;
-  color: #0F1E3D;
-  display: block;
-}
-
-.method-sub-txt {
-  font-size: 22rpx;
-  color: #94A3B8;
-}
-
-.choice-check {
-  font-size: 32rpx;
-  font-weight: 800;
-  color: #C8235F;
-}
-
-.btn-primary-confirm {
-  background: #C8235F;
-  color: #FFFFFF;
-  font-size: 28rpx;
-  font-weight: 700;
-  border-radius: 18rpx;
-  padding: 22rpx 0;
-  border: none;
-  margin-bottom: 12rpx;
-}
-
-.btn-depart-confirm {
-  background: #0F1E3D;
-  color: #FFFFFF;
-  font-size: 28rpx;
-  font-weight: 700;
-  border-radius: 18rpx;
-  padding: 22rpx 0;
-  border: none;
-  margin-bottom: 12rpx;
-}
-
-.btn-secondary-cancel {
-  background: #F1F5F9;
-  color: #64748B;
-  font-size: 26rpx;
-  font-weight: 600;
-  border-radius: 18rpx;
-  padding: 18rpx 0;
-  border: none;
-}
-
-/* Modale quittance papier */
-.receipt-sheet-container {
-  width: 90%;
-  max-width: 650rpx;
-  margin-bottom: calc(140rpx + env(safe-area-inset-bottom));
-  max-height: 85vh;
-  overflow-y: auto;
-}
-
-.official-quittance-paper {
-  background: #FFFFFF;
-  border-radius: 28rpx;
-  padding: 36rpx 28rpx;
-  box-shadow: 0 16rpx 40rpx rgba(0, 0, 0, 0.25);
-}
-
-.paper-top-header {
-  text-align: center;
-  border-bottom: 2rpx dashed #E2E8F0;
-  padding-bottom: 20rpx;
-  margin-bottom: 24rpx;
-}
-
-.paper-brand-tag {
-  display: inline-block;
-  background: #C8235F;
-  color: #FFFFFF;
-  font-size: 20rpx;
-  font-weight: 800;
-  padding: 4rpx 14rpx;
-  border-radius: 8rpx;
-  letter-spacing: 2rpx;
-  margin-bottom: 8rpx;
-}
-
-.paper-heading-title {
-  display: block;
-  font-size: 32rpx;
-  font-weight: 900;
-  color: #0F1E3D;
-}
-
-.paper-legal-note {
-  font-size: 20rpx;
-  color: #94A3B8;
-}
-
-.paper-body-details {
-  display: flex;
-  flex-direction: column;
-  gap: 12rpx;
-  margin-bottom: 24rpx;
-}
-
-.paper-detail-row {
-  display: flex;
-  justify-content: space-between;
-  font-size: 24rpx;
-}
-
-.p-label {
-  color: #64748B;
-}
-
-.p-value {
-  color: #0F1E3D;
-  font-weight: 600;
-  text-align: right;
-}
-
-.font-mono {
-  font-family: monospace;
-  font-size: 20rpx;
-}
-
-.font-bold {
-  font-weight: 800;
-}
-
-.paper-sep-line {
-  height: 1rpx;
-  background: #E2E8F0;
-  margin: 6rpx 0;
-}
-
-.total-highlight-row {
-  padding: 6rpx 0;
-}
-
-.price-green {
-  font-size: 32rpx;
-  font-weight: 900;
-  color: #059669;
-}
-
-/* Sceau certifié */
-.paper-stamp-box {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 24rpx;
-}
-
-.stamp-oval {
-  border: 4rpx solid #059669;
-  padding: 10rpx 24rpx;
-  border-radius: 14rpx;
-  text-align: center;
-  background: #ECFDF5;
-  transform: rotate(-2deg);
-}
-
-.stamp-top-txt {
-  display: block;
-  font-size: 18rpx;
-  font-weight: 700;
-  color: #059669;
-}
-
-.stamp-main-txt {
-  display: block;
-  font-size: 22rpx;
-  font-weight: 900;
-  color: #059669;
-  letter-spacing: 1rpx;
-}
-
-.stamp-sub-txt {
-  display: block;
-  font-size: 16rpx;
-  color: #059669;
-}
-
-.paper-actions-col {
-  display: flex;
-  flex-direction: column;
-  gap: 12rpx;
-}
-
-.btn-download-pdf {
-  background: #C8235F;
-  color: #FFFFFF;
-  font-size: 26rpx;
-  font-weight: 700;
-  border-radius: 14rpx;
-  padding: 20rpx 0;
-  border: none;
-}
-
-.btn-close-paper {
-  background: #F1F5F9;
-  color: #64748B;
-  font-size: 24rpx;
-  font-weight: 600;
-  border-radius: 14rpx;
-  padding: 16rpx 0;
-  border: none;
-}
-
-/* Box Contrat */
-.contrat-summary-box {
-  background: #F8FAFC;
-  border-radius: 20rpx;
-  padding: 24rpx;
-  margin-bottom: 24rpx;
-  display: flex;
-  flex-direction: column;
-  gap: 14rpx;
-}
-
-.c-item {
-  display: flex;
-  justify-content: space-between;
-  font-size: 24rpx;
-}
-
-.c-label {
-  color: #64748B;
-}
-
-.c-val {
-  color: #0F1E3D;
-  font-weight: 600;
-  text-align: right;
-}
-
-.text-green {
-  color: #059669;
-}
-
-/* Box signalement problème */
-.problem-chips-grid {
-  display: flex;
-  flex-direction: column;
-  gap: 12rpx;
-  margin-bottom: 24rpx;
-}
-
-.problem-chip {
-  padding: 18rpx 20rpx;
-  border: 2rpx solid #E2E8F0;
-  border-radius: 16rpx;
-  font-size: 26rpx;
-  font-weight: 600;
-  color: #0F1E3D;
-}
-
-.chip--active {
-  border-color: #C8235F;
-  background: #FFF5F8;
-  color: #C8235F;
-}
-
-/* Notice départ */
-.notice-info-card {
-  background: #FEF3C7;
-  border-radius: 16rpx;
+  gap: 20rpx;
   padding: 20rpx;
-  margin-bottom: 24rpx;
+  border-radius: 36rpx;
+  background: #FFFFFF;
+  border: 4rpx solid #E4E7EE;
+  white-space: normal;
 }
 
-.notice-info-text {
+.loy__home--on {
+  border-color: #0F1E3D;
+}
+
+.loy__home-thumb {
+  width: 96rpx;
+  height: 96rpx;
+  flex: 0 0 96rpx;
+  border-radius: 24rpx;
+}
+
+.loy__home-text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4rpx;
+}
+
+.loy__home-name {
+  font-size: 28rpx;
+  font-weight: 800;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.loy__home-rent {
   font-size: 24rpx;
-  color: #92400E;
-  line-height: 1.45;
+  color: #5B6475;
+}
+
+.loy__home-badge {
+  align-self: flex-start;
+  margin-top: 4rpx;
+  padding: 6rpx 16rpx;
+  border-radius: 999rpx;
+  font-size: 22rpx;
+  font-weight: 800;
+  background: #FDF1F5;
+  color: #9E1749;
+}
+
+.loy__home-badge--paid {
+  background: #E3E9F5;
+  color: #0F1E3D;
+}
+
+/* --- Logement choisi ----------------------------------------------------- */
+.loy__current {
+  padding: 24rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 4rpx;
+}
+
+.loy__current-name {
+  font-size: 30rpx;
+  font-weight: 800;
+}
+
+.loy__current-place {
+  font-size: 26rpx;
+  color: #5B6475;
+}
+
+.loy__current-since {
+  font-size: 24rpx;
+  color: #5B6475;
+}
+
+/* --- Loyer du mois ------------------------------------------------------- */
+.loy__due {
+  border-radius: 44rpx;
+  padding: 36rpx;
+  background: #C8235F;
+  color: #FFFFFF;
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+}
+
+.loy__due--paid {
+  background: #0F1E3D;
+}
+
+.loy__due-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.loy__due-label {
+  font-size: 28rpx;
+  font-weight: 700;
+  opacity: 0.85;
+}
+
+.loy__due-status {
+  padding: 10rpx 20rpx;
+  border-radius: 999rpx;
+  background: #FFFFFF;
+  color: #C8235F;
+  font-size: 24rpx;
+  font-weight: 800;
+}
+
+.loy__due--paid .loy__due-status {
+  color: #0F1E3D;
+}
+
+.loy__due-amount {
+  font-size: 64rpx;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.loy__due-text {
+  font-size: 28rpx;
+  opacity: 0.9;
+}
+
+.loy__due-pay {
+  margin-top: 12rpx;
+  height: 108rpx;
+  border-radius: 32rpx;
+  background: #FFFFFF;
+  color: #C8235F;
+  font-size: 32rpx;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.loy__due-receipt {
+  margin-top: 12rpx;
+  height: 100rpx;
+  border-radius: 32rpx;
+  background: rgba(255, 255, 255, 0.16);
+  font-size: 30rpx;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16rpx;
+}
+
+.loy__due-receipt-ic {
+  width: 36rpx;
+  height: 36rpx;
+}
+
+/* --- Caution + contrat --------------------------------------------------- */
+.loy__duo {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20rpx;
+}
+
+.loy__tile {
+  padding: 28rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+}
+
+.loy__tile-label {
+  font-size: 24rpx;
+  font-weight: 700;
+  color: #5B6475;
+}
+
+.loy__tile-value {
+  font-size: 40rpx;
+  font-weight: 800;
+}
+
+.loy__tile-value--sm {
+  font-size: 32rpx;
+}
+
+.loy__tile-sub {
+  font-size: 24rpx;
+  color: #3A4458;
+}
+
+.loy__tile-badge {
+  align-self: flex-start;
+  margin-top: 8rpx;
+  padding: 8rpx 16rpx;
+  border-radius: 999rpx;
+  background: #FDF1F5;
+  color: #9E1749;
+  font-size: 22rpx;
+  font-weight: 800;
+}
+
+.loy__tile-link {
+  margin-top: auto;
+  font-size: 24rpx;
+  font-weight: 800;
+  color: #C8235F;
+}
+
+/* --- Actions ------------------------------------------------------------- */
+.loy__actions {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16rpx;
+}
+
+.loy__action {
+  padding: 24rpx 12rpx;
+  border-radius: 32rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12rpx;
+  text-align: center;
+  font-size: 24rpx;
+  font-weight: 700;
+}
+
+.loy__action-ic {
+  width: 44rpx;
+  height: 44rpx;
+}
+
+/* --- Historique ---------------------------------------------------------- */
+.loy__history {
+  padding-top: 40rpx;
+  padding-bottom: 48rpx;
+}
+
+.loy__history-list {
+  overflow: hidden;
+}
+
+.loy__history-row {
+  display: flex;
+  align-items: center;
+  gap: 24rpx;
+  padding: 26rpx 28rpx;
+  border-bottom: 2rpx solid #EEF0F4;
+}
+
+.loy__history-row:last-child {
+  border-bottom: 0;
+}
+
+.loy__history-ic {
+  width: 68rpx;
+  height: 68rpx;
+  flex: 0 0 68rpx;
+  border-radius: 34rpx;
+  background: #FDF1F5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.loy__history-ic--entry {
+  background: #E3E9F5;
+}
+
+.loy__history-ic .ic {
+  width: 32rpx;
+  height: 32rpx;
+}
+
+.loy__history-text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.loy__history-label {
+  font-size: 28rpx;
+  font-weight: 700;
+}
+
+.loy__history-sub {
+  font-size: 24rpx;
+  color: #5B6475;
+}
+
+.loy__history-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4rpx;
+}
+
+.loy__history-amount {
+  font-size: 28rpx;
+  font-weight: 800;
+}
+
+.loy__history-receipt {
+  padding: 8rpx 0 8rpx 16rpx;
+  font-size: 24rpx;
+  font-weight: 800;
+  color: #C8235F;
+}
+
+.loy__note {
+  display: block;
+  margin: 24rpx 8rpx 0;
+  font-size: 24rpx;
+  line-height: 1.5;
+  color: #5B6475;
+}
+
+.loy__tab-spacer {
+  height: calc(156rpx + env(safe-area-inset-bottom));
+}
+
+/* --- Reçu ---------------------------------------------------------------- */
+.loy__receipt .sl-mx-amount {
+  font-size: 52rpx;
 }

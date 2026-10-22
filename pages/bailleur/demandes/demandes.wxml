@@ -6,6 +6,16 @@
       <text class="page-title">Demandes</text>
       <text class="page-subtitle">Visites et messages des locataires</text>
 
+      <!-- Accès aux horaires de visite -->
+      <view class="horaires-link" hover-class="horaires-link--hover" bindtap="onOpenHoraires">
+        <view class="ic ic-clock-berry horaires-link__icon"></view>
+        <view class="horaires-link__text">
+          <text class="horaires-link__title">Mes horaires de visite</text>
+          <text class="horaires-link__sub">12 créneaux par semaine · modifier</text>
+        </view>
+        <view class="ic ic-chevron-grey horaires-link__chev"></view>
+      </view>
+
       <!-- Tabs Pilule : Visites (1) | Messages (2) | Clients (2) -->
       <view class="tabs-outer-pill">
         <view 
@@ -92,7 +102,7 @@
     <!-- VUE 2 : MESSAGES AVEC LES CLIENTS / LOCATAIRES -->
     <view wx:elif="{{ activeTab === 'messages' }}" class="demandes-list">
       <block wx:for="{{ messagesList }}" wx:key="id">
-        <view class="demande-card message-item-card" data-id="{{ item.id }}" bindtap="onOpenChat">
+        <view class="demande-card message-item-card" data-id="{{ item.id }}" data-name="{{ item.name }}" bindtap="onOpenChat">
           <view class="demande-card-top">
             <view class="demande-user-info">
               <view class="avatar-circle-sm" style="background-color: {{ item.avatarBg }};">
@@ -165,5 +175,5 @@
   </scroll-view>
 
   <!-- Bailleur Tab Bar -->
-  <app-custom-tab-bar activeTab="b-demandes" />
+  <app-custom-tab-bar activeTab="b-messages" />
 </view>

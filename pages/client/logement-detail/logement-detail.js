@@ -138,9 +138,16 @@ Page({
     });
   },
 
+  // Payer caution + avance : parcours « Entrer dans le logement »
   onPayCaution() {
-    wx.switchTab({
-      url: '/pages/client/loyers/loyers'
+    wx.navigateTo({
+      url: `/pages/client/entree/entree?id=${encodeURIComponent(this.data.logement.id)}`
+    });
+  },
+
+  onLouerSansVisite() {
+    wx.navigateTo({
+      url: `/pages/client/louer-sans-visite/louer-sans-visite?id=${encodeURIComponent(this.data.logement.id)}`
     });
   },
 

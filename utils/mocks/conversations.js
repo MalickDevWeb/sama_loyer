@@ -40,7 +40,7 @@ export const CONVERSATIONS = [
     logementId: 'technopole-01',
     time: 'Lun.',
     unread: 0,
-    avatarBg: '#4A5568',
+    avatarBg: '#5B4BB7',
     messages: [
       { id: 'm1', sender: 'client', text: 'Les factures sont-elles comprises ?', time: 'Lun.' }
     ]
@@ -50,10 +50,35 @@ export const CONVERSATIONS = [
     logementId: 'guinaw-01',
     time: '18 oct.',
     unread: 0,
-    avatarBg: '#2D3748',
+    avatarBg: '#11643F',
     messages: [
       { id: 'm1', sender: 'client', text: 'Bonjour, la chambre de Guinaw Rails est-elle encore libre ?', time: '17 oct. · Lu' },
       { id: 'm2', sender: 'bailleur', text: 'Désolée, la chambre vient d’être louée.', time: '18 oct.' }
+    ]
+  }
+];
+
+// Conversations avec les bailleurs des logements loués (page Mon loyer).
+// Elles ne sont pas dans la liste Messages ; le logement est décrit sur place.
+const RENTAL_CONVERSATIONS = [
+  {
+    id: 'mme-diagne',
+    logement: { title: 'Mon studio', typeLabel: 'Studio', place: 'Liberté 6, Dakar', price: 80000, bailleurName: 'Mme Diagne', phone: '774501234', verified: true },
+    time: '3 oct.',
+    unread: 0,
+    avatarBg: '#5B4BB7',
+    messages: [
+      { id: 'm1', sender: 'bailleur', text: 'Bien reçu le loyer d’octobre, merci !', time: '3 oct.' }
+    ]
+  },
+  {
+    id: 'fatou-k-ibou',
+    logement: { title: 'Chambre de Ibou', typeLabel: 'Chambre', place: 'Thiaroye, Pikine', price: 45000, bailleurName: 'Fatou K.', phone: '778905678', verified: true },
+    time: '25 sept.',
+    unread: 0,
+    avatarBg: '#11643F',
+    messages: [
+      { id: 'm1', sender: 'bailleur', text: 'Bienvenue ! Les clés sont chez la voisine.', time: '25 sept.' }
     ]
   }
 ];
@@ -77,7 +102,7 @@ function initials(name) {
  * @returns {Object|null}
  */
 function withLogement(conv) {
-  const l = getLogementById(conv.logementId);
+  const l = conv.logement || getLogementById(conv.logementId);
   if (!l) return null;
 
   const lastMessage = conv.messages.filter((m) => !m.isEvent).pop();
@@ -111,7 +136,7 @@ export function getConversations() {
  * @returns {Object|null}
  */
 export function findConversation({ id, logementId } = {}) {
-  let conv = id ? CONVERSATIONS.find((c) => c.id === id) : null;
+  let conv = id ? CONVERSATIONS.concat(RENTAL_CONVERSATIONS).find((c) => c.id === id) : null;
   if (!conv && logementId) {
     conv = CONVERSATIONS.find((c) => c.logementId === logementId);
   }

@@ -1,258 +1,270 @@
-/* ==========================================================================
-   Page Mes Visites - SAMA LOYER
-   ========================================================================== */
+@import "/styles/sama-ui.wxss";
 
-.visites-page {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-  background-color: #F8F9FA;
-  box-sizing: border-box;
+/* ============================================================================
+   SAMA LOYER — Mes visites, d'après la maquette Visites
+   ============================================================================ */
+
+.vis__header {
+  padding-left: 40rpx;
+  padding-right: 40rpx;
 }
 
-.visites-scroll {
-  flex: 1;
-  box-sizing: border-box;
-}
-
-/* Header */
-.visites-header {
-  padding: 0 32rpx 20rpx;
-  background-color: #FFFFFF;
-  border-bottom: 1rpx solid #ECEFF2;
-}
-
-.page-title {
+.vis__title {
   display: block;
-  font-size: 44rpx;
+  font-size: 52rpx;
   font-weight: 800;
-  color: #0F1E3D;
-  margin-bottom: 6rpx;
+  letter-spacing: -0.02em;
 }
 
-.page-subtitle {
+.vis__subtitle {
   display: block;
-  font-size: 26rpx;
+  margin-top: 8rpx;
+  font-size: 28rpx;
   color: #5B6475;
-  margin-bottom: 24rpx;
 }
 
-/* Horizontal Filters */
-.filters-scroll {
-  width: 100%;
+/* --- Onglets ------------------------------------------------------------- */
+.vis__tabs {
   white-space: nowrap;
+  padding: 32rpx 40rpx 0;
+  box-sizing: border-box;
 }
 
-.filters-row {
-  display: flex;
+.vis__tabs-row {
+  display: inline-flex;
   gap: 16rpx;
-  padding: 4rpx 0;
+  padding-right: 40rpx;
 }
 
-.filter-pill {
-  display: inline-block;
-  padding: 14rpx 28rpx;
-  border-radius: 36rpx;
+.vis__pill {
+  flex: 0 0 auto;
+  height: 80rpx;
+  padding: 0 28rpx;
+  box-sizing: border-box;
+  border-radius: 999rpx;
   font-size: 26rpx;
-  font-weight: 600;
-  background-color: #F4F6F9;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  background: #FFFFFF;
   color: #0F1E3D;
-  border: 1rpx solid transparent;
+  border: 2rpx solid #E4E7EE;
 }
 
-.filter-pill--active {
-  background-color: #0F1E3D;
+.vis__pill--on {
+  background: #0F1E3D;
   color: #FFFFFF;
+  border-color: #0F1E3D;
 }
 
-/* Liste des visites */
-.visites-list {
-  padding: 32rpx;
+/* --- Cartes -------------------------------------------------------------- */
+.vis__list {
+  padding: 32rpx 32rpx 48rpx;
   display: flex;
   flex-direction: column;
-  gap: 24rpx;
+  gap: 28rpx;
 }
 
-.visite-card {
-  background-color: #FFFFFF;
-  border-radius: 24rpx;
-  padding: 28rpx;
-  border: 1rpx solid #ECEFF2;
+.vis__card {
+  border-radius: 40rpx;
+  border: 2rpx solid #E4E7EE;
+  background: #FFFFFF;
+  overflow: hidden;
   box-shadow: 0 4rpx 16rpx rgba(15, 30, 61, 0.04);
 }
 
-.visite-card__header {
+.vis__card-head {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 20rpx;
+  padding: 24rpx 28rpx;
+  background: #F7F8FA;
 }
 
-.visite-date-row {
+.vis__when {
   display: flex;
   align-items: center;
-  gap: 12rpx;
-}
-
-.visite-cal-icon {
-  font-size: 28rpx;
-}
-
-.visite-date-text {
+  gap: 16rpx;
   font-size: 28rpx;
   font-weight: 800;
-  color: #0F1E3D;
 }
 
-/* Badges */
-.visite-status-badge {
-  font-size: 22rpx;
-  font-weight: 700;
-  padding: 8rpx 20rpx;
-  border-radius: 20rpx;
-}
-
-.status-accepted {
-  background-color: #E2F0EA;
-  color: #007C3D;
-}
-
-.status-pending {
-  background-color: #FFF3DC;
-  color: #B56200;
-}
-
-.status-rejected {
-  background-color: #FDE8EC;
-  color: #D32F2F;
-}
-
-/* Property box */
-.visite-prop-box {
-  display: flex;
-  align-items: center;
-  gap: 20rpx;
-  margin-bottom: 20rpx;
-}
-
-.prop-icon-box {
-  width: 90rpx;
-  height: 90rpx;
-  border-radius: 16rpx;
-  background-color: #FCE8EF;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-.prop-mini-roof {
-  width: 40rpx;
+.vis__when-ic {
+  width: 36rpx;
   height: 36rpx;
-  border: 3rpx solid #C8235F;
-  border-top: none;
-  position: relative;
 }
 
-.prop-mini-roof::before {
-  content: '';
-  position: absolute;
-  top: -20rpx;
-  left: -6rpx;
-  border-left: 23rpx solid transparent;
-  border-right: 23rpx solid transparent;
-  border-bottom: 20rpx solid #C8235F;
+.vis__badge {
+  font-size: 24rpx;
+  font-weight: 800;
+  padding: 10rpx 20rpx;
+  border-radius: 999rpx;
+  background: #FFF4E0;
+  color: #6B4A00;
 }
 
-.prop-text-box {
+.vis__badge--accepted {
+  background: #E2F0EA;
+  color: #0D4F31;
+}
+
+.vis__badge--rejected {
+  background: #FDECEC;
+  color: #A3261F;
+}
+
+.vis__badge--cancelled {
+  background: #EEF0F4;
+  color: #3A4458;
+}
+
+.vis__prop {
+  display: flex;
+  align-items: center;
+  gap: 24rpx;
+  padding: 24rpx 28rpx;
+}
+
+.vis__prop--hover {
+  background: #F7F8FA;
+}
+
+.vis__thumb {
+  width: 112rpx;
+  height: 112rpx;
+  flex: 0 0 112rpx;
+  border-radius: 24rpx;
+  overflow: hidden;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.vis__house {
+  width: 72rpx;
+  height: 64rpx;
+  background: no-repeat center / contain url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 44 40' fill='none' stroke='%230F1E3D' stroke-opacity='0.3' stroke-width='2' stroke-linejoin='round'%3E%3Cpath d='M4 40V16L22 4l18 12v24'/%3E%3Cpath d='M25 40V24h8v16'/%3E%3C/svg%3E");
+}
+
+.vis__prop-text {
+  flex: 1;
+  min-width: 0;
   display: flex;
   flex-direction: column;
+  gap: 4rpx;
 }
 
-.prop-name {
+.vis__prop-title {
   font-size: 28rpx;
-  font-weight: 700;
-  color: #0F1E3D;
-  margin-bottom: 6rpx;
+  font-weight: 800;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.prop-meta {
+.vis__prop-place {
+  font-size: 26rpx;
+  color: #5B6475;
+}
+
+.vis__prop-owner {
   font-size: 24rpx;
   color: #5B6475;
-  margin-bottom: 4rpx;
 }
 
-.prop-bailleur-name {
-  font-size: 22rpx;
-  color: #8C96A6;
-}
-
-/* Note box */
-.visite-note-box {
-  border-radius: 16rpx;
-  padding: 18rpx 22rpx;
-  margin-bottom: 24rpx;
-}
-
-.note-accepted {
-  background-color: #F0F9F4;
-  border: 1rpx solid #CCEBD9;
-}
-
-.note-info {
-  background-color: #FBF7F0;
-  border: 1rpx solid #F5E8D3;
-}
-
-.note-text {
-  font-size: 24rpx;
-  line-height: 1.45;
-  color: #2D3748;
-}
-
-/* Actions Row */
-.visite-actions-row {
+.vis__body {
+  padding: 0 28rpx 28rpx;
   display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+}
+
+.vis__note {
+  font-size: 26rpx;
+  line-height: 1.45;
+  padding: 20rpx 24rpx;
+  border-radius: 24rpx;
+  background: #FFF9EE;
+  color: #6B4A00;
+}
+
+.vis__note--accepted {
+  background: #EEF7F2;
+  color: #0D4F31;
+}
+
+.vis__note--rejected {
+  background: #FDF3F3;
+  color: #8A2019;
+}
+
+.vis__note--cancelled {
+  background: #F7F8FA;
+  color: #3A4458;
+}
+
+.vis__duo {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 16rpx;
 }
 
-.btn-action {
-  flex: 1;
-  height: 80rpx;
-  border-radius: 40rpx;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 26rpx;
+.vis__btn {
+  flex: none;
+  height: 92rpx;
+  border-radius: 28rpx;
+  font-size: 28rpx;
+  gap: 12rpx;
+}
+
+.vis__btn-ic {
+  width: 32rpx;
+  height: 32rpx;
+}
+
+.vis__cancel {
   font-weight: 700;
-  border: none;
-  margin: 0;
 }
 
-.btn-icon {
-  margin-right: 10rpx;
+.vis__take {
+  flex: none;
+  height: 100rpx;
+  border-radius: 28rpx;
+  font-size: 30rpx;
+  gap: 16rpx;
+}
+
+.vis__take-ic {
+  width: 36rpx;
+  height: 36rpx;
+}
+
+/* --- Vide ---------------------------------------------------------------- */
+.vis__empty {
+  padding: 80rpx 40rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.vis__empty-title {
+  font-size: 32rpx;
+  font-weight: 800;
+}
+
+.vis__empty-text {
+  margin: 12rpx 0 32rpx;
   font-size: 26rpx;
-}
-
-.btn-action-primary {
-  background-color: #0F1E3D;
-  color: #FFFFFF;
-}
-
-.btn-action-secondary {
-  background-color: #FFFFFF;
-  color: #0F1E3D;
-  border: 1.5rpx solid #D5DAE1;
-}
-
-.btn-action-cancel {
-  background-color: #FFFFFF;
   color: #5B6475;
-  border: 1.5rpx solid #E2E6EC;
-  font-weight: 600;
 }
 
-.scroll-spacer {
-  height: 180rpx;
+.vis__empty-btn {
+  flex: none;
+  height: 92rpx;
+  padding: 0 36rpx;
 }
 
+.vis__tab-spacer {
+  height: calc(156rpx + env(safe-area-inset-bottom));
+}

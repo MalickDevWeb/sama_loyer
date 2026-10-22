@@ -1,75 +1,77 @@
-<view class="msg-page">
-  <scroll-view class="msg-scroll" scroll-y="{{true}}" enhanced="{{true}}" show-scrollbar="{{false}}">
-    
-    <!-- En-tête -->
-    <view class="msg-header" style="padding-top: {{ statusBarHeight + 14 }}px;">
-      <text class="msg-main-title">Messages</text>
-      <text class="msg-sub-title">Tes échanges avec les bailleurs</text>
-    </view>
+<view class="cmsg">
+  <!-- En-tête -->
+  <view class="cmsg__header" style="padding-top: {{ statusBarHeight + 22 }}px;">
+    <text class="cmsg__title">Messages</text>
+    <text class="cmsg__subtitle">Tes échanges avec les bailleurs</text>
+  </view>
 
-    <!-- Champ de recherche -->
-    <view class="msg-search-box">
-      <text class="msg-search-icon">🔍</text>
-      <input class="msg-search-input" placeholder="Nom ou quartier" />
-    </view>
+  <!-- Recherche -->
+  <view class="cmsg__search">
+    <view class="ic ic-search-muted cmsg__search-ic"></view>
+    <input
+      class="cmsg__search-input"
+      value="{{ query }}"
+      placeholder="Nom ou quartier"
+      placeholder-class="cmsg__placeholder"
+      confirm-type="search"
+      aria-label="Rechercher une conversation"
+      bindinput="onSearchInput"
+    />
+  </view>
 
-    <!-- Filtres -->
-    <view class="msg-filter-pills">
-      <view
-        class="filter-tab {{ activeFilter === 'all' ? 'filter-tab--active' : '' }}"
-        data-filter="all"
-        bindtap="onSelectFilter"
-      >
-        <text>Toutes</text>
-      </view>
-      <view
-        class="filter-tab {{ activeFilter === 'unread' ? 'filter-tab--active' : '' }}"
-        data-filter="unread"
-        bindtap="onSelectFilter"
-      >
-        <text>Non lues (2)</text>
-      </view>
-    </view>
+  <!-- Onglets -->
+  <view class="cmsg__tabs">
+    <view
+      wx:for="{{ tabs }}"
+      wx:key="id"
+      class="cmsg__pill {{ filter === item.id ? 'cmsg__pill--on' : '' }}"
+      data-id="{{ item.id }}"
+      bindtap="onSelectFilter"
+    >{{ item.label }}</view>
+  </view>
 
-    <!-- Liste des conversations -->
-    <view class="conversations-stack">
-      <block wx:for="{{ conversations }}" wx:key="id">
-        <view
-          wx:if="{{ activeFilter === 'all' || (activeFilter === 'unread' && item.unread > 0) }}"
-          class="chat-row-card"
-          data-id="{{ item.id }}"
-          bindtap="onOpenChat"
-        >
-          <!-- Avatar -->
-          <view class="chat-row-avatar" style="background-color: {{ item.avatarBg }};">
-            <text class="avatar-text">{{ item.initial }}</text>
-            <view class="online-indicator">✓</view>
-          </view>
-
-          <!-- Détails -->
-          <view class="chat-row-meta">
-            <view class="row-top-info">
-              <text class="landlord-bold-name">{{ item.name }}</text>
-              <text class="row-time-text {{ item.unread > 0 ? 'text-berry' : '' }}">{{ item.time }}</text>
-            </view>
-
-            <text class="property-tag-berry">{{ item.property }}</text>
-
-            <view class="row-middle-snippet">
-              <text class="snippet-text">{{ item.snippet }}</text>
-              <view wx:if="{{ item.unread > 0 }}" class="badge-unread-circle">{{ item.unread }}</view>
-            </view>
-
-            <view wx:if="{{ item.visiteBadge }}" class="visite-badge-chip">
-              <text class="cal-mini">📅</text>
-              <text>{{ item.visiteBadge }}</text>
-            </view>
-          </view>
+  <!-- Liste -->
+  <view class="cmsg__list">
+    <view
+      wx:for="{{ visible }}"
+      wx:key="id"
+      class="cmsg__conv"
+      hover-class="cmsg__conv--hover"
+      data-id="{{ item.id }}"
+      bindtap="onOpenChat"
+      aria-label="{{ item.aria }}"
+    >
+      <view class="cmsg__avatar-wrap">
+        <view class="cmsg__avatar" style="background: {{ item.avatarBg }};">{{ item.initial }}</view>
+        <view wx:if="{{ item.verified }}" class="cmsg__verified">
+          <view class="ic ic-check-white cmsg__verified-ic"></view>
         </view>
-      </block>
+      </view>
+
+      <view class="cmsg__body">
+        <view class="cmsg__row">
+          <text class="cmsg__name {{ item.unread ? 'cmsg__name--unread' : '' }}">{{ item.name }}</text>
+          <text class="cmsg__time {{ item.unread ? 'cmsg__time--unread' : '' }}">{{ item.time }}</text>
+        </view>
+        <text class="cmsg__listing">{{ item.property }}</text>
+        <view class="cmsg__row">
+          <text class="cmsg__last {{ item.unread ? 'cmsg__last--unread' : '' }}">{{ item.snippet }}</text>
+          <text wx:if="{{ item.unread }}" class="cmsg__unread">{{ item.unread }}</text>
+        </view>
+        <view wx:if="{{ item.visiteBadge }}" class="cmsg__status">
+          <view class="ic ic-cal-navy cmsg__status-ic"></view>
+          <text>{{ item.visiteBadge }}</text>
+        </view>
+      </view>
     </view>
 
-    <view class="scroll-spacer"></view>
-  </scroll-view>
-</view>
+    <!-- Vide -->
+    <view wx:if="{{ !visible.length }}" class="cmsg__empty">
+      <text class="cmsg__empty-title">Aucune conversation</text>
+      <text class="cmsg__empty-text">Quand tu contactes un bailleur, la discussion apparaît ici.</text>
+      <view class="sl-btn sl-btn--berry cmsg__empty-btn" hover-class="sl-hover" bindtap="onSearchHome">Chercher un logement</view>
+    </view>
+  </view>
 
+  <view class="cmsg__tab-spacer"></view>
+</view>

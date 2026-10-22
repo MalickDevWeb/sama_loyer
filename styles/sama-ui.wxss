@@ -1,0 +1,579 @@
+/* ==========================================================================
+   SAMA LOYER — éléments communs des écrans (d'après la maquette)
+   Échelle : 1 px maquette = 2 rpx. À importer en tête du .wxss d'une page :
+   @import "/styles/sama-ui.wxss";
+   ========================================================================== */
+
+@import "/styles/icons.wxss";
+
+page {
+  background: #FFFFFF;
+  color: #0F1E3D;
+  font-family: 'Plus Jakarta Sans', 'Inter', -apple-system, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* --- Barre du haut (retour + titre) -------------------------------------- */
+.sl-topbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  background: #FFFFFF;
+  border-bottom: 2rpx solid #EEF0F4;
+}
+
+.sl-topbar__inner {
+  height: 120rpx;
+  box-sizing: border-box;
+  padding: 16rpx;
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+}
+
+.sl-topbar__title {
+  font-size: 34rpx;
+  font-weight: 800;
+}
+
+.sl-icon-btn {
+  width: 88rpx;
+  height: 88rpx;
+  flex: 0 0 88rpx;
+  border-radius: 44rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sl-icon-btn--soft {
+  background: #F1F3F6;
+}
+
+.sl-icon-btn--glass {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.sl-hover {
+  opacity: 0.75;
+}
+
+/* --- Barre d'action en bas ----------------------------------------------- */
+.sl-bottombar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 50;
+  box-sizing: border-box;
+  padding: 20rpx 32rpx calc(28rpx + env(safe-area-inset-bottom));
+  border-top: 2rpx solid #E4E7EE;
+  background: #FFFFFF;
+  display: flex;
+  gap: 20rpx;
+}
+
+.sl-bottom-spacer {
+  height: calc(220rpx + env(safe-area-inset-bottom));
+}
+
+/* --- Boutons ------------------------------------------------------------- */
+.sl-btn {
+  flex: 1;
+  height: 112rpx;
+  border-radius: 32rpx;
+  font-size: 30rpx;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16rpx;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.sl-btn--berry {
+  background: #C8235F;
+  color: #FFFFFF;
+}
+
+.sl-btn--navy {
+  background: #0F1E3D;
+  color: #FFFFFF;
+}
+
+.sl-btn--outline {
+  background: #FFFFFF;
+  border: 2rpx solid #E4E7EE;
+  color: #0F1E3D;
+  font-weight: 700;
+}
+
+.sl-btn--outline-navy {
+  background: #FFFFFF;
+  border: 4rpx solid #0F1E3D;
+  color: #0F1E3D;
+}
+
+.sl-btn--soft {
+  background: #FDF1F5;
+  color: #9E1749;
+  padding: 0 24rpx;
+}
+
+.sl-btn--success-soft {
+  background: #EEF7F2;
+  color: #0D4F31;
+}
+
+/* --- Case à cocher (ligne entière cliquable) ------------------------------ */
+.sl-check-row {
+  display: flex;
+  align-items: center;
+  gap: 24rpx;
+  min-height: 112rpx;
+  padding: 16rpx 28rpx;
+  box-sizing: border-box;
+  border-radius: 32rpx;
+  border: 4rpx solid #E4E7EE;
+  background: #FFFFFF;
+  font-size: 28rpx;
+  font-weight: 700;
+  color: #0F1E3D;
+}
+
+.sl-check-row--on {
+  background: #EEF7F2;
+  border-color: #11643F;
+}
+
+.sl-check-row--berry.sl-check-row--on {
+  background: #FDF1F5;
+  border-color: #C8235F;
+}
+
+.sl-check-row--locked {
+  color: #A3AAB8;
+}
+
+.sl-check-box {
+  width: 48rpx;
+  height: 48rpx;
+  flex: 0 0 48rpx;
+  box-sizing: border-box;
+  border-radius: 14rpx;
+  border: 4rpx solid #C9CFDA;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sl-check-row--on .sl-check-box {
+  border: 0;
+  background: #11643F;
+}
+
+.sl-check-row--berry.sl-check-row--on .sl-check-box {
+  background: #C8235F;
+}
+
+.sl-check-box .ic {
+  width: 28rpx;
+  height: 28rpx;
+}
+
+/* --- Interrupteur -------------------------------------------------------- */
+.sl-switch {
+  position: relative;
+  width: 96rpx;
+  height: 56rpx;
+  flex: 0 0 96rpx;
+  border-radius: 28rpx;
+  background: #C9CFDA;
+  transition: background 0.15s;
+}
+
+.sl-switch--on {
+  background: #11643F;
+}
+
+.sl-switch__knob {
+  position: absolute;
+  top: 6rpx;
+  left: 6rpx;
+  width: 44rpx;
+  height: 44rpx;
+  border-radius: 22rpx;
+  background: #FFFFFF;
+  transition: left 0.15s;
+}
+
+.sl-switch--on .sl-switch__knob {
+  left: 46rpx;
+}
+
+/* --- Carte « l'essentiel » (4 chiffres clés) ------------------------------ */
+.sl-keys {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20rpx;
+}
+
+.sl-key {
+  padding: 24rpx;
+  border-radius: 32rpx;
+  background: #F7F8FA;
+  display: flex;
+  flex-direction: column;
+  gap: 4rpx;
+}
+
+.sl-key__label {
+  font-size: 24rpx;
+  color: #5B6475;
+}
+
+.sl-key__value {
+  font-size: 34rpx;
+  font-weight: 800;
+}
+
+.sl-key__sub {
+  font-size: 22rpx;
+  color: #5B6475;
+}
+
+/* --- Articles de contrat (accordéon) ------------------------------------- */
+.sl-articles {
+  border-radius: 40rpx;
+  background: #FFFFFF;
+  border: 2rpx solid #E4E7EE;
+  overflow: hidden;
+}
+
+.sl-article {
+  border-bottom: 2rpx solid #EEF0F4;
+}
+
+.sl-article__head {
+  display: flex;
+  align-items: center;
+  gap: 24rpx;
+  padding: 28rpx;
+}
+
+.sl-article__num {
+  width: 60rpx;
+  height: 60rpx;
+  flex: 0 0 60rpx;
+  border-radius: 20rpx;
+  font-size: 26rpx;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #F1F3F6;
+  color: #0F1E3D;
+}
+
+.sl-article--open .sl-article__num {
+  background: #C8235F;
+  color: #FFFFFF;
+}
+
+.sl-article__titles {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.sl-article__title {
+  font-size: 28rpx;
+  font-weight: 800;
+}
+
+.sl-article__hint {
+  font-size: 24rpx;
+  color: #5B6475;
+}
+
+.sl-article__chev {
+  width: 36rpx;
+  height: 36rpx;
+  transition: transform 0.2s;
+}
+
+.sl-article--open .sl-article__chev {
+  transform: rotate(180deg);
+}
+
+.sl-article__text {
+  display: block;
+  padding: 0 32rpx 32rpx 116rpx;
+  font-size: 28rpx;
+  line-height: 1.6;
+  color: #3A4458;
+}
+
+/* --- Bouton audio (résumé en wolof) -------------------------------------- */
+.sl-audio {
+  margin-top: 24rpx;
+  height: 104rpx;
+  padding: 0 32rpx;
+  border-radius: 32rpx;
+  display: flex;
+  align-items: center;
+  gap: 24rpx;
+  font-size: 28rpx;
+  font-weight: 800;
+  background: #FDF1F5;
+  color: #9E1749;
+}
+
+.sl-audio--playing {
+  background: #C8235F;
+  color: #FFFFFF;
+}
+
+.sl-audio__label {
+  flex: 1;
+}
+
+.sl-audio__dur {
+  font-size: 24rpx;
+  font-weight: 700;
+  opacity: 0.8;
+}
+
+.sl-audio .ic {
+  width: 40rpx;
+  height: 40rpx;
+}
+
+.sl-wave {
+  display: flex;
+  align-items: center;
+  gap: 6rpx;
+  height: 40rpx;
+}
+
+.sl-wave__bar {
+  width: 6rpx;
+  height: 40rpx;
+  border-radius: 4rpx;
+  background: currentColor;
+  animation: sl-wave 0.8s ease-in-out infinite;
+}
+
+.sl-wave__bar:nth-child(2) {
+  animation-delay: 0.15s;
+}
+
+.sl-wave__bar:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+@keyframes sl-wave {
+  0%, 100% { transform: scaleY(0.35); }
+  50% { transform: scaleY(1); }
+}
+
+/* --- Message de confirmation (toast) ------------------------------------- */
+.sl-toast {
+  position: fixed;
+  left: 32rpx;
+  right: 32rpx;
+  bottom: calc(220rpx + env(safe-area-inset-bottom));
+  z-index: 80;
+  padding: 24rpx 32rpx;
+  border-radius: 32rpx;
+  background: #0F1E3D;
+  color: #FFFFFF;
+  font-size: 28rpx;
+  font-weight: 700;
+}
+
+/* --- Badges -------------------------------------------------------------- */
+.sl-badge {
+  flex: 0 0 auto;
+  font-size: 24rpx;
+  font-weight: 800;
+  padding: 12rpx 20rpx;
+  border-radius: 999rpx;
+}
+
+.sl-badge--navy {
+  background: #0F1E3D;
+  color: #FFFFFF;
+}
+
+.sl-badge--green {
+  background: #11643F;
+  color: #FFFFFF;
+}
+
+/* --- Max it (simulation) : fenêtre de paiement partagée ------------------- */
+.sl-mx-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 100;
+  background: rgba(15, 30, 61, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40rpx;
+}
+
+.sl-mx {
+  width: 100%;
+  border-radius: 48rpx;
+  background: #FFFFFF;
+  padding: 44rpx 40rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 24rpx;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.sl-mx-icon {
+  width: 120rpx;
+  height: 120rpx;
+  margin: 0 auto;
+  border-radius: 60rpx;
+  background: #FDF1F5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sl-mx-icon .ic {
+  width: 56rpx;
+  height: 56rpx;
+}
+
+.sl-mx-title {
+  font-size: 40rpx;
+  font-weight: 800;
+}
+
+.sl-mx-title--sm {
+  font-size: 36rpx;
+}
+
+.sl-mx-amount {
+  font-size: 60rpx;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.sl-mx-to {
+  font-size: 28rpx;
+  color: #3A4458;
+}
+
+.sl-mx-note {
+  font-size: 26rpx;
+  line-height: 1.5;
+  color: #5B6475;
+  background: #F7F8FA;
+  padding: 20rpx 24rpx;
+  border-radius: 24rpx;
+}
+
+.sl-mx-btn {
+  flex: none;
+  height: 108rpx;
+}
+
+.sl-mx-cancel {
+  height: 92rpx;
+  line-height: 92rpx;
+  color: #5B6475;
+  font-size: 28rpx;
+  font-weight: 700;
+}
+
+.sl-mx-spinner {
+  width: 112rpx;
+  height: 112rpx;
+  margin: 24rpx auto 8rpx;
+  border-radius: 56rpx;
+  border: 10rpx solid #F3C3D5;
+  border-top-color: #C8235F;
+  box-sizing: border-box;
+  animation: sl-spin 0.9s linear infinite;
+}
+
+@keyframes sl-spin {
+  to { transform: rotate(360deg); }
+}
+
+.sl-mx-sim {
+  align-self: center;
+  font-size: 22rpx;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  color: #6B4A00;
+  background: #FFF4E0;
+  padding: 10rpx 20rpx;
+  border-radius: 999rpx;
+}
+
+.sl-mx-box {
+  border: 4rpx dashed #C9CFDA;
+  border-radius: 36rpx;
+  padding: 32rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+  text-align: left;
+}
+
+.sl-mx-brand {
+  font-size: 36rpx;
+  font-weight: 800;
+}
+
+.sl-mx-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 20rpx;
+  font-size: 28rpx;
+}
+
+.sl-mx-row--total {
+  font-size: 32rpx;
+  padding-top: 16rpx;
+  border-top: 2rpx solid #EEF0F4;
+}
+
+.sl-mx-small {
+  font-size: 24rpx;
+  line-height: 1.5;
+  color: #5B6475;
+}
+
+.sl-mx-refuse {
+  flex: none;
+  height: 92rpx;
+  color: #A3261F;
+  font-size: 28rpx;
+}
+
+.sl-mx-muted {
+  font-size: 26rpx;
+  color: #5B6475;
+}
+
+.sl-mx-strong {
+  font-weight: 800;
+}
+
+.sl-mx-right {
+  text-align: right;
+}

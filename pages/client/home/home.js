@@ -404,6 +404,29 @@ Page({
     this.setData({ showDetailModal: false, selectedListing: null });
   },
 
+  // --- Actions de la fiche rapide (boutons existants sans fonction) ---
+  onCallBailleur() {
+    const l = this.data.selectedListing;
+    if (l && l.phone) wx.makePhoneCall({ phoneNumber: l.phone, fail: () => {} });
+  },
+
+  onWhatsAppBailleur() {
+    const l = this.data.selectedListing;
+    if (!l) return;
+    wx.setClipboardData({
+      data: `Bonjour ${l.bailleurName}, je suis intéressé par votre annonce « ${l.title} » à ${l.place}.`,
+      success: () => wx.showToast({ title: 'Message copié pour WhatsApp', icon: 'none' })
+    });
+  },
+
+  // Paiement de l'entrée (avance + caution) : parcours « Entrer dans le logement »
+  onPayRentWithOrangeMoney() {
+    const l = this.data.selectedListing;
+    if (!l) return;
+    this.setData({ showDetailModal: false });
+    wx.navigateTo({ url: `/pages/client/entree/entree?id=${encodeURIComponent(l.id)}` });
+  },
+
   onToggleFavorite(e) {
     const id = e.currentTarget.dataset.id;
     if (!id) return;

@@ -1,161 +1,164 @@
-<view class="profile-page">
-  <scroll-view class="profile-scroll" scroll-y="{{true}}" enhanced="{{true}}" show-scrollbar="{{false}}">
-    
-    <!-- En-tête -->
-    <view class="profile-header" style="padding-top: {{ statusBarHeight + 14 }}px;">
-      <text class="page-title">Profil</text>
-    </view>
-
-    <!-- Carte utilisateur principale -->
-    <view class="user-card">
-      <view class="user-avatar-circle">
-        <text class="avatar-initials">{{ userInitials }}</text>
-      </view>
-      <view class="user-info-col">
-        <text class="user-fullname">{{ userName }}</text>
-        <text class="user-phone">{{ userPhone }}</text>
-        <view class="verified-tag">
-          <text class="check-mark">✓</text> Numéro vérifié
+<view class="prof">
+  <!-- Carte profil -->
+  <view class="prof__header" style="padding-top: {{ statusBarHeight + 22 }}px;">
+    <text class="prof__title">Profil</text>
+    <view class="prof__card">
+      <view class="prof__avatar">{{ userInitials }}</view>
+      <view class="prof__who">
+        <text class="prof__name">{{ userName }}</text>
+        <text class="prof__phone">{{ userPhone }}</text>
+        <view class="prof__verified">
+          <view class="ic ic-check-green prof__verified-ic"></view>
+          <text>Numéro vérifié</text>
         </view>
       </view>
-      <view class="btn-edit-pencil">
-        <text class="pencil-icon">✎</text>
+      <view class="sl-icon-btn sl-icon-btn--soft" hover-class="sl-hover" bindtap="onSoon" aria-label="Modifier le profil">
+        <view class="ic ic-edit-navy prof__edit-ic"></view>
       </view>
     </view>
 
-    <!-- 3 Cartes Statistiques cliquables -->
-    <view class="stats-cards-row">
-      <view class="stat-box" bindtap="onNavFavoris">
-        <text class="stat-number">4</text>
-        <text class="stat-label">Favoris</text>
+    <view class="prof__stats">
+      <view class="prof__stat" hover-class="sl-hover" bindtap="onNavFavoris">
+        <text class="prof__stat-num">{{ stats.favoris }}</text>
+        <text class="prof__stat-label">Favoris</text>
       </view>
-      <view class="stat-box" bindtap="onNavVisites">
-        <text class="stat-number">4</text>
-        <text class="stat-label">Visites</text>
+      <view class="prof__stat" hover-class="sl-hover" bindtap="onNavVisites">
+        <text class="prof__stat-num">{{ stats.visites }}</text>
+        <text class="prof__stat-label">Visites</text>
       </view>
-      <view class="stat-box" bindtap="onNavMessages">
-        <text class="stat-number">4</text>
-        <text class="stat-label">Conversations</text>
-      </view>
-    </view>
-
-    <!-- Section MON COMPTE -->
-    <view class="profile-section">
-      <text class="section-title-label">MON COMPTE</text>
-      <view class="menu-list-card">
-        <view class="menu-row" bindtap="onNavLoyers">
-          <view class="menu-left">
-            <text class="menu-icon">💳</text>
-            <view class="menu-text-col">
-              <text class="menu-name font-bold">Mes loyers & cautions</text>
-              <text class="menu-subtext">Payer loyer, caution & quittances</text>
-            </view>
-          </view>
-          <view class="menu-right-badge">
-            <text class="badge-pending-mini">1 échéance</text>
-            <text class="chevron-right">›</text>
-          </view>
-        </view>
-        <view class="menu-divider"></view>
-        <view class="menu-row">
-          <view class="menu-left">
-            <text class="menu-icon">👤</text>
-            <text class="menu-name">Informations personnelles</text>
-          </view>
-          <text class="chevron-right">›</text>
-        </view>
-        <view class="menu-divider"></view>
-        <view class="menu-row">
-          <view class="menu-left">
-            <text class="menu-icon">📱</text>
-            <view class="menu-text-col">
-              <text class="menu-name">Numéro de téléphone</text>
-              <text class="menu-subtext">Sert à te connecter et à être contacté·e</text>
-            </view>
-          </view>
-          <text class="chevron-right">›</text>
-        </view>
+      <view class="prof__stat" hover-class="sl-hover" bindtap="onNavMessages">
+        <text class="prof__stat-num">{{ stats.conversations }}</text>
+        <text class="prof__stat-label">Conversations</text>
       </view>
     </view>
+  </view>
 
-    <!-- Section NOTIFICATIONS -->
-    <view class="profile-section">
-      <text class="section-title-label">NOTIFICATIONS</text>
-      <view class="menu-list-card">
-        <!-- Notif 1 -->
-        <view class="notif-row">
-          <view class="notif-text-col">
-            <text class="notif-name">Nouveaux messages</text>
-            <text class="notif-subtext">Quand un bailleur te répond</text>
-          </view>
-          <switch checked="{{ notifMessages }}" color="#C8235F" data-key="notifMessages" bindchange="onToggleNotif" />
+  <!-- Mon compte -->
+  <view class="prof__section">
+    <text class="prof__section-title">MON COMPTE</text>
+    <view class="prof__group">
+      <view class="prof__row" hover-class="prof__row--hover" bindtap="onSoon">
+        <view class="ic ic-user-berry prof__row-ic"></view>
+        <text class="prof__row-label">Informations personnelles</text>
+        <view class="ic ic-chevron-grey prof__chev"></view>
+      </view>
+      <view class="prof__row" hover-class="prof__row--hover" bindtap="onSoon">
+        <view class="ic ic-mobile-berry prof__row-ic"></view>
+        <view class="prof__row-text">
+          <text class="prof__row-label">Numéro de téléphone</text>
+          <text class="prof__row-sub">Sert à te connecter et à être contacté·e</text>
         </view>
-        <view class="menu-divider"></view>
+        <view class="ic ic-chevron-grey prof__chev"></view>
+      </view>
+    </view>
+  </view>
 
-        <!-- Notif 2 -->
-        <view class="notif-row">
-          <view class="notif-text-col">
-            <text class="notif-name">Réponses aux visites</text>
-            <text class="notif-subtext">Acceptée, refusée ou modifiée</text>
-          </view>
-          <switch checked="{{ notifVisites }}" color="#C8235F" data-key="notifVisites" bindchange="onToggleNotif" />
+  <!-- Notifications -->
+  <view class="prof__section">
+    <text class="prof__section-title">NOTIFICATIONS</text>
+    <view class="prof__group">
+      <view wx:for="{{ notifs }}" wx:key="id" class="prof__row prof__row--notif">
+        <view class="prof__row-text">
+          <text class="prof__row-label">{{ item.label }}</text>
+          <text class="prof__row-sub">{{ item.sub }}</text>
         </view>
-        <view class="menu-divider"></view>
-
-        <!-- Notif 3 -->
-        <view class="notif-row">
-          <view class="notif-text-col">
-            <text class="notif-name">Nouvelles annonces</text>
-            <text class="notif-subtext">Dans tes quartiers préférés</text>
-          </view>
-          <switch checked="{{ notifAnnonces }}" color="#C8235F" data-key="notifAnnonces" bindchange="onToggleNotif" />
-        </view>
-        <view class="menu-divider"></view>
-
-        <!-- Notif 4 -->
-        <view class="notif-row">
-          <view class="notif-text-col">
-            <text class="notif-name">Baisses de prix</text>
-            <text class="notif-subtext">Sur tes favoris</text>
-          </view>
-          <switch checked="{{ notifPrices }}" color="#C8235F" data-key="notifPrices" bindchange="onToggleNotif" />
+        <view
+          class="prof__switch {{ item.on ? 'prof__switch--on' : '' }}"
+          data-id="{{ item.id }}"
+          bindtap="onToggleNotif"
+          aria-label="{{ item.label }}"
+        >
+          <view class="prof__knob"></view>
         </view>
       </view>
     </view>
+  </view>
 
-    <!-- Section PRÉFÉRENCES -->
-    <view class="profile-section">
-      <text class="section-title-label">PRÉFÉRENCES</text>
-      <view class="menu-list-card lang-card">
-        <text class="lang-title">Langue de l'application</text>
-        <view class="lang-pills-row">
-          <view 
-            class="lang-pill {{ lang === 'fr' ? 'lang-pill--active' : '' }}"
-            data-lang="fr"
+  <!-- Préférences -->
+  <view class="prof__section">
+    <text class="prof__section-title">PRÉFÉRENCES</text>
+    <view class="prof__group">
+      <view class="prof__lang">
+        <text class="prof__row-label">Langue de l'application</text>
+        <view class="prof__segmented">
+          <view
+            wx:for="{{ langs }}"
+            wx:key="id"
+            class="prof__segment {{ lang === item.id ? 'prof__segment--on' : '' }}"
+            data-lang="{{ item.id }}"
             bindtap="onSelectLang"
-          >
-            Français
-          </view>
-          <view 
-            class="lang-pill {{ lang === 'wo' ? 'lang-pill--active' : '' }}"
-            data-lang="wo"
-            bindtap="onSelectLang"
-          >
-            Wolof
-          </view>
+          >{{ item.label }}</view>
         </view>
       </view>
+      <view class="prof__row prof__row--tall" hover-class="prof__row--hover" bindtap="onSoon">
+        <view class="prof__row-text">
+          <text class="prof__row-label">Quartiers préférés</text>
+          <text class="prof__row-sub">{{ prefs.zones }}</text>
+        </view>
+        <view class="ic ic-chevron-grey prof__chev"></view>
+      </view>
+      <view class="prof__row prof__row--tall" hover-class="prof__row--hover" bindtap="onSoon">
+        <view class="prof__row-text">
+          <text class="prof__row-label">Budget habituel</text>
+          <text class="prof__row-sub">{{ prefs.budget }}</text>
+        </view>
+        <view class="ic ic-chevron-grey prof__chev"></view>
+      </view>
     </view>
+  </view>
 
-    <!-- Bouton Bascule vers Espace Bailleur -->
-    <view class="switch-role-container">
-      <button class="btn-switch-role" bindtap="onSwitchToBailleur">
-        <text class="switch-icon">🏢</text>
-        <text class="switch-text">Passer en mode Bailleur</text>
-      </button>
+  <!-- Bailleur -->
+  <view class="prof__section">
+    <view class="prof__owner" hover-class="sl-hover" bindtap="onSwitchToBailleur">
+      <view class="prof__owner-ic"><view class="ic ic-home-plus-white"></view></view>
+      <view class="prof__owner-text">
+        <text class="prof__owner-title">Vous êtes bailleur ?</text>
+        <text class="prof__owner-sub">Publier et gérer mes annonces</text>
+      </view>
+      <view class="ic ic-chevron-white prof__chev"></view>
     </view>
+  </view>
 
-    <view class="scroll-spacer"></view>
-  </scroll-view>
+  <!-- Aide -->
+  <view class="prof__section">
+    <text class="prof__section-title">AIDE</text>
+    <view class="prof__group">
+      <view class="prof__row prof__row--short" hover-class="prof__row--hover" bindtap="onSoon">
+        <view class="ic ic-help-berry prof__row-ic"></view>
+        <text class="prof__row-label">Centre d'aide</text>
+        <view class="ic ic-chevron-grey prof__chev"></view>
+      </view>
+      <view class="prof__row prof__row--short" hover-class="prof__row--hover" bindtap="onSoon">
+        <view class="ic ic-shield-line-berry prof__row-ic"></view>
+        <text class="prof__row-label">Conseils de sécurité</text>
+        <view class="ic ic-chevron-grey prof__chev"></view>
+      </view>
+      <view class="prof__row prof__row--short" hover-class="prof__row--hover" bindtap="onSoon">
+        <view class="ic ic-chat-berry prof__row-ic"></view>
+        <text class="prof__row-label">Contacter le support</text>
+        <view class="ic ic-chevron-grey prof__chev"></view>
+      </view>
+    </view>
+  </view>
+
+  <!-- Déconnexion -->
+  <view class="prof__section prof__section--last">
+    <view class="prof__logout" hover-class="sl-hover" bindtap="onAskLogout">
+      <view class="ic ic-logout-danger prof__logout-ic"></view>
+      <text>Se déconnecter</text>
+    </view>
+    <text class="prof__version">SAMA LOYER · version 1.0</text>
+  </view>
+
+  <view class="prof__tab-spacer"></view>
+
+  <!-- Confirmation déconnexion -->
+  <view wx:if="{{ confirmLogout }}" class="prof__overlay" catchtouchmove="noop">
+    <view class="prof__dialog">
+      <text class="prof__dialog-title">Se déconnecter ?</text>
+      <text class="prof__dialog-text">Tes favoris, visites et messages restent enregistrés. Tu les retrouveras en te reconnectant avec ton numéro.</text>
+      <view class="prof__dialog-btn prof__dialog-btn--danger" hover-class="sl-hover" bindtap="onLogout">Se déconnecter</view>
+      <view class="prof__dialog-btn" hover-class="sl-hover" bindtap="onCancelLogout">Annuler</view>
+    </view>
+  </view>
 </view>
-

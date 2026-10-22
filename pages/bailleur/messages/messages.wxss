@@ -1,0 +1,208 @@
+@import "/styles/sama-ui.wxss";
+
+.bmsg__header {
+  padding-left: 40rpx;
+  padding-right: 40rpx;
+}
+
+.bmsg__title {
+  display: block;
+  font-size: 52rpx;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.bmsg__subtitle {
+  display: block;
+  margin-top: 8rpx;
+  font-size: 28rpx;
+  color: #5B6475;
+}
+
+/* --- Conversations / Demandes de visite ---------------------------------- */
+.bmsg__segmented {
+  margin: 32rpx 40rpx 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12rpx;
+  padding: 8rpx;
+  border-radius: 32rpx;
+  background: #E9ECF1;
+}
+
+.bmsg__segment {
+  height: 84rpx;
+  border-radius: 24rpx;
+  font-size: 28rpx;
+  font-weight: 800;
+  color: #5B6475;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12rpx;
+}
+
+.bmsg__segment--on {
+  background: #FFFFFF;
+  color: #0F1E3D;
+  box-shadow: 0 2rpx 8rpx rgba(15, 30, 61, 0.12);
+}
+
+.bmsg__count {
+  min-width: 40rpx;
+  height: 40rpx;
+  border-radius: 20rpx;
+  background: #C8235F;
+  color: #FFFFFF;
+  font-size: 22rpx;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* --- Filtres ------------------------------------------------------------- */
+.bmsg__filters {
+  padding: 28rpx 40rpx 0;
+  display: flex;
+  gap: 16rpx;
+}
+
+.bmsg__pill {
+  height: 80rpx;
+  padding: 0 28rpx;
+  border-radius: 999rpx;
+  font-size: 26rpx;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  background: #FFFFFF;
+  color: #0F1E3D;
+  border: 2rpx solid #E4E7EE;
+}
+
+.bmsg__pill--on {
+  background: #0F1E3D;
+  color: #FFFFFF;
+  border-color: #0F1E3D;
+}
+
+/* --- Liste --------------------------------------------------------------- */
+.bmsg__list {
+  padding: 20rpx 24rpx 40rpx;
+  display: flex;
+  flex-direction: column;
+}
+
+.bmsg__conv {
+  display: flex;
+  gap: 24rpx;
+  padding: 24rpx 16rpx;
+  border-bottom: 2rpx solid #EEF0F4;
+}
+
+.bmsg__conv--hover {
+  background: #F7F8FA;
+}
+
+.bmsg__avatar {
+  width: 100rpx;
+  height: 100rpx;
+  flex: 0 0 100rpx;
+  border-radius: 50rpx;
+  color: #FFFFFF;
+  font-size: 30rpx;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bmsg__conv-body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6rpx;
+}
+
+.bmsg__conv-top,
+.bmsg__conv-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16rpx;
+}
+
+.bmsg__name {
+  font-size: 30rpx;
+  font-weight: 700;
+}
+
+.bmsg__name--unread {
+  font-weight: 800;
+}
+
+.bmsg__time {
+  flex: 0 0 auto;
+  font-size: 24rpx;
+  font-weight: 500;
+  color: #5B6475;
+}
+
+.bmsg__time--unread {
+  font-weight: 800;
+  color: #C8235F;
+}
+
+.bmsg__tag {
+  align-self: flex-start;
+  font-size: 22rpx;
+  font-weight: 800;
+  padding: 6rpx 16rpx;
+  border-radius: 999rpx;
+}
+
+.bmsg__tag--cand {
+  background: #FDF1F5;
+  color: #9E1749;
+}
+
+.bmsg__tag--loc {
+  background: #E2F0EA;
+  color: #0D4F31;
+}
+
+.bmsg__last {
+  flex: 1;
+  min-width: 0;
+  font-size: 26rpx;
+  color: #5B6475;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.bmsg__last--unread {
+  font-weight: 700;
+  color: #0F1E3D;
+}
+
+.bmsg__unread {
+  flex: 0 0 auto;
+  min-width: 44rpx;
+  height: 44rpx;
+  padding: 0 12rpx;
+  box-sizing: border-box;
+  border-radius: 22rpx;
+  background: #C8235F;
+  color: #FFFFFF;
+  font-size: 24rpx;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bmsg__tab-spacer {
+  height: calc(180rpx + env(safe-area-inset-bottom));
+}
