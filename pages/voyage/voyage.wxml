@@ -1,42 +1,136 @@
-<app-layout
-  title="Mes Voyages"
-  showBack="{{true}}"
-  logoSrc="/assets/images/logo.png"
-  showLogo="{{false}}"
-  transparent="{{true}}"
-  showNavBorder="{{false}}"
-  activeTab="{{activeTab}}"
->
-  <scroll-view class="content voyages-page" scroll-y="{{true}}" enhanced="{{true}}" show-scrollbar="{{false}}">
-    <view class="voyages-page__header">
-      <app-typography size="14" weight="400" color="#7A8094">
-        {{ resultsLabel }}
-      </app-typography>
+<view class="messages-page">
+  <scroll-view class="messages-scroll" scroll-y="{{true}}" enhanced="{{true}}" show-scrollbar="{{false}}">
+    
+    <!-- En-tête -->
+    <view class="messages-header" style="padding-top: {{ statusBarHeight + 14 }}px;">
+      <view class="header-titles">
+        <text class="page-title">Messages & Demandes</text>
+        <text class="page-subtitle">Échanges directs avec vos bailleurs</text>
+      </view>
+      <view wx:if="{{ unreadTotal > 0 }}" class="header-unread-badge">
+        <text class="unread-count">{{ unreadTotal }} non lus</text>
+      </view>
     </view>
 
-    <view wx:if="{{ loading }}" class="voyages-page__list">
-      <reservation-card-skeleton wx:for="{{ [1, 2, 3, 4] }}" wx:key="*this" />
+    <!-- Filtres rapides -->
+    <view class="filters-bar">
+      <view class="filter-pill {{ activeFilter === 'all' ? 'filter-pill--active' : '' }}" data-filter="all" bindtap="onSelectFilter">
+        <text>Tous ({{ conversations.length }})</text>
+      </view>
+      <view class="filter-pill {{ activeFilter === 'visits' ? 'filter-pill--active' : '' }}" data-filter="visits" bindtap="onSelectFilter">
+        <text>Visites prévues</text>
+      </view>
+      <view class="filter-pill {{ activeFilter === 'pending' ? 'filter-pill--active' : '' }}" data-filter="pending" bindtap="onSelectFilter">
+        <text>En attente</text>
+      </view>
     </view>
 
-    <view wx:elif="{{ reservations.length }}" class="voyages-page__list">
-      <reservation-card
-        wx:for="{{ reservations }}"
-        wx:key="id"
-        wx:for-item="reservation"
-        reservation="{{ reservation }}"
-        bind:select="openReservationDetails"
-      />
+    <!-- Liste des conversations -->
+    <view class="conversations-list">
+      <block wx:for="{{ conversations }}" wx:key="id">
+        <view
+          wx:if="{{ activeFilter === 'all' || (activeFilter === 'visits' && (item.status === 'Visite proposée' || item.status === 'Visite confirmée')) || (activeFilter === 'pending' && item.status === 'Réponse reçue') }}"
+          class="conv-card {{ item.unread > 0 ? 'conv-card--unread' : '' }}"
+          data-conv="{{ item }}"
+          bindtap="onOpenChat"
+        >
+          <!-- Avatar Bailleur -->
+          <view class="conv-avatar">
+            <text class="avatar-letter">{{ item.bailleurInitial }}</text>
+            <view wx:if="{{ item.verified }}" class="verified-dot">✓</view>
+          </view>
+
+          <!-- Contenu conversation -->
+          <view class="conv-content">
+            <view class="conv-top-row">
+              <view class="conv-sender-info">
+                <text class="conv-name">{{ item.bailleurName }}</text>
+                <text class="conv-property-tag">{{ item.propertyTitle }}</text>
+              </view>
+              <text class="conv-time">{{ item.time }}</text>
+            </view>
+
+            <text class="conv-snippet">{{ item.lastMessage }}</text>
+
+            <view class="conv-bottom-row">
+              <view class="status-pill status-pill--{{ item.statusType }}">
+                <text>{{ item.status }}</text>
+              </view>
+              <text class="conv-price">{{ item.propertyPrice }}</text>
+              <view wx:if="{{ item.unread > 0 }}" class="unread-dot">{{ item.unread }}</view>
+            </view>
+          </view>
+        </view>
+      </block>
     </view>
 
-    <view wx:elif="{{ !loading }}" class="voyages-page__empty">
-      <app-typography size="18" weight="600" color="#1C1C1C">
-        Aucune réservation pour le moment
-      </app-typography>
-      <app-typography size="14" color="#7A8094">
-        Vos réservations apparaîtront ici après confirmation.
-      </app-typography>
-    </view>
-
+    <view class="scroll-spacer"></view>
   </scroll-view>
 
-</app-layout>
+  <!-- ======================================================== -->
+  <!-- MODAL FIL DE DISCUSSION DIRECT -->
+  <!-- ======================================================== -->
+  <view wx:if="{{ showChatModal }}" class="chat-modal-backdrop" bindtap="onCloseChat">
+    <view class="chat-sheet" catchtap="true">
+      
+      <!-- En-tête de la discussion -->
+      <view class="chat-header">
+        <view class="chat-header__info">
+          <view class="chat-landlord-avatar">
+            <text>{{ selectedConversation.bailleurInitial }}</text>
+          </view>
+          <view class="chat-landlord-meta">
+            <view class="name-row">
+              <text class="chat-name">{{ selectedConversation.bailleurName }}</text>
+              <text class="chat-verified-badge">✓ Vérifié</text>
+            </view>
+            <text class="chat-property">{{ selectedConversation.propertyTitle }} · {{ selectedConversation.propertyPlace }}</text>
+          </view>
+        </view>
+        <view class="chat-close" bindtap="onCloseChat">✕</view>
+      </view>
+
+      <!-- Barre d'action rapide contact -->
+      <view class="chat-quick-actions">
+        <button class="quick-btn" bindtap="onCallBailleur">
+          📞 Appeler
+        </button>
+        <button class="quick-btn whatsapp" bindtap="onWhatsAppBailleur">
+          💬 WhatsApp
+        </button>
+        <button wx:if="{{ selectedConversation.status === 'Visite proposée' }}" class="quick-btn confirm" bindtap="onConfirmVisit">
+          📅 Confirmer visite
+        </button>
+      </view>
+
+      <!-- Zone des messages échangés -->
+      <scroll-view class="chat-messages-area" scroll-y="{{true}}">
+        <block wx:for="{{ selectedConversation.messages }}" wx:key="time">
+          <view class="message-bubble-row {{ item.sender === 'client' ? 'row-client' : 'row-bailleur' }}">
+            <view class="bubble {{ item.sender === 'client' ? 'bubble-client' : 'bubble-bailleur' }}">
+              <text class="bubble-text">{{ item.text }}</text>
+              <text class="bubble-time">{{ item.time }}</text>
+            </view>
+          </view>
+        </block>
+      </scroll-view>
+
+      <!-- Barre de saisie -->
+      <view class="chat-input-bar">
+        <input
+          class="chat-input-field"
+          type="text"
+          value="{{ newMessageText }}"
+          bindinput="onMessageInput"
+          placeholder="Écrivez votre message à {{ selectedConversation.bailleurName }}..."
+          confirm-type="send"
+          bindconfirm="onSendMessage"
+        />
+        <button class="btn-send-message" bindtap="onSendMessage">
+          Envoyer
+        </button>
+      </view>
+
+    </view>
+  </view>
+</view>
