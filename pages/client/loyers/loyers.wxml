@@ -218,7 +218,7 @@
     <view class="receipt-sheet-container" catchtap="true">
       <view class="official-quittance-paper">
         <view class="paper-top-header">
-          <view class="paper-brand-tag">SAMA LOGEMENT</view>
+          <view class="paper-brand-tag">SAMA LOYER</view>
           <text class="paper-heading-title">QUITTANCE DE LOYER</text>
           <text class="paper-legal-note">Décret de mars 2023 · République du Sénégal</text>
         </view>
@@ -262,7 +262,7 @@
         <!-- Cachet officiel vert -->
         <view class="paper-stamp-box">
           <view class="stamp-oval">
-            <text class="stamp-top-txt">SAMA LOGEMENT DAKAR</text>
+            <text class="stamp-top-txt">SAMA LOYER DAKAR</text>
             <text class="stamp-main-txt">✓ CERTIFIÉ CONFORME</text>
             <text class="stamp-sub-txt">PAIEMENT SÉCURISÉ</text>
           </view>

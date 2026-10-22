@@ -1,6 +1,6 @@
-# SAMA LOGEMENT — Architecture des Pages
+# SAMA LOYER — Architecture des Pages
 
-Ce dossier regroupe l'ensemble des écrans du Mini-Programme WeChat **SAMA LOGEMENT**, structuré en deux modules étanches et symétriques : **Client (Locataire)** et **Bailleur (Propriétaire)**.
+Ce dossier regroupe l'ensemble des écrans du Mini-Programme WeChat **SAMA LOYER**, structuré en deux modules étanches et symétriques : **Client (Locataire)** et **Bailleur (Propriétaire)**.
 
 ---
 

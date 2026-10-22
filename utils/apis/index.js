@@ -1,6 +1,6 @@
 // ============================================================================
-// SAMA LOGEMENT BACKEND API SERVICE
-// Centralized access to the Sama Logement REST endpoints.
+// SAMA LOYER BACKEND API SERVICE
+// Centralized access to the Sama Loyer REST endpoints.
 // ============================================================================
 
 import { httpClient } from './http.js';
@@ -8,7 +8,7 @@ import { authenticate } from './auth.js';
 import { sculpt } from '../json-sculpt/sculpt.js';
 import { normalizeApiError } from '../errors/index.js';
 
-// Ajouter ici les chemins des endpoints Sama Logement (ex. LOGEMENTS: '/logements')
+// Ajouter ici les chemins des endpoints Sama Loyer (ex. LOGEMENTS: '/logements')
 const ENDPOINTS = {};
 
 function extractApiResponse(res, fallbackMessage) {

@@ -180,7 +180,7 @@ Page({
     const name = e.currentTarget.dataset.name;
     const phone = e.currentTarget.dataset.phone;
     wx.setClipboardData({
-      data: `Bonjour ${name}, message de votre bailleur Sama Logement.`,
+      data: `Bonjour ${name}, message de votre bailleur Sama Loyer.`,
       success: () => {
         wx.showModal({
           title: 'WhatsApp 💬',

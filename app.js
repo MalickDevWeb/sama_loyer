@@ -91,7 +91,7 @@ App({
     Bus.setState(STATE_KEYS.USER_NAME, fullName);
 
     // Step 2: Les logements sont encore fictifs (utils/mocks/logements.js).
-    // Charger ici les données backend quand l'API Sama Logement sera prête.
+    // Charger ici les données backend quand l'API Sama Loyer sera prête.
 
     // Mark app as initialized after user data is ready.
     Bus.setState(STATE_KEYS.APP_INITIALIZED, true);

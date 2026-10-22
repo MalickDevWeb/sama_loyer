@@ -1,4 +1,4 @@
-# 🏠 SAMA LOGEMENT — Mini-App Immobilière pour Maxit (Orange Sénégal)
+# 🏠 SAMA LOYER — Mini-App Immobilière pour Maxit (Orange Sénégal)
 
 > **Projet Hackathon Orange** — Plateforme immobilière intelligente intégrée dans la Super-App **Maxit**, digitalisant la recherche, la mise en location, la contractualisation et le paiement certifié des loyers au Sénégal.
 
@@ -18,7 +18,7 @@
 
 ## 🎯 1. Vision & Positionnement dans Maxit
 
-**SAMA LOGEMENT** est conçu pour s'intégrer nativement dans la Super-App **Maxit** (Orange) via la technologie des mini-programmes (TCMPP) :
+**SAMA LOYER** est conçu pour s'intégrer nativement dans la Super-App **Maxit** (Orange) via la technologie des mini-programmes (TCMPP) :
 
 * **Authentification unique (SSO Maxit)** : L'utilisateur se connecte automatiquement avec son numéro Orange (`+221 77...`).
 * **Sécurité & KYC Certifié** : L'identité du compte Orange Money certifie les utilisateurs, éliminant les faux démarcheurs et arnaques de faux logements à Dakar.
@@ -34,7 +34,7 @@ Un même compte Maxit peut porter les **deux casquettes** sans aucune friction n
 ```mermaid
 flowchart TD
     A["Compte Unique Maxit (+221 77 xxx xx xx)"] --> B["SSO Orange Money (KYC Vérifié)"]
-    B --> C["SAMA LOGEMENT"]
+    B --> C["SAMA LOYER"]
     C --> D{"Bascule en 1 clic"}
     
     D -->|Mode Locataire| E["Profil Client"]

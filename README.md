@@ -1,4 +1,4 @@
-# 🏠 SAMA LOGEMENT — Real Estate Mini-App for Maxit (Orange Senegal)
+# 🏠 SAMA LOYER — Real Estate Mini-App for Maxit (Orange Senegal)
 
 > **Orange Hackathon Project** — Smart real-estate platform integrated into Orange's **Maxit** Super-App, digitizing property search, rentals, lease agreements, and certified rent payments in Senegal.
 
@@ -18,7 +18,7 @@
 
 ## 🎯 1. Vision & Maxit Positioning
 
-**SAMA LOGEMENT** is built to run natively inside Orange's **Maxit** Super-App via TCMPP (Tencent Cloud Mini Program Platform):
+**SAMA LOYER** is built to run natively inside Orange's **Maxit** Super-App via TCMPP (Tencent Cloud Mini Program Platform):
 
 * **Single Sign-On (Maxit SSO)**: Automatic authentication via the user's Orange phone number (`+221 77...`).
 * **KYC Certified Trust**: Orange Money KYC certification guarantees verified landlords and tenants, eliminating Dakar rental scams.

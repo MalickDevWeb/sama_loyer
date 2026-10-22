@@ -1,7 +1,7 @@
 // ============================================================================
 // DONNÉES DE DÉMONSTRATION DU BACK OFFICE
 // Une section par écran. À remplacer par les appels API quand le backend
-// Sama Logement sera prêt. "[PRIX]" / "[MONTANT]" = tarifs pas encore fixés.
+// Sama Loyer sera prêt. "[PRIX]" / "[MONTANT]" = tarifs pas encore fixés.
 // ============================================================================
 
 import type { Tone } from '../components/ui'

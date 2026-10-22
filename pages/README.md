@@ -1,6 +1,6 @@
-# SAMA LOGEMENT — Pages Architecture
+# SAMA LOYER — Pages Architecture
 
-This directory contains all screens for the WeChat Mini-Program **SAMA LOGEMENT**, organized into two sealed and symmetric modules: **Client (Tenant)** and **Bailleur (Landlord)**.
+This directory contains all screens for the WeChat Mini-Program **SAMA LOYER**, organized into two sealed and symmetric modules: **Client (Tenant)** and **Bailleur (Landlord)**.
 
 ---
 

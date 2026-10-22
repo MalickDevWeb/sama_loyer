@@ -305,7 +305,7 @@ Page({
   },
 
   // ==========================================
-  // MOTEUR DE MATCHING IA SAMA LOGEMENT
+  // MOTEUR DE MATCHING IA SAMA LOYER
   // ==========================================
   runSearch() {
     const q = normalize(this.data.qPlace);
@@ -422,7 +422,7 @@ Page({
   },
 
   // ==========================================
-  // TOAST MAGNIFIQUE (HAUTE GAMME SAMA LOGEMENT)
+  // TOAST MAGNIFIQUE (HAUTE GAMME SAMA LOYER)
   // ==========================================
   showMagnifiqueToast({ title, subtitle = '', type = 'search', iconClass = 'icon-toast-search', duration = 2600 }) {
     if (this._toastTimer) {

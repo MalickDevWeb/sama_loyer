@@ -1,5 +1,5 @@
 /* ============================================================================
-   SAMA LOGEMENT — ACCUEIL MOBILE
+   SAMA LOYER — ACCUEIL MOBILE
    Design fidèle au prototype Claude Artifacts (#9sNtHuSHyWBEk17Sp8Fs4E)
    ============================================================================ */
 
@@ -1023,7 +1023,7 @@
 }
 
 /* ============================================================================
-   7. TOAST / NOTIFICATION FLOTTANTE MAGNIFIQUE (HAUTE GAMME SAMA LOGEMENT)
+   7. TOAST / NOTIFICATION FLOTTANTE MAGNIFIQUE (HAUTE GAMME SAMA LOYER)
    ============================================================================ */
 .sama-floating-toast {
   position: fixed;

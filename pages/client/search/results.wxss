@@ -1,5 +1,5 @@
 /* ============================================================================
-   SAMA LOGEMENT — RÉSULTATS DE RECHERCHE (PAGE 2)
+   SAMA LOYER — RÉSULTATS DE RECHERCHE (PAGE 2)
    ============================================================================ */
 
 .search-page {
@@ -419,7 +419,7 @@
 }
 
 /* ============================================================================
-   TOAST / NOTIFICATION FLOTTANTE MAGNIFIQUE (HAUTE GAMME SAMA LOGEMENT)
+   TOAST / NOTIFICATION FLOTTANTE MAGNIFIQUE (HAUTE GAMME SAMA LOYER)
    ============================================================================ */
 .sama-floating-toast {
   position: fixed;

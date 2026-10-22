@@ -24,7 +24,7 @@ function AdminLayout() {
               <Icon d={ICONS.home} size={20} strokeWidth={2.2} />
             </span>
             <span className="admin__brand-text">
-              <span className="admin__brand-name">SAMA LOGEMENT</span>
+              <span className="admin__brand-name">SAMA LOYER</span>
               <span className="admin__brand-sub">ADMINISTRATION</span>
             </span>
           </div>

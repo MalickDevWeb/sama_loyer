@@ -352,7 +352,7 @@ Page({
       try { wx.showTabBar({ animation: true }); } catch (err) {}
       wx.showModal({
         title: 'Problème signalé ! 🔧',
-        content: `Votre signalement "${this.data.selectedProblem}" a été transmis à ${this.data.currentLogement.bailleurNom}. Un artisan partenaire agréé Sama Logement pourra être dépêché sous 24h.`,
+        content: `Votre signalement "${this.data.selectedProblem}" a été transmis à ${this.data.currentLogement.bailleurNom}. Un artisan partenaire agréé Sama Loyer pourra être dépêché sous 24h.`,
         showCancel: false,
         confirmColor: '#C8235F',
         confirmText: 'D’accord'

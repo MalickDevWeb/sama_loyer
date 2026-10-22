@@ -1,5 +1,5 @@
 // ============================================================================
-// APPLICATION CONSTANTS — SAMA LOGEMENT
+// APPLICATION CONSTANTS — SAMA LOYER
 // Centralized configuration values
 // ============================================================================
 

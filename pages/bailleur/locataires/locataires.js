@@ -238,7 +238,7 @@ Page({
           wx.navigateTo({ url: `/pages/client/chat/chat?id=${locataire.id}` });
         } else if (res.tapIndex === 2) {
           wx.setClipboardData({
-            data: `Bonjour ${locataire.name}, message de votre bailleur Sama Logement.`,
+            data: `Bonjour ${locataire.name}, message de votre bailleur Sama Loyer.`,
             success: () => {
               wx.showToast({ title: 'Copié pour WhatsApp', icon: 'success' });
             }
