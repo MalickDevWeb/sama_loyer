@@ -1,4 +1,31 @@
 <view class="search-page">
+  <!-- Toast / Notification Flottante Haute Couture (remplace le carré noir natif) -->
+  <view 
+    wx:if="{{ toast.visible }}" 
+    class="sama-floating-toast {{ toast.hiding ? 'toast--hide' : 'toast--show' }}" 
+    style="top: {{ statusBarHeight + 58 }}px;"
+    catchtap="onDismissToast"
+  >
+    <view class="toast-pill-body">
+      <view class="toast-icon-wrapper {{ toast.type === 'voice' ? 'toast-icon--voice' : (toast.type === 'heart' ? 'toast-icon--heart' : 'toast-icon--search') }}">
+        <view class="toast-svg {{ toast.iconClass }}"></view>
+      </view>
+
+      <view class="toast-text-block">
+        <view class="toast-main-line">
+          <text class="toast-title-text">{{ toast.title }}</text>
+        </view>
+        <view wx:if="{{ toast.subtitle }}" class="toast-sub-line">
+          <text class="toast-subtitle-text">{{ toast.subtitle }}</text>
+        </view>
+      </view>
+
+      <view class="toast-badge-sparkle">
+        <text class="toast-sparkle-symbol">✨</text>
+      </view>
+    </view>
+  </view>
+
   <scroll-view class="search-scroll" scroll-y="{{true}}" enhanced="{{true}}" show-scrollbar="{{false}}">
     
     <!-- En-tête avec retour et carte -->

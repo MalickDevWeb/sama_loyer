@@ -418,3 +418,142 @@
   height: 60rpx;
 }
 
+/* ============================================================================
+   TOAST / NOTIFICATION FLOTTANTE MAGNIFIQUE (HAUTE GAMME SAMA LOGEMENT)
+   ============================================================================ */
+.sama-floating-toast {
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999;
+  width: calc(100% - 64rpx);
+  max-width: 660rpx;
+  pointer-events: auto;
+}
+
+.sama-floating-toast.toast--show {
+  animation: toastSpringIn 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.25) forwards;
+}
+
+.sama-floating-toast.toast--hide {
+  animation: toastSpringOut 0.25s cubic-bezier(0.6, -0.28, 0.735, 0.045) forwards;
+}
+
+@keyframes toastSpringIn {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -36rpx) scale(0.92);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-50%, 0) scale(1);
+  }
+}
+
+@keyframes toastSpringOut {
+  0% {
+    opacity: 1;
+    transform: translate(-50%, 0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -24rpx) scale(0.94);
+  }
+}
+
+.toast-pill-body {
+  display: flex;
+  align-items: center;
+  gap: 18rpx;
+  background: linear-gradient(135deg, #0F1E3D 0%, #1A2E56 100%);
+  border: 1.5rpx solid rgba(255, 255, 255, 0.18);
+  border-radius: 999rpx;
+  padding: 14rpx 24rpx 14rpx 16rpx;
+  box-shadow: 0 16rpx 40rpx rgba(15, 30, 61, 0.35), 0 2rpx 8rpx rgba(200, 35, 95, 0.2);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+.toast-icon-wrapper {
+  width: 56rpx;
+  height: 56rpx;
+  border-radius: 50%;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #C8235F 0%, #E03575 100%);
+  box-shadow: 0 4rpx 12rpx rgba(200, 35, 95, 0.45);
+}
+
+.toast-icon--voice {
+  background: linear-gradient(135deg, #0284C7 0%, #38BDF8 100%);
+  box-shadow: 0 4rpx 12rpx rgba(2, 132, 199, 0.45);
+}
+
+.toast-icon--heart {
+  background: linear-gradient(135deg, #E11D48 0%, #FB7185 100%);
+  box-shadow: 0 4rpx 12rpx rgba(225, 29, 72, 0.45);
+}
+
+.toast-svg {
+  width: 32rpx;
+  height: 32rpx;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.icon-toast-search {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23FFFFFF' stroke-width='2.6' stroke-linecap='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='m20 20-3.5-3.5'/%3E%3C/svg%3E");
+}
+
+.icon-toast-mic {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23FFFFFF' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='3' width='6' height='11' rx='3'/%3E%3Cpath d='M5 11a7 7 0 0 0 14 0'/%3E%3Cpath d='M12 18v3'/%3E%3C/svg%3E");
+}
+
+.icon-toast-heart {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='%23FFFFFF' stroke='%23FFFFFF' stroke-width='1'%3E%3Cpath d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E");
+}
+
+.toast-text-block {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.toast-main-line {
+  display: flex;
+  align-items: center;
+}
+
+.toast-title-text {
+  font-size: 26rpx;
+  font-weight: 700;
+  color: #FFFFFF;
+  letter-spacing: -0.2rpx;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.toast-sub-line {
+  margin-top: 2rpx;
+}
+
+.toast-subtitle-text {
+  font-size: 21rpx;
+  font-weight: 600;
+  color: #6EE7B7;
+  letter-spacing: -0.2rpx;
+}
+
+.toast-badge-sparkle {
+  padding-left: 6rpx;
+  font-size: 26rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+

@@ -291,8 +291,9 @@ Page({
       () => {
         this.runSearch();
         const count = this.data.recs ? this.data.recs.length : 0;
+        const langLabel = item.lang === 'WO' ? 'Wolof' : (item.lang === 'FR' ? 'Français' : item.lang);
         this.showMagnifiqueToast({
-          title: `Reconnu (${item.lang}) : ${targetPlace}`,
+          title: `Reconnu (${langLabel}) : ${targetPlace}`,
           subtitle: `${numBudget ? formatMoney(numBudget) + ' F CFA · ' : ''}${count} logement${count > 1 ? 's' : ''} trouvé${count > 1 ? 's' : ''}`,
           type: 'voice',
           iconClass: 'icon-toast-mic',

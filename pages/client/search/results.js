@@ -85,7 +85,15 @@ Page({
     premiumListings: PREMIUM_LISTINGS,
     listings: ALL_SEARCH_LISTINGS,
     filteredListings: ALL_SEARCH_LISTINGS,
-    sortOption: 'Plus récents'
+    sortOption: 'Plus récents',
+    toast: {
+      visible: false,
+      hiding: false,
+      title: '',
+      subtitle: '',
+      type: 'search',
+      iconClass: 'icon-toast-search'
+    }
   },
 
   onLoad(options) {
@@ -147,9 +155,13 @@ Page({
 
   onSearchConfirm(e) {
     this.filterListings();
-    wx.showToast({
+    const count = this.data.filteredListings.length;
+    this.showMagnifiqueToast({
       title: 'Filtres appliqués',
-      icon: 'none'
+      subtitle: `${count} logement${count > 1 ? 's' : ''} disponible${count > 1 ? 's' : ''}`,
+      type: 'search',
+      iconClass: 'icon-toast-search',
+      duration: 2500
     });
   },
 
@@ -172,9 +184,13 @@ Page({
           activeCategory: res.tapIndex === 2 ? 'studio' : 'chambre'
         }, () => {
           this.filterListings();
-          wx.showToast({
-            title: 'Vocal reconnu !',
-            icon: 'success'
+          const count = this.data.filteredListings.length;
+          this.showMagnifiqueToast({
+            title: `Reconnu : ${selected}`,
+            subtitle: `${count} logement${count > 1 ? 's' : ''} trouvé${count > 1 ? 's' : ''}`,
+            type: 'voice',
+            iconClass: 'icon-toast-mic',
+            duration: 2600
           });
         });
       }
@@ -222,6 +238,75 @@ Page({
     const liked = !isFavorite(id);
     toggleFavoriteId(id, liked);
     this.refreshFavorites();
-    wx.showToast({ title: liked ? 'Ajouté aux favoris ❤️' : 'Retiré des favoris', icon: 'none' });
+    this.showMagnifiqueToast({
+      title: liked ? 'Ajouté aux favoris' : 'Retiré des favoris',
+      subtitle: liked ? 'Retrouve ce logement dans tes favoris' : '',
+      type: 'heart',
+      iconClass: 'icon-toast-heart',
+      duration: 2000
+    });
+  },
+
+  showMagnifiqueToast({ title, subtitle = '', type = 'search', iconClass = 'icon-toast-search', duration = 2600 }) {
+    if (this._toastTimer) {
+      clearTimeout(this._toastTimer);
+      this._toastTimer = null;
+    }
+    if (this._toastHideTimer) {
+      clearTimeout(this._toastHideTimer);
+      this._toastHideTimer = null;
+    }
+
+    this.setData({
+      toast: {
+        visible: true,
+        hiding: false,
+        title,
+        subtitle,
+        type,
+        iconClass
+      }
+    });
+
+    this._toastTimer = setTimeout(() => {
+      this.setData({ 'toast.hiding': true });
+      this._toastHideTimer = setTimeout(() => {
+        this.setData({
+          toast: {
+            visible: false,
+            hiding: false,
+            title: '',
+            subtitle: '',
+            type: 'search',
+            iconClass: 'icon-toast-search'
+          }
+        });
+      }, 280);
+    }, duration);
+  },
+
+  onDismissToast() {
+    if (this._toastTimer) {
+      clearTimeout(this._toastTimer);
+      this._toastTimer = null;
+    }
+    if (this._toastHideTimer) {
+      clearTimeout(this._toastHideTimer);
+      this._toastHideTimer = null;
+    }
+
+    this.setData({ 'toast.hiding': true });
+    setTimeout(() => {
+      this.setData({
+        toast: {
+          visible: false,
+          hiding: false,
+          title: '',
+          subtitle: '',
+          type: 'search',
+          iconClass: 'icon-toast-search'
+        }
+      });
+    }, 280);
   }
 });
