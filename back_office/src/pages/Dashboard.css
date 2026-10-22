@@ -90,6 +90,13 @@
   font-size: 12px;
   font-weight: 800;
   margin-bottom: 4px;
+  white-space: nowrap;
+}
+
+@media (max-width: 600px) {
+  .bar-chart__labels span {
+    font-size: 9px;
+  }
 }
 
 .bar-chart__bar {

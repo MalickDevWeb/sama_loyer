@@ -256,6 +256,12 @@ a.kpi:hover {
   border-top: 1px solid var(--divider);
 }
 
+/* Les cellules ne se coupent pas : le tableau défile horizontalement */
+.table th,
+.table td {
+  white-space: nowrap;
+}
+
 .table--compact th,
 .table--compact td {
   padding-left: 10px;

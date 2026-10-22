@@ -1,9 +1,9 @@
 <!-- pages/bailleur/locataires/locataires.wxml -->
 <view class="mes-locataires-page">
-  <scroll-view class="locataires-scroll" scroll-y="{{true}}" enhanced="{{true}}" show-scrollbar="{{false}}" style="padding-top: {{ statusBarHeight + 10 }}px;">
+  <scroll-view class="locataires-scroll" scroll-y="{{true}}" enhanced="{{true}}" show-scrollbar="{{false}}">
     
-    <!-- En-tête -->
-    <view class="locataires-top-header">
+    <!-- En-tête avec espacement statusBar -->
+    <view class="locataires-top-header" style="padding-top: {{ statusBarHeight + 12 }}px;">
       <text class="page-title-main">Mes locataires</text>
       <text class="page-sub-desc">4 logements loués · loyers et problèmes</text>
     </view>
@@ -27,9 +27,7 @@
       <!-- Légende sous la barre -->
       <view class="kpi-legend-row">
         <text class="legend-item">{{ kpi.nbPayes }} payé(s)</text>
-        <text class="legend-dot">·</text>
         <text class="legend-item">{{ kpi.nbAConfirmer }} à confirmer</text>
-        <text class="legend-dot">·</text>
         <text class="legend-item">{{ kpi.nbEnRetard }} en retard</text>
       </view>
     </view>
@@ -94,32 +92,32 @@
             <text class="banner-notice-text">{{ item.bannerText }}</text>
           </view>
 
-          <!-- Boutons d'action conditionnels -->
+          <!-- Boutons d'action conditionnels (View interactifs anti-conflits) -->
           <!-- Cas Cheikh Fall : À confirmer -->
           <view wx:if="{{ item.status === 'a_confirmer' }}" class="action-buttons-pair-row">
-            <button class="btn-action-outline-red" bindtap="onRefuserPaiementCheikh">
+            <view class="btn-action-outline-red" hover-class="btn-hover-opacity" bindtap="onRefuserPaiementCheikh">
               Rien reçu
-            </button>
-            <button class="btn-action-dark-green" bindtap="onConfirmerPaiementCheikh">
+            </view>
+            <view class="btn-action-dark-green" hover-class="btn-hover-opacity" bindtap="onConfirmerPaiementCheikh">
               Oui, j'ai reçu
-            </button>
+            </view>
           </view>
 
           <!-- Cas Modou Ndiaye : En retard -->
           <view wx:elif="{{ item.status === 'en_retard' }}" class="action-buttons-pair-row">
-            <button class="btn-action-outline-navy" bindtap="onSendRappel">
+            <view class="btn-action-outline-navy" hover-class="btn-hover-opacity" bindtap="onSendRappel">
               Envoyer un rappel
-            </button>
-            <button class="btn-action-dark-navy" bindtap="onMarquerPayeModou">
+            </view>
+            <view class="btn-action-dark-navy" hover-class="btn-hover-opacity" bindtap="onMarquerPayeModou">
               Il a payé
-            </button>
+            </view>
           </view>
 
           <!-- Ligne footer : Caution détenue + Bouton Écrire -->
           <view class="card-foot-row">
             <text class="caution-detenue-txt">Caution détenue : {{ item.cautionDetenue }}</text>
-            <view class="btn-ecrire-pill" data-locataire="{{ item }}" bindtap="onEcrireLocataire">
-              <text class="ecrire-chat-icon">💬</text>
+            <view class="btn-ecrire-pill" hover-class="btn-hover-opacity" data-locataire="{{ item }}" bindtap="onEcrireLocataire">
+              <view class="ecrire-chat-bubble-icon"></view>
               <text class="ecrire-label-txt">Écrire</text>
             </view>
           </view>
@@ -136,14 +134,11 @@
         <block wx:for="{{ problemes }}" wx:key="id">
           <view class="probleme-card-item">
             <view class="prob-icon-square">
-              <text>🔧</text>
+              <view class="icon-drop-graphic"></view>
             </view>
             <view class="prob-info-col">
               <text class="prob-main-title">{{ item.title }}</text>
               <text class="prob-sub-meta">{{ item.sub }}</text>
-            </view>
-            <view class="prob-status-badge {{ item.statusClass }}">
-              {{ item.statusLabel }}
             </view>
           </view>
         </block>

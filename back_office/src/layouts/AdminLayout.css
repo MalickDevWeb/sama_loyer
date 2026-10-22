@@ -1,19 +1,34 @@
 .admin {
   min-height: 100vh;
   display: flex;
-  flex-wrap: wrap;
 }
 
-/* --- Barre latérale ------------------------------------------------------ */
+/* --- Barre latérale (fixe sur bureau) ------------------------------------ */
 .admin__sidebar {
-  flex: 1 1 236px;
-  max-width: 100%;
+  width: 248px;
+  flex-shrink: 0;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+  scrollbar-width: none;
   background: var(--navy);
   color: #fff;
   padding: 22px 14px;
   display: flex;
   flex-direction: column;
   gap: 22px;
+}
+
+.admin__sidebar::-webkit-scrollbar {
+  display: none;
+}
+
+.admin__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
 }
 
 .admin__brand {
@@ -52,14 +67,25 @@
   color: var(--berry-light);
 }
 
+.admin__menu-btn {
+  display: none;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  border: 0;
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  align-items: center;
+  justify-content: center;
+}
+
 .admin__nav {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
   gap: 4px;
 }
 
 .admin__link {
-  flex: 1 1 200px;
   display: flex;
   align-items: center;
   gap: 10px;
@@ -69,6 +95,7 @@
   font-size: 14px;
   font-weight: 600;
   color: #c9d0de;
+  transition: background 0.15s, color 0.15s;
 }
 
 .admin__link:hover {
@@ -160,7 +187,45 @@
 
 /* --- Contenu ------------------------------------------------------------- */
 .admin__content {
-  flex: 999 1 560px;
+  flex: 1;
   min-width: 0;
   padding: 28px clamp(16px, 3vw, 40px) 40px;
+}
+
+/* --- Tablette / mobile : barre en haut + menu repliable ------------------ */
+@media (max-width: 900px) {
+  .admin {
+    flex-direction: column;
+  }
+
+  .admin__sidebar {
+    width: auto;
+    height: auto;
+    max-height: 100vh;
+    padding: 12px 16px;
+    gap: 12px;
+    z-index: 20;
+  }
+
+  .admin__menu-btn {
+    display: flex;
+  }
+
+  .admin__nav,
+  .admin__user {
+    display: none;
+  }
+
+  .admin__sidebar--open .admin__nav,
+  .admin__sidebar--open .admin__user {
+    display: flex;
+  }
+
+  .admin__sidebar--open .admin__user {
+    margin-top: 4px;
+  }
+
+  .admin__content {
+    padding-top: 20px;
+  }
 }

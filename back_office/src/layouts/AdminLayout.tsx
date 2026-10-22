@@ -1,24 +1,46 @@
-import { NavLink, Outlet } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import { NavLink, Outlet, useLocation } from 'react-router-dom'
 import { Icon } from '../components/ui'
 import { ICONS } from '../lib/utils'
 import { NAV_ITEMS } from '../routes'
 import './AdminLayout.css'
 
 function AdminLayout() {
+  // Sur mobile, le menu est replié derrière un bouton
+  const [menuOpen, setMenuOpen] = useState(false)
+  const { pathname } = useLocation()
+
+  useEffect(() => {
+    setMenuOpen(false)
+    window.scrollTo(0, 0)
+  }, [pathname])
+
   return (
     <div className="admin">
-      <aside className="admin__sidebar">
-        <div className="admin__brand">
-          <span className="admin__logo">
-            <Icon d={ICONS.home} size={20} strokeWidth={2.2} />
-          </span>
-          <span className="admin__brand-text">
-            <span className="admin__brand-name">SAMA LOGEMENT</span>
-            <span className="admin__brand-sub">ADMINISTRATION</span>
-          </span>
+      <aside className={`admin__sidebar${menuOpen ? ' admin__sidebar--open' : ''}`}>
+        <div className="admin__top">
+          <div className="admin__brand">
+            <span className="admin__logo">
+              <Icon d={ICONS.home} size={20} strokeWidth={2.2} />
+            </span>
+            <span className="admin__brand-text">
+              <span className="admin__brand-name">SAMA LOGEMENT</span>
+              <span className="admin__brand-sub">ADMINISTRATION</span>
+            </span>
+          </div>
+          <button
+            type="button"
+            className="admin__menu-btn"
+            aria-expanded={menuOpen}
+            aria-controls="admin-nav"
+            aria-label={menuOpen ? 'Fermer le menu' : 'Ouvrir le menu'}
+            onClick={() => setMenuOpen((o) => !o)}
+          >
+            <Icon d={menuOpen ? ICONS.close : ICONS.menu} size={22} strokeWidth={2.2} />
+          </button>
         </div>
 
-        <nav aria-label="Administration" className="admin__nav">
+        <nav id="admin-nav" aria-label="Administration" className="admin__nav">
           {NAV_ITEMS.map(({ path, label, icon, badge }) => (
             <NavLink
               key={path}

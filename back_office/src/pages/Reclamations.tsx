@@ -21,6 +21,7 @@ function Reclamations() {
   const [closed, setClosed] = useState<Record<string, string>>({})
   const [perms, setPerms] = useState(() => ROLES.map((r) => [...r.perms]))
   const [features, setFeatures] = useState(() => Object.fromEntries(FEATURES.map((f) => [f.id, f.on])))
+  const [saved, setSaved] = useState(false)
 
   const openCount = REPORTS.filter((r) => !closed[r.id]).length
 
@@ -188,15 +189,23 @@ function Reclamations() {
             ))}
           </section>
 
-          <form className="card settings__rules" onSubmit={(e) => e.preventDefault()}>
+          <form
+            className="card settings__rules"
+            onSubmit={(e) => {
+              e.preventDefault()
+              setSaved(true)
+            }}
+            onChange={() => setSaved(false)}
+          >
             <h2 className="card-title">Règles générales</h2>
             {RULES.map((r) => (
               <div key={r.id} className="field">
                 <label htmlFor={r.id}>{r.label}</label>
-                <input id={r.id} type="number" min={0} defaultValue={r.value} />
+                <input id={r.id} type="number" min={0} required defaultValue={r.value} />
               </div>
             ))}
             <button type="submit" className="btn btn--berry">Enregistrer</button>
+            {saved && <p role="status" className="settings__saved">Paramètres enregistrés.</p>}
           </form>
         </div>
       )}

@@ -26,6 +26,12 @@
   border-color: var(--navy);
 }
 
+@media (max-width: 600px) {
+  .search-box {
+    width: 100%;
+  }
+}
+
 .bailleurs__table {
   flex: 2 1 520px;
 }

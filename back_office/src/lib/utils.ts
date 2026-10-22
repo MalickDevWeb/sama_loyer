@@ -13,6 +13,8 @@ export const ICONS = {
   chevron: 'M9 5l7 7-7 7',
   download: 'M12 4v11M7 10l5 5 5-5M5 20h14',
   check: 'm5 12 5 5 9-10',
+  menu: 'M4 7h16M4 12h16M4 17h16',
+  close: 'M6 6l12 12M18 6 6 18',
 }
 
 /** 12480 -> "12 480" */
