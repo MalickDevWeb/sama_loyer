@@ -6,6 +6,11 @@ Component({
     activeTab: {
       type: String,
       value: 'home',
+      observer(val) {
+        if (val) {
+          this.syncTabs();
+        }
+      }
     },
   },
 

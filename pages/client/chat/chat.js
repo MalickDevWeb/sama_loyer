@@ -58,7 +58,7 @@ Page({
   onQuickReplyTap(e) {
     const text = e.currentTarget.dataset.text;
     if (text.includes('Payer')) {
-      wx.navigateTo({ url: '/pages/client/loyers/loyers' });
+      wx.switchTab({ url: '/pages/client/loyers/loyers' });
       return;
     }
     this.sendMessage(text);

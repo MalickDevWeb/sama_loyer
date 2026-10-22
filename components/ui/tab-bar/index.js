@@ -79,6 +79,8 @@ Component({
     },
 
     navigate(url) {
+      if (!url) return;
+
       const pages = getCurrentPages();
       if (pages.length > 0) {
         const currentPage = pages[pages.length - 1];
@@ -109,23 +111,48 @@ Component({
         }
       }
 
-      const navigationType = this.properties.navigationType;
-      const navigate = wx[navigationType] || wx.redirectTo;
+      // Pages déclarées dans app.json > tabBar.list
+      const TAB_BAR_PAGES = [
+        '/pages/client/home/home',
+        '/pages/client/loyers/loyers',
+        '/pages/client/visites/visites',
+        '/pages/client/messages/messages',
+        '/pages/client/profile/profile'
+      ];
 
-      navigate({
-        url,
-        success: () => {},
-        fail: (err) => {
-          if (navigationType !== 'redirectTo') {
-            console.warn('[TabBar] navigation failed, falling back to redirectTo:', err.errMsg);
-            wx.redirectTo({ url });
+      const cleanUrl = url.split('?')[0];
+      const isTab = TAB_BAR_PAGES.some(
+        t => t === cleanUrl || ('/' + t) === cleanUrl || cleanUrl.endsWith(t.replace(/^\//, ''))
+      );
+
+      if (isTab) {
+        // Obligatoire dans WeChat pour les pages de tabBar
+        wx.switchTab({
+          url: cleanUrl,
+          fail: (err) => {
+            console.warn('[TabBar] switchTab failed, fallback to reLaunch:', err);
+            wx.reLaunch({ url: cleanUrl });
           }
-        },
-      });
+        });
+      } else {
+        // Pages hors tabBar (ex: espace bailleur)
+        wx.redirectTo({
+          url,
+          fail: (err) => {
+            console.warn('[TabBar] redirectTo failed, fallback to navigateTo:', err);
+            wx.navigateTo({
+              url,
+              fail: () => {
+                wx.reLaunch({ url });
+              }
+            });
+          }
+        });
+      }
     },
   },
-  lifetimes:({
-    attached(){
+  lifetimes: {
+    attached() {
     }
-  })
+  }
 });

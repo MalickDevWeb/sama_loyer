@@ -59,7 +59,7 @@ Page({
   },
 
   onNavLoyers() {
-    wx.navigateTo({
+    wx.switchTab({
       url: '/pages/client/loyers/loyers'
     });
   },

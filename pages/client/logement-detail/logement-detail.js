@@ -139,8 +139,8 @@ Page({
   },
 
   onPayCaution() {
-    wx.navigateTo({
-      url: '/pages/client/loyers/loyers?tab=caution'
+    wx.switchTab({
+      url: '/pages/client/loyers/loyers'
     });
   },
 
