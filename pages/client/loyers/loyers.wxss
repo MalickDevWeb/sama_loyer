@@ -519,7 +519,7 @@
   right: 0;
   bottom: 0;
   background: rgba(15, 30, 61, 0.65);
-  z-index: 1000;
+  z-index: 99999;
   display: flex;
   align-items: flex-end;
   justify-content: center;
@@ -529,8 +529,11 @@
   width: 100%;
   background: #FFFFFF;
   border-radius: 36rpx 36rpx 0 0;
-  padding: 24rpx 32rpx 50rpx;
+  padding: 28rpx 36rpx calc(150rpx + env(safe-area-inset-bottom));
   box-sizing: border-box;
+  max-height: 85vh;
+  overflow-y: auto;
+  box-shadow: 0 -8rpx 30rpx rgba(0, 0, 0, 0.15);
 }
 
 .sheet-handle {
@@ -663,7 +666,9 @@
 .receipt-sheet-container {
   width: 90%;
   max-width: 650rpx;
-  margin-bottom: 40rpx;
+  margin-bottom: calc(140rpx + env(safe-area-inset-bottom));
+  max-height: 85vh;
+  overflow-y: auto;
 }
 
 .official-quittance-paper {

@@ -206,10 +206,12 @@ Page({
   // Clic sur "Payer mon loyer"
   onOpenPayModal() {
     this.setData({ showPayModal: true });
+    try { wx.hideTabBar({ animation: true }); } catch (e) {}
   },
 
   onClosePayModal() {
     this.setData({ showPayModal: false });
+    try { wx.showTabBar({ animation: true }); } catch (e) {}
   },
 
   onSelectMethod(e) {
@@ -272,10 +274,12 @@ Page({
       activeReceipt: receipt,
       showReceiptModal: true
     });
+    try { wx.hideTabBar({ animation: true }); } catch (err) {}
   },
 
   onCloseReceiptModal() {
     this.setData({ showReceiptModal: false });
+    try { wx.showTabBar({ animation: true }); } catch (err) {}
   },
 
   onDownloadPDF() {
@@ -292,10 +296,12 @@ Page({
   // Consultation du contrat de bail
   onViewContrat() {
     this.setData({ showContratModal: true });
+    try { wx.hideTabBar({ animation: true }); } catch (err) {}
   },
 
   onCloseContratModal() {
     this.setData({ showContratModal: false });
+    try { wx.showTabBar({ animation: true }); } catch (err) {}
   },
 
   // 3 Boutons d'action
@@ -326,10 +332,12 @@ Page({
 
   onReportProblem() {
     this.setData({ showProblemModal: true });
+    try { wx.hideTabBar({ animation: true }); } catch (err) {}
   },
 
   onCloseProblemModal() {
     this.setData({ showProblemModal: false });
+    try { wx.showTabBar({ animation: true }); } catch (err) {}
   },
 
   onSelectProblemCategory(e) {
@@ -341,6 +349,7 @@ Page({
     setTimeout(() => {
       wx.hideLoading();
       this.setData({ showProblemModal: false });
+      try { wx.showTabBar({ animation: true }); } catch (err) {}
       wx.showModal({
         title: 'Problème signalé ! 🔧',
         content: `Votre signalement "${this.data.selectedProblem}" a été transmis à ${this.data.currentLogement.bailleurNom}. Un artisan partenaire agréé Sama Logement pourra être dépêché sous 24h.`,
@@ -353,10 +362,12 @@ Page({
 
   onPrevenirDepart() {
     this.setData({ showDepartModal: true });
+    try { wx.hideTabBar({ animation: true }); } catch (err) {}
   },
 
   onCloseDepartModal() {
     this.setData({ showDepartModal: false });
+    try { wx.showTabBar({ animation: true }); } catch (err) {}
   },
 
   onConfirmDepart() {
@@ -364,6 +375,7 @@ Page({
     setTimeout(() => {
       wx.hideLoading();
       this.setData({ showDepartModal: false });
+      try { wx.showTabBar({ animation: true }); } catch (err) {}
       wx.showModal({
         title: 'Préavis envoyé 🚪',
         content: `Votre préavis légal d'un mois a été notifié à ${this.data.currentLogement.bailleurNom}.\n\nL'état des lieux de sortie est programmé. Votre caution de ${this.data.currentLogement.cautionMontant} vous sera restituée conformément à la loi sénégalaise.`,
