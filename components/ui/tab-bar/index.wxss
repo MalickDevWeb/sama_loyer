@@ -36,7 +36,7 @@
   padding: 0 18rpx;
   border-radius: 999rpx;
   text-align: center;
-  color: #009b4d;
+  color: #C8235F;
   /* transition: color 0.25s, background 0.25s; */
 }
 
@@ -45,8 +45,8 @@
   min-width: 176rpx;
   padding: 0 24rpx;
   color: #ffffff;
-  background: #009b4d;
-  box-shadow: 0 8rpx 18rpx rgba(0, 155, 77, 0.28);
+  background: #C8235F;
+  box-shadow: 0 8rpx 18rpx rgba(200, 35, 95, 0.28);
 }
 
 .osn-tab-bar__icon {

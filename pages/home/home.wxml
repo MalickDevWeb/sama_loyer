@@ -1,102 +1,288 @@
-<app-layout
-  title="Page d'Accueil"
-  showBack="{{false}}"
-  logoSrc="/assets/images/logo.png"
-  showLogo="{{true}}"
-  transparent="{{true}}"
-  showNavBorder="{{false}}"
-  activeTab="{{activeTab}}"
->
-  <scroll-view class="content home d-flex flex-column" scroll-y="{{true}}" enhanced="{{true}}" show-scrollbar="{{false}}">
-    <view class="greetings-container d-flex flex-column px-3 py-3 pb-3 pt-4">
-      <view class="greetings-container__content d-flex flex-column">
-          <app-typography size="30" weight="bold" lineHeight="72rpx" color="#1C1C1C" containerStyle="min-height: 72rpx;">
-            Bonjour 👋
-          </app-typography>
-          <app-typography size="20" weight="400" color="#1C1C1C" lineHeight="48rpx" containerStyle="min-height: 55.98rpx; display: inline-block;">
-            Explorons le <app-typography size="20" weight="400" color="#fad700" lineHeight="48rpx" containerStyle="display: inline-block;">Sénégal</app-typography> !
-          </app-typography>
-      </view>
-        <app-input
-        containerClass="search-input mt-4"
-        value="{{ query }}"
-        placeholder=" Où voulez-vous allez ?"
-        field-style="font-size: 28rpx;"
-        placeholder-style="font-size: 28rpx; color: #9CA3AF;"
-        icon="search"
-        bind:input="onInput"
-        bind:iconTap="onSearch"
-        iconPosition="left"/>
-    </view>
-    <view class="chip-container d-flex flex-column">
-        <app-typography size="18" weight="600" color="#1C1C1C" lineHeight="52rpx"  class="destination-list-head">Destinations Populaires</app-typography>
-        <app-chip-group
-          items="{{filters}}"
-          activeId="{{activeFilter}}"
-          edgeInset="{{0}}"
-          bind:change="handleFilterChange"
-        />
-    </view>
-    <view class="destination-list-container d-flex flex-column">
-      <view class="destination-list-head d-flex justify-content-between px-3 py-3 pb-3 pt-4">
-        <app-typography size="18" weight="600" color="#1C1C1C" lineHeight="52rpx">
-          Destinations à la Une
-        </app-typography>
-        <view class="d-flex align-items-center">
-          <app-typography  size="14" weight="600" color="#01953E" bindtap="handleShowAll">
-            voir tout
-          </app-typography>
-          <app-icon icon="arrow" width="{{20}}" height="{{20}}" color="#01953E"/>
+<view class="sama-page">
+  <!-- Zone défilante -->
+  <scroll-view class="sama-scroll" scroll-y="{{true}}" enhanced="{{true}}" show-scrollbar="{{false}}">
+    
+    <!-- En-tête avec safe-area top -->
+    <view class="sama-header" style="padding-top: {{ statusBarHeight + 12 }}px;">
+      <view class="sama-brand">
+        <view class="sama-brand__icon">
+          <!-- House SVG -->
+          <view class="icon-svg icon-house-white"></view>
+        </view>
+        <view class="sama-brand__text">
+          <text class="brand-title">SAMA</text>
+          <text class="brand-sub">LOGEMENT</text>
         </view>
       </view>
-      <view class="destination-list-body">
-        <app-list-destination
-          wx:if="{{ featuredLoading || featuredDestinations.length }}"
-          destinations="{{ featuredDestinations }}"
-          loading="{{ featuredLoading }}"
-          layout="scroll"
-          cardWidth="500rpx"
-          imageHeight="287.98rpx"
-          cardPaddingClass="card-padding"
-          cardContainerStyle="border-radius: 32rpx !important; box-shadow: 0 2rpx 4rpx -2rpx rgba(0, 0, 0, 0.1), 0 2rpx 6rpx rgba(0, 0, 0, 0.1) !important; border-top: none;"
-          containerClass="featured-destination-list"
-          showDetailsButton="{{ true }}"
-          bind:toggleLike="handleDestinationLike"
-          bind:onCardPress="handleCardPress" />
-        <view wx:elif="{{ featuredError }}" class="catalog-state">
-          <app-typography size="14" color="#667085">Impossible de charger les destinations.</app-typography>
-          <app-typography size="14" weight="600" color="#01953E" bindtap="retryFeatured">Réessayer</app-typography>
-        </view>
-        <view wx:else class="catalog-state">
-          <app-typography size="14" color="#667085">Aucune destination à la une pour le moment.</app-typography>
+
+      <!-- Profil Avatar avec rôle actif -->
+      <view class="sama-avatar-badge" bindtap="onSwitchProfile">
+        <text class="avatar-text">AD</text>
+        <view class="role-indicator {{ userRole === 'bailleur' ? 'role-bailleur' : 'role-client' }}">
+          {{ userRole === 'bailleur' ? 'PRO' : 'LOC' }}
         </view>
       </view>
     </view>
-    <view class="recomandation-list-container d-flex flex-column px-3 py-3 pt-4">
-        <app-typography size="18" weight="600" color="#1C1C1C" lineHeight="52rpx" class="">Recommandations</app-typography>
-        <view class="recomandation-list-body">
-          <app-list-destination
-          wx:if="{{ recommendedLoading || destinationsRecommended.length }}"
-          destinations="{{ destinationsRecommended }}"
-          loading="{{ recommendedLoading }}"
-          layout="grid"
-          cardWidth="100%"
-          imageHeight="288rpx"
-          cardPaddingClass="p-2"
-          cardStyle=""
-          cardContainerStyle="border-radius: 32rpx !important; box-shadow: 0 2rpx 4rpx -2rpx rgba(0, 0, 0, 0.1), 0 2rpx 6rpx rgba(0, 0, 0, 0.1) !important;"
-          imageRadius="32rpx"
-          showDetailsButton="{{ false }}"
-          bind:toggleLike="handleDestinationLike"
-          bind:onCardPress="handleCardPress" />
-          <view wx:elif="{{ recommendedError }}" class="catalog-state">
-            <app-typography size="14" color="#667085">Impossible de charger les recommandations.</app-typography>
-            <app-typography size="14" weight="600" color="#01953E" bindtap="retryRecommendations">Réessayer</app-typography>
+
+    <!-- Accroche / Hero -->
+    <view class="sama-hero">
+      <view class="sama-hero__title">
+        <text class="title-dark">Trouve ton logement.</text>
+        <text class="title-accent">Simplement.</text>
+      </view>
+      <text class="sama-hero__subtitle">Dis-nous où et combien. L'IA choisit pour toi.</text>
+    </view>
+
+    <!-- Formulaire de recherche -->
+    <view class="sama-form">
+      <!-- Champ Localité -->
+      <view class="form-group">
+        <text class="form-label">Localité</text>
+        <view class="input-box">
+          <view class="icon-svg icon-pin-berry"></view>
+          <input
+            id="lieu"
+            class="input-field"
+            type="text"
+            value="{{ place }}"
+            bindinput="onPlaceInput"
+            placeholder="Ex. Ouakam, Mermoz, Yoff…"
+            placeholder-class="input-placeholder"
+          />
+          <view wx:if="{{ place }}" class="btn-clear" bindtap="onClearPlace">✕</view>
+        </view>
+      </view>
+
+      <!-- Champ Budget -->
+      <view class="form-group">
+        <text class="form-label">Budget maximum par mois</text>
+        <view class="input-box">
+          <view class="icon-svg icon-card-berry"></view>
+          <input
+            id="budget"
+            class="input-field"
+            type="number"
+            value="{{ budget }}"
+            bindinput="onBudgetInput"
+            placeholder="Ex. 60 000"
+            placeholder-class="input-placeholder"
+          />
+          <text class="input-suffix">F CFA</text>
+          <view wx:if="{{ budget }}" class="btn-clear" bindtap="onClearBudget">✕</view>
+        </view>
+      </view>
+
+      <!-- Boutons d'action : Rechercher + Vocal -->
+      <view class="action-row">
+        <button class="btn-search" bindtap="onSearchTap" hover-class="btn-search--hover">
+          <view class="icon-svg icon-search-white"></view>
+          <text class="btn-search__text">Rechercher</text>
+        </button>
+
+        <button
+          class="btn-voice"
+          bindtap="onVoiceTap"
+          hover-class="btn-voice--hover"
+          aria-label="Rechercher en parlant, en wolof ou en français"
+        >
+          <view class="icon-svg icon-mic-berry"></view>
+        </button>
+      </view>
+
+      <!-- Note vocale -->
+      <text class="voice-hint">Ou touche le micro et parle en wolof ou en français</text>
+    </view>
+
+    <!-- Recommandations IA (Résultats) -->
+    <view wx:if="{{ searched }}" class="sama-recommendations">
+      <view class="recs-badge">
+        <view class="icon-svg icon-sparkle-berry"></view>
+        <text class="recs-badge__text">CHOISIS PAR L'IA</text>
+      </view>
+      
+      <text class="recs-heading">{{ heading }}</text>
+      <text class="recs-summary">{{ summary }}</text>
+
+      <!-- Liste des 3 cartes -->
+      <view class="recs-list">
+        <block wx:for="{{ recs }}" wx:key="id">
+          <view class="rec-card" data-item="{{ item }}" bindtap="onListingTap">
+            
+            <view class="card-body">
+              <!-- Thumbnail visuel avec rang 1, 2, 3 -->
+              <view class="card-thumb" style="background-color: {{ item.tintBg }};">
+                <view class="rank-badge">{{ item.rank }}</view>
+                <view class="thumb-house-icon"></view>
+              </view>
+
+              <!-- Détails du logement -->
+              <view class="card-info">
+                <view class="info-top">
+                  <text class="type-label">{{ item.typeLabel }}</text>
+                  <text class="match-badge">{{ item.match }}</text>
+                </view>
+
+                <text class="card-title">{{ item.title }}</text>
+                <text class="card-place">{{ item.place }}</text>
+
+                <view class="card-price-row">
+                  <text class="card-price">{{ item.formattedPrice }}</text>
+                  <text class="card-price-unit">F/mois</text>
+                </view>
+              </view>
+            </view>
+
+            <!-- Ligne de bas de carte avec raison IA + Voir -->
+            <view class="card-footer">
+              <view class="icon-svg icon-check-berry"></view>
+              <text class="card-reason">{{ item.reason }}</text>
+              <view class="btn-view" data-item="{{ item }}" catchtap="onListingTap">Voir</view>
+            </view>
+
           </view>
-          <view wx:else class="catalog-state">
-            <app-typography size="14" color="#667085">Aucune recommandation disponible.</app-typography>
-          </view>
-        </view>
+        </block>
+      </view>
     </view>
+
+    <!-- Espace vide de fin pour laisser respirer le scroll -->
+    <view class="scroll-spacer"></view>
   </scroll-view>
-</app-layout>
+
+  <!-- ======================================================== -->
+  <!-- MODAL / ASSISTANT VOCAL (FRANÇAIS & WOLOF) -->
+  <!-- ======================================================== -->
+  <view wx:if="{{ showVoiceModal }}" class="modal-backdrop" bindtap="onCloseVoiceModal">
+    <view class="modal-card" catchtap="true">
+      <view class="modal-header">
+        <view class="modal-icon-badge">
+          <view class="icon-svg icon-mic-berry"></view>
+        </view>
+        <view class="modal-titles">
+          <text class="modal-title">Assistant Vocal SAMA IA</text>
+          <text class="modal-subtitle">Exprime ton besoin en français ou en wolof</text>
+        </view>
+        <view class="modal-close" bindtap="onCloseVoiceModal">✕</view>
+      </view>
+
+      <view class="voice-wave-container">
+        <view class="voice-circle pulse"></view>
+        <view class="icon-svg icon-mic-berry icon-large"></view>
+      </view>
+      <text class="voice-listening-label">Je vous écoute... Choisissez ou dites :</text>
+
+      <view class="voice-prompts-list">
+        <block wx:for="{{ voicePrompts }}" wx:key="text">
+          <view class="voice-prompt-item" data-item="{{ item }}" bindtap="onApplyVoicePrompt">
+            <view class="prompt-lang-tag {{ item.lang === 'WO' ? 'tag-wolof' : 'tag-fr' }}">
+              {{ item.lang }}
+            </view>
+            <text class="prompt-text">{{ item.text }}</text>
+          </view>
+        </block>
+      </view>
+    </view>
+  </view>
+
+  <!-- ======================================================== -->
+  <!-- BOTTOM SHEET / FICHE DE CONFIANCE DU LOGEMENT -->
+  <!-- ======================================================== -->
+  <view wx:if="{{ showDetailModal }}" class="modal-backdrop" bindtap="onCloseDetailModal">
+    <view class="detail-sheet" catchtap="true">
+      
+      <view class="sheet-drag-handle"></view>
+
+      <view class="sheet-header">
+        <view class="sheet-top-meta">
+          <text class="sheet-type">{{ selectedListing.typeLabel }}</text>
+          <view class="sheet-verify-pill {{ selectedListing.verified ? 'pill-verified' : 'pill-declared' }}">
+            {{ selectedListing.verified ? '✓ ' + selectedListing.verificationLevel : '⚠ ' + selectedListing.verificationLevel }}
+          </view>
+        </view>
+
+        <view class="sheet-title-row">
+          <text class="sheet-title">{{ selectedListing.title }}</text>
+          <view class="btn-sheet-fav" data-id="{{ selectedListing.id }}" catchtap="onToggleFavorite">
+            <text class="fav-icon">{{ favorites[selectedListing.id] ? '❤️' : '🤍' }}</text>
+          </view>
+        </view>
+
+        <view class="sheet-location">
+          <view class="icon-svg icon-pin-berry"></view>
+          <text class="sheet-location-text">{{ selectedListing.place }}</text>
+          <text class="sheet-date">{{ selectedListing.dateConfirmation }}</text>
+        </view>
+      </view>
+
+      <scroll-view class="sheet-scroll" scroll-y="{{true}}">
+        <!-- Décomposition financière (Conformité Cahier des Charges) -->
+        <view class="sheet-section">
+          <text class="section-title">Détail financier & Frais d'entrée</text>
+          <view class="price-breakdown">
+            <view class="breakdown-row highlight">
+              <text class="breakdown-label">Loyer mensuel</text>
+              <text class="breakdown-value">{{ selectedListing.formattedPrice }} F CFA</text>
+            </view>
+            <view class="breakdown-row">
+              <text class="breakdown-label">Caution remboursable (1 mois)</text>
+              <text class="breakdown-value">{{ selectedListing.formattedPrice }} F CFA</text>
+            </view>
+            <view class="breakdown-row">
+              <text class="breakdown-label">Mois d'avance (1 mois)</text>
+              <text class="breakdown-value">{{ selectedListing.formattedPrice }} F CFA</text>
+            </view>
+            <view class="breakdown-row">
+              <text class="breakdown-label">Frais déclarés / agence</text>
+              <text class="breakdown-value">{{ selectedListing.frais ? selectedListing.frais + ' F CFA' : '0 F CFA' }}</text>
+            </view>
+            <view class="breakdown-total">
+              <text class="total-label">Total initial à prévoir :</text>
+              <text class="total-value">{{ totalInitialCost }} F CFA</text>
+            </view>
+          </view>
+        </view>
+
+        <!-- Équipements -->
+        <view class="sheet-section">
+          <text class="section-title">Équipements & Atouts</text>
+          <view class="equipments-list">
+            <block wx:for="{{ selectedListing.equipements }}" wx:key="*this">
+              <view class="equipment-chip">
+                <text class="chip-check">✓</text>
+                <text class="chip-text">{{ item }}</text>
+              </view>
+            </block>
+          </view>
+        </view>
+
+        <!-- Bailleur -->
+        <view class="sheet-section">
+          <text class="section-title">Bailleur / Gestionnaire</text>
+          <view class="landlord-card">
+            <view class="landlord-avatar">
+              <text>{{ selectedListing.bailleurName[0] }}</text>
+            </view>
+            <view class="landlord-info">
+              <text class="landlord-name">{{ selectedListing.bailleurName }}</text>
+              <text class="landlord-phone">{{ selectedListing.phone }}</text>
+            </view>
+            <view class="landlord-badge">Vérifié</view>
+          </view>
+        </view>
+      </scroll-view>
+
+      <!-- Actions de contact et paiement -->
+      <view class="sheet-actions">
+        <button class="btn-action-outline" bindtap="onCallBailleur">
+          📞 Appeler
+        </button>
+        <button class="btn-action-outline whatsapp" bindtap="onWhatsAppBailleur">
+          💬 WhatsApp
+        </button>
+        <button class="btn-action-primary" bindtap="onPayRentWithOrangeMoney">
+          ⚡ Payer loyer (Orange Money)
+        </button>
+      </view>
+
+    </view>
+  </view>
+</view>

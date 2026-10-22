@@ -32,6 +32,12 @@ export const STORAGE_KEYS = {
 
   /** Cached user data */
   USER_DATA: 'app_user_data',
+
+  /** User role ('client' | 'bailleur') */
+  USER_ROLE: 'sama_user_role',
+
+  /** Favorites list */
+  FAVORITES: 'sama_favorites',
 };
 
 // ============================================================================
@@ -102,14 +108,14 @@ export const ERROR_MESSAGES = {
  * @readonly
  */
 export const SUCCESS_MESSAGES = {
-  SAVED: 'Saved successfully.',
-  UPDATED: 'Updated successfully.',
-  DELETED: 'Deleted successfully.',
-  SUBMITTED: 'Submitted successfully.',
+  SAVED: 'Enregistré avec succès.',
+  UPDATED: 'Mis à jour avec succès.',
+  DELETED: 'Supprimé avec succès.',
+  SUBMITTED: 'Envoyé avec succès.',
 };
 
 // ============================================================================
-// MAIN NAVIGATION
+// MAIN NAVIGATION (SAMA LOGEMENT)
 // ============================================================================
 
 /**
@@ -120,15 +126,9 @@ export const SUCCESS_MESSAGES = {
 export const MAIN_TABS = [
   {
     id: 'home',
-    label: 'Accueil',
+    label: 'Chercher',
     iconImage: '/assets/icons/home.png',
     url: '/pages/home/home',
-  },
-  {
-    id: 'explorer',
-    label: 'Explorer',
-    iconImage: '/assets/icons/explore.png',
-    url: '/pages/explorer/explorer',
   },
   {
     id: 'favorites',
@@ -136,11 +136,16 @@ export const MAIN_TABS = [
     iconImage: '/assets/icons/favoris.png',
     url: '/pages/favoris/favoris',
   },
-  
   {
     id: 'voyages',
-    label: 'Voyages',
+    label: 'Messages',
     iconImage: '/assets/icons/voyage.png',
     url: '/pages/voyage/voyage',
+  },
+  {
+    id: 'profile',
+    label: 'Profil',
+    iconImage: '/assets/icons/explore.png',
+    url: '/pages/index/index',
   },
 ];

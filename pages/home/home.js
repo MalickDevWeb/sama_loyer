@@ -1,244 +1,524 @@
-import { MAIN_TABS } from '../../utils/constants/index';
-import { filterDestinations } from '../../utils/helpers/destination-filter';
-import { navigateToLocked } from '../../utils/helpers/navigation';
 import { setCustomTabBarActive } from '../../utils/helpers/tab-bar';
-import { applyFavoritesToPackages, toggleFavoriteId } from '../../utils/helpers/favorites';
-import {
-  DEFAULT_FILTERS,
-  getCatalogRecommendedDestinations,
-  loadRecommendedDestinations,
-  loadPackages,
-  loadFeaturedDestinations,
-  loadCategoryFilters,
-} from '../../utils/helpers/catalog';
+import { STORAGE_KEYS } from '../../utils/constants/index';
 
+const LISTINGS = [
+  {
+    id: 1,
+    title: 'Avec toilettes privées',
+    typeLabel: 'Chambre salon',
+    place: 'Ouakam, Cité Avion',
+    zone: 'ouakam',
+    price: 60000,
+    caution: 60000,
+    avance: 60000,
+    frais: 0,
+    verified: true,
+    verificationLevel: 'Identité & visite vérifiées',
+    dateConfirmation: 'Confirmé il y a 2 jours',
+    phone: '771234567',
+    bailleurName: 'Mamadou Diallo',
+    equipements: ['Toilettes privées', 'Compteur Woyofal individuel', 'Eau courante SDE'],
+    description: 'Chambre salon spacieuse, bien ventilée, située dans un quartier calme et accessible à Ouakam Cité Avion.',
+    tint: '#FBE3EC'
+  },
+  {
+    id: 2,
+    title: 'Chambre salon carrelée',
+    typeLabel: 'Chambre salon',
+    place: 'Ouakam, Tonghor',
+    zone: 'ouakam',
+    price: 55000,
+    caution: 55000,
+    avance: 55000,
+    frais: 0,
+    verified: true,
+    verificationLevel: 'Numéro vérifié',
+    dateConfirmation: 'Confirmé hier',
+    phone: '782345678',
+    bailleurName: 'Aïssatou Sow',
+    equipements: ['Carrelage moderne', 'Toilettes partagées propres', 'Woyofal'],
+    description: 'Logement propre et carrelé à Ouakam Tonghor, proche des commerces et du marché.',
+    tint: '#E3E9F5'
+  },
+  {
+    id: 3,
+    title: 'Chambre simple, calme',
+    typeLabel: 'Chambre',
+    place: 'Ngor Village',
+    zone: 'ngor',
+    price: 50000,
+    caution: 50000,
+    avance: 50000,
+    frais: 0,
+    verified: false,
+    verificationLevel: 'Déclaré par le bailleur',
+    dateConfirmation: 'Confirmé aujourd’hui',
+    phone: '763456789',
+    bailleurName: 'Ousmane Ndiaye',
+    equipements: ['Quartier calme', 'Proche de la plage', 'Eau comprise'],
+    description: 'Chambre individuelle au calme dans le village traditionnel de Ngor, idéale pour étudiant ou travailleur.',
+    tint: '#F3ECE1'
+  },
+  {
+    id: 4,
+    title: 'Chambre avec balcon',
+    typeLabel: 'Chambre',
+    place: 'Mermoz',
+    zone: 'mermoz',
+    price: 65000,
+    caution: 65000,
+    avance: 65000,
+    frais: 0,
+    verified: true,
+    verificationLevel: 'Identité vérifiée',
+    dateConfirmation: 'Confirmé il y a 3 jours',
+    phone: '774567890',
+    bailleurName: 'Abdoulaye Ba',
+    equipements: ['Balcon privé', 'Toilettes intérieures', 'Accès terrasse'],
+    description: 'Superbe chambre avec balcon privé dans une villa paisible à Mermoz, proche universités et VDN.',
+    tint: '#FBE3EC'
+  },
+  {
+    id: 5,
+    title: 'Studio meublé',
+    typeLabel: 'Studio',
+    place: 'Point E',
+    zone: 'point e',
+    price: 150000,
+    caution: 150000,
+    avance: 150000,
+    frais: 10000,
+    verified: true,
+    verificationLevel: 'Agence certifiée',
+    dateConfirmation: 'Confirmé hier',
+    phone: '705678901',
+    bailleurName: 'Fatou Diop',
+    equipements: ['Meublé complet', 'Climatisation', 'Wifi fibre haut débit'],
+    description: 'Studio standing entièrement équipé au Point E avec cuisine américaine, sécurisé 24h/24.',
+    tint: '#E3E9F5'
+  },
+  {
+    id: 6,
+    title: 'Chambre salon',
+    typeLabel: 'Chambre salon',
+    place: 'Yoff Virage',
+    zone: 'yoff',
+    price: 58000,
+    caution: 58000,
+    avance: 58000,
+    frais: 0,
+    verified: true,
+    verificationLevel: 'Numéro vérifié',
+    dateConfirmation: 'Confirmé il y a 1 jour',
+    phone: '776789012',
+    bailleurName: 'Cheikh Gueye',
+    equipements: ['Vue dégagée', 'Toilettes privées', 'Proche VDN'],
+    description: 'Chambre et salon avec belle luminosité à Yoff Virage, accès immédiat aux transports.',
+    tint: '#F3ECE1'
+  },
+  {
+    id: 7,
+    title: 'Appartement F3',
+    typeLabel: 'Appartement',
+    place: 'Liberté 6',
+    zone: 'liberte',
+    price: 250000,
+    caution: 250000,
+    avance: 250000,
+    frais: 25000,
+    verified: true,
+    verificationLevel: 'Agence partenaire vérifiée',
+    dateConfirmation: 'Confirmé il y a 4 jours',
+    phone: '777890123',
+    bailleurName: 'Cabinet Immo Horizon',
+    equipements: ['2 chambres + salon', 'Cuisine avec placards', 'Parking sécurisé'],
+    description: 'Appartement F3 familial au 2ème étage d’un immeuble neuf à Liberté 6 Extension.',
+    tint: '#FBE3EC'
+  },
+  {
+    id: 8,
+    title: 'Chambre simple',
+    typeLabel: 'Chambre',
+    place: 'HLM Grand Yoff',
+    zone: 'grand yoff',
+    price: 45000,
+    caution: 45000,
+    avance: 45000,
+    frais: 0,
+    verified: false,
+    verificationLevel: 'Déclaré par le bailleur',
+    dateConfirmation: 'Confirmé il y a 2 jours',
+    phone: '768901234',
+    bailleurName: 'Ibrahima Sarr',
+    equipements: ['Économique', 'Accès facile', 'Compteur partagé'],
+    description: 'Petite chambre pour petit budget, très accessible à côté du terminus des bus.',
+    tint: '#E3E9F5'
+  },
+  {
+    id: 9,
+    title: 'Studio neuf',
+    typeLabel: 'Studio',
+    place: 'Sacré-Cœur 3',
+    zone: 'sacre coeur',
+    price: 120000,
+    caution: 120000,
+    avance: 120000,
+    frais: 0,
+    verified: true,
+    verificationLevel: 'Bailleur vérifié',
+    dateConfirmation: 'Confirmé il y a 1 jour',
+    phone: '779012345',
+    bailleurName: 'Mariama Fall',
+    equipements: ['Immeuble neuf', 'Gardien 24/7', 'Chauffe-eau'],
+    description: 'Studio moderne dans un quartier résidentiel très prisé de Sacré-Cœur 3.',
+    tint: '#F3ECE1'
+  },
+  {
+    id: 10,
+    title: 'Maison avec cour',
+    typeLabel: 'Maison',
+    place: 'Keur Massar',
+    zone: 'keur massar',
+    price: 200000,
+    caution: 200000,
+    avance: 200000,
+    frais: 0,
+    verified: true,
+    verificationLevel: 'Titre de propriété examiné',
+    dateConfirmation: 'Confirmé il y a 5 jours',
+    phone: '780123456',
+    bailleurName: 'El Hadji Seck',
+    equipements: ['Cour avant et arrière', 'Garage fermé', '3 chambres spacieuses'],
+    description: 'Grande maison individuelle bien aérée à Keur Massar, quartier calme et sécurisé.',
+    tint: '#FBE3EC'
+  }
+];
 
-const app = getApp();
+const NEAR_ZONES = {
+  ouakam: ['ngor', 'mermoz', 'yoff'],
+  ngor: ['ouakam', 'yoff'],
+  yoff: ['ngor', 'ouakam', 'grand yoff'],
+  mermoz: ['ouakam', 'sacre coeur', 'point e'],
+  'point e': ['mermoz', 'sacre coeur'],
+  'sacre coeur': ['mermoz', 'liberte', 'point e'],
+  liberte: ['sacre coeur', 'grand yoff'],
+  'grand yoff': ['liberte', 'yoff'],
+  'keur massar': []
+};
 
-function updateLikeInList(destinations, id, like) {
-  return (Array.isArray(destinations) ? destinations : []).map((item) => (
-    String(item.id) === String(id)
-      ? { ...item, like }
-      : item
-  ));
+function formatMoney(n) {
+  return String(n || 0).replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+}
+
+function normalize(s) {
+  return String(s || '')
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .trim();
 }
 
 Page({
-
-
-  /**
-   * Fonction appelée au chargement de la page
-   */
-  onLoad() {
-    this.loadFilters();
-    this.refreshPackages();
-    this.refreshFeatured();
-  },
-
-  async refreshPackages() {
-    this.setData({ destinationsLoading: true, destinationsError: false });
-    try {
-      const packages = await loadPackages();
-      app.globalData.DESTINATIONS = packages;
-      app.globalData.CATALOG_ERROR = false;
-      this.setData({ allDestinations: packages }, () => this.applyFilters());
-
-    } catch (error) {
-      app.globalData.CATALOG_ERROR = true;
-      this.setData({ destinationsError: true });
-    } finally {
-      this.setData({ destinationsLoading: false });
-    }
-  },
-
-  async refreshFeatured() {
-    this.setData({ featuredLoading: true, featuredError: false, featuredDestinations: [] });
-    try {
-      const allFeaturedDestinations = await loadFeaturedDestinations();
-      this.setData({ allFeaturedDestinations }, () => this.applyFilters());
-    } catch (error) {
-      this.setData({ featuredError: true });
-    } finally {
-      this.setData({ featuredLoading: false });
-    }
-  },
-
   data: {
-    activeTab: 'home',
-    tabs: MAIN_TABS,
-    query: '',
-    allDestinations: [],
-    destinations: [],
-    destinationsRecommended: [],
-    destinationsLoading: true,
-    destinationsError: false,
-    featuredDestinations: [],
-    allFeaturedDestinations: [],
-    allRecommendedDestinations: [],
-    featuredLoading: true,
-    featuredError: false,
-    recommendedLoading: true,
-    recommendedError: false,
-    filters: DEFAULT_FILTERS,
-    activeFilter: 'all',
+    statusBarHeight: 24,
+    place: 'Ouakam',
+    budget: '60 000',
+    qPlace: 'Ouakam',
+    qBudget: 60000,
+    searched: true,
+    recs: [],
+    heading: '',
+    summary: '',
+    userRole: 'client', // 'client' | 'bailleur'
+    favorites: {},
+    showVoiceModal: false,
+    showDetailModal: false,
+    selectedListing: null,
+    totalInitialCost: 0,
+    voicePrompts: [
+      { text: 'Chambre salon à Ouakam, budget 60 000 F', place: 'Ouakam', budget: '60 000', lang: 'FR' },
+      { text: 'Dafa ma bëgg chambre 50 000 F ci Ngor', place: 'Ngor', budget: '50 000', lang: 'WO' },
+      { text: 'Studio meublé vers Point E ou Mermoz', place: 'Point E', budget: '150 000', lang: 'FR' },
+      { text: 'Appartement F3 Liberté 6 max 250 000 F', place: 'Liberté 6', budget: '250 000', lang: 'FR' }
+    ]
   },
 
-  applyFilters() {
-    const allDestinations = Array.isArray(this.data.allDestinations)
-      ? this.data.allDestinations
-      : [];
-      
-    const allRecommendedDestinations = Array.isArray(this.data.allRecommendedDestinations)
-      ? this.data.allRecommendedDestinations
-      : [];
-
-    const destinations = filterDestinations(
-      allDestinations,
-      this.data.query,
-      this.data.activeFilter
-    );
-
-    const featuredDestinations = filterDestinations(
-      this.data.allFeaturedDestinations,
-      this.data.query,
-      this.data.activeFilter
-    );
-    const destinationsRecommended = filterDestinations(
-      allRecommendedDestinations,
-      this.data.query,
-      this.data.activeFilter
-    );
-
-    this.setData({ destinations, destinationsRecommended, featuredDestinations });
-  },
-
-  async loadFilters() {
-    const filters = await loadCategoryFilters();
-    const activeFilter = filters.some((filter) => filter.id === this.data.activeFilter)
-      ? this.data.activeFilter
-      : 'all';
-    this.setData({ filters, activeFilter }, () => this.applyFilters());
-  },
-
-  async refreshDestinations() {
-    this.setData({ recommendedLoading: true, recommendedError: false, destinationsRecommended: [] });
+  onLoad() {
     try {
-      await loadRecommendedDestinations();
-      this.setData({ allRecommendedDestinations: getCatalogRecommendedDestinations() }, () => this.applyFilters());
-    } catch (error) {
-      this.setData({ recommendedError: true });
-    } finally {
-      this.setData({ recommendedLoading: false });
-    }
-  },
-
-  retryPackages() {
-    this.refreshPackages();
-  },
-
-  retryFeatured() {
-    this.refreshFeatured();
-  },
-
-  retryRecommendations() {
-    this.refreshDestinations();
-  },
-
-  onInput(event) {
-    const query = event.detail.value || '';
-
-    this.setData({ query }, () => {
-      this.applyFilters();
-    });
-  },
-
-  onSearch() {
-    this.applyFilters();
-  },
-
-  handleCardPress(event) {
-    const { destination } = event.detail || {};
-
-    if (!destination || !destination.id) {
-      return;
-    }
-    navigateToLocked(this, `/pages/destination-detail/destination-detail?id=${destination.id}`, '_openingDestinationDetail');
-  },
-
-  handleDestinationLike(event) {
-    const { destination, like } = event.detail;
-    if (!destination) {
-      return;
+      const sys = wx.getSystemInfoSync();
+      if (sys && sys.statusBarHeight) {
+        this.setData({ statusBarHeight: sys.statusBarHeight });
+      }
+    } catch (e) {
+      // fallback
     }
 
-    // 1. Sauvegarder dans le stockage local persistant
-    toggleFavoriteId(destination.id, like);
+    // Load favorites from local storage
+    try {
+      const favs = wx.getStorageSync(STORAGE_KEYS.FAVORITES) || {};
+      this.setData({ favorites: favs });
+    } catch (e) {}
 
-    // 2. Mettre à jour la liste en mémoire
-    const updatedDestinations = updateLikeInList(
-      this.data.allDestinations,
-      destination.id,
-      like
-    );
-    const allFeaturedDestinations = updateLikeInList(
-      this.data.allFeaturedDestinations,
-      destination.id,
-      like
-    );
-    const allRecommendedDestinations = updateLikeInList(
-      this.data.allRecommendedDestinations,
-      destination.id,
-      like
-    );
+    // Load user role
+    try {
+      const role = wx.getStorageSync(STORAGE_KEYS.USER_ROLE) || 'client';
+      this.setData({ userRole: role });
+    } catch (e) {}
 
-    app.globalData.DESTINATIONS = updatedDestinations;
-    this.setData({
-      allDestinations: updatedDestinations,
-      allFeaturedDestinations,
-      allRecommendedDestinations,
-    }, () => {
-      this.applyFilters();
-    });
-  },
-
-  handleFilterChange(event) {
-    this.setData({
-      activeFilter: event.detail.id || 'all',
-    }, () => {
-      this.applyFilters();
-    });
-  },
-
-  handleShowAll() {
-    wx.switchTab({
-      url: '/pages/explorer/explorer',
-    });
+    // Run initial search
+    this.runSearch();
   },
 
   onShow() {
     setCustomTabBarActive(this, 'home');
-    const rawDestinations = Array.isArray(app.globalData.DESTINATIONS) && app.globalData.DESTINATIONS.length
-      ? app.globalData.DESTINATIONS
-      : this.data.allDestinations;
+  },
 
-    const allDestinations = applyFavoritesToPackages(rawDestinations);
-    // Home keeps three independently loaded card lists in page state. Refresh
-    // every projection from persisted favorite IDs when returning from another tab.
-    const allFeaturedDestinations = applyFavoritesToPackages(this.data.allFeaturedDestinations);
-    const allRecommendedDestinations = applyFavoritesToPackages(this.data.allRecommendedDestinations);
-    const catalogRecommendedDestinations = getCatalogRecommendedDestinations();
-    app.globalData.DESTINATIONS = allDestinations;
+  onPlaceInput(e) {
+    this.setData({ place: e.detail.value || '' });
+  },
 
-    this.setData({
-      allDestinations,
-      allFeaturedDestinations,
-      allRecommendedDestinations: catalogRecommendedDestinations.length
-        ? applyFavoritesToPackages(catalogRecommendedDestinations)
-        : allRecommendedDestinations,
-    }, () => {
-      this.applyFilters();
+  onClearPlace() {
+    this.setData({ place: '' });
+  },
+
+  onBudgetInput(e) {
+    const raw = e.detail.value || '';
+    const digits = raw.replace(/\D/g, '');
+    const formatted = digits ? formatMoney(Number(digits)) : '';
+    this.setData({ budget: formatted });
+  },
+
+  onClearBudget() {
+    this.setData({ budget: '' });
+  },
+
+  onSearchTap() {
+    this.setData(
+      {
+        qPlace: this.data.place,
+        qBudget: Number(String(this.data.budget).replace(/\D/g, '')) || 0,
+        searched: true
+      },
+      () => {
+        this.runSearch();
+      }
+    );
+  },
+
+  runSearch() {
+    const q = normalize(this.data.qPlace);
+    const budget = this.data.qBudget || 0;
+    const zoneKey = Object.keys(NEAR_ZONES).find((z) => q && (q.indexOf(z) >= 0 || z.indexOf(q) >= 0)) || '';
+    const tints = ['#FBE3EC', '#E3E9F5', '#F3ECE1'];
+
+    const scored = LISTINGS.map((l) => {
+      let s = 0;
+      let why = '';
+      const inZone = zoneKey && l.zone === zoneKey;
+      const nearZone = zoneKey && (NEAR_ZONES[zoneKey] || []).indexOf(l.zone) >= 0;
+
+      if (inZone) {
+        s += 50;
+        why = 'Dans ton quartier';
+      } else if (nearZone) {
+        s += 30;
+        why = `Juste à côté de ${this.data.qPlace || 'ta zone'}`;
+      } else {
+        why = 'Bon rapport qualité-prix';
+      }
+
+      if (budget > 0) {
+        if (l.price <= budget) {
+          s += 40 - Math.round(((budget - l.price) / budget) * 15);
+          why += ' · dans ton budget';
+        } else if (l.price <= budget * 1.1) {
+          s += 10;
+          why += ' · un peu au-dessus';
+        } else {
+          s -= 100;
+        }
+      } else {
+        s += 20;
+      }
+
+      return Object.assign({}, l, { score: s, why: why });
+    })
+      .filter((l) => l.score > 0)
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 3);
+
+    const recs = scored.map((l, i) => {
+      return {
+        ...l,
+        rank: i + 1,
+        formattedPrice: formatMoney(l.price),
+        match: Math.min(98, l.score + 8) + ' % pour toi',
+        reason: l.why,
+        tintBg: tints[i % tints.length]
+      };
     });
 
-    this.refreshDestinations();
+    const n = recs.length;
+    const heading = n ? `Tes ${n} meilleurs logements` : 'Aucun logement trouvé';
+    const summary = n
+      ? (this.data.qPlace || 'Partout à Dakar') + (budget ? ' · ' + formatMoney(budget) + ' F max' : '')
+      : 'Essaie un budget un peu plus élevé ou un quartier voisin.';
+
+    this.setData({
+      recs,
+      heading,
+      summary,
+      searched: true
+    });
+  },
+
+  onVoiceTap() {
+    this.setData({ showVoiceModal: true });
+  },
+
+  onCloseVoiceModal() {
+    this.setData({ showVoiceModal: false });
+  },
+
+  onApplyVoicePrompt(e) {
+    const item = e.currentTarget.dataset.item;
+    if (!item) return;
+
+    this.setData(
+      {
+        place: item.place,
+        budget: item.budget,
+        qPlace: item.place,
+        qBudget: Number(String(item.budget).replace(/\D/g, '')) || 0,
+        showVoiceModal: false
+      },
+      () => {
+        wx.showToast({
+          title: `Recherche : ${item.place}`,
+          icon: 'none',
+          duration: 1500
+        });
+        this.runSearch();
+      }
+    );
+  },
+
+  onListingTap(e) {
+    const item = e.currentTarget.dataset.item;
+    if (!item) return;
+
+    const initialTotal = (item.price || 0) + (item.caution || 0) + (item.avance || 0) + (item.frais || 0);
+
+    this.setData({
+      selectedListing: item,
+      totalInitialCost: initialTotal,
+      showDetailModal: true
+    });
+  },
+
+  onCloseDetailModal() {
+    this.setData({ showDetailModal: false, selectedListing: null });
+  },
+
+  onToggleFavorite(e) {
+    const id = e.currentTarget.dataset.id;
+    if (!id) return;
+
+    const favorites = Object.assign({}, this.data.favorites);
+    if (favorites[id]) {
+      delete favorites[id];
+      wx.showToast({ title: 'Retiré des favoris', icon: 'none' });
+    } else {
+      favorites[id] = true;
+      wx.showToast({ title: 'Ajouté aux favoris ❤️', icon: 'none' });
+    }
+
+    this.setData({ favorites });
+    try {
+      wx.setStorageSync(STORAGE_KEYS.FAVORITES, favorites);
+    } catch (err) {}
+  },
+
+  onCallBailleur() {
+    const listing = this.data.selectedListing;
+    if (!listing || !listing.phone) return;
+    wx.makePhoneCall({
+      phoneNumber: listing.phone,
+      fail: () => {
+        wx.showToast({ title: `Numéro : ${listing.phone}`, icon: 'none' });
+      }
+    });
+  },
+
+  onWhatsAppBailleur() {
+    const listing = this.data.selectedListing;
+    if (!listing) return;
+    const msg = `Bonjour, je vous contacte depuis SAMA LOGEMENT pour l'annonce "${listing.title}" à ${listing.place} (${formatMoney(listing.price)} F CFA/mois). Est-il toujours disponible ?`;
+
+    wx.setClipboardData({
+      data: msg,
+      success: () => {
+        wx.showModal({
+          title: 'Message copié !',
+          content: `Le message pour le bailleur (${listing.phone}) a été copié. Vous pouvez le coller dans WhatsApp.`,
+          showCancel: false,
+          confirmText: 'D’accord'
+        });
+      }
+    });
+  },
+
+  onPayRentWithOrangeMoney() {
+    const listing = this.data.selectedListing;
+    if (!listing) return;
+
+    wx.showModal({
+      title: 'Payer mon loyer avec Orange Money',
+      content: `Échéance de loyer : ${formatMoney(listing.price)} F CFA\nBénéficiaire : ${listing.bailleurName}\nRéférence : SAMA-LOC-${listing.id}\n\nVoulez-vous initier le paiement sécurisé ?`,
+      confirmText: 'Payer via OM',
+      confirmColor: '#C8235F',
+      cancelText: 'Annuler',
+      success: (res) => {
+        if (res.confirm) {
+          wx.showLoading({ title: 'Connexion Orange Money...' });
+          setTimeout(() => {
+            wx.hideLoading();
+            wx.showModal({
+              title: 'Paiement Confirmé ! 🎉',
+              content: `Votre reçu de loyer N° OM-${Date.now().toString().slice(-6)} a été généré.\nMontant : ${formatMoney(listing.price)} F CFA.\nLe bailleur ${listing.bailleurName} a été notifié.`,
+              showCancel: false,
+              confirmText: 'Voir le reçu'
+            });
+          }, 1500);
+        }
+      }
+    });
+  },
+
+  onSwitchProfile() {
+    const newRole = this.data.userRole === 'client' ? 'bailleur' : 'client';
+    const roleLabel = newRole === 'bailleur' ? 'Bailleur (Propriétaire)' : 'Client (Locataire)';
+
+    wx.showActionSheet({
+      itemList: ['Mode Locataire / Client', 'Mode Bailleur / Publier un bien'],
+      success: (res) => {
+        const selected = res.tapIndex === 0 ? 'client' : 'bailleur';
+        this.setData({ userRole: selected });
+        try {
+          wx.setStorageSync(STORAGE_KEYS.USER_ROLE, selected);
+        } catch (e) {}
+
+        if (selected === 'bailleur') {
+          wx.showModal({
+            title: 'Mode Bailleur activé 🏢',
+            content: 'Bienvenue dans votre espace bailleur. Vous pouvez gérer vos logements, confirmer leur disponibilité tous les 7 jours et suivre les demandes.',
+            confirmText: 'Continuer',
+            showCancel: false
+          });
+        } else {
+          wx.showToast({ title: 'Mode Locataire activé', icon: 'none' });
+        }
+      }
+    });
   }
 });

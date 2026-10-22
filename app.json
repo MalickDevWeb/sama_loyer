@@ -1,16 +1,16 @@
 {
   "pages": [
-    "pages/page1/page1",
     "pages/home/home",
+    "pages/favoris/favoris",
+    "pages/voyage/voyage",
+    "pages/index/index",
+    "pages/page1/page1",
     "pages/explorer/explorer",
     "pages/destination-detail/destination-detail",
     "pages/booking/booking",
     "pages/paiement/index",
     "pages/booking-confirmation/booking-confirmation",
-    "pages/favoris/favoris",
-    "pages/voyage/voyage",
-    "pages/reservation-detail/reservation-detail",
-    "pages/index/index"
+    "pages/reservation-detail/reservation-detail"
   ],
   "usingComponents": {
     "app-nav-bar": "/components/ui/nav-bar/index",
@@ -27,29 +27,23 @@
   "window": {
     "backgroundTextStyle": "light",
     "navigationBarBackgroundColor": "#fff",
-    "navigationBarTitleText": "TCMPP Boilerplate",
+    "navigationBarTitleText": "SAMA LOGEMENT",
     "navigationBarTextStyle": "black",
     "navigationStyle": "custom",
     "pageTransitionDuration": 0
   },
   "tabBar": {
     "custom": true,
-    "color": "#009B4D",
-    "selectedColor": "#009B4D",
+    "color": "#5B6475",
+    "selectedColor": "#C8235F",
     "backgroundColor": "#FFFFFF",
     "borderStyle": "white",
     "list": [
       {
         "pagePath": "pages/home/home",
-        "text": "Accueil",
+        "text": "Chercher",
         "iconPath": "assets/icons/home.png",
         "selectedIconPath": "assets/icons/home.png"
-      },
-      {
-        "pagePath": "pages/explorer/explorer",
-        "text": "Explorer",
-        "iconPath": "assets/icons/explore.png",
-        "selectedIconPath": "assets/icons/explore.png"
       },
       {
         "pagePath": "pages/favoris/favoris",
@@ -59,9 +53,15 @@
       },
       {
         "pagePath": "pages/voyage/voyage",
-        "text": "Voyages",
+        "text": "Messages",
         "iconPath": "assets/icons/voyage.png",
         "selectedIconPath": "assets/icons/voyage.png"
+      },
+      {
+        "pagePath": "pages/index/index",
+        "text": "Profil",
+        "iconPath": "assets/icons/explore.png",
+        "selectedIconPath": "assets/icons/explore.png"
       }
     ]
   },
