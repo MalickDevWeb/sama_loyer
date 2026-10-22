@@ -1,6 +1,6 @@
 /* ==========================================================================
    Page 404 Haute Couture - SAMA LOYER
-   Design ultra-moderne, épuré et aligné avec le branding officiel SAMA LOYER
+   Design ultra-moderne, aéré et aligné avec le branding officiel
    ========================================================================== */
 
 .not-found-page {
@@ -11,25 +11,20 @@
   flex-direction: column;
 }
 
-/* Nav Bar Custom - Fixé en haut */
-.nav-bar-custom {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
+/* Header Section avec vraie respiration sous la barre d'état / encoche */
+.not-found-header {
   background-color: #FAFAFC;
-  z-index: 100;
+  padding-left: 36rpx;
+  padding-right: 36rpx;
+  padding-bottom: 24rpx;
   box-sizing: border-box;
 }
 
-/* Ligne de contenu parfaitement calée sur l'axe de la capsule native */
-.nav-content-row {
-  position: absolute;
-  left: 32rpx;
-  right: 32rpx;
+.header-brand-row {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
+  min-height: 72rpx;
 }
 
 /* Logo officiel SAMA LOYER (identique à l'accueil / bailleur) */
@@ -40,8 +35,8 @@
 }
 
 .sama-brand__icon {
-  width: 72rpx;
-  height: 72rpx;
+  width: 76rpx;
+  height: 76rpx;
   border-radius: 22rpx;
   background-color: #C8235F;
   display: flex;
@@ -59,8 +54,8 @@
 }
 
 .icon-house-white {
-  width: 40rpx;
-  height: 40rpx;
+  width: 42rpx;
+  height: 42rpx;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23FFFFFF' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 10.5 12 3l9 7.5'/%3E%3Cpath d='M5 9.5V20h14V9.5'/%3E%3Cpath d='M10 20v-5h4v5'/%3E%3C/svg%3E");
 }
 
@@ -91,7 +86,7 @@
 }
 
 .content-wrapper {
-  padding: 20rpx 40rpx;
+  padding: 10rpx 40rpx;
   padding-bottom: calc(64rpx + env(safe-area-inset-bottom));
   display: flex;
   flex-direction: column;
@@ -102,12 +97,12 @@
 /* Hero Artwork Container */
 .hero-illu-wrap {
   width: 440rpx;
-  height: 320rpx;
+  height: 300rpx;
   display: flex;
   align-items: center;
   justify-content: center;
   margin-top: 10rpx;
-  margin-bottom: 24rpx;
+  margin-bottom: 20rpx;
 }
 
 .hero-illu-art {
@@ -158,7 +153,7 @@
   font-size: 28rpx;
   color: #5B6475;
   line-height: 1.5;
-  margin-bottom: 44rpx;
+  margin-bottom: 40rpx;
   max-width: 560rpx;
 }
 
@@ -169,7 +164,7 @@
   border-radius: 32rpx;
   padding: 32rpx 28rpx;
   box-sizing: border-box;
-  margin-bottom: 44rpx;
+  margin-bottom: 40rpx;
   border: 2rpx solid #EAEFF7;
   box-shadow: 0 4rpx 16rpx rgba(15, 30, 61, 0.03);
 }
