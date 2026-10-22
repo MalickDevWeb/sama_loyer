@@ -51,11 +51,6 @@
           <text class="brand-sub">LOYER</text>
         </view>
       </view>
-
-      <!-- Profil Avatar -->
-      <view class="sama-avatar-badge" bindtap="onSwitchProfile">
-        <text class="avatar-text">AD</text>
-      </view>
     </view>
 
     <!-- Accroche / Hero -->
