@@ -33,7 +33,7 @@
     scroll-into-view="{{ scrollTarget }}"
     scroll-with-animation="{{ true }}"
   >
-    <!-- En-tête SAMA LOYER -->
+    <!-- En-tête SAMA LOYER avec sélecteur Locataire / Bailleur (Image 2) -->
     <view class="sama-header" style="padding-top: {{ statusBarHeight + 12 }}px;">
       <view class="sama-brand">
         <view class="sama-brand__icon">
@@ -42,6 +42,23 @@
         <view class="sama-brand__text">
           <text class="brand-title">SAMA</text>
           <text class="brand-sub">LOYER</text>
+        </view>
+      </view>
+
+      <!-- Sélecteur de rôle en tête : Locataire (actif) / Bailleur (Image 2) -->
+      <view class="role-switch-pill">
+        <view class="role-segment role-segment--active">
+          <text class="role-icon">🏠</text>
+          <text class="role-label">Locataire</text>
+        </view>
+        <view 
+          class="role-segment" 
+          hover-class="role-segment--hover" 
+          bindtap="onSwitchToBailleur"
+          aria-label="Basculer vers l'espace Bailleur"
+        >
+          <text class="role-icon">👥</text>
+          <text class="role-label">Bailleur</text>
         </view>
       </view>
     </view>
@@ -62,7 +79,7 @@
         <text class="hero-title-accent">Simplement.</text>
       </view>
 
-      <text class="hero-subtitle">Indique ta localité et ton budget. Les résultats s'affichent directement ci-dessous.</text>
+      <text class="hero-subtitle">Dis-nous où et combien. L'IA choisit pour toi.</text>
 
       <!-- Tags de réassurance -->
       <view class="hero-trust-badges">
@@ -82,19 +99,22 @@
       <!-- Champ Localité -->
       <view class="form-group">
         <text class="form-label">Localité</text>
-        <view class="input-box">
+        <view class="input-box input-box--stacked">
           <view class="icon-svg icon-pin-berry"></view>
-          <input
-            id="lieu"
-            class="input-field"
-            type="text"
-            value="{{ place }}"
-            bindinput="onPlaceInput"
-            bindconfirm="onSearchTap"
-            confirm-type="search"
-            placeholder="Ex. Ouakam, Ngor, Yoff, Almadies…"
-            placeholder-class="input-placeholder"
-          />
+          <view class="input-stacked-wrap">
+            <input
+              id="lieu"
+              class="input-field input-field--bold"
+              type="text"
+              value="{{ place }}"
+              bindinput="onPlaceInput"
+              bindconfirm="onSearchTap"
+              confirm-type="search"
+              placeholder="Ex. Ouakam, Ngor, Yoff, Almadies…"
+              placeholder-class="input-placeholder"
+            />
+            <text class="input-sub-hint">Changez de localité si besoin</text>
+          </view>
           <view wx:if="{{ place }}" class="input-clear-btn" bindtap="onClearPlace">✕</view>
         </view>
       </view>
@@ -106,7 +126,7 @@
           <view class="icon-svg icon-card-berry"></view>
           <input
             id="budget"
-            class="input-field"
+            class="input-field input-field--bold"
             type="number"
             value="{{ budget }}"
             bindinput="onBudgetInput"
@@ -116,7 +136,10 @@
             placeholder-class="input-placeholder"
           />
           <view wx:if="{{ budget }}" class="input-clear-btn" bindtap="onClearBudget">✕</view>
-          <text class="input-suffix">F CFA</text>
+          <view class="budget-suffix-box">
+            <text class="input-suffix">F CFA</text>
+            <text class="budget-chevron">⌄</text>
+          </view>
         </view>
       </view>
 
@@ -337,7 +360,13 @@
             <text class="example-arrow">›</text>
           </view>
         </block>
-      </view>
-    </view>
+  <!-- Bouton flottant de défilement vers les logements (Image 1) -->
+  <view 
+    class="floating-scroll-down-btn" 
+    hover-class="floating-btn--hover"
+    bindtap="onQuickScrollToResults"
+    aria-label="Voir les logements disponibles"
+  >
+    <text class="scroll-down-arrow">↓</text>
   </view>
 </view>

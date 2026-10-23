@@ -295,6 +295,22 @@ Page({
     });
   },
 
+  // ==========================================
+  // BASCULE LOCATAIRE <-> BAILLEUR (Image 2)
+  // ==========================================
+  onSwitchToBailleur() {
+    storage.set(STORAGE_KEYS.USER_ROLE, 'bailleur');
+    wx.reLaunch({ url: '/pages/bailleur/home/home' });
+  },
+
+  // Défilement rapide vers la liste des logements (Image 1)
+  onQuickScrollToResults() {
+    this.setData({ scrollTarget: 'results-section' });
+    setTimeout(() => {
+      this.setData({ scrollTarget: '' });
+    }, 500);
+  },
+
   // Aller vers les favoris
   onGoToFavorites() {
     wx.navigateTo({

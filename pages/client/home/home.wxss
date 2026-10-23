@@ -35,11 +35,57 @@
    ============================================================================ */
 .sama-header {
   padding-left: 36rpx;
-  padding-right: 36rpx;
+  padding-right: 200rpx;
   padding-bottom: 20rpx;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 16rpx;
+}
+
+/* Sélecteur de rôle en tête (Locataire / Bailleur) - Image 2 */
+.role-switch-pill {
+  background-color: #EEF3F8;
+  border-radius: 999rpx;
+  padding: 6rpx 8rpx;
+  display: inline-flex;
+  align-items: center;
+  gap: 6rpx;
+  box-shadow: inset 0 1rpx 3rpx rgba(15, 30, 61, 0.05);
+}
+
+.role-segment {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  padding: 10rpx 22rpx;
+  border-radius: 999rpx;
+  font-size: 24rpx;
+  font-weight: 700;
+  color: #4A5B78;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.role-segment--active {
+  background: linear-gradient(135deg, #E6007A 0%, #C8235F 100%);
+  color: #FFFFFF;
+  box-shadow: 0 4rpx 14rpx rgba(200, 35, 95, 0.32);
+}
+
+.role-segment--hover {
+  opacity: 0.85;
+  transform: scale(0.97);
+}
+
+.role-icon {
+  font-size: 24rpx;
+  line-height: 1;
+}
+
+.role-label {
+  font-size: 24rpx;
+  font-weight: 800;
+  line-height: 1;
 }
 
 .sama-brand {
@@ -98,16 +144,16 @@
 
 .hero-watermark {
   position: absolute;
-  right: -24rpx;
-  bottom: -24rpx;
-  width: 240rpx;
-  height: 240rpx;
-  opacity: 0.12;
+  right: -10rpx;
+  bottom: 0rpx;
+  width: 290rpx;
+  height: 260rpx;
+  opacity: 0.95;
   pointer-events: none;
   background-repeat: no-repeat;
-  background-position: center;
+  background-position: right bottom;
   background-size: contain;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 160 120' fill='none' stroke='%23C8235F' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M25 110V52l45-32 45 32v58'/%3E%3Crect x='40' y='58' width='16' height='16' rx='2'/%3E%3Crect x='74' y='58' width='16' height='16' rx='2'/%3E%3Crect x='74' y='88' width='16' height='22'/%3E%3Cpath d='M115 72h30v38'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 180' fill='none'%3E%3Cellipse cx='110' cy='155' rx='75' ry='18' fill='%23F2D4DE' opacity='0.7'/%3E%3Cpath d='M40 145l60 20 70-15-60-20z' fill='%23F8E0E8'/%3E%3Cpath d='M65 110v35l45 15v-35z' fill='%23FA82A3'/%3E%3Cpath d='M110 125l45-12v-35l-45 12z' fill='%23F7A1BA'/%3E%3Cpath d='M65 110l25-30 20 10v35l-45-15z' fill='%23F06292'/%3E%3Cpath d='M60 112l30-35 50-12-30 35z' fill='%23E91E63'/%3E%3Cpath d='M90 77l50-12 25 22-55 13z' fill='%23FF4081'/%3E%3Crect x='74' y='115' width='14' height='16' rx='2' fill='%23FFFFFF' opacity='0.9'/%3E%3Cline x1='81' y1='115' x2='81' y2='131' stroke='%23FA82A3' stroke-width='1.5'/%3E%3Cline x1='74' y1='123' x2='88' y2='123' stroke='%23FA82A3' stroke-width='1.5'/%3E%3Crect x='122' y='110' width='14' height='24' rx='2' fill='%23FFFFFF' opacity='0.9'/%3E%3Ccircle cx='125' cy='122' r='1.5' fill='%23E91E63'/%3E%3Ccircle cx='46' cy='135' r='10' fill='%23F48FB1'/%3E%3Ccircle cx='162' cy='125' r='12' fill='%23F48FB1'/%3E%3C/svg%3E");
 }
 
 .hero-user-pill {
@@ -218,6 +264,78 @@
   border: 3rpx solid #F1F4F9;
   box-sizing: border-box;
   transition: all 0.2s;
+}
+
+.input-box--stacked {
+  height: 124rpx;
+  padding: 12rpx 28rpx;
+}
+
+.input-stacked-wrap {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-width: 0;
+}
+
+.input-field--bold {
+  height: 48rpx;
+  font-size: 32rpx;
+  font-weight: 800;
+  color: #0F1E3D;
+  line-height: 48rpx;
+}
+
+.input-sub-hint {
+  font-size: 22rpx;
+  color: #7A8CA5;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+.budget-suffix-box {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+}
+
+.budget-chevron {
+  font-size: 30rpx;
+  color: #7A8CA5;
+  font-weight: 800;
+  line-height: 1;
+}
+
+/* Bouton flottant de défilement vers les résultats (Image 1) */
+.floating-scroll-down-btn {
+  position: fixed;
+  right: 36rpx;
+  bottom: calc(140rpx + env(safe-area-inset-bottom));
+  width: 84rpx;
+  height: 84rpx;
+  border-radius: 50%;
+  background-color: #FFFFFF;
+  box-shadow: 0 8rpx 24rpx rgba(15, 30, 61, 0.16);
+  border: 1.5rpx solid #E2E8F0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 45;
+  transition: transform 0.15s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.15s ease;
+}
+
+.floating-btn--hover {
+  transform: scale(0.92);
+  box-shadow: 0 2rpx 10rpx rgba(15, 30, 61, 0.1);
+  background-color: #F8FAFC;
+}
+
+.scroll-down-arrow {
+  color: #0F1E3D;
+  font-size: 36rpx;
+  font-weight: 700;
+  line-height: 1;
 }
 
 .input-box:focus-within {

@@ -25,9 +25,56 @@
 .hero-top-row {
   display: flex;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: space-between;
+  padding-right: 200rpx;
   margin-bottom: 24rpx;
   min-height: 72rpx;
+  gap: 16rpx;
+}
+
+/* Sélecteur de rôle en tête (Locataire / Bailleur) - Image 2 */
+.role-switch-pill {
+  background-color: #EEF3F8;
+  border-radius: 999rpx;
+  padding: 6rpx 8rpx;
+  display: inline-flex;
+  align-items: center;
+  gap: 6rpx;
+  box-shadow: inset 0 1rpx 3rpx rgba(15, 30, 61, 0.05);
+}
+
+.role-segment {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  padding: 10rpx 22rpx;
+  border-radius: 999rpx;
+  font-size: 24rpx;
+  font-weight: 700;
+  color: #4A5B78;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.role-segment--active {
+  background: linear-gradient(135deg, #E6007A 0%, #C8235F 100%);
+  color: #FFFFFF;
+  box-shadow: 0 4rpx 14rpx rgba(200, 35, 95, 0.32);
+}
+
+.role-segment--hover {
+  opacity: 0.85;
+  transform: scale(0.97);
+}
+
+.role-icon {
+  font-size: 24rpx;
+  line-height: 1;
+}
+
+.role-label {
+  font-size: 24rpx;
+  font-weight: 800;
+  line-height: 1;
 }
 
 .sama-brand {
