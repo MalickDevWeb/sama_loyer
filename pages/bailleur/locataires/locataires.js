@@ -2,6 +2,7 @@ import { getStoredLocataires, confirmLocataireCashPayment } from '../../../utils
 import { requireBailleurAccess } from '../../../utils/helpers/store';
 import { COLORS } from '../../../utils/constants/theme';
 import { bailleurGuardBehavior } from '../../../utils/behaviors/index';
+import { backendAPI } from '../../../utils/apis/index.js';
 
 // pages/bailleur/locataires/locataires.js
 // Loyer mensuel lu dans « Studio · Pikine Rue 10 · 95 000 F »
@@ -74,6 +75,7 @@ Page({
   behaviors: [bailleurGuardBehavior],
 
   data: {
+    uiState: 'content', // 'loading' | 'content' | 'error'
     statusBarHeight: 44,
     activeFilter: 'all', // 'all' | 'a_confirmer' | 'en_retard' | 'payes'
 
@@ -130,8 +132,15 @@ Page({
     this.loadLocataires();
   },
 
-  loadLocataires() {
-    this.setData({ locataires: getStoredLocataires() }, () => {
+  async loadLocataires() {
+    this.setData({ uiState: 'loading' });
+    let locataires = [];
+    try {
+      locataires = await backendAPI.getBailleurLocataires();
+    } catch (e) {
+      locataires = getStoredLocataires();
+    }
+    this.setData({ locataires, uiState: 'content' }, () => {
       this.applyFilter(this.data.activeFilter);
     });
   },

@@ -5,12 +5,14 @@ import { withCover } from '../../../utils/mocks/media';
 import { requireBailleurAccess } from '../../../utils/helpers/store';
 import { COLORS } from '../../../utils/constants/theme';
 import { bailleurGuardBehavior } from '../../../utils/behaviors/index';
+import { backendAPI } from '../../../utils/apis/index.js';
 
 Page({
   // Bloque la page si l'essai ou l'abonnement se termine pendant qu'elle est affichée
   behaviors: [bailleurGuardBehavior],
 
   data: {
+    uiState: 'content', // 'loading' | 'content' | 'error'
     statusBarHeight: 44,
     headerPaddingTop: 92,
     activeFilter: 'all', // all | en_ligne | validation | loue
@@ -51,9 +53,15 @@ Page({
     this.loadAnnonces();
   },
 
-  loadAnnonces() {
-    const annonces = getStoredBailleurAnnonces();
-    this.setData({ annonces }, () => {
+  async loadAnnonces() {
+    this.setData({ uiState: 'loading' });
+    let annonces = [];
+    try {
+      annonces = await backendAPI.getBailleurAnnonces();
+    } catch (e) {
+      annonces = getStoredBailleurAnnonces();
+    }
+    this.setData({ annonces, uiState: 'content' }, () => {
       this.applyFilter(this.data.activeFilter);
     });
   },
