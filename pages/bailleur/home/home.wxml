@@ -226,7 +226,7 @@
   <!-- MODAL / PROFIL BAILLEUR (Accessible via clic sur l'avatar) -->
   <!-- ======================================================== -->
   <view wx:if="{{ showProfileModal }}" class="profile-modal-overlay" bindtap="onCloseProfileModal">
-    <view class="profile-modal-sheet" catchtap="true">
+    <view class="profile-modal-sheet" catchtap="noop">
       <view class="modal-drag-handle"></view>
       <view class="profile-sheet-header">
         <view class="avatar-circle-large">

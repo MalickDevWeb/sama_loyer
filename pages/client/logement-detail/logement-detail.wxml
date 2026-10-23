@@ -254,7 +254,7 @@
   <!-- MODAL DEMANDE DE VISITE -->
   <!-- ======================================================== -->
   <view wx:if="{{ showVisitModal }}" class="modal-backdrop" bindtap="onCloseVisitModal">
-    <view class="visit-sheet" catchtap="true">
+    <view class="visit-sheet" catchtap="noop">
       <view class="visit-sheet__header">
         <text class="visit-sheet__title">Planifier une visite 📅</text>
         <view class="modal-close" bindtap="onCloseVisitModal">✕</view>

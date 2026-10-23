@@ -199,5 +199,7 @@ Page({
         type: 'warning'
       }
     });
-  }
+  },
+
+  noop() {}
 });

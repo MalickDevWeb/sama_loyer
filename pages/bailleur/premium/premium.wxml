@@ -127,9 +127,17 @@
 
       <!-- Section Historique des paiements -->
       <view class="history-payments-section">
-        <text class="section-big-title">Historique des paiements</text>
-        
-        <view class="history-payments-card">
+        <view class="history-toggle {{ historyOpen ? 'history-toggle--open' : '' }}" hover-class="sl-hover" bindtap="onToggleHistory">
+          <view class="history-toggle-text">
+            <text class="history-toggle-title">Historique</text>
+            <text class="history-toggle-sub">{{ paiementsHistorique.length }} paiement{{ paiementsHistorique.length > 1 ? 's' : '' }}</text>
+          </view>
+          <view class="ic ic-chevron-navy history-toggle-chevron"></view>
+        </view>
+
+        <block wx:if="{{ historyOpen }}">
+        <view wx:if="{{ paiementsHistorique.length === 0 }}" class="history-empty">Aucun paiement pour le moment.</view>
+        <view wx:else class="history-payments-card">
           <block wx:for="{{ paiementsHistorique }}" wx:key="id">
             <view class="payment-row">
               <!-- Pastille icône - ou + -->
@@ -155,6 +163,7 @@
           <text class="download-icon">📥</text>
           <text class="download-text">Télécharger les reçus</text>
         </view>
+        </block>
       </view>
 
     </view>

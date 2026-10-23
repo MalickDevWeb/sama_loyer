@@ -381,8 +381,45 @@ page {
   padding-bottom: 48rpx;
 }
 
+.loy__history-toggle {
+  display: flex;
+  align-items: center;
+  gap: 24rpx;
+  padding: 28rpx;
+}
+
+.loy__history-toggle-text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.loy__history-toggle-title {
+  font-size: 32rpx;
+  font-weight: 800;
+}
+
+.loy__history-chevron {
+  width: 36rpx;
+  height: 36rpx;
+  transform: rotate(90deg);
+  transition: transform 0.2s ease;
+}
+
+.loy__history-toggle--open .loy__history-chevron {
+  transform: rotate(-90deg);
+}
+
+.loy__history-empty {
+  padding: 24rpx 8rpx 0;
+  font-size: 26rpx;
+  color: #5B6475;
+}
+
 .loy__history-list {
   overflow: hidden;
+  margin-top: 16rpx;
 }
 
 .loy__history-row {

@@ -337,7 +337,7 @@
   <!-- MODAL ASSISTANT VOCAL SIMPLE & ÉPURÉ (WOLOF & FRANÇAIS)  -->
   <!-- ======================================================== -->
   <view wx:if="{{ showVoiceModal }}" class="modal-backdrop" bindtap="onCloseVoiceModal">
-    <view class="modal-card modal-card--simple" catchtap="true">
+    <view class="modal-card modal-card--simple" catchtap="noop">
       <view class="modal-header">
         <view class="modal-icon-badge">
           <view class="icon-svg icon-mic-berry"></view>

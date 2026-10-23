@@ -26,6 +26,7 @@ Page({
         badge: ''
       }
     ],
+    historyOpen: false,
     paiementsHistorique: [
       {
         id: 'p1',
@@ -99,6 +100,10 @@ Page({
         }, 800);
       }
     });
+  },
+
+  onToggleHistory() {
+    this.setData({ historyOpen: !this.data.historyOpen });
   },
 
   onDownloadRecus() {

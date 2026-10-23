@@ -110,8 +110,15 @@
 
   <!-- Historique -->
   <view class="loy__section loy__history">
-    <text class="loy__h2">Historique · {{ cur.name }}</text>
-    <view class="loy__card loy__history-list">
+    <view class="loy__card loy__history-toggle {{ historyOpen ? 'loy__history-toggle--open' : '' }}" hover-class="loy__card--hover" bindtap="onToggleHistory">
+      <view class="loy__history-toggle-text">
+        <text class="loy__history-toggle-title">Historique</text>
+        <text class="loy__history-sub">{{ cur.name }} · {{ history.length }} opération{{ history.length > 1 ? 's' : '' }}</text>
+      </view>
+      <view class="ic ic-chevron-navy loy__history-chevron"></view>
+    </view>
+    <view wx:if="{{ historyOpen && history.length === 0 }}" class="loy__history-empty">Aucun paiement pour ce logement.</view>
+    <view wx:elif="{{ historyOpen }}" class="loy__card loy__history-list">
       <view wx:for="{{ history }}" wx:key="id" class="loy__history-row">
         <view class="loy__history-ic {{ item.kind === 'entry' ? 'loy__history-ic--entry' : '' }}">
           <view class="ic {{ item.kind === 'entry' ? 'ic-check-navy' : 'ic-check-berry' }}"></view>

@@ -120,7 +120,7 @@
   <!-- POPUP ÉLÉGANT SAMA LOYER (Adapté aux couleurs de l'app)  -->
   <!-- ======================================================== -->
   <view wx:if="{{ showMediaRequiredModal }}" class="sama-modal-overlay" bindtap="onCloseMediaModal">
-    <view class="sama-modal-card" catchtap="true">
+    <view class="sama-modal-card" catchtap="noop">
       <!-- Bouton fermer -->
       <view class="modal-close-round" bindtap="onCloseMediaModal">✕</view>
 

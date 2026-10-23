@@ -382,6 +382,53 @@
   margin-bottom: 24rpx;
 }
 
+.history-toggle {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+  background-color: #FFFFFF;
+  border-radius: 28rpx;
+  border: 1rpx solid #ECEFF2;
+  box-shadow: 0 4rpx 16rpx rgba(15, 30, 61, 0.04);
+  padding: 28rpx;
+  margin-bottom: 20rpx;
+}
+
+.history-toggle-text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.history-toggle-title {
+  font-size: 32rpx;
+  font-weight: 800;
+  color: #0F1E3D;
+}
+
+.history-toggle-sub {
+  font-size: 24rpx;
+  color: #5B6475;
+}
+
+.history-toggle-chevron {
+  width: 36rpx;
+  height: 36rpx;
+  transform: rotate(90deg);
+  transition: transform 0.2s ease;
+}
+
+.history-toggle--open .history-toggle-chevron {
+  transform: rotate(-90deg);
+}
+
+.history-empty {
+  padding: 24rpx 28rpx;
+  margin-bottom: 20rpx;
+  font-size: 26rpx;
+  color: #5B6475;
+}
+
 .history-payments-card {
   background-color: #FFFFFF;
   border-radius: 28rpx;

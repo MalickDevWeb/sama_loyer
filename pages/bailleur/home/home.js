@@ -88,6 +88,8 @@ Page({
         url: '/pages/client/home/home'
       });
     }, 400);
-  }
+  },
+
+  noop() {}
 });
 

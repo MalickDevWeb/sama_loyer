@@ -37,6 +37,7 @@ Page({
     homes: [],
     cur: {},
     history: [],
+    historyOpen: false,
     mx: '', // '' | confirm | redirect | maxit | done
     mxLabel: '',
     receipt: null
@@ -243,6 +244,10 @@ Page({
         if (res.confirm) wx.showToast({ title: 'Préavis envoyé', icon: 'success' });
       }
     });
+  },
+
+  onToggleHistory() {
+    this.setData({ historyOpen: !this.data.historyOpen });
   },
 
   noop() {}
