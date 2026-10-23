@@ -28,7 +28,7 @@
     <!-- ================= 1 : RÉCAPITULATIF ================= -->
     <block wx:if="{{ !done && step === 1 }}">
       <text class="entree__h2">Ce que tu paies à l'entrée</text>
-      <text class="entree__lead">En une fois ou en deux fois, avant de recevoir les clés.</text>
+      <text class="entree__lead">En une fois ou par tranche, avant de recevoir les clés.</text>
       <view class="entree__recap">
         <view class="entree__recap-row">
           <view class="entree__recap-label">
@@ -111,7 +111,7 @@
       <view class="entree__pay {{ mode === 'part' ? 'entree__pay--on' : '' }}" bindtap="onPickPart">
         <view class="entree__radio {{ mode === 'part' ? 'entree__radio--on' : '' }}"></view>
         <view class="entree__pay-text">
-          <text class="entree__pay-title">Payer en 2 fois</text>
+          <text class="entree__pay-title">Payer par tranche</text>
           <text class="entree__muted">Une partie maintenant, le reste avant le 1er nov.</text>
         </view>
       </view>

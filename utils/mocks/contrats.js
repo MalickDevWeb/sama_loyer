@@ -35,7 +35,7 @@ export function buildContratEntree(l) {
       { title: 'Durée', hint: '6 mois minimum', text: 'Le contrat commence le 1er novembre 2026 pour 6 mois minimum. Il se renouvelle automatiquement, sauf préavis d’1 mois.' },
       { title: 'Loyer et paiement', hint: `${loyer} F avant le 5`, text: `Le loyer est de ${loyer} FCFA par mois, payé avec Max it via SAMA LOYER avant le 5 de chaque mois. Un reçu est envoyé après chaque paiement.` },
       { title: 'Caution', hint: `${caution} F, rendue au départ`, text: `La caution de ${caution} FCFA (${moisCaution} mois) est rendue dans les 30 jours après l’état des lieux de sortie, moins le coût des dégâts constatés.` },
-      { title: 'Paiement de l’entrée', hint: 'En 1 ou 2 fois', text: 'L’avance et la caution peuvent être payées en une fois, ou en deux fois avec au moins l’avance tout de suite. Les clés sont remises quand tout est payé.' },
+      { title: 'Paiement de l’entrée', hint: 'En 1 fois ou par tranche', text: 'L’avance et la caution peuvent être payées en une fois, ou par tranche avec au moins l’avance tout de suite. Les clés sont remises quand tout est payé.' },
       { title: 'Eau, électricité, charges', hint: 'À la charge du locataire', text: 'L’eau et l’électricité ont des compteurs séparés et sont payées par le locataire.' },
       { title: 'Obligations de chacun', hint: 'Entretien et réparations', text: 'Le locataire entretient le logement et paie à temps. Le bailleur fait les grosses réparations et respecte la tranquillité du locataire.' },
       { title: 'Départ et litiges', hint: 'Préavis 1 mois, médiation', text: 'Pour partir, le locataire prévient 1 mois avant dans l’application. En cas de désaccord, les parties essaient d’abord la médiation SAMA LOYER.' }
