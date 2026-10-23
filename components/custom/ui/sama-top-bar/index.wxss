@@ -1,0 +1,73 @@
+.sama-top-bar {
+  width: 100%;
+  box-sizing: border-box;
+  padding-left: 32rpx;
+  padding-right: 32rpx;
+  padding-bottom: 12rpx;
+  background-color: #FFFFFF;
+  z-index: 950;
+  flex: none;
+}
+
+.sama-top-bar--border {
+  border-bottom: 1rpx solid #ECEFF2;
+}
+
+.sama-top-bar__inner {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  height: 76rpx;
+  box-sizing: border-box;
+}
+
+.sama-brand {
+  display: flex;
+  align-items: center;
+  gap: 18rpx;
+}
+
+.sama-brand__icon {
+  width: 72rpx;
+  height: 72rpx;
+  border-radius: 22rpx;
+  background-color: #C8235F;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4rpx 14rpx rgba(200, 35, 95, 0.28);
+  flex-shrink: 0;
+}
+
+.icon-svg {
+  display: inline-block;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+}
+
+.icon-house-white {
+  width: 40rpx;
+  height: 40rpx;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23FFFFFF' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 10.5 12 3l9 7.5'/%3E%3Cpath d='M5 9.5V20h14V9.5'/%3E%3Cpath d='M10 20v-5h4v5'/%3E%3C/svg%3E");
+}
+
+.sama-brand__text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.05;
+}
+
+.brand-title {
+  font-size: 32rpx;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  color: #0F1E3D;
+}
+
+.brand-sub {
+  font-size: 20rpx;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  color: #C8235F;
+}

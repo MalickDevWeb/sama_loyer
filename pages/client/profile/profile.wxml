@@ -1,6 +1,9 @@
 <view class="prof">
+  <!-- Barre de marque SAMA LOYER fixe sur tous les écrans -->
+  <sama-top-bar />
+
   <!-- Carte profil -->
-  <view class="prof__header" style="padding-top: {{ statusBarHeight + 22 }}px;">
+  <view class="prof__header">
     <text class="prof__title">Profil</text>
     <view class="prof__card">
       <view class="prof__avatar">{{ userInitials }}</view>
@@ -88,7 +91,7 @@
   <view class="prof__section">
     <view class="prof__switch-profile" hover-class="prof__switch-profile--hover" bindtap="onSwitchToBailleur">
       <view class="prof__switch-profile-ic">
-        <text class="prof__switch-emoji">👥</text>
+        <view class="ic ic-users-white ic--lg"></view>
       </view>
       <view class="prof__switch-profile-text">
         <text class="prof__switch-profile-title">Changer de profil</text>
@@ -96,7 +99,7 @@
       </view>
       <view class="prof__switch-profile-badge">
         <text>Bailleur</text>
-        <text class="prof__switch-chevron">›</text>
+        <view class="ic ic-chevron-white ic--sm"></view>
       </view>
     </view>
   </view>
@@ -355,17 +358,17 @@
 
       <view class="prof__sheet-body">
         <view class="prof__faq-item">
-          <text class="prof__faq-q">🏡 Comment planifier une visite ?</text>
+          <view class="prof__faq-q ic-row"><view class="ic ic-cal-berry ic--sm"></view><text>Comment planifier une visite ?</text></view>
           <text class="prof__faq-a">Parcourez les annonces, cliquez sur « Réserver une visite » et choisissez la date et l'horaire. Le bailleur reçoit une notification instantanée et confirme sous 24h.</text>
         </view>
 
         <view class="prof__faq-item">
-          <text class="prof__faq-q">💳 Comment payer mon loyer ?</text>
+          <view class="prof__faq-q ic-row"><view class="ic ic-card-berry ic--sm"></view><text>Comment payer mon loyer ?</text></view>
           <text class="prof__faq-a">Dans l'onglet « Mes loyers », appuyez sur « Payer le loyer ». La transaction s'effectue en toute sécurité avec Orange Money et génère automatiquement un reçu horodaté officiel.</text>
         </view>
 
         <view class="prof__faq-item">
-          <text class="prof__faq-q">🔒 Comment ma caution est-elle sécurisée ?</text>
+          <view class="prof__faq-q ic-row"><view class="ic ic-lock-berry ic--sm"></view><text>Comment ma caution est-elle sécurisée ?</text></view>
           <text class="prof__faq-a">La caution est enregistrée dans votre contrat numérique Sama Loyer. En cas de départ, un préavis légal est déclenché et le remboursement est sécurisé post état des lieux.</text>
         </view>
       </view>

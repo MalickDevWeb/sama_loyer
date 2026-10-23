@@ -26,6 +26,7 @@
      "pages/common/404/404"
   ],
   "usingComponents": {
+    "sama-top-bar": "/components/custom/ui/sama-top-bar/index",
     "app-nav-bar": "/components/ui/nav-bar/index",
     "osn-image": "/components/ui/image/index",
     "app-icon": "/components/ui/icons/base/index",
@@ -58,7 +59,7 @@
       },
       {
         "pagePath": "pages/client/loyers/loyers",
-        "text": "Mon loyer",
+        "text": "Mes loyers",
         "iconPath": "assets/icons/favoris.png",
         "selectedIconPath": "assets/icons/favoris.png"
       },

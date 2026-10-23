@@ -1,8 +1,15 @@
 <view class="premium-page">
+  <!-- Barre de marque SAMA LOYER fixe sur tous les écrans -->
+  <sama-top-bar />
+
   <scroll-view class="premium-scroll" scroll-y="{{true}}" enhanced="{{true}}" show-scrollbar="{{false}}">
     
     <!-- En-tête -->
-    <view class="premium-header" style="padding-top: {{ statusBarHeight + 14 }}px;">
+    <view class="premium-header">
+      <view class="premium-back" hover-class="premium-back--hover" bindtap="onBack" aria-label="Retour au profil">
+        <view class="ic ic-back-navy premium-back-ic"></view>
+        <text>Profil</text>
+      </view>
       <text class="page-title">Premium et revenus</text>
       <text class="page-subtitle">Ton abonnement, tes mises en avant et tes paiements</text>
     </view>
@@ -12,14 +19,14 @@
       <view class="dark-subscription-card">
         <view class="subs-header-row">
           <view class="subs-badge">
-            <text class="star-icon">★</text>
-            <text class="subs-badge-text">Premium mensuel</text>
+            <view class="ic ic-star-white ic--sm"></view>
+            <text class="subs-badge-text">{{ sub.planLabel }}</text>
           </view>
-          <text class="subs-status-green">Actif</text>
+          <text class="subs-status-green">Actif · {{ sub.daysLeft }} j restants</text>
         </view>
 
         <text class="valid-until-label">Valable jusqu'au</text>
-        <text class="valid-date-text">15 novembre 2026</text>
+        <text class="valid-date-text">{{ sub.untilText }}</text>
 
         <!-- Progress bar Annonces mises en avant -->
         <view class="highlight-progress-wrap">
@@ -44,9 +51,12 @@
           </view>
         </view>
 
-        <button class="btn-renew-subs" bindtap="onPayAction">
-          Renouveler mon abonnement
-        </button>
+        <view class="btn-renew-subs" hover-class="btn-renew-subs--hover" bindtap="onRenew">
+          <view class="ic ic-maxit-berry ic--md"></view>
+          <text>{{ sub.isTrial ? 'Passer à Pro' : 'Renouveler' }} · {{ proPriceText }}</text>
+        </view>
+        <text class="subs-renew-via">Paiement sécurisé avec Max it</text>
+        <text class="subs-renew-note">{{ sub.isTrial ? 'À la fin de ton essai, ton espace sera bloqué sans abonnement.' : '+30 jours ajoutés à ta date de fin. Sans renouvellement, ton espace sera bloqué.' }}</text>
       </view>
 
       <!-- Section Mettre une annonce en avant -->
@@ -80,9 +90,9 @@
         </view>
 
         <!-- Action Button Rose -->
-        <button class="btn-continue-pay" bindtap="onPayAction">
-          Continuer — {{ selectedPriceLabel }}
-        </button>
+        <view class="btn-continue-pay" hover-class="btn-renew-subs--hover" bindtap="onBoost">
+          <text>Payer {{ selectedPriceLabel }} avec Max it</text>
+        </view>
       </view>
 
       <!-- Section Loyers reçus (Carte Blanche avec barre verte et blocs mensuels) -->
@@ -160,7 +170,7 @@
 
         <!-- Lien Télécharger les reçus -->
         <view class="download-receipts-link" bindtap="onDownloadRecus">
-          <text class="download-icon">📥</text>
+          <view class="ic ic-download-navy ic--sm"></view>
           <text class="download-text">Télécharger les reçus</text>
         </view>
         </block>
@@ -172,5 +182,47 @@
   </scroll-view>
 
   <!-- Bailleur Tab Bar -->
-  <app-custom-tab-bar activeTab="b-premium" />
+  <app-custom-tab-bar activeTab="b-profil" />
+
+  <!-- ================= PAIEMENT MAX IT (abonnement ou boost) ================= -->
+  <view wx:if="{{ mx }}" class="sl-mx-backdrop premium-mx" catchtouchmove="noop">
+    <view class="sl-mx" aria-label="Paiement avec Max it">
+      <block wx:if="{{ mx === 'confirm' }}">
+        <view class="sl-mx-icon"><view class="ic ic-maxit-berry"></view></view>
+        <text class="sl-mx-title">Payer avec Max it</text>
+        <text class="sl-mx-amount">{{ pay.amountText }}</text>
+        <text class="sl-mx-to">{{ pay.label }}</text>
+        <text class="sl-mx-note">Tu vas être redirigé·e vers l'application Max it pour valider le paiement avec ton code secret.</text>
+        <view class="sl-btn sl-btn--berry sl-mx-btn" hover-class="sl-hover" bindtap="onMxGo">Continuer vers Max it</view>
+        <view class="sl-mx-cancel" hover-class="sl-hover" bindtap="onMxClose">Annuler</view>
+      </block>
+
+      <block wx:if="{{ mx === 'redirect' }}">
+        <view class="sl-mx-spinner"></view>
+        <text class="sl-mx-title sl-mx-title--sm">Ouverture de Max it…</text>
+        <text class="sl-mx-muted">Ne ferme pas l'application.</text>
+      </block>
+
+      <block wx:if="{{ mx === 'maxit' }}">
+        <text class="sl-mx-sim">SIMULATION · ÉCRAN MAX IT</text>
+        <view class="sl-mx-box">
+          <text class="sl-mx-brand">Max it</text>
+          <text class="sl-mx-muted">Demande de paiement</text>
+          <view class="sl-mx-row"><text class="sl-mx-muted">Marchand</text><text class="sl-mx-strong">SAMA LOYER</text></view>
+          <view class="sl-mx-row"><text class="sl-mx-muted">Motif</text><text class="sl-mx-strong sl-mx-right">{{ pay.label }}</text></view>
+          <view class="sl-mx-row sl-mx-row--total"><text class="sl-mx-strong">Montant</text><text class="sl-mx-strong">{{ pay.amountText }}</text></view>
+        </view>
+        <text class="sl-mx-small">Dans la vraie application, tu tapes ici ton code secret Max it. SAMA LOYER ne voit jamais ton code.</text>
+        <view class="sl-btn sl-btn--navy sl-mx-btn" hover-class="sl-hover" bindtap="onMxValidate">Valider le paiement</view>
+        <view class="sl-btn sl-btn--outline sl-mx-refuse" hover-class="sl-hover" bindtap="onMxClose">Refuser et revenir</view>
+      </block>
+
+      <block wx:if="{{ mx === 'done' }}">
+        <view class="sl-mx-icon"><view class="ic ic-check-berry"></view></view>
+        <text class="sl-mx-title">Paiement validé</text>
+        <text class="sl-mx-to">{{ pay.doneText }}</text>
+        <view class="sl-btn sl-btn--berry sl-mx-btn" hover-class="sl-hover" bindtap="onMxClose">Parfait</view>
+      </block>
+    </view>
+  </view>
 </view>

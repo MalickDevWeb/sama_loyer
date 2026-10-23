@@ -1,8 +1,11 @@
 <view class="bprof">
+  <!-- Barre de marque SAMA LOYER fixe sur tous les écrans -->
+  <sama-top-bar />
+
   <scroll-view class="bprof__scroll" scroll-y="{{ true }}" enhanced="{{ true }}" show-scrollbar="{{ false }}">
 
     <!-- En-tête -->
-    <view class="bprof__header" style="padding-top: {{ statusBarHeight + 14 }}px;">
+    <view class="bprof__header">
       <text class="bprof__title">Profil</text>
     </view>
 
@@ -14,7 +17,7 @@
           <text class="bprof__name">{{ profile.fullName }}</text>
           <text class="bprof__phone">{{ profile.phone }}</text>
           <view class="bprof__badge">
-            <text class="bprof__badge-check">✓</text>
+            <view class="ic ic-check-green ic--xs"></view>
             <text>Bailleur certifié · Max it</text>
           </view>
         </view>
@@ -43,7 +46,7 @@
       <view class="bprof__card bprof__sub" hover-class="bprof__card--hover" bindtap="onManageSubscription">
         <view class="bprof__sub-top">
           <view class="bprof__sub-badge">
-            <text class="bprof__sub-star">★</text>
+            <view class="ic ic-star-berry ic--sm"></view>
             <text class="bprof__sub-plan">{{ subscription.plan }}</text>
           </view>
           <text class="bprof__sub-status {{ subscription.active ? '' : 'bprof__sub-status--off' }}">{{ subscription.active ? 'Actif' : 'Expiré' }}</text>
@@ -54,16 +57,16 @@
 
         <view class="bprof__sub-perks">
           <view class="bprof__perk-item">
-            <text class="bprof__perk-check">✓</text>
+            <view class="ic ic-check-green ic--sm"></view>
             <text class="bprof__perk-text">Visibilité prioritaire sur Dakar & banlieue</text>
           </view>
           <view class="bprof__perk-item">
-            <text class="bprof__perk-check">✓</text>
+            <view class="ic ic-check-green ic--sm"></view>
             <text class="bprof__perk-text">Baux et quittances numériques infalsifiables</text>
           </view>
           <view class="bprof__perk-item">
-            <text class="bprof__perk-check">✓</text>
-            <text class="bprof__perk-text">Encaissement automatique via Orange Money</text>
+            <view class="ic ic-check-green ic--sm"></view>
+            <text class="bprof__perk-text">Encaissement automatique via Max it</text>
           </view>
         </view>
 
@@ -78,7 +81,7 @@
     <view class="bprof__section">
       <view class="bprof__switch-profile" hover-class="bprof__switch-profile--hover" bindtap="onSwitchToClient" aria-label="Changer de profil">
         <view class="bprof__switch-profile-ic">
-          <text class="bprof__switch-emoji">🏠</text>
+          <view class="ic ic-users-white ic--lg"></view>
         </view>
         <view class="bprof__switch-profile-text">
           <text class="bprof__switch-profile-title">Changer de profil</text>
@@ -86,7 +89,7 @@
         </view>
         <view class="bprof__switch-profile-badge">
           <text>Locataire</text>
-          <text class="bprof__switch-chevron">›</text>
+          <view class="ic ic-chevron-amber ic--sm"></view>
         </view>
       </view>
     </view>
@@ -100,9 +103,9 @@
           <text class="bprof__row-value">{{ profile.phone }}</text>
         </view>
         <view class="bprof__row">
-          <text class="bprof__row-label">Publication des annonces</text>
+          <text class="bprof__row-label bprof__row-label--nowrap">Publication</text>
           <view class="bprof__pill-green">
-            <text class="bprof__pill-green-dot">•</text>
+            <view class="bprof__pill-green-dot ui-dot"></view>
             <text>{{ profile.publication }}</text>
           </view>
         </view>
@@ -173,7 +176,7 @@
       <view class="bprof__sheet-body">
         <view class="bprof__faq-item">
           <text class="bprof__faq-q">Comment fonctionne le paiement garanti ?</text>
-          <text class="bprof__faq-a">Vos locataires paient via Orange Money Max it. Les fonds sont versés immédiatement sur votre compte avec quittance générée automatiquement.</text>
+          <text class="bprof__faq-a">Vos locataires paient avec Max it. Les fonds sont versés immédiatement sur votre compte avec quittance générée automatiquement.</text>
         </view>
         <view class="bprof__faq-item">
           <text class="bprof__faq-q">Comment activer les baux numériques ?</text>
@@ -218,7 +221,7 @@
         <view class="bprof__sec-card">
           <view class="ic ic-check-green bprof__sec-ic"></view>
           <view class="bprof__sec-text">
-            <text class="bprof__sec-title">Paiements 100% sécurisés Orange Money</text>
+            <text class="bprof__sec-title">Paiements 100% sécurisés avec Max it</text>
             <text class="bprof__sec-desc">Zéro chèque en bois, zéro manipulation d'espèces. Chaque transaction dispose d'un reçu fiscal horodaté.</text>
           </view>
         </view>

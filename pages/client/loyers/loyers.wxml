@@ -1,7 +1,10 @@
 <view class="loy">
+  <!-- Barre de marque SAMA LOYER fixe sur tous les écrans -->
+  <sama-top-bar />
+
   <!-- En-tête -->
-  <view class="loy__header" style="padding-top: {{ statusBarHeight + 22 }}px;">
-    <text class="loy__title">Mon loyer</text>
+  <view class="loy__header">
+    <text class="loy__title">Mes loyers</text>
     <text class="loy__subtitle">{{ subtitle }}</text>
   </view>
 
@@ -80,18 +83,32 @@
   </view>
 
   <!-- Actions -->
-  <view class="loy__section loy__section--tight loy__actions">
-    <view class="loy__card loy__action" hover-class="loy__card--hover" bindtap="onWriteBailleur">
-      <view class="ic ic-chat-berry loy__action-ic"></view>
-      <text>Écrire au bailleur</text>
-    </view>
-    <view class="loy__card loy__action" hover-class="loy__card--hover" bindtap="onReportProblem">
-      <view class="ic ic-tool-berry loy__action-ic"></view>
-      <text>Signaler un problème</text>
-    </view>
-    <view class="loy__card loy__action" hover-class="loy__card--hover" bindtap="onPrevenirDepart">
-      <view class="ic ic-logout-berry loy__action-ic"></view>
-      <text>Prévenir de mon départ</text>
+  <view class="loy__section loy__section--tight">
+    <view class="loy__card loy__actions">
+      <view class="loy__action" hover-class="loy__action--hover" bindtap="onWriteBailleur">
+        <view class="loy__action-tile loy__action-tile--berry"><view class="ic ic-chat-berry loy__action-ic"></view></view>
+        <view class="loy__action-text">
+          <text class="loy__action-title">Écrire au bailleur</text>
+          <text class="loy__action-sub">{{ cur.owner }} · réponse dans Messages</text>
+        </view>
+        <view class="ic ic-chevron-grey loy__action-chev"></view>
+      </view>
+      <view class="loy__action" hover-class="loy__action--hover" bindtap="onReportProblem">
+        <view class="loy__action-tile loy__action-tile--navy"><view class="ic ic-tool-navy loy__action-ic"></view></view>
+        <view class="loy__action-text">
+          <text class="loy__action-title">Signaler un problème</text>
+          <text class="loy__action-sub">Fuite, électricité, serrure…</text>
+        </view>
+        <view class="ic ic-chevron-grey loy__action-chev"></view>
+      </view>
+      <view class="loy__action" hover-class="loy__action--hover" bindtap="onPrevenirDepart">
+        <view class="loy__action-tile loy__action-tile--grey"><view class="ic ic-logout-navy loy__action-ic"></view></view>
+        <view class="loy__action-text">
+          <text class="loy__action-title">Prévenir de mon départ</text>
+          <text class="loy__action-sub">Préavis d'un mois · caution rendue après l'état des lieux</text>
+        </view>
+        <view class="ic ic-chevron-grey loy__action-chev"></view>
+      </view>
     </view>
   </view>
 
@@ -168,7 +185,7 @@
           <text>Télécharger le reçu</text>
         </view>
         <view class="sl-btn sl-btn--outline-navy sl-mx-btn" hover-class="sl-hover" bindtap="onShareReceipt">Partager le reçu</view>
-        <view class="sl-mx-cancel" hover-class="sl-hover" bindtap="onMxClose">Retour à Mon loyer</view>
+        <view class="sl-mx-cancel" hover-class="sl-hover" bindtap="onMxClose">Retour à Mes loyers</view>
       </block>
     </view>
   </view>

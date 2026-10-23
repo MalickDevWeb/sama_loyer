@@ -1,6 +1,9 @@
 <view class="fav">
+  <!-- Barre de marque SAMA LOYER fixe sur tous les écrans -->
+  <sama-top-bar />
+
   <!-- En-tête -->
-  <view class="fav__header" style="padding-top: {{ statusBarHeight + 12 }}px;">
+  <view class="fav__header">
     <view class="sl-icon-btn fav__back" hover-class="sl-hover" bindtap="onBackTap" aria-label="Retour">
       <view class="ic ic-back-navy"></view>
     </view>
@@ -33,8 +36,8 @@
       bindtap="onCardTap"
       aria-label="Ouvrir l’annonce : {{ item.title }}"
     >
-      <view class="fav__thumb" style="background: {{ item.bg }};">
-        <view class="fav__house"></view>
+      <view class="fav__thumb sl-photo" style="background-color: {{ item.bg }}; background-image: url('{{ item.cover }}');">
+        <view wx:if="{{ !item.cover }}" class="fav__house"></view>
         <text wx:if="{{ item.isPremium }}" class="fav__premium">{{ i18n.common.premium }}</text>
       </view>
 

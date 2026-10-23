@@ -9,6 +9,7 @@ page {
 }
 
 .loy__header {
+  padding-top: 14rpx;
   padding-left: 40rpx;
   padding-right: 40rpx;
 }
@@ -268,9 +269,27 @@ page {
   opacity: 0.9;
 }
 
-.loy__due-pay {
+.loy__due-btns {
   margin-top: 12rpx;
-  height: 108rpx;
+  display: flex;
+  gap: 16rpx;
+}
+
+.loy__due-details {
+  flex: 1;
+  height: 100rpx;
+  border-radius: 32rpx;
+  border: 2rpx solid rgba(255, 255, 255, 0.7);
+  font-size: 30rpx;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.loy__due-pay {
+  flex: 1;
+  height: 100rpx;
   border-radius: 32rpx;
   background: #FFFFFF;
   color: #C8235F;
@@ -282,7 +301,7 @@ page {
 }
 
 .loy__due-receipt {
-  margin-top: 12rpx;
+  flex: 1;
   height: 100rpx;
   border-radius: 32rpx;
   background: rgba(255, 255, 255, 0.16);
@@ -351,28 +370,105 @@ page {
   color: #C8235F;
 }
 
+.loy__tile--soft {
+  background: #F6F7FA;
+  box-shadow: none;
+}
+
+/* --- Détails du logement ------------------------------------------------- */
+.loy__details {
+  max-height: 86vh;
+  overflow-y: auto;
+  text-align: left;
+}
+
+.loy__details-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.loy__details-title {
+  font-size: 36rpx;
+  font-weight: 800;
+}
+
+.loy__details-home {
+  display: flex;
+  flex-direction: column;
+  gap: 4rpx;
+}
+
+.loy__details-rows {
+  display: flex;
+  flex-direction: column;
+}
+
 /* --- Actions ------------------------------------------------------------- */
 .loy__actions {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 16rpx;
+  padding: 0 24rpx;
 }
 
 .loy__action {
-  padding: 24rpx 12rpx;
-  border-radius: 32rpx;
   display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: 12rpx;
-  text-align: center;
-  font-size: 24rpx;
-  font-weight: 700;
+  gap: 22rpx;
+  padding: 24rpx 0;
+  border-bottom: 2rpx solid #EEF0F4;
 }
 
+.loy__action:last-child {
+  border-bottom: 0;
+}
+
+.loy__action--hover {
+  opacity: 0.7;
+}
+
+.loy__action-tile {
+  width: 80rpx;
+  height: 80rpx;
+  flex: 0 0 80rpx;
+  border-radius: 24rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.loy__action-tile--berry { background: #FDE8EF; }
+.loy__action-tile--navy { background: #E3E9F5; }
+.loy__action-tile--grey { background: #EEF0F4; }
+
 .loy__action-ic {
-  width: 44rpx;
-  height: 44rpx;
+  width: 40rpx;
+  height: 40rpx;
+}
+
+.loy__action-text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4rpx;
+}
+
+.loy__action-title {
+  font-size: 28rpx;
+  font-weight: 800;
+  color: #0F1E3D;
+}
+
+.loy__action-sub {
+  font-size: 23rpx;
+  color: #7A8294;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.loy__action-chev {
+  width: 30rpx;
+  height: 30rpx;
 }
 
 /* --- Historique ---------------------------------------------------------- */

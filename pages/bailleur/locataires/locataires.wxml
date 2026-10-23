@@ -1,147 +1,79 @@
 <!-- pages/bailleur/locataires/locataires.wxml -->
 <view class="mes-locataires-page">
+  <!-- Barre de marque SAMA LOYER fixe sur tous les écrans -->
+  <sama-top-bar />
+
   <scroll-view class="locataires-scroll" scroll-y="{{true}}" enhanced="{{true}}" show-scrollbar="{{false}}">
     
-    <!-- En-tête avec espacement statusBar -->
-    <view class="locataires-top-header" style="padding-top: {{ statusBarHeight + 12 }}px;">
+    <!-- En-tête -->
+    <view class="locataires-top-header">
       <text class="page-title-main">Mes locataires</text>
-      <text class="page-sub-desc">4 logements loués · loyers et problèmes</text>
+      <text class="page-sub-desc">{{ kpi.totalCount }} logements loués · loyers et problèmes</text>
     </view>
 
-    <!-- Synthèse sombre (Loyers d'octobre) -->
-    <view class="dark-kpi-summary-box">
-      <text class="kpi-month-title">{{ kpi.monthTitle }}</text>
-      
-      <view class="kpi-amount-large-row">
-        <text class="kpi-amount-bold">{{ kpi.montantRecu }}</text>
-        <text class="kpi-amount-total-label">reçus sur {{ kpi.montantTotal }}</text>
+    <!-- Synthèse du mois -->
+    <view class="ml-summary">
+      <text class="ml-summary-label">{{ kpi.monthTitle }}</text>
+      <view class="ml-summary-amount">
+        <text class="ml-amount">{{ kpi.montantRecu }}</text>
+        <text class="ml-amount-sub">reçus sur {{ kpi.montantTotal }}</text>
       </view>
-
-      <!-- Barre segmentée tricolore (Jaune, Rouge, Vert) -->
-      <view class="segmented-bar-track">
-        <view class="seg-item seg-yellow"></view>
-        <view class="seg-item seg-red"></view>
-        <view class="seg-item seg-green"></view>
+      <view class="ml-progress">
+        <view class="ml-progress-fill" style="width: {{ kpi.pct }}%;"></view>
       </view>
-
-      <!-- Légende sous la barre -->
-      <view class="kpi-legend-row">
-        <text class="legend-item">{{ kpi.nbPayes }} payé(s)</text>
-        <text class="legend-item">{{ kpi.nbAConfirmer }} à confirmer</text>
-        <text class="legend-item">{{ kpi.nbEnRetard }} en retard</text>
+      <view class="ml-stats">
+        <view class="ml-stat"><view class="ui-dot ml-dot--green"></view><text>{{ kpi.nbPayes }} payé(s)</text></view>
+        <view class="ml-stat"><view class="ui-dot ml-dot--amber"></view><text>{{ kpi.nbAConfirmer }} à confirmer</text></view>
+        <view class="ml-stat"><view class="ui-dot ml-dot--berry"></view><text>{{ kpi.nbEnRetard }} en retard</text></view>
       </view>
     </view>
 
-    <!-- Filtres en pilules horizontales -->
-    <scroll-view class="filters-pills-scroll" scroll-x="{{true}}" show-scrollbar="{{false}}">
-      <view class="filters-pills-row">
-        <view 
-          class="filter-pill {{ activeFilter === 'all' ? 'pill--active-navy' : '' }}"
-          data-filter="all"
-          bindtap="onSelectFilter"
-        >
-          Tous (4)
-        </view>
-        <view 
-          class="filter-pill {{ activeFilter === 'a_confirmer' ? 'pill--active-navy' : '' }}"
-          data-filter="a_confirmer"
-          bindtap="onSelectFilter"
-        >
-          À confirmer (1)
-        </view>
-        <view 
-          class="filter-pill {{ activeFilter === 'en_retard' ? 'pill--active-navy' : '' }}"
-          data-filter="en_retard"
-          bindtap="onSelectFilter"
-        >
-          En retard (1)
-        </view>
-        <view 
-          class="filter-pill {{ activeFilter === 'payes' ? 'pill--active-navy' : '' }}"
-          data-filter="payes"
-          bindtap="onSelectFilter"
-        >
-          Payés (2)
-        </view>
+    <!-- Filtres (tiennent sur une ligne) -->
+    <view class="ml-tabs">
+      <view
+        wx:for="{{ filters }}"
+        wx:key="id"
+        class="ml-tab {{ activeFilter === item.id ? 'ml-tab--on' : '' }}"
+        data-filter="{{ item.id }}"
+        bindtap="onSelectFilter"
+      >
+        <text>{{ item.label }}</text>
+        <text class="ml-tab-count">{{ item.count }}</text>
       </view>
-    </scroll-view>
-
-    <!-- Liste des cartes Locataires -->
-    <view class="locataires-cards-stack">
-      <block wx:for="{{ filteredLocataires }}" wx:for-item="item" wx:for-index="index" wx:key="id">
-        <view class="locataire-item-card">
-          
-          <!-- Ligne haute : Avatar + Nom + Logement + Badge statut -->
-          <view class="card-head-row">
-            <view class="avatar-round-wrap" style="background-color: {{ item.avatarBg }};">
-              <text class="avatar-initials-txt">{{ item.initials }}</text>
-            </view>
-
-            <view class="locataire-meta-col">
-              <text class="locataire-name-title">{{ item.name }}</text>
-              <text class="locataire-prop-info">{{ item.property }}</text>
-            </view>
-
-            <view class="locataire-badge-status {{ item.status === 'a_confirmer' ? 'badge-a-confirmer' : (item.status === 'en_retard' ? 'badge-en-retard' : 'badge-paye') }}">
-              {{ item.statusLabel }}
-            </view>
-          </view>
-
-          <!-- Bandeau d'alerte / confirmation -->
-          <view class="banner-notice-box {{ item.bannerType === 'warning' ? 'banner-cream-yellow' : (item.bannerType === 'danger' ? 'banner-soft-red' : 'banner-mint-green') }}">
-            <text class="banner-notice-text">{{ item.bannerText }}</text>
-          </view>
-
-          <!-- Boutons d'action conditionnels (View interactifs anti-conflits) -->
-          <!-- Cas Cheikh Fall : À confirmer -->
-          <view wx:if="{{ item.status === 'a_confirmer' }}" class="action-buttons-pair-row">
-            <view class="btn-action-outline-red" hover-class="btn-hover-opacity" bindtap="onRefuserPaiementCheikh">
-              Rien reçu
-            </view>
-            <view class="btn-action-dark-green" hover-class="btn-hover-opacity" bindtap="onConfirmerPaiementCheikh">
-              Oui, j'ai reçu
-            </view>
-          </view>
-
-          <!-- Cas Modou Ndiaye : En retard -->
-          <view wx:elif="{{ item.status === 'en_retard' }}" class="action-buttons-pair-row">
-            <view class="btn-action-outline-navy" hover-class="btn-hover-opacity" bindtap="onSendRappel">
-              Envoyer un rappel
-            </view>
-            <view class="btn-action-dark-navy" hover-class="btn-hover-opacity" bindtap="onMarquerPayeModou">
-              Il a payé
-            </view>
-          </view>
-
-          <!-- Ligne footer : Caution détenue + Bouton Écrire -->
-          <view class="card-foot-row">
-            <text class="caution-detenue-txt">Caution détenue : {{ item.cautionDetenue }}</text>
-            <view class="btn-ecrire-pill" hover-class="btn-hover-opacity" data-locataire="{{ item }}" bindtap="onEcrireLocataire">
-              <view class="ecrire-chat-bubble-icon"></view>
-              <text class="ecrire-label-txt">Écrire</text>
-            </view>
-          </view>
-
-        </view>
-      </block>
     </view>
 
-    <!-- Section Problèmes signalés -->
-    <view class="problemes-section">
-      <text class="section-title-sub">Problèmes signalés</text>
-      
-      <view class="problemes-group">
-        <block wx:for="{{ problemes }}" wx:for-item="item" wx:for-index="index" wx:key="id">
-          <view class="probleme-card-item">
-            <view class="prob-icon-square">
-              <view class="icon-drop-graphic"></view>
-            </view>
-            <view class="prob-info-col">
-              <text class="prob-main-title">{{ item.title }}</text>
-              <text class="prob-sub-meta">{{ item.sub }}</text>
-            </view>
-          </view>
-        </block>
+    <!-- Liste des locataires : initiales, nom, logement, statut -->
+    <view class="ml-card">
+      <view wx:if="{{ filteredLocataires.length === 0 }}" class="ml-empty">Aucun locataire dans cette catégorie.</view>
+      <view
+        wx:for="{{ filteredLocataires }}"
+        wx:key="id"
+        class="ml-row"
+        hover-class="ml-row--hover"
+        data-id="{{ item.id }}"
+        bindtap="onOpenLocataire"
+        aria-label="Voir le détail de {{ item.name }}"
+      >
+        <view class="ml-avatar">{{ item.initials }}</view>
+        <view class="ml-row-text">
+          <text class="ml-name">{{ item.name }}</text>
+          <text class="ml-sub">{{ item.property }}</text>
+        </view>
+        <text class="ml-badge {{ item.status === 'a_confirmer' ? 'ml-badge--amber' : (item.status === 'en_retard' ? 'ml-badge--berry' : 'ml-badge--green') }}">{{ item.statusLabel }}</text>
+        <view class="ic ic-chevron-grey ic--sm"></view>
+      </view>
+    </view>
+
+    <!-- Problèmes signalés -->
+    <text class="ml-h2">Problèmes signalés</text>
+    <view class="ml-card">
+      <view wx:for="{{ problemes }}" wx:key="id" class="ml-row">
+        <view class="ml-avatar ml-avatar--soft"><view class="ic ic-tool-berry ic--sm"></view></view>
+        <view class="ml-row-text">
+          <text class="ml-name">{{ item.title }}</text>
+          <text class="ml-sub">{{ item.sub }}</text>
+        </view>
+        <text class="ml-badge {{ item.statusClass === 'status-resolu' ? 'ml-badge--green' : 'ml-badge--navy' }}">{{ item.statusLabel }}</text>
       </view>
     </view>
 
@@ -150,4 +82,62 @@
 
   <!-- Bailleur Tab Bar -->
   <app-custom-tab-bar activeTab="b-locataires" />
+
+  <!-- ================= DÉTAIL D'UN LOCATAIRE ================= -->
+  <view wx:if="{{ detail }}" class="loc-sheet-overlay" catchtouchmove="noop" bindtap="onCloseLocataire">
+    <view class="loc-sheet" catchtap="noop" aria-label="Détail du locataire">
+      <view class="loc-sheet-handle"></view>
+
+      <view class="card-head-row">
+        <view class="avatar-round-wrap ml-avatar-detail">
+          <text class="avatar-initials-txt">{{ detail.initials }}</text>
+        </view>
+        <view class="locataire-meta-col">
+          <text class="locataire-name-title">{{ detail.name }}</text>
+          <text class="locataire-prop-info">{{ detail.property }}</text>
+        </view>
+        <view class="loc-sheet-close" hover-class="btn-hover-opacity" bindtap="onCloseLocataire"><view class="ic ic-close-navy ic--sm"></view></view>
+      </view>
+
+      <view class="loc-sheet-status-row">
+        <text class="loc-sheet-label">Loyer d'octobre</text>
+        <view class="locataire-badge-status {{ detail.status === 'a_confirmer' ? 'badge-a-confirmer' : (detail.status === 'en_retard' ? 'badge-en-retard' : 'badge-paye') }}">
+          {{ detail.statusLabel }}
+        </view>
+      </view>
+
+      <!-- Bandeau d'alerte / confirmation -->
+      <view class="banner-notice-box {{ detail.bannerType === 'warning' ? 'banner-cream-yellow' : (detail.bannerType === 'danger' ? 'banner-soft-red' : 'banner-mint-green') }}">
+        <text class="banner-notice-text">{{ detail.bannerText }}</text>
+      </view>
+
+      <!-- À confirmer -->
+      <view wx:if="{{ detail.status === 'a_confirmer' }}" class="action-buttons-pair-row">
+        <view class="btn-action-outline-red" hover-class="btn-hover-opacity" bindtap="onRefuserPaiementCheikh">Rien reçu</view>
+        <view class="btn-action-dark-green" hover-class="btn-hover-opacity" bindtap="onConfirmerPaiementCheikh">Oui, j'ai reçu</view>
+      </view>
+
+      <!-- En retard -->
+      <view wx:elif="{{ detail.status === 'en_retard' }}" class="action-buttons-pair-row">
+        <view class="btn-action-outline-navy" hover-class="btn-hover-opacity" bindtap="onSendRappel">Envoyer un rappel</view>
+        <view class="btn-action-dark-navy" hover-class="btn-hover-opacity" bindtap="onMarquerPayeModou">Il a payé</view>
+      </view>
+
+      <view class="loc-sheet-rows">
+        <view class="loc-sheet-row">
+          <text class="loc-sheet-label">Caution détenue</text>
+          <text class="loc-sheet-value">{{ detail.cautionDetenue }}</text>
+        </view>
+        <view class="loc-sheet-row">
+          <text class="loc-sheet-label">Téléphone</text>
+          <text class="loc-sheet-value">{{ detail.phone }}</text>
+        </view>
+      </view>
+
+      <view class="btn-ecrire-pill loc-sheet-write" hover-class="btn-hover-opacity" data-locataire="{{ detail }}" bindtap="onEcrireLocataire">
+        <view class="ecrire-chat-bubble-icon"></view>
+        <text class="ecrire-label-txt">Écrire à {{ detail.name }}</text>
+      </view>
+    </view>
+  </view>
 </view>

@@ -18,6 +18,7 @@
 }
 
 .bprof__header {
+  padding-top: 14rpx;
   padding-left: 32rpx;
   padding-right: 32rpx;
   padding-bottom: 16rpx;
@@ -660,4 +661,14 @@
   display: none !important;
   width: 0 !important;
   height: 0 !important;
+}
+
+/* Libellé de ligne sur une seule ligne, pastille compacte */
+.bprof__row-label--nowrap {
+  white-space: nowrap;
+}
+
+.bprof__pill-green {
+  flex-shrink: 0;
+  white-space: nowrap;
 }

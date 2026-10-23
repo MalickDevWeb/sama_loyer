@@ -21,7 +21,7 @@
 
 /* En-tête */
 .annonces-header {
-  padding: 0 32rpx 20rpx;
+  padding: 14rpx 32rpx 20rpx;
   background-color: #FFFFFF;
   border-bottom: 1rpx solid #ECEFF2;
 }

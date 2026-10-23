@@ -1,5 +1,8 @@
 <view class="bmsg">
-  <view class="bmsg__header" style="padding-top: {{ statusBarHeight + 22 }}px;">
+  <!-- Barre de marque SAMA LOYER fixe sur tous les écrans -->
+  <sama-top-bar />
+
+  <view class="bmsg__header">
     <text class="bmsg__title">Messages</text>
     <text class="bmsg__subtitle">Tes échanges avec les candidats et tes locataires</text>
   </view>
@@ -36,14 +39,11 @@
       aria-label="Conversation avec {{ item.name }}"
     >
       <view class="bmsg__avatar" style="background: {{ item.color }};">{{ item.initials }}</view>
-      <view class="bmsg__conv-body">
-        <view class="bmsg__conv-top">
-          <text class="bmsg__name {{ item.unread ? 'bmsg__name--unread' : '' }}">{{ item.name }}</text>
-          <text class="bmsg__time {{ item.unread ? 'bmsg__time--unread' : '' }}">{{ item.time }}</text>
-        </view>
-        <text class="bmsg__tag {{ item.kind === 'loc' ? 'bmsg__tag--loc' : 'bmsg__tag--cand' }}">{{ item.tag }}</text>
-        <view class="bmsg__conv-bottom">
-          <text class="bmsg__last {{ item.unread ? 'bmsg__last--unread' : '' }}">{{ item.last }}</text>
+      <!-- Vue simplifiée : nom + statut (le détail est dans la conversation) -->
+      <view class="bmsg__conv-body bmsg__conv-body--simple">
+        <text class="bmsg__name {{ item.unread ? 'bmsg__name--unread' : '' }}">{{ item.name }}</text>
+        <view class="bmsg__conv-right">
+          <text class="bmsg__tag {{ item.kind === 'loc' ? 'bmsg__tag--loc' : 'bmsg__tag--cand' }}">{{ item.status }}</text>
           <text wx:if="{{ item.unread }}" class="bmsg__unread">{{ item.unread }}</text>
         </view>
       </view>

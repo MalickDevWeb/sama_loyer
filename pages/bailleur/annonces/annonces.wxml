@@ -1,8 +1,11 @@
 <view class="annonces-page">
+  <!-- Barre de marque SAMA LOYER fixe sur tous les écrans -->
+  <sama-top-bar />
+
   <scroll-view class="annonces-scroll" scroll-y="{{true}}" enhanced="{{true}}" show-scrollbar="{{false}}">
     
-    <!-- En-tête avec bouton + rose en haut à droite (dégagé sous la capsule WeChat) -->
-    <view class="annonces-header" style="padding-top: {{ headerPaddingTop }}px;">
+    <!-- En-tête avec bouton + rose en haut à droite -->
+    <view class="annonces-header">
       <view class="header-top-row">
         <view class="header-titles">
           <text class="page-title">Mes annonces</text>

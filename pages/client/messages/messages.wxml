@@ -1,6 +1,9 @@
 <view class="cmsg">
+  <!-- Barre de marque SAMA LOYER fixe sur tous les écrans -->
+  <sama-top-bar />
+
   <!-- En-tête -->
-  <view class="cmsg__header" style="padding-top: {{ statusBarHeight + 22 }}px;">
+  <view class="cmsg__header">
     <text class="cmsg__title">Messages</text>
     <text class="cmsg__subtitle">Tes échanges avec les bailleurs</text>
   </view>
@@ -48,19 +51,13 @@
         </view>
       </view>
 
+      <!-- Vue simplifiée : nom + statut (le détail est dans la conversation) -->
       <view class="cmsg__body">
-        <view class="cmsg__row">
-          <text class="cmsg__name {{ item.unread ? 'cmsg__name--unread' : '' }}">{{ item.name }}</text>
-          <text class="cmsg__time {{ item.unread ? 'cmsg__time--unread' : '' }}">{{ item.time }}</text>
-        </view>
-        <text class="cmsg__listing">{{ item.property }}</text>
-        <view class="cmsg__row">
-          <text class="cmsg__last {{ item.unread ? 'cmsg__last--unread' : '' }}">{{ item.snippet }}</text>
+        <text class="cmsg__name {{ item.unread ? 'cmsg__name--unread' : '' }}">{{ item.name }}</text>
+        <view class="cmsg__right">
+          <text wx:if="{{ item.status }}" class="cmsg__tag cmsg__tag--{{ item.statusKind }}">{{ item.status }}</text>
           <text wx:if="{{ item.unread }}" class="cmsg__unread">{{ item.unread }}</text>
-        </view>
-        <view wx:if="{{ item.visiteBadge }}" class="cmsg__status">
-          <view class="ic ic-cal-navy cmsg__status-ic"></view>
-          <text>{{ item.visiteBadge }}</text>
+          <view class="ic ic-chevron-grey ic--xs cmsg__chev"></view>
         </view>
       </view>
     </view>

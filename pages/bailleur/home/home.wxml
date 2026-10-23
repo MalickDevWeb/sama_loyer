@@ -1,20 +1,11 @@
 <view class="bailleur-home-page">
+  <!-- Barre de marque SAMA LOYER fixe sur tous les écrans -->
+  <sama-top-bar />
+
   <scroll-view class="bailleur-scroll {{ locked ? 'is-locked' : '' }}" scroll-y="{{ !locked }}" enhanced="{{true}}" show-scrollbar="{{false}}">
     
     <!-- Top Header Section (Fond clair) -->
-    <view class="bailleur-header" style="padding-top: {{ statusBarHeight + 12 }}px;">
-      <!-- Ligne supérieure : Logo officiel SAMA LOYER -->
-      <view class="hero-top-row">
-        <view class="sama-brand">
-          <view class="sama-brand__icon">
-            <view class="icon-svg icon-house-white"></view>
-          </view>
-          <view class="sama-brand__text">
-            <text class="brand-title">SAMA</text>
-            <text class="brand-sub">LOYER</text>
-          </view>
-        </view>
-      </view>
+    <view class="bailleur-header">
 
       <!-- Message de bienvenue : Bonjour Moussa -->
       <view class="hero-profile-row">

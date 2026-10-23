@@ -9,6 +9,7 @@ page {
 }
 
 .prof__header {
+  padding-top: 14rpx;
   padding-left: 40rpx;
   padding-right: 40rpx;
 }

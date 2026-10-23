@@ -1,6 +1,7 @@
 @import "/styles/sama-ui.wxss";
 
 .bmsg__header {
+  padding-top: 14rpx;
   padding-left: 40rpx;
   padding-right: 40rpx;
 }
@@ -205,4 +206,23 @@
 
 .bmsg__tab-spacer {
   height: calc(180rpx + env(safe-area-inset-bottom));
+}
+
+/* Vue simplifiée : nom à gauche, statut (+ non lus) à droite */
+.bmsg__conv {
+  align-items: center;
+}
+
+.bmsg__conv-body--simple {
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16rpx;
+}
+
+.bmsg__conv-right {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  flex: 0 0 auto;
 }

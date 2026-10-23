@@ -1,18 +1,6 @@
 <view class="not-found-page">
-  <!-- Header officiel SAMA LOYER avec respiration sous la notch -->
-  <view class="not-found-header" style="padding-top: {{ statusBarHeight + 16 }}px;">
-    <view class="header-brand-row">
-      <view class="sama-brand" bindtap="onGoHome">
-        <view class="sama-brand__icon">
-          <view class="icon-svg icon-house-white"></view>
-        </view>
-        <view class="sama-brand__text">
-          <text class="brand-title">SAMA</text>
-          <text class="brand-sub">LOYER</text>
-        </view>
-      </view>
-    </view>
-  </view>
+  <!-- Barre de marque SAMA LOYER fixe sur tous les écrans -->
+  <sama-top-bar />
 
   <!-- Contenu défilant fluide -->
   <scroll-view scroll-y class="scroll-content">
@@ -39,18 +27,18 @@
 
           <!-- Floating Key Pill Badge -->
           <view class="floating-key-pill">
-            <text class="key-emoji">🔑</text>
+            <view class="ic ic-key-berry ic--lg"></view>
           </view>
 
           <!-- Shimmering Sparkles -->
-          <view class="shimmer-sparkle sparkle-left">✦</view>
-          <view class="shimmer-sparkle sparkle-right">✦</view>
+          <view class="shimmer-sparkle sparkle-left"><view class="ic ic-sparkle-amber ic--sm"></view></view>
+          <view class="shimmer-sparkle sparkle-right"><view class="ic ic-sparkle-berry ic--sm"></view></view>
         </view>
       </view>
 
       <!-- Badge Code -->
       <view class="error-badge anim-fade-up-2">
-        <text class="badge-dot">✦</text>
+        <view class="ic ic-sparkle-berry ic--xs"></view>
         <text class="badge-text">ERREUR 404 · LOGEMENT INTROUVABLE</text>
       </view>
 
@@ -84,9 +72,9 @@
             bindtap="onSelectZone"
             data-zone="{{ item.label }}"
           >
-            <view class="zone-pin-circle">📍</view>
+            <view class="zone-pin-circle"><view class="ic ic-pin-berry ic--sm"></view></view>
             <text class="zone-label">{{ item.label }}</text>
-            <text class="zone-arrow">→</text>
+            <view class="ic ic-arrow-right-navy ic--sm"></view>
           </view>
         </view>
       </view>
@@ -95,7 +83,7 @@
       <view class="actions-group anim-fade-up-5">
         <button class="btn-primary" hover-class="btn-hover" bindtap="onSearchAll">
           <text class="btn-primary-text">Trouver un logement</text>
-          <text class="btn-arrow">→</text>
+          <view class="ic ic-arrow-right-white ic--sm"></view>
         </button>
 
         <button class="btn-secondary" hover-class="btn-hover" bindtap="onGoHome">
@@ -104,7 +92,7 @@
 
         <view class="bailleur-row" bindtap="onSwitchBailleur">
           <text class="bailleur-hint">Vous êtes propriétaire ? </text>
-          <text class="bailleur-link-bold">Espace bailleur →</text>
+          <view class="bailleur-link-bold ic-row"><text>Espace bailleur</text><view class="ic ic-arrow-right-berry ic--xs"></view></view>
         </view>
       </view>
 

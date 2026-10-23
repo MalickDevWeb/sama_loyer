@@ -1,6 +1,9 @@
 <view class="vis">
+  <!-- Barre de marque SAMA LOYER fixe sur tous les écrans -->
+  <sama-top-bar />
+
   <!-- En-tête -->
-  <view class="vis__header" style="padding-top: {{ statusBarHeight + 22 }}px;">
+  <view class="vis__header">
     <text class="vis__title">Mes visites</text>
     <text class="vis__subtitle">Suis tes demandes de visite</text>
   </view>

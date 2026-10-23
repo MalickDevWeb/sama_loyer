@@ -1,4 +1,4 @@
-@import "/styles/icons.wxss";
+@import "/styles/sama-ui.wxss";
 
 /* ==========================================================================
    Page Premium et Revenus Bailleur - SAMA LOYER (Page 14 exact Claude/PDF)
@@ -23,7 +23,7 @@
 
 /* En-tête */
 .premium-header {
-  padding: 0 32rpx 20rpx;
+  padding: 14rpx 32rpx 20rpx;
   background-color: #FFFFFF;
   border-bottom: 1rpx solid #ECEFF2;
 }
@@ -568,4 +568,46 @@
   display: none !important;
   width: 0 !important;
   height: 0 !important;
+}
+
+/* Abonnement : note sous le bouton de renouvellement */
+.subs-renew-note {
+  display: block;
+  margin-top: 16rpx;
+  font-size: 22rpx;
+  line-height: 1.4;
+  color: rgba(255, 255, 255, 0.7);
+  text-align: center;
+}
+
+/* Fenêtre Max it au-dessus de la barre d'onglets */
+.premium-mx {
+  z-index: 1001;
+}
+
+/* Boutons en <view> : le <button> natif est bridé à 184px de large par WeChat */
+.btn-renew-subs {
+  gap: 14rpx;
+  box-sizing: border-box;
+  padding: 0 32rpx;
+  white-space: nowrap;
+}
+
+.btn-renew-subs--hover {
+  opacity: 0.85;
+  transform: scale(0.99);
+}
+
+.subs-renew-via {
+  display: block;
+  margin-top: 14rpx;
+  font-size: 22rpx;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.85);
+  text-align: center;
+}
+
+.btn-continue-pay {
+  box-sizing: border-box;
+  white-space: nowrap;
 }

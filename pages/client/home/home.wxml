@@ -19,10 +19,13 @@
         </view>
       </view>
       <view class="toast-badge-sparkle">
-        <text class="toast-sparkle-symbol">✨</text>
+        <view class="ic ic-sparkle-amber ic--sm"></view>
       </view>
     </view>
   </view>
+
+  <!-- Barre de marque SAMA LOYER fixe sur tous les écrans -->
+  <sama-top-bar />
 
   <!-- Défilement continu : Formulaire + Résultats en dessous sans redirection -->
   <scroll-view 
@@ -34,24 +37,12 @@
     scroll-with-animation="{{ true }}"
   >
     <!-- En-tête SAMA LOYER -->
-    <view class="sama-header" style="padding-top: {{ statusBarHeight + 12 }}px;">
-      <!-- Ligne supérieure : Logo officiel SAMA LOYER -->
-      <view class="sama-header__top">
-        <view class="sama-brand">
-          <view class="sama-brand__icon">
-            <view class="icon-svg icon-house-white"></view>
-          </view>
-          <view class="sama-brand__text">
-            <text class="brand-title">SAMA</text>
-            <text class="brand-sub">LOYER</text>
-          </view>
-        </view>
-      </view>
+    <view class="sama-header">
 
       <!-- Ligne 2 : Sélecteur de rôle pleine largeur (Locataire / Bailleur) -->
       <view class="role-switch-bar">
         <view class="role-segment role-segment--active">
-          <text class="role-icon">🏠</text>
+          <view class="ic ic-home-white ic--sm"></view>
           <text class="role-label">Locataire</text>
         </view>
         <view 
@@ -60,7 +51,7 @@
           bindtap="onSwitchToBailleur"
           aria-label="Basculer vers l'espace Bailleur"
         >
-          <text class="role-icon">👥</text>
+          <view class="ic ic-users-navy ic--sm"></view>
           <text class="role-label">Bailleur</text>
         </view>
       </view>
@@ -68,11 +59,22 @@
 
     <!-- Carte d'accroche dégradée rose avec filigrane maison -->
     <view class="hero-pink-card">
-      <view class="hero-watermark"></view>
-      
+      <!-- Scène animée : halo, maison flottante, ombre, buissons, étincelles, repère -->
+      <view class="hero-scene" aria-hidden="true">
+        <view class="hero-glow"></view>
+        <view class="hero-shadow"></view>
+        <view class="hero-bush hero-bush--l"></view>
+        <view class="hero-bush hero-bush--r"></view>
+        <view class="hero-house"></view>
+        <view class="hero-pin"><view class="ic ic-pin-berry ic--sm"></view></view>
+        <view class="hero-spark hero-spark--1"><view class="ic ic-sparkle-berry"></view></view>
+        <view class="hero-spark hero-spark--2"><view class="ic ic-sparkle-amber"></view></view>
+        <view class="hero-spark hero-spark--3"><view class="ic ic-sparkle-berry"></view></view>
+      </view>
+
       <!-- Badge utilisateur / Salamalekum -->
       <view class="hero-user-pill">
-        <text class="pill-red-dot">•</text>
+        <view class="pill-red-dot ui-dot"></view>
         <text class="pill-user-text">Salamalekum, Awa</text>
       </view>
 
@@ -87,11 +89,11 @@
       <!-- Tags de réassurance -->
       <view class="hero-trust-badges">
         <view class="trust-badge">
-          <text class="trust-check">✓</text>
+          <view class="ic ic-check-berry ic--sm"></view>
           <text>Annonces vérifiées</text>
         </view>
         <view class="trust-badge">
-          <text class="trust-check">✓</text>
+          <view class="ic ic-check-berry ic--sm"></view>
           <text>Paiement Max it</text>
         </view>
       </view>
@@ -102,8 +104,8 @@
       <!-- Champ Localité -->
       <view class="form-group">
         <text class="form-label">Localité</text>
-        <view class="input-box input-box--stacked">
-          <view class="icon-svg icon-pin-berry"></view>
+        <view class="input-box input-box--stacked {{ focusField === 'lieu' ? 'input-box--focus' : '' }}">
+          <view class="icon-svg icon-pin-berry form-ic form-ic--pin"></view>
           <view class="input-stacked-wrap">
             <input
               id="lieu"
@@ -111,6 +113,9 @@
               type="text"
               value="{{ place }}"
               bindinput="onPlaceInput"
+              bindfocus="onFieldFocus"
+              bindblur="onFieldBlur"
+              data-field="lieu"
               bindconfirm="onSearchTap"
               confirm-type="search"
               placeholder="Ex. Ouakam, Ngor, Yoff, Almadies…"
@@ -118,27 +123,30 @@
             />
             <text class="input-sub-hint">Changez de localité si besoin</text>
           </view>
-          <view wx:if="{{ place }}" class="input-clear-btn" bindtap="onClearPlace">✕</view>
+          <view wx:if="{{ place }}" class="input-clear-btn" bindtap="onClearPlace"><view class="ic ic-close-grey ic--xs"></view></view>
         </view>
       </view>
 
       <!-- Champ Budget -->
       <view class="form-group">
         <text class="form-label">Budget maximum par mois</text>
-        <view class="input-box">
-          <view class="icon-svg icon-card-berry"></view>
+        <view class="input-box {{ focusField === 'budget' ? 'input-box--focus' : '' }}">
+          <view class="icon-svg icon-card-berry form-ic form-ic--card"></view>
           <input
             id="budget"
             class="input-field input-field--bold"
             type="number"
             value="{{ budget }}"
             bindinput="onBudgetInput"
+            bindfocus="onFieldFocus"
+            bindblur="onFieldBlur"
+            data-field="budget"
             bindconfirm="onSearchTap"
             confirm-type="search"
             placeholder="Ex. 60 000"
             placeholder-class="input-placeholder"
           />
-          <view wx:if="{{ budget }}" class="input-clear-btn" bindtap="onClearBudget">✕</view>
+          <view wx:if="{{ budget }}" class="input-clear-btn" bindtap="onClearBudget"><view class="ic ic-close-grey ic--xs"></view></view>
           <view class="budget-suffix-box">
             <text class="input-suffix">F CFA</text>
             <text class="budget-chevron">⌄</text>
@@ -148,6 +156,8 @@
 
       <!-- Bouton split : Rechercher (gauche) + Parler (droite) -->
       <view class="split-search-btn {{ isSearching ? 'split-search-btn--loading' : '' }}">
+        <!-- Reflet lumineux qui balaie le bouton -->
+        <view class="split-shine"></view>
         <view 
           class="split-left" 
           hover-class="split-left--active" 
@@ -165,7 +175,7 @@
           hover-stay-time="100" 
           bindtap="onVoiceTap"
         >
-          <view class="icon-svg icon-mic-berry"></view>
+          <view class="mic-wave"><view class="icon-svg icon-mic-berry"></view></view>
           <text class="btn-voice-label">Parler</text>
         </view>
       </view>
@@ -182,7 +192,7 @@
           <text class="fav-title">Mes favoris</text>
           <text class="fav-sub">{{ favoritesCount }} logement{{ favoritesCount > 1 ? 's' : '' }} enregistré{{ favoritesCount > 1 ? 's' : '' }}</text>
         </view>
-        <text class="fav-chevron">›</text>
+        <view class="ic ic-chevron-berry ic--md"></view>
       </view>
     </view>
 
@@ -197,13 +207,13 @@
           <view class="results-count-row">
             <text class="results-count-title">{{ resultsCount }} logement{{ resultsCount > 1 ? 's' : '' }} disponible{{ resultsCount > 1 ? 's' : '' }}</text>
             <view class="results-live-dot">
-              <text class="live-dot-pulse">•</text>
+              <view class="live-dot-pulse ui-dot"></view>
               <text class="live-dot-text">Disponibles</text>
             </view>
           </view>
           <view class="results-pills-row">
-            <view class="res-pill">📍 {{ searchedPlace || 'Tout Dakar' }}</view>
-            <view wx:if="{{ searchedBudget }}" class="res-pill">💰 Max {{ searchedBudget }} F</view>
+            <view class="res-pill ic-row"><view class="ic ic-pin-navy ic--xs"></view><text>{{ searchedPlace || 'Tout Dakar' }}</text></view>
+            <view wx:if="{{ searchedBudget }}" class="res-pill ic-row"><view class="ic ic-wallet-navy ic--xs"></view><text>Max {{ searchedBudget }} F</text></view>
           </view>
         </view>
 
@@ -218,11 +228,11 @@
               bindtap="onListingTap"
             >
               <!-- Hero illustration teintée avec rang et favoris -->
-              <view class="rec-card__hero" style="background-color: {{ item.tintBg }};">
+              <view class="rec-card__hero sl-photo" style="background-color: {{ item.tintBg }}; background-image: url('{{ item.cover }}');">
                 <view class="rec-card__rank-row">
                   <view class="rec-card__rank">{{ item.rank }}</view>
                   <view wx:if="{{ index === 0 }}" class="rec-card__badge-best">Meilleur choix</view>
-                  <view wx:if="{{ item.verified }}" class="rec-card__badge-verified">✓ Vérifié</view>
+                  <view wx:if="{{ item.verified }}" class="rec-card__badge-verified ic-row"><view class="ic ic-check-white ic--xs"></view><text>Vérifié</text></view>
                 </view>
 
                 <!-- Bouton favori en haut à droite -->
@@ -234,7 +244,7 @@
                   <view class="icon-svg {{ item.isFav ? 'icon-heart-fill-berry' : 'icon-heart-outline' }}"></view>
                 </view>
 
-                <view class="rec-card__house-illu"></view>
+                <view wx:if="{{ !item.cover }}" class="rec-card__house-illu"></view>
               </view>
 
               <!-- Corps de la carte -->
@@ -243,7 +253,7 @@
                   <text class="rec-card__type">{{ item.typeLabel }}</text>
                 </view>
                 <text class="rec-card__title">{{ item.title }}</text>
-                <text class="rec-card__place">📍 {{ item.place }}</text>
+                <view class="rec-card__place ic-row"><view class="ic ic-pin-berry ic--xs"></view><text>{{ item.place }}</text></view>
                 
                 <view class="rec-card__price-row">
                   <text class="rec-card__price">{{ item.formattedPrice }}</text>
@@ -264,7 +274,7 @@
       <block wx:elif="{{ hasSearched && results.length === 0 }}">
         <view class="empty-results-box">
           <view class="empty-icon-circle">
-            <view class="empty-home-icon">🏠</view>
+            <view class="empty-home-icon"><view class="ic ic-home-navy ic--xl"></view></view>
           </view>
 
           <text class="empty-title">Aucun logement trouvé</text>
@@ -280,7 +290,7 @@
 
           <!-- Suggestions de quartiers proches cliquables -->
           <view class="empty-suggestions-block">
-            <text class="suggestions-label">📍 Quartiers disponibles à proximité :</text>
+            <view class="suggestions-label ic-row"><view class="ic ic-pin-berry ic--sm"></view><text>Quartiers disponibles à proximité :</text></view>
             <view class="suggestions-chips-row">
               <block wx:for="{{ fallbackZones }}" wx:key="*this">
                 <view 
@@ -289,7 +299,7 @@
                   hover-class="sl-hover"
                   bindtap="onSelectFallbackZone"
                 >
-                  <text>📍 {{ item }}</text>
+                  <view class="ic-row"><view class="ic ic-pin-berry ic--xs"></view><text>{{ item }}</text></view>
                 </view>
               </block>
             </view>
@@ -297,7 +307,7 @@
 
           <!-- Suggestions d'ajustement du budget -->
           <view class="empty-suggestions-block">
-            <text class="suggestions-label">💰 Ajuster le budget :</text>
+            <view class="suggestions-label ic-row"><view class="ic ic-wallet-berry ic--sm"></view><text>Ajuster le budget :</text></view>
             <view class="suggestions-chips-row">
               <view class="suggest-chip suggest-chip--budget" data-add="15000" hover-class="sl-hover" bindtap="onApplyBudgetBump">
                 <text>+15 000 F</text>
@@ -330,7 +340,7 @@
     bindtap="onQuickScrollToResults"
     aria-label="Voir les logements disponibles"
   >
-    <text class="scroll-down-arrow">↓</text>
+    <view class="ic ic-arrow-down-navy ic--md"></view>
   </view>
 
   <!-- ======================================================== -->
@@ -346,7 +356,7 @@
           <text class="modal-title">Recherche Vocale</text>
           <text class="modal-subtitle">Parle en wolof ou en français</text>
         </view>
-        <view class="btn-close-modal" hover-class="btn-close-hover" bindtap="onCloseVoiceModal">✕</view>
+        <view class="btn-close-modal" hover-class="btn-close-hover" bindtap="onCloseVoiceModal"><view class="ic ic-close-grey ic--sm"></view></view>
       </view>
 
       <!-- Micro épuré avec pulsation douce -->
@@ -373,7 +383,7 @@
                 {{ item.lang }}
               </view>
               <text class="chip-text">{{ item.text }}</text>
-              <text class="chip-arrow">›</text>
+              <view class="ic ic-chevron-berry ic--sm"></view>
             </view>
           </block>
         </view>

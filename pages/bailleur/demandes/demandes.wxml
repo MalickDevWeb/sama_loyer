@@ -1,8 +1,11 @@
 <view class="demandes-page">
+  <!-- Barre de marque SAMA LOYER fixe sur tous les écrans -->
+  <sama-top-bar />
+
   <scroll-view class="demandes-scroll" scroll-y="{{true}}" enhanced="{{true}}" show-scrollbar="{{false}}">
     
     <!-- En-tête -->
-    <view class="demandes-header" style="padding-top: {{ statusBarHeight + 14 }}px;">
+    <view class="demandes-header">
       <text class="page-title">Demandes</text>
       <text class="page-subtitle">Visites et messages des locataires</text>
 
