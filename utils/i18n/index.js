@@ -14,6 +14,8 @@
 import fr from './fr.js';
 import wo from './wo.js';
 import { storage } from '../storage.js';
+import { Bus } from '../event/index.js';
+import { EVENTS } from '../event/keys.js';
 
 const STORAGE_LOCALE_KEY = 'app_user_locale';
 const MESSAGES = { fr, wo };
@@ -61,6 +63,8 @@ export function setLocale(locale) {
   if (MESSAGES[locale]) {
     currentLocale = locale;
     storage.set(STORAGE_LOCALE_KEY, locale);
+    // Les pages déjà ouvertes changent de langue tout de suite
+    Bus.emit(EVENTS.LOCALE_CHANGED, { locale }).catch(() => {});
     return true;
   }
   return false;
@@ -73,7 +77,21 @@ export const i18nBehavior = Behavior({
     currentLocale: getLocale(),
   },
 
+  lifetimes: {
+    attached() {
+      this._offLocale = Bus.on(EVENTS.LOCALE_CHANGED, ({ locale }) => {
+        if (locale !== this.data.currentLocale) {
+          this.setData({ i18n: getMessages(locale), currentLocale: locale });
+        }
+      });
+    },
+    detached() {
+      if (this._offLocale) this._offLocale();
+    },
+  },
+
   pageLifetimes: {
+    // Filet de sécurité si l'événement a été manqué
     show() {
       const stored = storage.get(STORAGE_LOCALE_KEY, DEFAULT_LOCALE);
       if (stored !== this.data.currentLocale) {

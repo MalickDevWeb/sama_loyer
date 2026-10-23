@@ -16,6 +16,7 @@ export const STORAGE_KEYS = {
   CONTRATS: 'sama_contrats',
   LOCATAIRES: 'sama_bailleur_locataires',
   CONVERSATIONS: 'sama_conversations',
+  BAILLEUR_CONVERSATIONS: 'sama_bailleur_conversations',
   ACTIVE_TAB: 'sama_active_tab',
   RENT_PAID: 'sama_rent_paid', // { [logementId]: true } — loyer du mois payé
   USER_PROFILE: 'sama_user_profile', // { fullName, phone, email, job, city }

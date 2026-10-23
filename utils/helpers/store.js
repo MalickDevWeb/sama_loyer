@@ -12,6 +12,18 @@ import { LOGEMENTS as DEFAULT_LOGEMENTS, formatMoney } from '../mocks/logements.
 import { DEFAULT_VISITES } from '../mocks/visites.js';
 import { RENTED_HOMES as DEFAULT_RENTED_HOMES, RENT_MONTH } from '../mocks/loyers.js';
 import { CONVERSATIONS as DEFAULT_CONVERSATIONS } from '../mocks/conversations.js';
+import { BAILLEUR_CONVERSATIONS as DEFAULT_BAILLEUR_CONVERSATIONS } from '../mocks/bailleur-conversations.js';
+import { Bus } from '../event/index.js';
+import { EVENTS, STATE_KEYS } from '../event/keys.js';
+
+/**
+ * Prévient les écrans ouverts qu'une donnée vient de changer.
+ * Les pages relisent aussi le stockage dans onShow : l'événement sert aux mises
+ * à jour en direct (badge, page déjà affichée, composants).
+ */
+function notify(event, data) {
+  Bus.emit(event, data).catch(() => {});
+}
 
 // --- MOCK ANNONCES BAILLEUR PAR DÉFAUT ---
 const DEFAULT_BAILLEUR_ANNONCES = [
@@ -224,6 +236,7 @@ export function addStoredLogement(data) {
   };
   storage.set('sama_bailleur_annonces', [newAnnonce, ...bailleurAnnonces]);
 
+  notify(EVENTS.LOGEMENTS_CHANGED, { logementId: newLogement.id });
   return newLogement;
 }
 
@@ -231,6 +244,7 @@ export function updateStoredLogement(id, patch) {
   const all = getStoredLogements();
   const next = all.map((l) => (String(l.id) === String(id) ? Object.assign({}, l, patch) : l));
   storage.set(STORAGE_KEYS.LOGEMENTS, next);
+  notify(EVENTS.LOGEMENTS_CHANGED, { logementId: id });
   return next.find((l) => String(l.id) === String(id));
 }
 
@@ -261,6 +275,7 @@ export function addStoredVisite(logementId, slotLabel, message = '') {
 
   const next = [visite, ...current];
   storage.set(STORAGE_KEYS.VISITES, next);
+  notify(EVENTS.VISITES_CHANGED, { visiteId: visite.id });
   return visite;
 }
 
@@ -285,6 +300,7 @@ export function updateStoredVisiteStatus(id, newStatus, note = '') {
     return v;
   });
   storage.set(STORAGE_KEYS.VISITES, next);
+  notify(EVENTS.VISITES_CHANGED, { visiteId: id });
   return next.find((v) => v.id === id);
 }
 
@@ -357,6 +373,7 @@ export function addStoredRentedHome(logement, amountPaid, options = {}) {
   };
   storage.set(STORAGE_KEYS.LOCATAIRES, [newLocataire, ...locataires]);
 
+  notify(EVENTS.LOCATAIRES_CHANGED, { logementId: newHome.id });
   return newHome;
 }
 
@@ -394,6 +411,7 @@ export function recordRentPayment(homeId, amount) {
   });
   storage.set(STORAGE_KEYS.RENTED_HOMES, nextHomes);
 
+  notify(EVENTS.RENT_PAID, { logementId: homeId });
   return updatedPaid;
 }
 
@@ -424,6 +442,7 @@ export function confirmBailleurAnnonce(id) {
     return a;
   });
   storage.set('sama_bailleur_annonces', next);
+  notify(EVENTS.LOGEMENTS_CHANGED, { logementId: id });
   return next;
 }
 
@@ -454,6 +473,7 @@ export function confirmLocataireCashPayment(id) {
     return l;
   });
   storage.set(STORAGE_KEYS.LOCATAIRES, next);
+  notify(EVENTS.LOCATAIRES_CHANGED, { locataireId: id });
   return next;
 }
 
@@ -516,7 +536,82 @@ export function addStoredMessage(convId, message) {
   }
 
   storage.set(STORAGE_KEYS.CONVERSATIONS, nextConvs);
+  publishUnreadCounts();
+  notify(EVENTS.MESSAGES_CHANGED, { side: 'client', convId });
   return fullMsg;
+}
+
+/**
+ * Marque une conversation locataire comme lue (à l'ouverture de la discussion).
+ * @param {string} convId - id de la conversation ou du logement
+ */
+export function markConversationRead(convId) {
+  const convs = getStoredConversations();
+  let changed = false;
+  const next = convs.map((c) => {
+    if ((c.id === convId || c.logementId === convId) && c.unread) {
+      changed = true;
+      return Object.assign({}, c, { unread: 0 });
+    }
+    return c;
+  });
+  if (!changed) return;
+  storage.set(STORAGE_KEYS.CONVERSATIONS, next);
+  publishUnreadCounts();
+  notify(EVENTS.MESSAGES_CHANGED, { side: 'client', convId });
+}
+
+// --- Conversations côté bailleur (clé séparée : ne se mélangent pas à celles du locataire)
+
+/** @returns {Array<Object>} Conversations du bailleur (démo au premier lancement) */
+export function getStoredBailleurConversations() {
+  const saved = storage.get(STORAGE_KEYS.BAILLEUR_CONVERSATIONS, null);
+  if (Array.isArray(saved) && saved.length > 0) return saved;
+  storage.set(STORAGE_KEYS.BAILLEUR_CONVERSATIONS, DEFAULT_BAILLEUR_CONVERSATIONS);
+  return DEFAULT_BAILLEUR_CONVERSATIONS.slice();
+}
+
+/** @returns {Object|null} Une conversation du bailleur */
+export function getStoredBailleurConversation(convId) {
+  return getStoredBailleurConversations().find((c) => c.id === convId) || null;
+}
+
+/**
+ * Ajoute un message (ou un événement de visite) à une conversation du bailleur.
+ * @param {string} convId
+ * @param {Object} message - { from: 'me' | 'them', text, time } ou { event: true, … }
+ */
+export function addStoredBailleurMessage(convId, message) {
+  const next = getStoredBailleurConversations().map((c) =>
+    c.id === convId
+      ? Object.assign({}, c, { time: message.time || c.time, messages: [...(c.messages || []), message] })
+      : c
+  );
+  storage.set(STORAGE_KEYS.BAILLEUR_CONVERSATIONS, next);
+  notify(EVENTS.MESSAGES_CHANGED, { side: 'bailleur', convId });
+  return message;
+}
+
+/** Marque une conversation du bailleur comme lue */
+export function markBailleurConversationRead(convId) {
+  const convs = getStoredBailleurConversations();
+  if (!convs.some((c) => c.id === convId && c.unread)) return;
+  storage.set(
+    STORAGE_KEYS.BAILLEUR_CONVERSATIONS,
+    convs.map((c) => (c.id === convId ? Object.assign({}, c, { unread: 0 }) : c))
+  );
+  publishUnreadCounts();
+  notify(EVENTS.MESSAGES_CHANGED, { side: 'bailleur', convId });
+}
+
+/**
+ * Recalcule les messages non lus (locataire et bailleur) et les publie dans
+ * l'EventBus : le badge de l'onglet Messages se met à jour tout seul.
+ */
+export function publishUnreadCounts() {
+  const sum = (list) => list.reduce((n, c) => n + (Number(c.unread) || 0), 0);
+  Bus.setState(STATE_KEYS.UNREAD_CLIENT, sum(getStoredConversations()));
+  Bus.setState(STATE_KEYS.UNREAD_BAILLEUR, sum(getStoredBailleurConversations()));
 }
 
 // ============================================================================
@@ -581,6 +676,7 @@ export function activateBailleurAccount(plan) {
     expiresAt: now + chosen.days * 24 * 60 * 60 * 1000
   };
   storage.set(STORAGE_KEYS.BAILLEUR_ACCOUNT, account);
+  notify(EVENTS.BAILLEUR_ACCOUNT_CHANGED, { account });
   return account;
 }
 
@@ -623,6 +719,7 @@ export function renewBailleurSubscription() {
   });
   storage.set(STORAGE_KEYS.BAILLEUR_ACCOUNT, next);
   addBailleurPayment('Abonnement Pro mensuel', BAILLEUR_PLANS.pro.price);
+  notify(EVENTS.BAILLEUR_ACCOUNT_CHANGED, { account: next });
   return next;
 }
 
@@ -634,5 +731,6 @@ export function addBailleurBoost(option) {
     boosts: [boost, ...(account.boosts || [])]
   }));
   addBailleurPayment(option.title, option.price);
+  notify(EVENTS.BAILLEUR_ACCOUNT_CHANGED, { account: getBailleurAccount() });
   return boost;
 }

@@ -6,6 +6,8 @@
 import { storage } from '../storage.js';
 import { STORAGE_KEYS } from '../constants/index';
 import { DEFAULT_FAVORITE_IDS } from '../mocks/logements';
+import { Bus } from '../event/index.js';
+import { EVENTS } from '../event/keys.js';
 
 /**
  * Récupère la liste des IDs favoris depuis le stockage local.
@@ -56,6 +58,8 @@ export function toggleFavoriteId(id, isLiked) {
   }
 
   storage.set(STORAGE_KEYS.FAVORITES, nextIds);
+  // Prévient les écrans ouverts (cœurs, compteurs) que les favoris ont changé
+  Bus.emit(EVENTS.FAVORITES_CHANGED, { ids: nextIds }).catch(() => {});
   return nextIds;
 }
 

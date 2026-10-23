@@ -6,32 +6,14 @@
 import { Bus } from './utils/event/index';
 import { nativeService } from './utils/apis/native';
 
-/**
- * EventBus State Keys
- * Add your app-specific state keys here
- * @constant
- */
-const STATE_KEYS = {
-  APP_INITIALIZED: 'app.initialized',
-  APP_LOADING: 'app.loading',
-  NETWORK_CONNECTED: 'network.connected',
-  NETWORK_TYPE: 'network.type',
-  USER_DATA: 'user.data',
-  USER_NAME: 'user.name',
-};
+// Noms des états et événements : source unique dans utils/event/keys.js
+import { STATE_KEYS, EVENTS } from './utils/event/keys';
+import { publishUnreadCounts, getBailleurAccount, isBailleurActivated } from './utils/helpers/store';
+import { storage } from './utils/storage';
+import { STORAGE_KEYS } from './utils/constants/index';
 
-/**
- * EventBus Event Names
- * Add your app-specific events here
- * @constant
- */
-const EVENTS = {
-  USER_LOADED: 'user.loaded',
-  USER_NOT_FOUND: 'user.not_found',
-  DATA_REFRESH: 'data.refresh',
-  NETWORK_CHANGE: 'network.change',
-  APP_ERROR: 'app.error',
-};
+// Fréquence de vérification de la fin d'essai ou d'abonnement du bailleur
+const ACCESS_CHECK_MS = 30 * 1000;
 
 App({
   /**
@@ -51,6 +33,9 @@ App({
 
     // Network status: track connectivity so pages/services can react
     this.setupNetworkListener();
+
+    // Badge « messages non lus » de l'onglet Messages
+    publishUnreadCounts();
 
     // Store init as a promise - pages can: await getApp().globalData.initPromise
     this.globalData.initPromise = this.initializeApp()
@@ -106,6 +91,7 @@ App({
     if (Bus.getState(STATE_KEYS.APP_INITIALIZED)) {
       // Resume background tasks here (e.g., periodic data refresh)
     }
+    this.startAccessWatch();
   },
 
   /**
@@ -113,6 +99,7 @@ App({
    */
   onHide() {
     // Cleanup background tasks here (e.g., clear intervals)
+    this.stopAccessWatch();
   },
 
   // ==========================================================================
@@ -180,6 +167,32 @@ App({
     updateManager.onUpdateFailed(() => {
       console.warn('[App] Update download failed');
     });
+  },
+
+  // ==========================================================================
+  // ACCÈS BAILLEUR
+  // ==========================================================================
+
+  /**
+   * Vérifie régulièrement l'essai ou l'abonnement du bailleur. S'il se termine
+   * pendant que l'appli est ouverte, publie BAILLEUR_ACCESS_LOST : la page
+   * bailleur affichée se bloque aussitôt (voir utils/helpers/bailleur-guard.js).
+   */
+  startAccessWatch() {
+    this.stopAccessWatch();
+    const check = () => {
+      const isBailleur = storage.get(STORAGE_KEYS.USER_ROLE, 'client') === 'bailleur';
+      const lost = isBailleur && !!getBailleurAccount() && !isBailleurActivated();
+      if (lost && !this._accessLostSent) Bus.emit(EVENTS.BAILLEUR_ACCESS_LOST).catch(() => {});
+      this._accessLostSent = lost;
+    };
+    check();
+    this._accessTimer = setInterval(check, ACCESS_CHECK_MS);
+  },
+
+  stopAccessWatch() {
+    if (this._accessTimer) clearInterval(this._accessTimer);
+    this._accessTimer = null;
   },
 
   // ==========================================================================
