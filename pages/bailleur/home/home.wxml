@@ -1,5 +1,5 @@
 <view class="bailleur-home-page">
-  <scroll-view class="bailleur-scroll" scroll-y="{{true}}" enhanced="{{true}}" show-scrollbar="{{false}}">
+  <scroll-view class="bailleur-scroll {{ locked ? 'is-locked' : '' }}" scroll-y="{{ !locked }}" enhanced="{{true}}" show-scrollbar="{{false}}">
     
     <!-- Top Header Section (Fond clair) -->
     <view class="bailleur-header" style="padding-top: {{ statusBarHeight + 12 }}px;">
@@ -16,28 +16,8 @@
         </view>
       </view>
 
-      <!-- Ligne 2 : Sélecteur de rôle pleine largeur (Locataire / Bailleur actif) -->
-      <view class="role-switch-bar">
-        <view 
-          class="role-segment" 
-          hover-class="role-segment--hover" 
-          bindtap="onSwitchToClient"
-          aria-label="Basculer vers l'espace Locataire"
-        >
-          <text class="role-icon">🏠</text>
-          <text class="role-label">Locataire</text>
-        </view>
-        <view class="role-segment role-segment--active">
-          <text class="role-icon">👥</text>
-          <text class="role-label">Bailleur</text>
-        </view>
-      </view>
-
-      <!-- Profil Bailleur : Avatar MD + Bonjour Moussa -->
-      <view class="hero-profile-row" bindtap="onOpenProfileModal">
-        <view class="avatar-circle-bailleur">
-          <text class="avatar-text">{{ initials }}</text>
-        </view>
+      <!-- Message de bienvenue : Bonjour Moussa -->
+      <view class="hero-profile-row">
         <view class="hero-titles">
           <view class="welcome-line">
             <text class="hero-welcome">Bonjour {{ bailleurName }}</text>
@@ -101,14 +81,6 @@
         </view>
       </view>
 
-      <!-- CTA Big Pink Button -->
-      <view class="cta-add-container">
-        <button class="btn-add-logement" bindtap="onGoAjouter">
-          <text class="btn-add-plus">+</text>
-          <text class="btn-add-text">Ajouter un logement</text>
-        </button>
-      </view>
-
       <!-- Section À faire maintenant (Cartes individuelles blanches) -->
       <view class="todo-section">
         <text class="section-heading-title">À faire maintenant</text>
@@ -146,14 +118,17 @@
         </view>
       </view>
 
-      <!-- Section Loyers d'octobre -->
+      <!-- Historique des loyers (menu déroulant) -->
       <view class="loyers-section">
-        <view class="loyers-header-row">
-          <text class="loyers-section-title">Loyers d'octobre</text>
-          <text class="loyers-history-link" bindtap="onGoHistorique">Historique</text>
+        <view class="history-toggle {{ historyOpen ? 'history-toggle--open' : '' }}" hover-class="history-toggle--hover" bindtap="onToggleHistory">
+          <view class="history-toggle-text">
+            <text class="history-toggle-title">Historique</text>
+            <text class="history-toggle-sub">Loyers d'octobre · 2 reçus · 1 à venir</text>
+          </view>
+          <view class="ic ic-chevron-navy history-toggle-chevron"></view>
         </view>
 
-        <view class="loyers-card-box">
+        <view wx:if="{{ historyOpen }}" class="loyers-card-box">
           <!-- Row 1 -->
           <view class="loyer-item-row">
             <view class="loyer-item-info">
@@ -193,27 +168,6 @@
           </view>
         </view>
       </view>
-
-      <!-- Carte Premium Actif -->
-      <view class="premium-active-card" bindtap="onGoPremium">
-        <view class="star-icon-wrap">
-          <text class="star-pink">★</text>
-        </view>
-        <view class="premium-card-info">
-          <text class="premium-card-title">Premium actif</text>
-          <text class="premium-card-sub">Jusqu'au 15 novembre · 2 annonces mises en avant</text>
-        </view>
-        <text class="premium-chevron">›</text>
-      </view>
-
-      <!-- Bouton de retour vers mode Locataire -->
-      <view class="switch-role-bar">
-        <view class="btn-switch-client" bindtap="onSwitchToClient">
-          <text class="switch-client-icon">⇄</text>
-          <text class="switch-client-text">Passer en mode locataire</text>
-        </view>
-      </view>
-
     </view>
 
     <view class="scroll-spacer"></view>
@@ -222,42 +176,67 @@
   <!-- Bailleur Tab Bar -->
   <app-custom-tab-bar activeTab="b-home" />
 
-  <!-- ======================================================== -->
-  <!-- MODAL / PROFIL BAILLEUR (Accessible via clic sur l'avatar) -->
-  <!-- ======================================================== -->
-  <view wx:if="{{ showProfileModal }}" class="profile-modal-overlay" bindtap="onCloseProfileModal">
-    <view class="profile-modal-sheet" catchtap="noop">
-      <view class="modal-drag-handle"></view>
-      <view class="profile-sheet-header">
-        <view class="avatar-circle-large">
-          <text class="avatar-text-large">{{ initials }}</text>
-        </view>
-        <view class="profile-sheet-titles">
-          <text class="profile-sheet-name">{{ bailleurName }} Diop</text>
-          <view class="profile-sheet-badge">
-            <text class="badge-check">✓</text>
-            <text>Bailleur vérifié · Max it</text>
-          </view>
-        </view>
-        <view class="btn-close-sheet" bindtap="onCloseProfileModal">✕</view>
-      </view>
+  <!-- ================= ESPACE VERROUILLÉ (1re connexion bailleur) ================= -->
+  <!-- Tout l'espace reste grisé tant que le bailleur n'a pas choisi l'essai ou l'abonnement -->
+  <view wx:if="{{ locked }}" class="lock-overlay" catchtouchmove="noop">
+    <view class="lock-sheet" aria-label="Activer l'espace bailleur">
+      <view class="lock-icon">🔒</view>
+      <text class="lock-title">Active ton espace bailleur</text>
+      <text class="lock-text">Publie tes logements, gère tes locataires et reçois tes loyers avec Max it.</text>
 
-      <view class="profile-info-cards">
-        <view class="info-card-row">
-          <text class="info-card-label">Numéro Orange Money</text>
-          <text class="info-card-value">{{ phone }}</text>
-        </view>
-        <view class="info-card-row">
-          <text class="info-card-label">Statut publication</text>
-          <text class="info-card-value text-green">Instantanée sans validation</text>
-        </view>
+      <view class="sl-btn sl-btn--berry lock-btn" hover-class="sl-hover" bindtap="onStartTrial">
+        Essayer 30 jours gratuitement
       </view>
+      <view class="sl-btn sl-btn--outline-navy lock-btn" hover-class="sl-hover" bindtap="onSubscribe">
+        S'abonner · {{ proPriceText }} / mois avec Max it
+      </view>
+      <text class="lock-note">Sans engagement. Ton compte Max it est déjà relié, aucune information à saisir.</text>
+      <view class="lock-back" hover-class="sl-hover" bindtap="onSwitchToClient">Revenir au profil locataire</view>
+    </view>
+  </view>
 
-      <!-- Bouton pour basculer vers le profil locataire -->
-      <button class="btn-switch-role-sheet" bindtap="onSwitchToClient">
-        <text class="switch-icon">⇄</text>
-        <text>Basculer en profil Locataire (Awa)</text>
-      </button>
+  <!-- ================= MAX IT (simulation) ================= -->
+  <view wx:if="{{ mx }}" class="sl-mx-backdrop lock-mx" catchtouchmove="noop">
+    <view class="sl-mx" aria-label="Paiement avec Max it">
+      <block wx:if="{{ mx === 'confirm' }}">
+        <view class="sl-mx-icon"><view class="ic ic-maxit-berry"></view></view>
+        <text class="sl-mx-title">Payer avec Max it</text>
+        <text class="sl-mx-amount">{{ proPriceText }}</text>
+        <text class="sl-mx-to">Abonnement Pro bailleur · 1 mois</text>
+        <text class="sl-mx-note">Tu vas être redirigé·e vers l'application Max it pour valider le paiement avec ton code secret.</text>
+        <view class="sl-btn sl-btn--berry sl-mx-btn" hover-class="sl-hover" bindtap="onMxGo">Continuer vers Max it</view>
+        <view class="sl-mx-cancel" hover-class="sl-hover" bindtap="onMxClose">Annuler</view>
+      </block>
+
+      <block wx:if="{{ mx === 'redirect' }}">
+        <view class="sl-mx-spinner"></view>
+        <text class="sl-mx-title sl-mx-title--sm">Ouverture de Max it…</text>
+        <text class="sl-mx-muted">Ne ferme pas l'application.</text>
+      </block>
+
+      <block wx:if="{{ mx === 'maxit' }}">
+        <text class="sl-mx-sim">SIMULATION · ÉCRAN MAX IT</text>
+        <view class="sl-mx-box">
+          <text class="sl-mx-brand">Max it</text>
+          <text class="sl-mx-muted">Demande de paiement</text>
+          <view class="sl-mx-row"><text class="sl-mx-muted">Marchand</text><text class="sl-mx-strong">SAMA LOYER</text></view>
+          <view class="sl-mx-row"><text class="sl-mx-muted">Motif</text><text class="sl-mx-strong sl-mx-right">Abonnement Pro bailleur</text></view>
+          <view class="sl-mx-row sl-mx-row--total"><text class="sl-mx-strong">Montant</text><text class="sl-mx-strong">{{ proPriceText }}</text></view>
+        </view>
+        <text class="sl-mx-small">Dans la vraie application, tu tapes ici ton code secret Max it. SAMA LOYER ne voit jamais ton code.</text>
+        <view class="sl-btn sl-btn--navy sl-mx-btn" hover-class="sl-hover" bindtap="onMxValidate">Valider le paiement</view>
+        <view class="sl-btn sl-btn--outline sl-mx-refuse" hover-class="sl-hover" bindtap="onMxClose">Refuser et revenir</view>
+      </block>
+
+      <!-- Confirmation d'activation (essai gratuit ou abonnement) -->
+      <block wx:if="{{ mx === 'done' }}">
+        <view class="sl-mx-icon"><view class="ic ic-check-berry"></view></view>
+        <text class="sl-mx-title">{{ activatedPlan === 'pro' ? 'Abonnement activé' : 'Essai gratuit activé' }}</text>
+        <view class="lock-done-pill">{{ activatedPlan === 'pro' ? 'Pro · payé avec Max it' : '30 jours offerts' }}</view>
+        <text class="sl-mx-to">Ton espace bailleur est ouvert jusqu'au <text class="lock-done-date">{{ activatedUntil }}</text>.</text>
+        <text class="sl-mx-note">Tu peux gérer ton abonnement à tout moment dans l'onglet Profil.</text>
+        <view class="sl-btn sl-btn--berry sl-mx-btn" hover-class="sl-hover" bindtap="onMxClose">C'est parti</view>
+      </block>
     </view>
   </view>
 </view>

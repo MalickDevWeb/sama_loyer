@@ -1,0 +1,656 @@
+@import "/styles/icons.wxss";
+
+/* ==========================================================================
+   Onglet Profil Bailleur - SAMA LOYER
+   ========================================================================== */
+
+.bprof {
+  height: 100vh;
+  background-color: #F7F8FA;
+  color: #0F1E3D;
+  display: flex;
+  flex-direction: column;
+}
+
+.bprof__scroll {
+  height: 100%;
+}
+
+.bprof__header {
+  padding-left: 32rpx;
+  padding-right: 32rpx;
+  padding-bottom: 16rpx;
+}
+
+.bprof__title {
+  font-size: 52rpx;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: #0F1E3D;
+}
+
+.bprof__section {
+  padding: 16rpx 32rpx 0;
+}
+
+.bprof__section-title {
+  display: block;
+  font-size: 22rpx;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: #7B8597;
+  text-transform: uppercase;
+  margin: 16rpx 0 14rpx 12rpx;
+}
+
+.bprof__card {
+  background-color: #FFFFFF;
+  border-radius: 32rpx;
+  border: 1rpx solid #ECEFF2;
+  box-shadow: 0 4rpx 16rpx rgba(15, 30, 61, 0.04);
+}
+
+.bprof__card--hover {
+  opacity: 0.88;
+}
+
+.bprof__chevron {
+  width: 32rpx;
+  height: 32rpx;
+}
+
+/* --- Identité ------------------------------------------------------------ */
+.bprof__identity {
+  display: flex;
+  align-items: center;
+  gap: 24rpx;
+  padding: 32rpx;
+}
+
+.bprof__avatar {
+  width: 104rpx;
+  height: 104rpx;
+  flex: 0 0 104rpx;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #E6007A 0%, #C8235F 100%);
+  color: #FFFFFF;
+  font-size: 38rpx;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8rpx 20rpx rgba(200, 35, 95, 0.25);
+}
+
+.bprof__identity-text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6rpx;
+}
+
+.bprof__name {
+  font-size: 36rpx;
+  font-weight: 800;
+  color: #0F1E3D;
+}
+
+.bprof__phone {
+  font-size: 26rpx;
+  color: #5B6475;
+  font-weight: 600;
+}
+
+.bprof__badge {
+  align-self: flex-start;
+  margin-top: 4rpx;
+  padding: 6rpx 18rpx;
+  border-radius: 999rpx;
+  background-color: #EAF7EE;
+  color: #007C3D;
+  font-size: 22rpx;
+  font-weight: 800;
+  display: inline-flex;
+  align-items: center;
+  gap: 8rpx;
+}
+
+.bprof__badge-check {
+  font-weight: 900;
+}
+
+/* --- Résumé stats bailleur ------------------------------------------------ */
+.bprof__stats {
+  display: flex;
+  gap: 16rpx;
+  margin-top: 16rpx;
+}
+
+.bprof__stat {
+  flex: 1;
+  background-color: #FFFFFF;
+  border-radius: 24rpx;
+  border: 1rpx solid #ECEFF2;
+  padding: 20rpx 12rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2rpx 10rpx rgba(15, 30, 61, 0.03);
+  transition: transform 0.15s ease;
+}
+
+.bprof__stat-num {
+  font-size: 34rpx;
+  font-weight: 800;
+  color: #C8235F;
+}
+
+.bprof__stat-label {
+  font-size: 22rpx;
+  color: #5B6475;
+  font-weight: 700;
+  margin-top: 4rpx;
+}
+
+/* --- Abonnement ---------------------------------------------------------- */
+.bprof__sub {
+  padding: 32rpx;
+  display: flex;
+  flex-direction: column;
+  background: #FFFFFF;
+  border: 1.5rpx solid #F5D3DE;
+}
+
+.bprof__sub-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12rpx;
+}
+
+.bprof__sub-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8rpx;
+  padding: 8rpx 20rpx;
+  background: #FDF2F5;
+  border-radius: 999rpx;
+}
+
+.bprof__sub-star {
+  color: #C8235F;
+  font-size: 26rpx;
+}
+
+.bprof__sub-plan {
+  font-size: 28rpx;
+  font-weight: 800;
+  color: #C8235F;
+}
+
+.bprof__sub-status {
+  padding: 6rpx 18rpx;
+  border-radius: 999rpx;
+  background-color: #EAF7EE;
+  color: #007C3D;
+  font-size: 22rpx;
+  font-weight: 800;
+}
+
+.bprof__sub-status--off {
+  background-color: #FDE8EE;
+  color: #C8235F;
+}
+
+.bprof__sub-validity {
+  font-size: 28rpx;
+  font-weight: 800;
+  color: #0F1E3D;
+  margin-top: 4rpx;
+}
+
+.bprof__sub-note {
+  font-size: 24rpx;
+  color: #5B6475;
+  margin-top: 4rpx;
+  margin-bottom: 16rpx;
+}
+
+.bprof__sub-perks {
+  display: flex;
+  flex-direction: column;
+  gap: 12rpx;
+  padding: 16rpx 0;
+  border-top: 1rpx solid #F0F2F6;
+  border-bottom: 1rpx solid #F0F2F6;
+}
+
+.bprof__perk-item {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+}
+
+.bprof__perk-check {
+  color: #007C3D;
+  font-weight: 800;
+  font-size: 24rpx;
+}
+
+.bprof__perk-text {
+  font-size: 24rpx;
+  color: #4A5B78;
+  font-weight: 600;
+}
+
+.bprof__sub-cta {
+  margin-top: 20rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.bprof__sub-cta-label {
+  font-size: 28rpx;
+  font-weight: 800;
+  color: #C8235F;
+}
+
+/* --- Bouton Changer de profil (Bailleur -> Locataire) -------------------- */
+.bprof__switch-profile {
+  display: flex;
+  align-items: center;
+  gap: 24rpx;
+  padding: 28rpx 32rpx;
+  border-radius: 36rpx;
+  background: #0F1E3D;
+  color: #FFFFFF;
+  box-shadow: 0 8rpx 24rpx rgba(15, 30, 61, 0.12);
+  transition: transform 0.15s ease, opacity 0.15s ease;
+}
+
+.bprof__switch-profile--hover {
+  transform: scale(0.985);
+  opacity: 0.92;
+}
+
+.bprof__switch-profile-ic {
+  width: 84rpx;
+  height: 84rpx;
+  flex: 0 0 84rpx;
+  border-radius: 26rpx;
+  background: linear-gradient(135deg, #FF6600 0%, #E6007A 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4rpx 14rpx rgba(255, 102, 0, 0.35);
+}
+
+.bprof__switch-emoji {
+  font-size: 38rpx;
+  line-height: 1;
+}
+
+.bprof__switch-profile-text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.bprof__switch-profile-title {
+  font-size: 32rpx;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  color: #FFFFFF;
+}
+
+.bprof__switch-profile-sub {
+  font-size: 24rpx;
+  color: #C9D0DE;
+  margin-top: 4rpx;
+}
+
+.bprof__switch-profile-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8rpx;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1.5rpx solid rgba(255, 255, 255, 0.2);
+  padding: 8rpx 20rpx;
+  border-radius: 999rpx;
+  font-size: 24rpx;
+  font-weight: 700;
+  color: #FFFFFF;
+}
+
+.bprof__switch-chevron {
+  font-size: 32rpx;
+  font-weight: 700;
+  color: #FF7900;
+  line-height: 1;
+}
+
+/* --- Paramètres du compte & Listes --------------------------------------- */
+.bprof__list {
+  padding: 0 28rpx;
+}
+
+.bprof__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20rpx;
+  padding: 28rpx 0;
+  border-bottom: 2rpx solid #F0F2F6;
+}
+
+.bprof__row:last-child {
+  border-bottom: 0;
+}
+
+.bprof__row--hover {
+  opacity: 0.7;
+}
+
+.bprof__row-label {
+  font-size: 28rpx;
+  font-weight: 700;
+  color: #0F1E3D;
+}
+
+.bprof__row-sub {
+  font-size: 22rpx;
+  color: #7B8597;
+  margin-top: 4rpx;
+}
+
+.bprof__row-value {
+  font-size: 28rpx;
+  font-weight: 700;
+  color: #0F1E3D;
+  text-align: right;
+}
+
+.bprof__row-col {
+  display: flex;
+  flex-direction: column;
+}
+
+.bprof__row-with-ic {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+}
+
+.bprof__row-ic {
+  width: 40rpx;
+  height: 40rpx;
+}
+
+.bprof__pill-green {
+  display: inline-flex;
+  align-items: center;
+  gap: 8rpx;
+  padding: 6rpx 16rpx;
+  border-radius: 999rpx;
+  background-color: #EAF7EE;
+  color: #007C3D;
+  font-size: 22rpx;
+  font-weight: 800;
+}
+
+.bprof__pill-green-dot {
+  font-size: 26rpx;
+  line-height: 1;
+}
+
+/* --- Footer Version ------------------------------------------------------ */
+.bprof__section--last {
+  padding-bottom: 20rpx;
+  text-align: center;
+}
+
+.bprof__version {
+  font-size: 22rpx;
+  color: #8C96A8;
+}
+
+.bprof__tab-spacer {
+  height: calc(180rpx + env(safe-area-inset-bottom));
+}
+
+/* ==========================================================================
+   Modals Bottom Sheet (Aide, Sécurité, Support)
+   ========================================================================== */
+.bprof__sheet-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 30, 61, 0.55);
+  backdrop-filter: blur(8px);
+  z-index: 1000;
+  display: flex;
+  align-items: flex-end;
+  animation: fadeIn 0.2s ease;
+}
+
+.bprof__sheet {
+  width: 100%;
+  max-height: 85vh;
+  background: #FFFFFF;
+  border-radius: 44rpx 44rpx 0 0;
+  padding: 20rpx 36rpx calc(40rpx + env(safe-area-inset-bottom));
+  box-sizing: border-box;
+  animation: slideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  flex-direction: column;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+.bprof__sheet-handle {
+  width: 72rpx;
+  height: 8rpx;
+  background: #E2E8F0;
+  border-radius: 4rpx;
+  margin: 0 auto 24rpx;
+}
+
+.bprof__sheet-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 28rpx;
+}
+
+.bprof__sheet-heading {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6rpx;
+}
+
+.bprof__sheet-title {
+  font-size: 36rpx;
+  font-weight: 800;
+  color: #0F1E3D;
+}
+
+.bprof__sheet-sub {
+  font-size: 24rpx;
+  color: #5B6475;
+}
+
+.bprof__sheet-close {
+  width: 64rpx;
+  height: 64rpx;
+  border-radius: 50%;
+  background: #F1F4F9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bprof__sheet-close-ic {
+  width: 28rpx;
+  height: 28rpx;
+}
+
+.bprof__sheet-body {
+  overflow-y: auto;
+  max-height: 55vh;
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+  padding: 8rpx 0 24rpx;
+}
+
+/* FAQ Items */
+.bprof__faq-item {
+  background: #F8FAFC;
+  border: 1rpx solid #ECEFF2;
+  border-radius: 24rpx;
+  padding: 24rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+}
+
+.bprof__faq-q {
+  font-size: 28rpx;
+  font-weight: 800;
+  color: #0F1E3D;
+}
+
+.bprof__faq-a {
+  font-size: 24rpx;
+  color: #4A5B78;
+  line-height: 1.45;
+}
+
+/* Security Cards */
+.bprof__sec-card {
+  background: #F8FAFC;
+  border: 1rpx solid #ECEFF2;
+  border-radius: 24rpx;
+  padding: 24rpx;
+  display: flex;
+  align-items: flex-start;
+  gap: 20rpx;
+}
+
+.bprof__sec-ic {
+  width: 44rpx;
+  height: 44rpx;
+  flex-shrink: 0;
+  margin-top: 4rpx;
+}
+
+.bprof__sec-text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6rpx;
+}
+
+.bprof__sec-title {
+  font-size: 28rpx;
+  font-weight: 800;
+  color: #0F1E3D;
+}
+
+.bprof__sec-desc {
+  font-size: 24rpx;
+  color: #4A5B78;
+  line-height: 1.45;
+}
+
+/* Support Options */
+.bprof__support-opt {
+  background: #F8FAFC;
+  border: 1rpx solid #ECEFF2;
+  border-radius: 24rpx;
+  padding: 24rpx;
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+}
+
+.bprof__support-opt-ic {
+  width: 76rpx;
+  height: 76rpx;
+  border-radius: 20rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.bprof__support-opt-ic--berry {
+  background: #FDE8EE;
+}
+
+.bprof__support-opt-ic--green {
+  background: #EAF7EE;
+}
+
+.bprof__support-opt-text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4rpx;
+}
+
+.bprof__support-opt-title {
+  font-size: 28rpx;
+  font-weight: 800;
+  color: #0F1E3D;
+}
+
+.bprof__support-opt-sub {
+  font-size: 22rpx;
+  color: #5B6475;
+}
+
+/* Sheet Footer Buttons */
+.bprof__sheet-footer {
+  margin-top: 16rpx;
+  padding-top: 16rpx;
+}
+
+.bprof__btn-primary {
+  width: 100%;
+  height: 96rpx;
+  border-radius: 28rpx;
+  background: #C8235F;
+  color: #FFFFFF;
+  font-size: 28rpx;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+}
+
+.bprof__btn-secondary {
+  width: 100%;
+  height: 96rpx;
+  border-radius: 28rpx;
+  background: #F1F4F9;
+  color: #0F1E3D;
+  font-size: 28rpx;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+}

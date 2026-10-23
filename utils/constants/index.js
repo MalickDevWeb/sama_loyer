@@ -20,6 +20,7 @@ export const STORAGE_KEYS = {
   RENT_PAID: 'sama_rent_paid', // { [logementId]: true } — loyer du mois payé
   USER_PROFILE: 'sama_user_profile', // { fullName, phone, email, job, city }
   PROFILE_PREFS: 'sama_profile_prefs', // { notifs: { msg, visit, new, price }, lang }
+  BAILLEUR_ACCOUNT: 'sama_bailleur_account', // { fullName, phone, city, plan: 'trial'|'pro', activatedAt, expiresAt } — nom et numéro repris du compte Max it
   IMAGE_CACHE: 'tc-image-cache',
 };
 
@@ -110,12 +111,6 @@ export const BAILLEUR_TABS = [
     url: '/pages/bailleur/annonces/annonces',
   },
   {
-    id: 'b-ajouter',
-    label: 'Ajouter',
-    isSpecial: true, // Bouton central rose +
-    url: '/pages/bailleur/ajouter/ajouter',
-  },
-  {
     id: 'b-locataires',
     label: 'Locataires',
     badge: '2',
@@ -126,6 +121,11 @@ export const BAILLEUR_TABS = [
     label: 'Messages',
     badge: '4',
     url: '/pages/bailleur/messages/messages',
+  },
+  {
+    id: 'b-profil',
+    label: 'Profil',
+    url: '/pages/bailleur/profil/profil',
   },
 ];
 

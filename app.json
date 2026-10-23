@@ -19,6 +19,7 @@
     "pages/bailleur/demandes/demandes",
     "pages/bailleur/locataires/locataires",
     "pages/bailleur/premium/premium",
+    "pages/bailleur/profil/profil",
     "pages/bailleur/messages/messages",
     "pages/bailleur/conversation/conversation",
     "pages/bailleur/horaires/horaires",

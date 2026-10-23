@@ -1,0 +1,283 @@
+<view class="bprof">
+  <scroll-view class="bprof__scroll" scroll-y="{{ true }}" enhanced="{{ true }}" show-scrollbar="{{ false }}">
+
+    <!-- En-tête -->
+    <view class="bprof__header" style="padding-top: {{ statusBarHeight + 14 }}px;">
+      <text class="bprof__title">Profil</text>
+    </view>
+
+    <!-- Identité Bailleur -->
+    <view class="bprof__section">
+      <view class="bprof__card bprof__identity">
+        <view class="bprof__avatar">{{ profile.initials }}</view>
+        <view class="bprof__identity-text">
+          <text class="bprof__name">{{ profile.fullName }}</text>
+          <text class="bprof__phone">{{ profile.phone }}</text>
+          <view class="bprof__badge">
+            <text class="bprof__badge-check">✓</text>
+            <text>Bailleur certifié · Max it</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- Résumé d'activité du bailleur -->
+      <view class="bprof__stats">
+        <view class="bprof__stat" hover-class="sl-hover" bindtap="onGoAnnonces">
+          <text class="bprof__stat-num">{{ stats.annonces }}</text>
+          <text class="bprof__stat-label">Annonces</text>
+        </view>
+        <view class="bprof__stat" hover-class="sl-hover" bindtap="onGoDemandes">
+          <text class="bprof__stat-num">{{ stats.demandes }}</text>
+          <text class="bprof__stat-label">Demandes</text>
+        </view>
+        <view class="bprof__stat" hover-class="sl-hover" bindtap="onGoLocataires">
+          <text class="bprof__stat-num">{{ stats.locataires }}</text>
+          <text class="bprof__stat-label">Locataires</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- Rubrique : Consulter et gérer ses abonnements -->
+    <view class="bprof__section">
+      <text class="bprof__section-title">ABONNEMENT</text>
+      <view class="bprof__card bprof__sub" hover-class="bprof__card--hover" bindtap="onManageSubscription">
+        <view class="bprof__sub-top">
+          <view class="bprof__sub-badge">
+            <text class="bprof__sub-star">★</text>
+            <text class="bprof__sub-plan">{{ subscription.plan }}</text>
+          </view>
+          <text class="bprof__sub-status {{ subscription.active ? '' : 'bprof__sub-status--off' }}">{{ subscription.active ? 'Actif' : 'Expiré' }}</text>
+        </view>
+
+        <text class="bprof__sub-validity">Valable jusqu'au {{ subscription.until }}</text>
+        <text class="bprof__sub-note">{{ subscription.highlights }}</text>
+
+        <view class="bprof__sub-perks">
+          <view class="bprof__perk-item">
+            <text class="bprof__perk-check">✓</text>
+            <text class="bprof__perk-text">Visibilité prioritaire sur Dakar & banlieue</text>
+          </view>
+          <view class="bprof__perk-item">
+            <text class="bprof__perk-check">✓</text>
+            <text class="bprof__perk-text">Baux et quittances numériques infalsifiables</text>
+          </view>
+          <view class="bprof__perk-item">
+            <text class="bprof__perk-check">✓</text>
+            <text class="bprof__perk-text">Encaissement automatique via Orange Money</text>
+          </view>
+        </view>
+
+        <view class="bprof__sub-cta">
+          <text class="bprof__sub-cta-label">Gérer mon abonnement</text>
+          <view class="ic ic-chevron-berrydark bprof__chevron"></view>
+        </view>
+      </view>
+    </view>
+
+    <!-- Bouton Changer de profil (Bascule vers le profil Locataire) -->
+    <view class="bprof__section">
+      <view class="bprof__switch-profile" hover-class="bprof__switch-profile--hover" bindtap="onSwitchToClient" aria-label="Changer de profil">
+        <view class="bprof__switch-profile-ic">
+          <text class="bprof__switch-emoji">🏠</text>
+        </view>
+        <view class="bprof__switch-profile-text">
+          <text class="bprof__switch-profile-title">Changer de profil</text>
+          <text class="bprof__switch-profile-sub">Basculer vers le profil Locataire</text>
+        </view>
+        <view class="bprof__switch-profile-badge">
+          <text>Locataire</text>
+          <text class="bprof__switch-chevron">›</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- Rubrique : Mes informations (Centralisées du profil) -->
+    <view class="bprof__section">
+      <text class="bprof__section-title">PARAMÈTRES DU COMPTE</text>
+      <view class="bprof__card bprof__list">
+        <view class="bprof__row">
+          <text class="bprof__row-label">Numéro Max it associé</text>
+          <text class="bprof__row-value">{{ profile.phone }}</text>
+        </view>
+        <view class="bprof__row">
+          <text class="bprof__row-label">Publication des annonces</text>
+          <view class="bprof__pill-green">
+            <text class="bprof__pill-green-dot">•</text>
+            <text>{{ profile.publication }}</text>
+          </view>
+        </view>
+        <view class="bprof__row" hover-class="bprof__row--hover" bindtap="onOpenHoraires">
+          <view class="bprof__row-col">
+            <text class="bprof__row-label">Horaires de visite</text>
+            <text class="bprof__row-sub">Samedi & Dimanche (10h - 18h)</text>
+          </view>
+          <view class="ic ic-chevron-grey bprof__chevron"></view>
+        </view>
+      </view>
+    </view>
+
+    <!-- Rubrique : Aide & Support -->
+    <view class="bprof__section">
+      <text class="bprof__section-title">AIDE & SUPPORT</text>
+      <view class="bprof__card bprof__list">
+        <view class="bprof__row" hover-class="bprof__row--hover" bindtap="onOpenHelp">
+          <view class="bprof__row-with-ic">
+            <view class="ic ic-help-berry bprof__row-ic"></view>
+            <text class="bprof__row-label">Centre d'aide bailleur</text>
+          </view>
+          <view class="ic ic-chevron-grey bprof__chevron"></view>
+        </view>
+        <view class="bprof__row" hover-class="bprof__row--hover" bindtap="onOpenSecurity">
+          <view class="bprof__row-with-ic">
+            <view class="ic ic-shield-line-berry bprof__row-ic"></view>
+            <text class="bprof__row-label">Sécurité & conformité légale</text>
+          </view>
+          <view class="ic ic-chevron-grey bprof__chevron"></view>
+        </view>
+        <view class="bprof__row" hover-class="bprof__row--hover" bindtap="onOpenSupport">
+          <view class="bprof__row-with-ic">
+            <view class="ic ic-chat-berry bprof__row-ic"></view>
+            <text class="bprof__row-label">Contacter l'assistance Max it</text>
+          </view>
+          <view class="ic ic-chevron-grey bprof__chevron"></view>
+        </view>
+      </view>
+    </view>
+
+    <!-- Footer Version -->
+    <view class="bprof__section bprof__section--last">
+      <text class="bprof__version">SAMA LOYER · Espace Bailleur · version 1.0 (Orange Max it)</text>
+    </view>
+
+    <view class="bprof__tab-spacer"></view>
+  </scroll-view>
+
+  <!-- =========================================================================
+       MODALS INTERACTIVES AIDE & SUPPORT
+       ========================================================================= -->
+
+  <!-- Modal 1 : Centre d'aide bailleur -->
+  <view wx:if="{{ activeModal === 'help' }}" class="bprof__sheet-overlay" catchtouchmove="noop" bindtap="onCloseModal">
+    <view class="bprof__sheet" catchtap="noop">
+      <view class="bprof__sheet-handle"></view>
+      <view class="bprof__sheet-header">
+        <view class="bprof__sheet-heading">
+          <text class="bprof__sheet-title">Centre d'aide Bailleur</text>
+          <text class="bprof__sheet-sub">Questions fréquentes et gestion locative</text>
+        </view>
+        <view class="bprof__sheet-close" hover-class="sl-hover" bindtap="onCloseModal">
+          <view class="ic ic-close-navy bprof__sheet-close-ic"></view>
+        </view>
+      </view>
+
+      <view class="bprof__sheet-body">
+        <view class="bprof__faq-item">
+          <text class="bprof__faq-q">Comment fonctionne le paiement garanti ?</text>
+          <text class="bprof__faq-a">Vos locataires paient via Orange Money Max it. Les fonds sont versés immédiatement sur votre compte avec quittance générée automatiquement.</text>
+        </view>
+        <view class="bprof__faq-item">
+          <text class="bprof__faq-q">Comment activer les baux numériques ?</text>
+          <text class="bprof__faq-a">Dans l'onglet Locataires, sélectionnez le contrat souhaité puis signez directement sur l'écran. Le bailleur et le locataire reçoivent une copie scellée.</text>
+        </view>
+        <view class="bprof__faq-item">
+          <text class="bprof__faq-q">Puis-je modifier mes annonces après publication ?</text>
+          <text class="bprof__faq-a">Oui, accédez à l'onglet Annonces pour modifier à tout moment le loyer, les photos ou les disponibilités.</text>
+        </view>
+      </view>
+
+      <view class="bprof__sheet-footer">
+        <button class="bprof__btn-primary" hover-class="sl-hover" bindtap="onCloseModal">
+          J'ai compris
+        </button>
+      </view>
+    </view>
+  </view>
+
+  <!-- Modal 2 : Sécurité & Conformité -->
+  <view wx:if="{{ activeModal === 'security' }}" class="bprof__sheet-overlay" catchtouchmove="noop" bindtap="onCloseModal">
+    <view class="bprof__sheet" catchtap="noop">
+      <view class="bprof__sheet-handle"></view>
+      <view class="bprof__sheet-header">
+        <view class="bprof__sheet-heading">
+          <text class="bprof__sheet-title">Sécurité & Conformité légale</text>
+          <text class="bprof__sheet-sub">Vos garanties juridiques et financières</text>
+        </view>
+        <view class="bprof__sheet-close" hover-class="sl-hover" bindtap="onCloseModal">
+          <view class="ic ic-close-navy bprof__sheet-close-ic"></view>
+        </view>
+      </view>
+
+      <view class="bprof__sheet-body">
+        <view class="bprof__sec-card">
+          <view class="ic ic-shield-check-green bprof__sec-ic"></view>
+          <view class="bprof__sec-text">
+            <text class="bprof__sec-title">Baux conformes à la loi sénégalaise</text>
+            <text class="bprof__sec-desc">Tous nos modèles de contrat respectent la législation sénégalaise relative aux baux à usage d'habitation.</text>
+          </view>
+        </view>
+        <view class="bprof__sec-card">
+          <view class="ic ic-check-green bprof__sec-ic"></view>
+          <view class="bprof__sec-text">
+            <text class="bprof__sec-title">Paiements 100% sécurisés Orange Money</text>
+            <text class="bprof__sec-desc">Zéro chèque en bois, zéro manipulation d'espèces. Chaque transaction dispose d'un reçu fiscal horodaté.</text>
+          </view>
+        </view>
+      </view>
+
+      <view class="bprof__sheet-footer">
+        <button class="bprof__btn-primary" hover-class="sl-hover" bindtap="onCloseModal">
+          Compris, merci
+        </button>
+      </view>
+    </view>
+  </view>
+
+  <!-- Modal 3 : Assistance Support -->
+  <view wx:if="{{ activeModal === 'support' }}" class="bprof__sheet-overlay" catchtouchmove="noop" bindtap="onCloseModal">
+    <view class="bprof__sheet" catchtap="noop">
+      <view class="bprof__sheet-handle"></view>
+      <view class="bprof__sheet-header">
+        <view class="bprof__sheet-heading">
+          <text class="bprof__sheet-title">Assistance Bailleur Max it</text>
+          <text class="bprof__sheet-sub">Ligne prioritaire dédiée aux propriétaires</text>
+        </view>
+        <view class="bprof__sheet-close" hover-class="sl-hover" bindtap="onCloseModal">
+          <view class="ic ic-close-navy bprof__sheet-close-ic"></view>
+        </view>
+      </view>
+
+      <view class="bprof__sheet-body">
+        <view class="bprof__support-opt" hover-class="sl-hover" bindtap="onCallSupport">
+          <view class="bprof__support-opt-ic bprof__support-opt-ic--berry">
+            <view class="ic ic-phone-call-berry" style="width: 44rpx; height: 44rpx;"></view>
+          </view>
+          <view class="bprof__support-opt-text">
+            <text class="bprof__support-opt-title">Appeler le service client (1444)</text>
+            <text class="bprof__support-opt-sub">Ligne directe gratuite depuis votre numéro Orange</text>
+          </view>
+          <view class="ic ic-chevron-grey bprof__chevron"></view>
+        </view>
+
+        <view class="bprof__support-opt" hover-class="sl-hover" bindtap="onCopySupportWhatsApp">
+          <view class="bprof__support-opt-ic bprof__support-opt-ic--green">
+            <view class="ic ic-whatsapp-green" style="width: 44rpx; height: 44rpx;"></view>
+          </view>
+          <view class="bprof__support-opt-text">
+            <text class="bprof__support-opt-title">Assistance WhatsApp Bailleur</text>
+            <text class="bprof__support-opt-sub">Réponse sous 15 minutes · +221 77 000 00 00</text>
+          </view>
+          <view class="ic ic-chevron-grey bprof__chevron"></view>
+        </view>
+      </view>
+
+      <view class="bprof__sheet-footer">
+        <button class="bprof__btn-secondary" hover-class="sl-hover" bindtap="onCloseModal">
+          Fermer
+        </button>
+      </view>
+    </view>
+  </view>
+
+  <!-- Bottom Navigation Tab Bar (activeTab = b-profil, tout à droite) -->
+  <app-custom-tab-bar activeTab="b-profil" />
+</view>
