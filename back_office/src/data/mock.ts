@@ -56,14 +56,14 @@ export interface Transaction {
 }
 
 export const TRANSACTIONS: Transaction[] = [
-  { ref: 'TX-26-10-4821', date: '22 oct. 10:14', user: 'Moussa Diallo', type: 'Premium', label: 'Premium mensuel', method: 'Wave', amount: '[PRIX] F', status: 'Réussi' },
+  { ref: 'TX-26-10-4821', date: '22 oct. 10:14', user: 'Moussa Diallo', type: 'Premium', label: 'Premium mensuel', method: 'Orange Money', amount: '[PRIX] F', status: 'Réussi' },
   { ref: 'TX-26-10-4820', date: '22 oct. 09:52', user: 'Awa Ndour', type: 'Boost', label: 'Boost 7 jours', method: 'Orange Money', amount: '[PRIX] F', status: 'Réussi' },
-  { ref: 'TX-26-10-4819', date: '21 oct. 18:30', user: 'Ibrahima Sarr', type: 'Boost', label: 'Boost 30 jours', method: 'Wave', amount: '[PRIX] F', status: 'Échoué' },
-  { ref: 'TX-26-10-4818', date: '21 oct. 16:05', user: 'Fatou Kane', type: 'Premium', label: 'Premium mensuel', method: 'Free Money', amount: '[PRIX] F', status: 'En attente' },
-  { ref: 'TX-26-10-4817', date: '20 oct. 11:41', user: 'Cheikh Fall', type: 'Remboursement', label: 'Remboursement', method: 'Wave', amount: '[PRIX] F', status: 'Remboursé' },
-  { ref: 'TX-26-10-4816', date: '20 oct. 08:22', user: 'Khady Ndiaye', type: 'Boost', label: 'Boost 7 jours', method: 'Wave', amount: '[PRIX] F', status: 'Réussi' },
+  { ref: 'TX-26-10-4819', date: '21 oct. 18:30', user: 'Ibrahima Sarr', type: 'Boost', label: 'Boost 30 jours', method: 'Orange Money', amount: '[PRIX] F', status: 'Échoué' },
+  { ref: 'TX-26-10-4818', date: '21 oct. 16:05', user: 'Fatou Kane', type: 'Premium', label: 'Premium mensuel', method: 'Orange Money', amount: '[PRIX] F', status: 'En attente' },
+  { ref: 'TX-26-10-4817', date: '20 oct. 11:41', user: 'Cheikh Fall', type: 'Remboursement', label: 'Remboursement', method: 'Orange Money', amount: '[PRIX] F', status: 'Remboursé' },
+  { ref: 'TX-26-10-4816', date: '20 oct. 08:22', user: 'Khady Ndiaye', type: 'Boost', label: 'Boost 7 jours', method: 'Orange Money', amount: '[PRIX] F', status: 'Réussi' },
   { ref: 'TX-26-10-4815', date: '19 oct. 19:47', user: 'Mamadou Gueye', type: 'Premium', label: 'Premium mensuel', method: 'Orange Money', amount: '[PRIX] F', status: 'Échoué' },
-  { ref: 'TX-26-10-4814', date: '19 oct. 14:03', user: 'Aïssatou Ba', type: 'Premium', label: 'Premium mensuel', method: 'Wave', amount: '[PRIX] F', status: 'Réussi' },
+  { ref: 'TX-26-10-4814', date: '19 oct. 14:03', user: 'Aïssatou Ba', type: 'Premium', label: 'Premium mensuel', method: 'Orange Money', amount: '[PRIX] F', status: 'Réussi' },
 ]
 
 /* --- Bailleurs ------------------------------------------------------------ */
@@ -180,11 +180,11 @@ export const SPONSORED = [
 ]
 
 export const PREMIUM_PAYMENTS = [
-  { who: 'Moussa Diallo', what: 'Premium mensuel', method: 'Wave', date: '15 oct.', amount: '[PRIX] F' },
+  { who: 'Moussa Diallo', what: 'Premium mensuel', method: 'Orange Money', date: '15 oct.', amount: '[PRIX] F' },
   { who: 'Awa Ndour', what: 'Boost 30 jours', method: 'Orange Money', date: '14 oct.', amount: '[PRIX] F' },
-  { who: 'Khady Ndiaye', what: 'Boost 7 jours', method: 'Wave', date: '12 oct.', amount: '[PRIX] F' },
-  { who: 'Mamadou Gueye', what: 'Premium mensuel', method: 'Free Money', date: '11 oct.', amount: '[PRIX] F' },
-  { who: 'Aïssatou Ba', what: 'Premium mensuel', method: 'Wave', date: '9 oct.', amount: '[PRIX] F' },
+  { who: 'Khady Ndiaye', what: 'Boost 7 jours', method: 'Orange Money', date: '12 oct.', amount: '[PRIX] F' },
+  { who: 'Mamadou Gueye', what: 'Premium mensuel', method: 'Orange Money', date: '11 oct.', amount: '[PRIX] F' },
+  { who: 'Aïssatou Ba', what: 'Premium mensuel', method: 'Orange Money', date: '9 oct.', amount: '[PRIX] F' },
 ]
 
 /* --- Réclamations et paramètres ------------------------------------------ */
@@ -208,7 +208,7 @@ export const TICKET_TONE: Record<TicketStatus, Tone> = { 'En cours': 'info', Nou
 
 export const TICKETS: { subject: string; user: string; channel: string; when: string; agent: string; status: TicketStatus }[] = [
   { subject: 'Je n’arrive pas à me connecter', user: 'Binta S.', channel: 'Dans l’appli', when: 'il y a 1 h', agent: 'Support · Lamine', status: 'En cours' },
-  { subject: 'Paiement Wave débité mais Premium non actif', user: 'Mamadou Gueye', channel: 'WhatsApp', when: 'il y a 3 h', agent: 'Finance · Ndèye', status: 'En cours' },
+  { subject: 'Paiement débité mais Premium non actif', user: 'Mamadou Gueye', channel: 'WhatsApp', when: 'il y a 3 h', agent: 'Finance · Ndèye', status: 'En cours' },
   { subject: 'Changer mon numéro de téléphone', user: 'Awa Diop', channel: 'Dans l’appli', when: 'hier', agent: 'Non assignée', status: 'Nouveau' },
   { subject: 'Comment ajouter une vidéo ?', user: 'Moussa Diallo', channel: 'Téléphone', when: 'il y a 2 j', agent: 'Support · Lamine', status: 'Résolu' },
 ]
@@ -225,7 +225,7 @@ export const ROLES = [
 export const FEATURES = [
   { id: 'voice', label: 'Recherche vocale (wolof et français)', sub: 'Micro sur l’accueil et dans les messages', on: true },
   { id: 'premium', label: 'Premium et Boost', sub: 'Mise en avant payante des annonces', on: true },
-  { id: 'rent', label: 'Paiement des loyers dans l’appli', sub: 'Le locataire paie son loyer via Wave, Orange Money ou Free Money', on: false },
+  { id: 'rent', label: 'Paiement des loyers dans l’appli', sub: 'Le locataire paie son loyer directement via Orange Money', on: false },
   { id: 'contract', label: 'Contrat de location en ligne', sub: 'Modèle de contrat à signer dans l’appli', on: false },
   { id: 'refund', label: 'Remboursements', sub: 'Autorise l’équipe Finance à rembourser', on: true },
   { id: 'autohide', label: 'Masquage automatique', sub: 'Masque les annonces non confirmées', on: true },

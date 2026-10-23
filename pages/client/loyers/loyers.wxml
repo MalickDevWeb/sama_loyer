@@ -39,7 +39,7 @@
           data-id="{{ item.id }}"
           bindtap="onSelectHome"
         >
-          <view class="loy__home-thumb" style="background: {{ item.tint }};"></view>
+          <view class="loy__home-thumb sl-photo" style="background-color: {{ item.tint }}; background-image: url('{{ item.cover }}');"></view>
           <view class="loy__home-text">
             <text class="loy__home-name">{{ item.name }}</text>
             <text class="loy__home-rent">{{ item.rent }} F / mois</text>
@@ -68,27 +68,14 @@
       </view>
       <text class="loy__due-amount">{{ cur.rentText }} F</text>
       <text class="loy__due-text">{{ cur.paid ? 'Payé aujourd’hui via Max it. Merci !' : cur.due }}</text>
-      <view wx:if="{{ !cur.paid }}" class="loy__due-pay" hover-class="sl-hover" bindtap="onOpenPay">Payer avec Max it</view>
-      <view wx:else class="loy__due-receipt" hover-class="sl-hover" data-index="0" bindtap="onViewReceipt">
-        <view class="ic ic-download-white loy__due-receipt-ic"></view>
-        <text>Télécharger le reçu</text>
+      <view class="loy__due-btns">
+        <view wx:if="{{ !cur.paid }}" class="loy__due-pay" hover-class="sl-hover" bindtap="onOpenPay">Payer</view>
+        <view wx:else class="loy__due-receipt" hover-class="sl-hover" data-index="0" bindtap="onViewReceipt">
+          <view class="ic ic-download-white loy__due-receipt-ic"></view>
+          <text>Reçu</text>
+        </view>
+        <view class="loy__due-details" hover-class="sl-hover" bindtap="onOpenDetails">Voir les détails</view>
       </view>
-    </view>
-  </view>
-
-  <!-- Caution + contrat -->
-  <view class="loy__section loy__section--tight loy__duo">
-    <view class="loy__card loy__tile">
-      <text class="loy__tile-label">Caution</text>
-      <text class="loy__tile-value">{{ cur.depositText }} F</text>
-      <text class="loy__tile-sub">{{ cur.depositInfo }}</text>
-      <text class="loy__tile-badge">Payée via Max it</text>
-    </view>
-    <view class="loy__card loy__tile" hover-class="loy__card--hover" bindtap="onViewContrat">
-      <text class="loy__tile-label">Contrat</text>
-      <text class="loy__tile-value loy__tile-value--sm">Signé</text>
-      <text class="loy__tile-sub">{{ cur.contract }}</text>
-      <text class="loy__tile-link">Voir le contrat</text>
     </view>
   </view>
 
@@ -140,14 +127,14 @@
 
   <!-- ================= MAX IT (simulation) ================= -->
   <view wx:if="{{ mx }}" class="sl-mx-backdrop" catchtouchmove="noop">
-    <view class="sl-mx" aria-label="Paiement avec Max it">
+    <view class="sl-mx" aria-label="Paiement">
       <block wx:if="{{ mx === 'confirm' }}">
         <view class="sl-mx-icon"><view class="ic ic-maxit-berry"></view></view>
-        <text class="sl-mx-title">Payer avec Max it</text>
+        <text class="sl-mx-title">Payer</text>
         <text class="sl-mx-amount">{{ cur.rentText }} F</text>
         <text class="sl-mx-to">À {{ cur.owner }} · {{ mxLabel }}</text>
         <text class="sl-mx-note">Tu vas être redirigé·e vers l'application Max it pour valider le paiement avec ton code secret.</text>
-        <view class="sl-btn sl-btn--berry sl-mx-btn" hover-class="sl-hover" bindtap="onMxGo">Continuer vers Max it</view>
+        <view class="sl-btn sl-btn--berry sl-mx-btn" hover-class="sl-hover" bindtap="onMxGo">Payer</view>
         <view class="sl-mx-cancel" hover-class="sl-hover" bindtap="onMxClose">Annuler</view>
       </block>
 
@@ -176,8 +163,61 @@
         <view class="sl-mx-icon"><view class="ic ic-check-berry"></view></view>
         <text class="sl-mx-title">Paiement validé</text>
         <text class="sl-mx-to">{{ cur.rentText }} F payés à {{ cur.owner }} via Max it. Ton reçu est prêt.</text>
-        <view class="sl-btn sl-btn--berry sl-mx-btn" hover-class="sl-hover" bindtap="onMxClose">Retour à Mon loyer</view>
+        <view class="sl-btn sl-btn--berry sl-mx-btn" hover-class="sl-hover" bindtap="onDownloadReceipt">
+          <view class="ic ic-download-white loy__due-receipt-ic"></view>
+          <text>Télécharger le reçu</text>
+        </view>
+        <view class="sl-btn sl-btn--outline-navy sl-mx-btn" hover-class="sl-hover" bindtap="onShareReceipt">Partager le reçu</view>
+        <view class="sl-mx-cancel" hover-class="sl-hover" bindtap="onMxClose">Retour à Mon loyer</view>
       </block>
+    </view>
+  </view>
+
+  <!-- ================= DÉTAILS DU LOGEMENT ================= -->
+  <view wx:if="{{ detailsOpen }}" class="sl-mx-backdrop" catchtouchmove="noop" bindtap="onCloseDetails">
+    <view class="sl-mx loy__details" catchtap="noop" aria-label="Détails du logement">
+      <view class="loy__details-head">
+        <text class="loy__details-title">Détails du logement</text>
+        <view class="loy__quittance-close" hover-class="sl-hover" bindtap="onCloseDetails">
+          <view class="ic ic-close-navy" style="width: 28rpx; height: 28rpx;"></view>
+        </view>
+      </view>
+
+      <view class="loy__details-home">
+        <text class="loy__current-name">{{ cur.fullName }}</text>
+        <text class="loy__current-place">{{ cur.place }} · Bailleur : {{ cur.owner }}</text>
+        <text class="loy__current-since">{{ cur.since }}</text>
+      </view>
+
+      <view class="loy__details-rows">
+        <view class="loy__q-row">
+          <text class="loy__q-lbl">Loyer mensuel</text>
+          <text class="loy__q-val">{{ cur.rentText }} F</text>
+        </view>
+        <view class="loy__q-row">
+          <text class="loy__q-lbl">Loyer de novembre</text>
+          <text class="loy__q-val">{{ cur.paid ? 'Payé via Max it' : cur.due }}</text>
+        </view>
+      </view>
+
+      <!-- Caution + contrat -->
+      <view class="loy__duo">
+        <view class="loy__card loy__tile loy__tile--soft">
+          <text class="loy__tile-label">Caution</text>
+          <text class="loy__tile-value">{{ cur.depositText }} F</text>
+          <text class="loy__tile-sub">{{ cur.depositInfo }}</text>
+          <text class="loy__tile-badge">Payée via Max it</text>
+        </view>
+        <view class="loy__card loy__tile loy__tile--soft" hover-class="loy__card--hover" bindtap="onViewContrat">
+          <text class="loy__tile-label">Contrat</text>
+          <text class="loy__tile-value loy__tile-value--sm">Signé</text>
+          <text class="loy__tile-sub">{{ cur.contract }}</text>
+          <text class="loy__tile-link">Voir le contrat</text>
+        </view>
+      </view>
+
+      <view wx:if="{{ !cur.paid }}" class="sl-btn sl-btn--berry sl-mx-btn" hover-class="sl-hover" bindtap="onPayFromDetails">Payer {{ cur.rentText }} F</view>
+      <view wx:else class="sl-btn sl-btn--berry sl-mx-btn" hover-class="sl-hover" data-index="0" bindtap="onViewReceipt">Voir le reçu</view>
     </view>
   </view>
 

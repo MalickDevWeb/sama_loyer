@@ -21,7 +21,7 @@
         <view class="hero-titles">
           <view class="welcome-line">
             <text class="hero-welcome">Bonjour {{ bailleurName }}</text>
-            <view class="verified-badge-mini">✓ Vérifié</view>
+            <view class="verified-badge-mini ic-row"><view class="ic ic-check-white ic--xs"></view><text>Vérifié</text></view>
           </view>
           <text class="hero-sub">Voici où en sont tes logements aujourd'hui.</text>
         </view>
@@ -36,7 +36,7 @@
         <view class="kpi-card" bindtap="onGoAnnonces">
           <view class="kpi-top">
             <view class="kpi-icon-wrap icon-pink">
-              <text class="kpi-icon">🏠</text>
+              <view class="ic ic-home-berry ic--md"></view>
             </view>
           </view>
           <text class="kpi-number">{{ kpis.annoncesEnLigne }}</text>
@@ -48,7 +48,7 @@
         <view class="kpi-card" bindtap="onGoDemandes">
           <view class="kpi-top">
             <view class="kpi-icon-wrap icon-orange">
-              <text class="kpi-icon">📅</text>
+              <view class="ic ic-cal-amber ic--md"></view>
             </view>
           </view>
           <text class="kpi-number">{{ kpis.demandesVisite }}</text>
@@ -60,7 +60,7 @@
         <view class="kpi-card" bindtap="onGoClients">
           <view class="kpi-top">
             <view class="kpi-icon-wrap icon-green">
-              <text class="kpi-icon">🔑</text>
+              <view class="ic ic-key-green ic--md"></view>
             </view>
           </view>
           <text class="kpi-number">{{ kpis.logementsLoues }}</text>
@@ -72,7 +72,7 @@
         <view class="kpi-card">
           <view class="kpi-top">
             <view class="kpi-icon-wrap icon-blue">
-              <text class="kpi-icon">💳</text>
+              <view class="ic ic-card-blue ic--md"></view>
             </view>
           </view>
           <text class="kpi-number kpi-number--price">{{ kpis.loyersRecus }}</text>
@@ -93,7 +93,7 @@
               <text class="todo-item-title">Répondre à 2 demandes de visite</text>
               <text class="todo-item-desc">Les locataires attendent depuis hier</text>
             </view>
-            <text class="todo-chevron">›</text>
+            <view class="ic ic-chevron-grey ic--sm"></view>
           </view>
 
           <!-- Item 2 -->
@@ -103,7 +103,7 @@
               <text class="todo-item-title">Confirmer que le studio est libre</text>
               <text class="todo-item-desc">Dernière confirmation il y a 14 jours</text>
             </view>
-            <text class="todo-chevron">›</text>
+            <view class="ic ic-chevron-grey ic--sm"></view>
           </view>
 
           <!-- Item 3 -->
@@ -113,7 +113,7 @@
               <text class="todo-item-title">Remplacer 2 photos floues</text>
               <text class="todo-item-desc">Appartement F2 — demandé par la validation</text>
             </view>
-            <text class="todo-chevron">›</text>
+            <view class="ic ic-chevron-grey ic--sm"></view>
           </view>
         </view>
       </view>
@@ -173,38 +173,88 @@
     <view class="scroll-spacer"></view>
   </scroll-view>
 
-  <!-- Bailleur Tab Bar -->
-  <app-custom-tab-bar activeTab="b-home" />
+  <!-- Barre d'onglets masquée tant que le bailleur n'est pas abonné -->
+  <app-custom-tab-bar wx:if="{{ !locked }}" activeTab="b-home" />
 
   <!-- ================= ESPACE VERROUILLÉ (1re connexion bailleur) ================= -->
   <!-- Tout l'espace reste grisé tant que le bailleur n'a pas choisi l'essai ou l'abonnement -->
   <view wx:if="{{ locked }}" class="lock-overlay" catchtouchmove="noop">
     <view class="lock-sheet" aria-label="Activer l'espace bailleur">
-      <view class="lock-icon">🔒</view>
-      <text class="lock-title">Active ton espace bailleur</text>
-      <text class="lock-text">Publie tes logements, gère tes locataires et reçois tes loyers avec Max it.</text>
+      <view class="lock-handle"></view>
 
-      <view class="sl-btn sl-btn--berry lock-btn" hover-class="sl-hover" bindtap="onStartTrial">
-        Essayer 30 jours gratuitement
+      <!-- En-tête illustré -->
+      <view class="lock-hero">
+        <view class="lock-halo">
+          <view class="lock-badge"><view class="ic lock-ic-lock"></view></view>
+        </view>
+        <text class="lock-title">{{ expired ? 'Ton abonnement a expiré' : 'Active ton espace bailleur' }}</text>
+        <text class="lock-text">{{ expired ? 'Renouvelle avec Max it pour retrouver tes annonces, tes locataires et tes loyers.' : 'Ton compte Max it est prêt. Choisis comment démarrer.' }}</text>
       </view>
-      <view class="sl-btn sl-btn--outline-navy lock-btn" hover-class="sl-hover" bindtap="onSubscribe">
-        S'abonner · {{ proPriceText }} / mois avec Max it
+
+      <!-- Ce que débloque l'espace -->
+      <view class="lock-perks">
+        <view class="lock-perk">
+          <view class="lock-perk-ic lock-perk-ic--berry"><view class="ic ic-home-plus-berry"></view></view>
+          <text class="lock-perk-txt">Publier tes logements</text>
+        </view>
+        <view class="lock-perk">
+          <view class="lock-perk-ic lock-perk-ic--navy"><view class="ic ic-key-navy"></view></view>
+          <text class="lock-perk-txt">Gérer tes locataires</text>
+        </view>
+        <view class="lock-perk">
+          <view class="lock-perk-ic lock-perk-ic--green"><view class="ic ic-shield-check-green"></view></view>
+          <text class="lock-perk-txt">Loyers & reçus Max it</text>
+        </view>
       </view>
-      <text class="lock-note">Sans engagement. Ton compte Max it est déjà relié, aucune information à saisir.</text>
-      <view class="lock-back" hover-class="sl-hover" bindtap="onSwitchToClient">Revenir au profil locataire</view>
+
+      <!-- Offre 1 : essai gratuit -->
+      <view wx:if="{{ canTrial }}" class="lock-offer lock-offer--trial" hover-class="lock-offer--hover" bindtap="onStartTrial" aria-label="Essayer 30 jours gratuitement">
+        <view class="lock-offer-ic lock-offer-ic--light"><view class="ic lock-ic-gift"></view></view>
+        <view class="lock-offer-body">
+          <view class="lock-offer-top">
+            <text class="lock-offer-title">Essayer 30 jours</text>
+            <text class="lock-offer-tag">Recommandé</text>
+          </view>
+          <text class="lock-offer-sub">Gratuit · sans engagement</text>
+        </view>
+        <view class="ic ic-chevron-white lock-offer-chev"></view>
+      </view>
+
+      <!-- Offre 2 : abonnement Pro Max it -->
+      <view class="lock-offer lock-offer--pro" hover-class="lock-offer--hover" bindtap="onSubscribe" aria-label="Abonnement Pro avec Max it">
+        <view class="lock-offer-ic lock-offer-ic--soft"><view class="ic lock-ic-crown"></view></view>
+        <view class="lock-offer-body">
+          <text class="lock-offer-title">Abonnement Pro</text>
+          <view class="lock-offer-price">
+            <text class="lock-offer-amount">{{ proPriceText }}</text>
+            <text class="lock-offer-sub lock-offer-sub--dark"> / mois · via Max it</text>
+          </view>
+        </view>
+        <view class="ic ic-maxit-berry lock-offer-maxit"></view>
+      </view>
+
+      <view class="lock-note">
+        <view class="ic ic-shield-check-green lock-note-ic"></view>
+        <text>Aucune information à saisir, tout vient de ton compte Max it.</text>
+      </view>
+
+      <view class="lock-back" hover-class="sl-hover" bindtap="onSwitchToClient">
+        <view class="ic ic-back-line lock-back-ic"></view>
+        <text>Revenir au profil locataire</text>
+      </view>
     </view>
   </view>
 
   <!-- ================= MAX IT (simulation) ================= -->
   <view wx:if="{{ mx }}" class="sl-mx-backdrop lock-mx" catchtouchmove="noop">
-    <view class="sl-mx" aria-label="Paiement avec Max it">
+    <view class="sl-mx" aria-label="Paiement">
       <block wx:if="{{ mx === 'confirm' }}">
         <view class="sl-mx-icon"><view class="ic ic-maxit-berry"></view></view>
-        <text class="sl-mx-title">Payer avec Max it</text>
+        <text class="sl-mx-title">Payer</text>
         <text class="sl-mx-amount">{{ proPriceText }}</text>
         <text class="sl-mx-to">Abonnement Pro bailleur · 1 mois</text>
         <text class="sl-mx-note">Tu vas être redirigé·e vers l'application Max it pour valider le paiement avec ton code secret.</text>
-        <view class="sl-btn sl-btn--berry sl-mx-btn" hover-class="sl-hover" bindtap="onMxGo">Continuer vers Max it</view>
+        <view class="sl-btn sl-btn--berry sl-mx-btn" hover-class="sl-hover" bindtap="onMxGo">Payer</view>
         <view class="sl-mx-cancel" hover-class="sl-hover" bindtap="onMxClose">Annuler</view>
       </block>
 
@@ -230,11 +280,31 @@
 
       <!-- Confirmation d'activation (essai gratuit ou abonnement) -->
       <block wx:if="{{ mx === 'done' }}">
-        <view class="sl-mx-icon"><view class="ic ic-check-berry"></view></view>
+        <view class="done-halo">
+          <view class="done-badge"><view class="ic ic-check-white"></view></view>
+        </view>
         <text class="sl-mx-title">{{ activatedPlan === 'pro' ? 'Abonnement activé' : 'Essai gratuit activé' }}</text>
-        <view class="lock-done-pill">{{ activatedPlan === 'pro' ? 'Pro · payé avec Max it' : '30 jours offerts' }}</view>
-        <text class="sl-mx-to">Ton espace bailleur est ouvert jusqu'au <text class="lock-done-date">{{ activatedUntil }}</text>.</text>
-        <text class="sl-mx-note">Tu peux gérer ton abonnement à tout moment dans l'onglet Profil.</text>
+        <text class="sl-mx-to">Bienvenue dans ton espace bailleur !</text>
+
+        <view class="done-card">
+          <view class="done-row">
+            <view class="done-row-ic"><view class="ic {{ activatedPlan === 'pro' ? 'lock-ic-crown' : 'lock-ic-gift-berry' }}"></view></view>
+            <view class="done-row-text">
+              <text class="done-row-label">Offre</text>
+              <text class="done-row-value">{{ activatedPlan === 'pro' ? 'Pro · payé avec Max it' : 'Essai gratuit · 30 jours' }}</text>
+            </view>
+          </view>
+          <view class="done-sep"></view>
+          <view class="done-row">
+            <view class="done-row-ic"><view class="ic ic-cal-berry"></view></view>
+            <view class="done-row-text">
+              <text class="done-row-label">Valable jusqu'au</text>
+              <text class="done-row-value">{{ activatedUntil }}</text>
+            </view>
+          </view>
+        </view>
+
+        <text class="sl-mx-note">Gère ton abonnement à tout moment dans l'onglet Profil.</text>
         <view class="sl-btn sl-btn--berry sl-mx-btn" hover-class="sl-hover" bindtap="onMxClose">C'est parti</view>
       </block>
     </view>

@@ -77,7 +77,7 @@ Page({
     this.payNow = 0;
 
     this.setData({
-      logement: { id: l.id, title: l.title, place: l.place, bailleur: l.bailleurName, tint: l.tint },
+      logement: { id: l.id, title: l.title, place: l.place, bailleur: l.bailleurName, tint: l.tint, cover: l.cover },
       loyerText: `${fmt(l.price)} F`,
       avanceText: `${fmt(l.avance)} F`,
       cautionText: `${fmt(l.caution)} F`,
@@ -112,7 +112,7 @@ Page({
 
     let nextText = 'C’est clair, continuer';
     if (step === 2) nextText = agree ? 'Continuer' : 'Accepte le contrat pour continuer';
-    if (step === 3) nextText = badAmount ? 'Montant non valide' : `Payer ${fmt(chosen)} F avec Max it`;
+    if (step === 3) nextText = badAmount ? 'Montant non valide' : 'Payer';
 
     const done = paid > 0;
     const rest = this.total - paid;

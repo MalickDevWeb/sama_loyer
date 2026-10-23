@@ -18,7 +18,7 @@
   <view class="entree__body" style="padding-top: {{ statusBarHeight + 76 }}px;">
     <!-- Logement concerné -->
     <view wx:if="{{ !done }}" class="entree__home">
-      <view class="entree__home-thumb" style="background: {{ logement.tint }};"></view>
+      <view class="entree__home-thumb sl-photo" style="background-color: {{ logement.tint }}; background-image: url('{{ logement.cover }}');"></view>
       <view class="entree__home-text">
         <text class="entree__home-title">{{ logement.title }}</text>
         <text class="entree__muted">{{ logement.place }} · {{ logement.bailleur }}</text>
@@ -295,14 +295,14 @@
 
   <!-- ================= MAX IT (simulation) ================= -->
   <view wx:if="{{ mx }}" class="sl-mx-backdrop" catchtouchmove="noop">
-    <view class="sl-mx" aria-label="Paiement avec Max it">
+    <view class="sl-mx" aria-label="Paiement">
       <block wx:if="{{ mx === 'confirm' }}">
         <view class="sl-mx-icon"><view class="ic ic-maxit-berry"></view></view>
-        <text class="sl-mx-title">Payer avec Max it</text>
+        <text class="sl-mx-title">Payer</text>
         <text class="sl-mx-amount">{{ mxAmountText }} F</text>
         <text class="sl-mx-to">À {{ logement.bailleur }} · {{ mxLabel }}</text>
         <text class="sl-mx-note">Tu vas être redirigé·e vers l'application Max it pour valider avec ton code secret.</text>
-        <view class="sl-btn sl-btn--berry sl-mx-btn" hover-class="sl-hover" bindtap="onMxGo">Continuer vers Max it</view>
+        <view class="sl-btn sl-btn--berry sl-mx-btn" hover-class="sl-hover" bindtap="onMxGo">Payer</view>
         <view class="sl-mx-cancel" hover-class="sl-hover" bindtap="onMxClose">Annuler</view>
       </block>
 

@@ -1,3 +1,4 @@
+import { requireBailleurAccess } from '../../../utils/helpers/store';
 Page({
   data: {
     statusBarHeight: 44,
@@ -32,7 +33,7 @@ Page({
         id: 'p1',
         type: 'debit',
         title: 'Abonnement Pro mensuel',
-        meta: '15 oct. 2026 · Orange Money',
+        meta: '15 oct. 2026 · Max it',
         amount: '- 15 000 F',
         amountClass: 'amount-debit'
       },
@@ -40,7 +41,7 @@ Page({
         id: 'p2',
         type: 'credit',
         title: 'Loyer · Maison Pikine Nord',
-        meta: '5 oct. 2026 · Orange Money',
+        meta: '5 oct. 2026 · Max it',
         amount: '+ 160 000 F',
         amountClass: 'amount-credit'
       },
@@ -48,7 +49,7 @@ Page({
         id: 'p3',
         type: 'credit',
         title: 'Loyer · Chambre Thiaroye',
-        meta: '3 oct. 2026 · Wave',
+        meta: '3 oct. 2026 · Max it',
         amount: '+ 45 000 F',
         amountClass: 'amount-credit'
       },
@@ -56,7 +57,7 @@ Page({
         id: 'p4',
         type: 'debit',
         title: 'Boost 7 jours · Studio',
-        meta: '28 sept. 2026 · Wave',
+        meta: '28 sept. 2026 · Max it',
         amount: '- 1 500 F',
         amountClass: 'amount-debit'
       }
@@ -73,9 +74,15 @@ Page({
   },
 
   onShow() {
+    // Sans abonnement actif, aucun accès : retour à l'accueil verrouillé
+    if (!requireBailleurAccess()) return;
     if (typeof this.getTabBar === 'function' && this.getTabBar()) {
-      this.getTabBar().setData({ activeTab: 'b-premium' });
+      this.getTabBar().setData({ activeTab: 'b-profil' });
     }
+  },
+
+  onBack() {
+    wx.navigateBack({ fail: () => wx.redirectTo({ url: '/pages/bailleur/profil/profil' }) });
   },
 
   onSelectOption(e) {
@@ -86,11 +93,15 @@ Page({
   },
 
   onPayAction() {
-    wx.showActionSheet({
-      itemList: ['Payer avec Orange Money', 'Payer avec Wave'],
+    wx.showModal({
+      title: 'Payer',
+      content: 'Valider le paiement pour activer cette formule.',
+      confirmText: 'Payer',
+      confirmColor: '#C8235F',
+      cancelText: 'Annuler',
       success: (res) => {
-        const moyen = res.tapIndex === 0 ? 'Orange Money' : 'Wave';
-        wx.showLoading({ title: `Connexion ${moyen}...` });
+        if (!res.confirm) return;
+        wx.showLoading({ title: 'Paiement...' });
         setTimeout(() => {
           wx.hideLoading();
           wx.showToast({

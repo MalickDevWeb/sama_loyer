@@ -360,7 +360,7 @@
         </view>
 
         <view class="prof__faq-item">
-          <text class="prof__faq-q">💳 Comment payer mon loyer via Max it ?</text>
+          <text class="prof__faq-q">💳 Comment payer mon loyer ?</text>
           <text class="prof__faq-a">Dans l'onglet « Mes loyers », appuyez sur « Payer le loyer ». La transaction s'effectue en toute sécurité avec Orange Money et génère automatiquement un reçu horodaté officiel.</text>
         </view>
 
