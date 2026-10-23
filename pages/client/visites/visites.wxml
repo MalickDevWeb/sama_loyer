@@ -21,7 +21,7 @@
   <!-- Cartes -->
   <view class="vis__list">
     <view wx:for="{{ filteredList }}" wx:key="id" class="vis__card">
-      <view class="vis__card-head">
+      <view class="vis__card-head" data-id="{{ item.id }}" bindtap="onToggleExpand">
         <view class="vis__when">
           <view class="ic ic-cal-navy vis__when-ic"></view>
           <text>{{ item.dateLabel }}</text>
@@ -30,7 +30,7 @@
       </view>
 
       <view class="vis__prop" hover-class="vis__prop--hover" data-logement-id="{{ item.logementId }}" bindtap="onOpenLogement">
-        <view class="vis__thumb" style="background: {{ item.tint }};"><view class="vis__house"></view></view>
+        <view class="vis__thumb sl-photo" style="background-color: {{ item.tint }}; background-image: url('{{ item.cover }}');"><view wx:if="{{ !item.cover }}" class="vis__house"></view></view>
         <view class="vis__prop-text">
           <text class="vis__prop-title">{{ item.title }}</text>
           <text class="vis__prop-place">{{ item.place }}</text>
@@ -38,7 +38,8 @@
         </view>
       </view>
 
-      <view class="vis__body">
+      <!-- Détails et actions visibles seulement après avoir cliqué sur "Voir plus" -->
+      <view wx:if="{{ expandedMap[item.id] }}" class="vis__body">
         <view class="vis__note vis__note--{{ item.status }}">{{ item.note }}</view>
 
         <block wx:if="{{ item.status === 'accepted' }}">
@@ -72,6 +73,12 @@
           hover-class="sl-hover"
           bindtap="onSimilar"
         >Voir des logements similaires</view>
+      </view>
+
+      <!-- Bouton Voir plus / Voir moins -->
+      <view class="vis__toggle" hover-class="vis__toggle--hover" data-id="{{ item.id }}" catchtap="onToggleExpand" aria-label="{{ expandedMap[item.id] ? 'Voir moins' : 'Voir plus' }}">
+        <text class="vis__toggle-text">{{ expandedMap[item.id] ? 'Voir moins' : 'Voir plus' }}</text>
+        <view class="ic ic-chevron-berrydark vis__toggle-ic {{ expandedMap[item.id] ? 'vis__toggle-ic--open' : '' }}"></view>
       </view>
     </view>
 

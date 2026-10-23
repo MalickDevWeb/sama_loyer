@@ -265,6 +265,38 @@
   padding: 0 36rpx;
 }
 
+/* --- Bouton Voir plus / Voir moins ---------------------------------------- */
+.vis__toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12rpx;
+  padding: 22rpx 28rpx;
+  border-top: 1rpx solid #F0F2F6;
+  background: #FFFFFF;
+}
+
+.vis__toggle--hover {
+  background: #F8F9FA;
+}
+
+.vis__toggle-text {
+  font-size: 26rpx;
+  font-weight: 700;
+  color: #C8235F;
+}
+
+.vis__toggle-ic {
+  width: 28rpx;
+  height: 28rpx;
+  transform: rotate(90deg);
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.vis__toggle-ic--open {
+  transform: rotate(-90deg);
+}
+
 .vis__tab-spacer {
   height: calc(156rpx + env(safe-area-inset-bottom));
 }

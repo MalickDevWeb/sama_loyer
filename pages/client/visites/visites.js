@@ -22,7 +22,8 @@ Page({
     activeFilter: 'all', // all | pending | accepted | rejected
     tabs: buildTabs([]),
     visitesList: [],
-    filteredList: []
+    filteredList: [],
+    expandedMap: {} // { [id]: boolean } pour déplier/replier avec "Voir plus"
   },
 
   onLoad() {
@@ -93,6 +94,14 @@ Page({
 
   onSimilar() {
     wx.navigateTo({ url: '/pages/client/search/results?place=Pikine' });
+  },
+
+  onToggleExpand(e) {
+    const id = e.currentTarget.dataset.id;
+    if (!id) return;
+    const expandedMap = { ...this.data.expandedMap };
+    expandedMap[id] = !expandedMap[id];
+    this.setData({ expandedMap });
   },
 
   onSearchHome() {
