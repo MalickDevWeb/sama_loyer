@@ -84,6 +84,8 @@ Page({
 
     // Résultats affichés directement sur la même page
     hasSearched: false,
+    isSearching: false,
+    scrollTarget: '',
     results: [],
     resultsCount: 0,
     searchedPlace: '',
@@ -179,10 +181,12 @@ Page({
   // RECHERCHE DIRECTE SUR LA MÊME PAGE (SANS REDIRECTION)
   // ==========================================
   onSearchTap() {
-    this.doSearch();
+    this.doSearch(undefined, undefined, true);
   },
 
-  doSearch(targetPlace, targetBudgetNum) {
+  doSearch(targetPlace, targetBudgetNum, shouldScroll = false) {
+    if (this.data.isSearching) return;
+
     const rawPlace = targetPlace !== undefined ? targetPlace : this.data.place;
     const pl = (rawPlace || '').trim();
     const numBudget = targetBudgetNum !== undefined
@@ -225,17 +229,36 @@ Page({
       isFav: !!this.data.favorites[l.id]
     }));
 
-    if (wx.vibrateShort) {
-      wx.vibrateShort();
+    if (!shouldScroll) {
+      this.setData({
+        hasSearched: true,
+        results,
+        resultsCount: results.length,
+        searchedPlace: pl,
+        searchedBudget: numBudget > 0 ? formatMoney(numBudget) : ''
+      });
+      return;
     }
 
-    this.setData({
-      hasSearched: true,
-      results,
-      resultsCount: results.length,
-      searchedPlace: pl,
-      searchedBudget: numBudget > 0 ? formatMoney(numBudget) : ''
-    });
+    // Micro-interaction fluide sur le bouton
+    this.setData({ isSearching: true });
+
+    setTimeout(() => {
+      this.setData({
+        isSearching: false,
+        hasSearched: true,
+        results,
+        resultsCount: results.length,
+        searchedPlace: pl,
+        searchedBudget: numBudget > 0 ? formatMoney(numBudget) : '',
+        scrollTarget: 'results-section'
+      });
+
+      // Réinitialise la cible après le scroll pour permettre de re-cliquer
+      setTimeout(() => {
+        this.setData({ scrollTarget: '' });
+      }, 500);
+    }, 200);
   },
 
   // ==========================================
@@ -245,7 +268,7 @@ Page({
     const zone = e.currentTarget.dataset.zone;
     if (!zone) return;
     this.setData({ place: zone });
-    this.doSearch(zone, this.data.budget ? Number(String(this.data.budget).replace(/\D/g, '')) : 0);
+    this.doSearch(zone, this.data.budget ? Number(String(this.data.budget).replace(/\D/g, '')) : 0, true);
   },
 
   onApplyBudgetBump(e) {
@@ -254,12 +277,12 @@ Page({
     const nextBudget = add > 0 ? current + add : 0;
     const formatted = nextBudget > 0 ? formatMoney(nextBudget) : '';
     this.setData({ budget: formatted });
-    this.doSearch(this.data.place, nextBudget);
+    this.doSearch(this.data.place, nextBudget, true);
   },
 
   onResetSearch() {
     this.setData({ place: '', budget: '' });
-    this.doSearch('', 0);
+    this.doSearch('', 0, true);
   },
 
   // Clic sur une carte logement -> Détail du logement
@@ -354,7 +377,7 @@ Page({
       isRecording: false
     });
 
-    this.doSearch(targetPlace, numBudget);
+    this.doSearch(targetPlace, numBudget, true);
 
     this.showMagnifiqueToast({
       title: 'Recherche vocale appliquée',

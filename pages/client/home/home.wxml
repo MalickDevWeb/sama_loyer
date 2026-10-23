@@ -30,6 +30,8 @@
     scroll-y="{{true}}" 
     enhanced="{{true}}" 
     show-scrollbar="{{false}}"
+    scroll-into-view="{{ scrollTarget }}"
+    scroll-with-animation="{{ true }}"
   >
     <!-- En-tête SAMA LOYER -->
     <view class="sama-header" style="padding-top: {{ statusBarHeight + 12 }}px;">
@@ -119,12 +121,24 @@
       </view>
 
       <!-- Bouton split : Rechercher (gauche) + Parler (droite) -->
-      <view class="split-search-btn">
-        <view class="split-left" hover-class="sl-hover" bindtap="onSearchTap">
-          <view class="icon-svg icon-search-white"></view>
-          <text class="btn-search-label">Rechercher</text>
+      <view class="split-search-btn {{ isSearching ? 'split-search-btn--loading' : '' }}">
+        <view 
+          class="split-left" 
+          hover-class="split-left--active" 
+          hover-stay-time="100" 
+          bindtap="onSearchTap"
+        >
+          <view class="search-btn-icon-box {{ isSearching ? 'icon-spin' : '' }}">
+            <view class="icon-svg icon-search-white"></view>
+          </view>
+          <text class="btn-search-label">{{ isSearching ? 'Recherche en cours…' : 'Rechercher' }}</text>
         </view>
-        <view class="split-right-pill" hover-class="sl-hover" bindtap="onVoiceTap">
+        <view 
+          class="split-right-pill" 
+          hover-class="split-right--active" 
+          hover-stay-time="100" 
+          bindtap="onVoiceTap"
+        >
           <view class="icon-svg icon-mic-berry"></view>
           <text class="btn-voice-label">Parler</text>
         </view>
@@ -149,7 +163,7 @@
     <!-- ======================================================== -->
     <!-- SECTION RÉSULTATS : AFFICHÉS DIRECTEMENT SOUS LES CRITÈRES -->
     <!-- ======================================================== -->
-    <view class="inline-results-section">
+    <view id="results-section" class="inline-results-section">
       <!-- Cas A : Des logements correspondent -->
       <block wx:if="{{ results && results.length > 0 }}">
         <!-- En-tête des résultats trouvés -->
@@ -173,7 +187,8 @@
             <view 
               class="rec-card {{ index === 0 ? 'rec-card--best' : '' }}" 
               data-item="{{ item }}" 
-              hover-class="sl-hover"
+              hover-class="rec-card--hover"
+              hover-stay-time="80"
               bindtap="onListingTap"
             >
               <!-- Hero illustration teintée avec rang et favoris -->
