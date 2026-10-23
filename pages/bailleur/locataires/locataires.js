@@ -1,6 +1,7 @@
 import { getStoredLocataires, confirmLocataireCashPayment } from '../../../utils/helpers/store';
 import { requireBailleurAccess } from '../../../utils/helpers/store';
 import { COLORS } from '../../../utils/constants/theme';
+import { bailleurGuardBehavior } from '../../../utils/behaviors/index';
 
 // pages/bailleur/locataires/locataires.js
 // Loyer mensuel lu dans « Studio · Pikine Rue 10 · 95 000 F »
@@ -69,6 +70,9 @@ const INITIAL_LOCATAIRES = [
 ];
 
 Page({
+  // Bloque la page si l'essai ou l'abonnement se termine pendant qu'elle est affichée
+  behaviors: [bailleurGuardBehavior],
+
   data: {
     statusBarHeight: 44,
     activeFilter: 'all', // 'all' | 'a_confirmer' | 'en_retard' | 'payes'

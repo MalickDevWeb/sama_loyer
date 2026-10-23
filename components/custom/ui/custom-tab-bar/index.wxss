@@ -1,0 +1,26 @@
+/* Bandeau « Hors connexion » affiché en haut de l'écran */
+.ctb-offline {
+  position: fixed;
+  left: 24rpx;
+  right: 24rpx;
+  z-index: 999;
+  margin-top: 12rpx;
+  padding: 14rpx 24rpx;
+  border-radius: var(--sl-radius-pill);
+  background: var(--sl-navy);
+  color: var(--sl-on-dark);
+  font-size: var(--sl-fs-small);
+  font-weight: var(--sl-fw-bold);
+  display: flex;
+  align-items: center;
+  gap: 14rpx;
+  box-shadow: var(--sl-shadow-raised);
+}
+
+.ctb-offline__dot {
+  flex: none;
+  width: 14rpx;
+  height: 14rpx;
+  border-radius: 50%;
+  background: #F5A623;
+}

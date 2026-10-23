@@ -1,7 +1,16 @@
 import { setCustomTabBarActive } from '../../../utils/helpers/tab-bar';
-import { getConversations } from '../../../utils/mocks/conversations';
+import { enrichConversation } from '../../../utils/mocks/conversations';
+import { getStoredConversations } from '../../../utils/helpers/store';
+import { Bus } from '../../../utils/event/index';
+import { EVENTS } from '../../../utils/event/keys';
 
-const CONVERSATIONS = getConversations();
+// Conversations enregistrées (dernier message et non-lus à jour)
+const loadConversations = () => getStoredConversations().map(enrichConversation).filter(Boolean);
+
+const unreadTabs = (list) => [
+  { id: 'all', label: 'Toutes' },
+  { id: 'unread', label: `Non lues (${list.filter((c) => c.unread).length})` }
+];
 
 // Recherche insensible aux accents et à la casse
 const norm = (s) => String(s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
@@ -16,11 +25,8 @@ Page({
     statusBarHeight: 24,
     filter: 'all', // 'all' | 'unread'
     query: '',
-    tabs: [
-      { id: 'all', label: 'Toutes' },
-      { id: 'unread', label: `Non lues (${CONVERSATIONS.filter((c) => c.unread).length})` }
-    ],
-    visible: CONVERSATIONS.map(withAria)
+    tabs: unreadTabs([]),
+    visible: []
   },
 
   onLoad() {
@@ -30,16 +36,31 @@ Page({
         this.setData({ statusBarHeight: sys.statusBarHeight });
       }
     } catch (e) {}
+
+    // Nouveau message ou discussion lue : la liste se met à jour en direct
+    this.offMessages = Bus.on(EVENTS.MESSAGES_CHANGED, ({ side }) => {
+      if (side === 'client') this.reload();
+    });
+  },
+
+  onUnload() {
+    if (this.offMessages) this.offMessages();
   },
 
   onShow() {
     setCustomTabBarActive(this, 'messages');
+    this.reload();
+  },
+
+  reload() {
+    this.all = loadConversations();
+    this.setData({ tabs: unreadTabs(this.all) }, () => this.refresh());
   },
 
   refresh() {
     const { filter, query } = this.data;
     const q = norm(query);
-    const visible = CONVERSATIONS.filter((c) => {
+    const visible = (this.all || []).filter((c) => {
       if (filter === 'unread' && !c.unread) return false;
       return !q || norm(`${c.name} ${c.property}`).includes(q);
     }).map(withAria);

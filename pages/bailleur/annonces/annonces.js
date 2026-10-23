@@ -4,8 +4,12 @@ import { storage } from '../../../utils/storage';
 import { withCover } from '../../../utils/mocks/media';
 import { requireBailleurAccess } from '../../../utils/helpers/store';
 import { COLORS } from '../../../utils/constants/theme';
+import { bailleurGuardBehavior } from '../../../utils/behaviors/index';
 
 Page({
+  // Bloque la page si l'essai ou l'abonnement se termine pendant qu'elle est affichée
+  behaviors: [bailleurGuardBehavior],
+
   data: {
     statusBarHeight: 44,
     headerPaddingTop: 92,

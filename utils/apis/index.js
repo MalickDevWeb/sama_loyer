@@ -25,9 +25,19 @@ import {
   getStoredRawVisites,
   getStoredBailleurAnnonces,
   getStoredLocataires,
-  recordLoyerPayment
+  recordRentPayment
 } from '../helpers/store.js';
 import { RENTED_HOMES } from '../mocks/loyers.js';
+import { cached, invalidateCache } from './cache.js';
+import { Bus } from '../event/index.js';
+import { EVENTS } from '../event/keys.js';
+
+// Durée de vie en cache des lectures (ms)
+const TTL = {
+  LOGEMENTS: 5 * 60 * 1000,
+  LOGEMENT_DETAIL: 10 * 60 * 1000,
+  PERSONAL: 60 * 1000 // loyers, visites, données du bailleur : changent plus souvent
+};
 
 export const ENDPOINTS = {
   LOGEMENTS: '/api/v1/logements',
@@ -100,7 +110,7 @@ class BackendAPI {
    * @param {Object} [filters]
    * @returns {Promise<Array>}
    */
-  async getLogements(filters = {}) {
+  async #fetchLogements(filters = {}) {
     try {
       await authenticate();
       const res = await this.#client.get(ENDPOINTS.LOGEMENTS, { params: filters });
@@ -119,7 +129,7 @@ class BackendAPI {
    * @param {string} id
    * @returns {Promise<Object>}
    */
-  async getLogementDetail(id) {
+  async #fetchLogementDetail(id) {
     try {
       await authenticate();
       const res = await this.#client.get(ENDPOINTS.LOGEMENT_DETAIL(id));
@@ -140,7 +150,7 @@ class BackendAPI {
    * Récupère la liste des loyers du locataire connecté.
    * @returns {Promise<Array>}
    */
-  async getLoyers() {
+  async #fetchLoyers() {
     try {
       await authenticate();
       const res = await this.#client.get(ENDPOINTS.LOYERS);
@@ -163,12 +173,11 @@ class BackendAPI {
       await authenticate();
       const res = await this.#client.post(ENDPOINTS.LOYER_PAY(loyerId), payload);
       const body = extractApiResponse(res, 'Échec de la validation du paiement');
+      invalidateCache('loyers');
       return body.data || body;
     } catch (err) {
-      // Enregistrement local résilient pour la démo
-      if (typeof recordLoyerPayment === 'function') {
-        recordLoyerPayment(loyerId, payload.amount || 0);
-      }
+      // Enregistrement local résilient pour la démo (publie RENT_PAID -> cache vidé)
+      recordRentPayment(loyerId, payload.amount || 0);
       return { success: true, transactionId: 'OM-SN-' + Date.now(), mode: 'offline_fallback' };
     }
   }
@@ -181,7 +190,7 @@ class BackendAPI {
    * Récupère les visites programmées.
    * @returns {Promise<Array>}
    */
-  async getVisites() {
+  async #fetchVisites() {
     try {
       await authenticate();
       const res = await this.#client.get(ENDPOINTS.VISITES);
@@ -204,6 +213,7 @@ class BackendAPI {
       await authenticate();
       const res = await this.#client.post(ENDPOINTS.VISITE_CREATE, payload);
       const body = extractApiResponse(res, 'Impossible de réserver ce créneau');
+      invalidateCache('visites');
       return this.#sculpt(body.data || body, VisiteSchema, 'Erreur de transformation de la visite');
     } catch (err) {
       return { success: true, id: 'vis-' + Date.now(), ...payload };
@@ -218,7 +228,7 @@ class BackendAPI {
    * Récupère les annonces du propriétaire connecté.
    * @returns {Promise<Array>}
    */
-  async getBailleurAnnonces() {
+  async #fetchBailleurAnnonces() {
     try {
       await authenticate();
       const res = await this.#client.get(ENDPOINTS.BAILLEUR_ANNONCES);
@@ -233,7 +243,7 @@ class BackendAPI {
    * Récupère la liste des locataires du propriétaire.
    * @returns {Promise<Array>}
    */
-  async getBailleurLocataires() {
+  async #fetchBailleurLocataires() {
     try {
       await authenticate();
       const res = await this.#client.get(ENDPOINTS.BAILLEUR_LOCATAIRES);
@@ -244,10 +254,53 @@ class BackendAPI {
     }
   }
 
+  // ==========================================================================
+  // LECTURES AVEC CACHE (utils/apis/cache.js)
+  // Les pages appellent ces méthodes. Option { force: true } pour ignorer le cache
+  // (ex. « tirer pour rafraîchir »).
+  // ==========================================================================
+
+  getLogements(filters = {}, options = {}) {
+    return cached(`logements:${JSON.stringify(filters)}`, () => this.#fetchLogements(filters), { ttl: TTL.LOGEMENTS, ...options });
+  }
+
+  getLogementDetail(id, options = {}) {
+    return cached(`logement:${id}`, () => this.#fetchLogementDetail(id), { ttl: TTL.LOGEMENT_DETAIL, ...options });
+  }
+
+  getLoyers(options = {}) {
+    return cached('loyers', () => this.#fetchLoyers(), { ttl: TTL.PERSONAL, ...options });
+  }
+
+  getVisites(options = {}) {
+    return cached('visites', () => this.#fetchVisites(), { ttl: TTL.PERSONAL, ...options });
+  }
+
+  getBailleurAnnonces(options = {}) {
+    return cached('bailleur:annonces', () => this.#fetchBailleurAnnonces(), { ttl: TTL.PERSONAL, ...options });
+  }
+
+  getBailleurLocataires(options = {}) {
+    return cached('bailleur:locataires', () => this.#fetchBailleurLocataires(), { ttl: TTL.PERSONAL, ...options });
+  }
+
   resetSession() {
     this.#client.resetSession();
+    invalidateCache();
   }
 }
 
 export const backendAPI = new BackendAPI();
 export { BackendAPI };
+
+// ============================================================================
+// COHÉRENCE DU CACHE : chaque écriture publie son événement (store.js) ;
+// on vide alors le cache concerné pour que la prochaine lecture soit à jour.
+// ============================================================================
+Bus.on(EVENTS.RENT_PAID, () => invalidateCache('loyers'));
+Bus.on(EVENTS.VISITES_CHANGED, () => invalidateCache('visites'));
+Bus.on(EVENTS.LOGEMENTS_CHANGED, () => {
+  invalidateCache('logement');
+  invalidateCache('bailleur:annonces');
+});
+Bus.on(EVENTS.LOCATAIRES_CHANGED, () => invalidateCache('bailleur:locataires'));

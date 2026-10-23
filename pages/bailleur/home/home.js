@@ -10,6 +10,7 @@ import {
   formatLongDate,
   BAILLEUR_PLANS
 } from '../../../utils/helpers/store';
+import { bailleurGuardBehavior } from '../../../utils/behaviors/index';
 
 const MX_REDIRECT_MS = 1600;
 
@@ -18,6 +19,9 @@ function fmt(n) {
 }
 
 Page({
+  // Bloque la page si l'essai ou l'abonnement se termine pendant qu'elle est affichée
+  behaviors: [bailleurGuardBehavior],
+
   data: {
     statusBarHeight: 44,
     bailleurName: 'Moussa',
@@ -48,6 +52,11 @@ Page({
         statusBarHeight: sys.statusBarHeight || 44
       });
     } catch (e) {}
+  },
+
+  // Fin d'essai ou d'abonnement pendant que l'accueil est affiché : on montre l'écran verrouillé
+  onBailleurAccessLost() {
+    this.syncAccount();
   },
 
   onShow() {

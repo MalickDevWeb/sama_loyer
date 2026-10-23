@@ -1,4 +1,5 @@
 import { requireBailleurAccess } from '../../../utils/helpers/store';
+import { bailleurGuardBehavior } from '../../../utils/behaviors/index';
 const HOMES = ['Chambre salon · Icotaf', 'Studio · Pikine Rue 10', 'Chambre · Pikine Est'];
 const DAYS = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'];
 const HOURS = ['9 h', '10 h', '11 h', '12 h', '16 h', '17 h', '18 h', '19 h'];
@@ -9,6 +10,9 @@ const OPEN = { 0: true, 2: true, 4: true, 5: true, 6: true };
 const EXTRA_BLOCKS = ['Mardi 3 novembre', 'Samedi 7 novembre', 'Mardi 10 novembre', 'Samedi 14 novembre'];
 
 Page({
+  // Bloque la page si l'essai ou l'abonnement se termine pendant qu'elle est affichée
+  behaviors: [bailleurGuardBehavior],
+
   data: {
     statusBarHeight: 20,
     homes: HOMES,

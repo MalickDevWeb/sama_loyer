@@ -1,6 +1,11 @@
 import { getBailleurConversation } from '../../../utils/mocks/bailleur-conversations';
-import { addStoredMessage } from '../../../utils/helpers/store';
-import { requireBailleurAccess } from '../../../utils/helpers/store';
+import {
+  requireBailleurAccess,
+  getStoredBailleurConversation,
+  addStoredBailleurMessage,
+  markBailleurConversationRead
+} from '../../../utils/helpers/store';
+import { bailleurGuardBehavior } from '../../../utils/behaviors/index';
 
 function now() {
   const d = new Date();
@@ -8,6 +13,9 @@ function now() {
 }
 
 Page({
+  // Bloque la page si l'essai ou l'abonnement se termine pendant qu'elle est affichée
+  behaviors: [bailleurGuardBehavior],
+
   data: {
     statusBarHeight: 20,
     conv: { name: '', initials: '', color: '#0F1E3D', listing: '', visit: '' },
@@ -34,7 +42,11 @@ Page({
 
     const id = options && options.id ? decodeURIComponent(options.id) : 'awa-diop';
     const name = options && options.name ? decodeURIComponent(options.name) : '';
-    const conv = getBailleurConversation(id, name);
+    // Conversation enregistrée (messages déjà échangés) ou nouveau contact
+    const base = getBailleurConversation(id, name);
+    const stored = getStoredBailleurConversation(base.id);
+    const conv = stored ? Object.assign({}, base, stored) : base;
+    markBailleurConversationRead(conv.id);
 
     // Actions déjà faites dans cette conversation
     this.done = { addr: false, contract: false, offer: false };
@@ -71,8 +83,10 @@ Page({
   },
 
   pushEvent(ev) {
-    this.setData({ messages: [...this.data.messages, { id: `e-${Date.now()}`, event: true, ...ev }] });
+    const event = { id: `e-${Date.now()}`, event: true, ...ev };
+    this.setData({ messages: [...this.data.messages, event] });
     this.scrollDown();
+    addStoredBailleurMessage(this.conv.id, event, this.conv);
   },
 
   pushMessage(text) {
@@ -85,12 +99,8 @@ Page({
     });
     this.scrollDown();
 
-    try {
-      const convId = (this.data.conv && this.data.conv.id) || 'moussa-d';
-      addStoredMessage(convId, newMsg);
-    } catch (e) {
-      console.warn('[BailleurConv] addStoredMessage error:', e);
-    }
+    // Enregistré côté bailleur uniquement (ne se mélange pas aux discussions du locataire)
+    addStoredBailleurMessage(this.conv.id, newMsg, this.conv);
   },
 
   onBack() {

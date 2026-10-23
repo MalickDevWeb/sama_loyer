@@ -8,6 +8,7 @@ import {
   BAILLEUR_PLANS
 } from '../../../utils/helpers/store';
 import { COLORS } from '../../../utils/constants/theme';
+import { bailleurGuardBehavior } from '../../../utils/behaviors/index';
 
 const MX_REDIRECT_MS = 1600;
 const DAY_MS = 24 * 60 * 60 * 1000;
@@ -22,6 +23,9 @@ const BOOSTS = {
   boost30: { id: 'boost30', title: 'Boost 30 jours', days: 30, price: 6000 }
 };
 Page({
+  // Bloque la page si l'essai ou l'abonnement se termine pendant qu'elle est affichée
+  behaviors: [bailleurGuardBehavior],
+
   data: {
     statusBarHeight: 44,
     selectedOption: 'boost30',

@@ -1,3 +1,9 @@
+<!-- Bandeau hors connexion (état réseau publié par app.js dans l'EventBus) -->
+<view wx:if="{{ offline }}" class="ctb-offline" style="top: {{ offlineTop }}px;" aria-live="polite">
+  <view class="ctb-offline__dot"></view>
+  <text>Hors connexion · les données affichées peuvent ne pas être à jour</text>
+</view>
+
 <app-tab-bar
   tabs="{{ tabs }}"
   activeTab="{{ activeTab }}"

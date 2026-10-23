@@ -1,5 +1,16 @@
 import { storage } from '../../../../utils/storage.js';
 import { CLIENT_TABS, BAILLEUR_TABS, STORAGE_KEYS } from '../../../../utils/constants/index';
+import { Bus } from '../../../../utils/event/index';
+import { STATE_KEYS } from '../../../../utils/event/keys';
+
+// Onglet qui porte le badge « messages non lus » selon l'espace
+const MESSAGES_TAB = { client: 'messages', bailleur: 'b-messages' };
+
+/** Badge affiché : rien à 0, « 9+ » au-delà de 9 */
+function badgeText(n) {
+  if (!n) return '';
+  return n > 9 ? '9+' : String(n);
+}
 
 Component({
   properties: {
@@ -16,11 +27,29 @@ Component({
 
   data: {
     tabs: CLIENT_TABS,
+    offline: false,
+    offlineTop: 0,
   },
 
   lifetimes: {
     attached() {
+      let statusBar = 20;
+      try {
+        statusBar = wx.getSystemInfoSync().statusBarHeight || 20;
+      } catch (e) {}
+      this.setData({ offlineTop: statusBar, offline: Bus.getState(STATE_KEYS.NETWORK_CONNECTED, true) === false });
       this.syncTabs();
+
+      // EventBus : badge des messages non lus et bandeau hors connexion, en direct
+      const refresh = () => this.syncTabs();
+      this._unsubs = [
+        Bus.onState(STATE_KEYS.UNREAD_CLIENT, refresh),
+        Bus.onState(STATE_KEYS.UNREAD_BAILLEUR, refresh),
+        Bus.onState(STATE_KEYS.NETWORK_CONNECTED, ({ value }) => this.setData({ offline: value === false })),
+      ];
+    },
+    detached() {
+      (this._unsubs || []).forEach((off) => off());
     },
   },
 
@@ -46,7 +75,11 @@ Component({
         isBailleur = storage.get(STORAGE_KEYS.USER_ROLE, 'client') === 'bailleur';
       }
 
-      const currentTabs = isBailleur ? BAILLEUR_TABS : CLIENT_TABS;
+      const side = isBailleur ? 'bailleur' : 'client';
+      const unread = Bus.getState(isBailleur ? STATE_KEYS.UNREAD_BAILLEUR : STATE_KEYS.UNREAD_CLIENT, 0);
+      const currentTabs = (isBailleur ? BAILLEUR_TABS : CLIENT_TABS).map((t) =>
+        t.id === MESSAGES_TAB[side] ? Object.assign({}, t, { badge: badgeText(unread) }) : t
+      );
       
       const cleanRoute = route.replace(/^\//, '');
       const match = currentTabs.find(t => t.url.replace(/^\//, '') === cleanRoute);

@@ -1,5 +1,5 @@
-import { findConversation } from '../../../utils/mocks/conversations';
-import { getStoredConversation, addStoredMessage } from '../../../utils/helpers/store';
+import { findConversation, enrichConversation } from '../../../utils/mocks/conversations';
+import { getStoredConversations, addStoredMessage, markConversationRead } from '../../../utils/helpers/store';
 
 function now() {
   const d = new Date();
@@ -43,9 +43,12 @@ Page({
     const paramId = options && options.id ? decodeURIComponent(options.id) : '';
     const paramLogement = options && options.logementId ? decodeURIComponent(options.logementId) : '';
     
+    // Conversation enregistrée (avec les messages déjà envoyés), complétée pour l'affichage
+    const key = paramId || paramLogement || 'moussa-d';
     let conversation = null;
     try {
-      conversation = getStoredConversation(paramId || paramLogement || 'moussa-d');
+      const stored = getStoredConversations().find((c) => c.id === key || c.logementId === key);
+      conversation = enrichConversation(stored);
     } catch (e) {}
 
     if (!conversation) {
@@ -58,6 +61,9 @@ Page({
     this.raw = (conversation.messages || []).slice();
     this.setData({ conversation, messages: withMeta(this.raw) });
     this.scrollDown();
+
+    // Discussion ouverte : ses messages sont lus (badge de l'onglet mis à jour)
+    markConversationRead(conversation.id);
   },
 
   scrollDown() {
@@ -123,7 +129,7 @@ Page({
 
     try {
       const convId = (this.data.conversation && (this.data.conversation.id || this.data.conversation.logementId)) || 'moussa-d';
-      addStoredMessage(convId, newMsg);
+      addStoredMessage(convId, newMsg, this.data.conversation && this.data.conversation.logementId);
     } catch (e) {
       console.warn('[Chat] addStoredMessage error:', e);
     }

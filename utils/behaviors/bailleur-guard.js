@@ -3,7 +3,7 @@
 // Si l'essai ou l'abonnement se termine pendant que le bailleur est sur une page,
 // app.js publie EVENTS.BAILLEUR_ACCESS_LOST : la page affichée se bloque aussitôt.
 //
-//   import { bailleurGuardBehavior } from '../../../utils/helpers/bailleur-guard';
+//   import { bailleurGuardBehavior } from '../../../utils/behaviors/index';
 //   Page({ behaviors: [bailleurGuardBehavior], ... });
 //
 // Une page peut définir onBailleurAccessLost() pour réagir elle-même
@@ -13,7 +13,7 @@
 
 import { Bus } from '../event/index.js';
 import { EVENTS } from '../event/keys.js';
-import { requireBailleurAccess } from './store.js';
+import { requireBailleurAccess } from '../helpers/store.js';
 
 export const bailleurGuardBehavior = Behavior({
   lifetimes: {

@@ -138,6 +138,19 @@ export function getConversations() {
 }
 
 /**
+ * Complète une conversation enregistrée (store.js) pour l'affichage : bailleur,
+ * logement, dernier message, statut. Une conversation créée pendant l'utilisation
+ * n'a pas de statut : elle est « Nouveau ».
+ * @param {Object} conv - conversation brute du stockage
+ * @returns {Object|null}
+ */
+export function enrichConversation(conv) {
+  if (!conv) return null;
+  const demo = CONVERSATIONS.find((c) => c.id === conv.id) || {};
+  return withLogement(Object.assign({ status: demo.status || 'Nouveau', statusKind: demo.statusKind || 'wait' }, conv));
+}
+
+/**
  * Retrouve une conversation par son id, ou à défaut celle d'un logement.
  * Si aucune conversation n'existe pour ce logement, en crée une vide.
  * @param {{ id?: string, logementId?: string }} query

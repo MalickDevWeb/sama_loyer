@@ -3,6 +3,7 @@ import { addStoredLogement } from '../../../utils/helpers/store';
 import { formatMoney } from '../../../utils/mocks/logements';
 import { getMedia } from '../../../utils/mocks/media';
 import { requireBailleurAccess } from '../../../utils/helpers/store';
+import { bailleurGuardBehavior } from '../../../utils/behaviors/index';
 
 const MAX_PHOTOS = 8;
 const DEMO_MEDIA = getMedia('nouvelle-annonce');
@@ -20,6 +21,9 @@ const photoState = (photos) => ({
 const videoState = (video) => ({ video, videoPoster: video ? video.poster : '', hasVideo: !!video });
 
 Page({
+  // Bloque la page si l'essai ou l'abonnement se termine pendant qu'elle est affichée
+  behaviors: [bailleurGuardBehavior],
+
   data: {
     // En-tête calé sur la capsule WeChat (valeurs recalculées dans onLoad)
     headStyle: 'padding-top: 44px;',

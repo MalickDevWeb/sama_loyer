@@ -244,3 +244,43 @@ onUnload() {
 
 - [App Lifecycle](04-app-lifecycle.md) — Where state keys and events are defined
 - [Behaviors Guide](11-behaviors-guide.md) — Alternative for component-local state
+
+---
+
+## SAMA LOYER : ce qui passe par l'EventBus
+
+**Règle :** les pages relisent leurs données dans `onShow` (fiable pour un changement d'écran). L'EventBus sert en plus aux mises à jour **en direct**, sans changer de page : badge, page déjà affichée, composant.
+
+**Noms :** toujours via [`utils/event/keys.js`](../utils/event/keys.js) (`STATE_KEYS`, `EVENTS`), jamais écrits en dur.
+
+**Qui publie :** uniquement les fonctions d'écriture (`utils/helpers/store.js`, `favorites.js`, `utils/i18n/index.js`, `app.js`). Une page qui modifie une donnée appelle la fonction du store, et l'événement part tout seul.
+
+| Événement / état | Publié par | Écouté par |
+|---|---|---|
+| `STATE_KEYS.UNREAD_CLIENT` / `UNREAD_BAILLEUR` | `publishUnreadCounts()` (store), au démarrage et à chaque message lu ou envoyé | Barre d'onglets : badge de l'onglet Messages |
+| `STATE_KEYS.NETWORK_CONNECTED` | `app.js` | Barre d'onglets : bandeau « Hors connexion » |
+| `EVENTS.MESSAGES_CHANGED` `{ side, convId }` | `addStoredMessage`, `markConversationRead`, `addStoredBailleurMessage`, `markBailleurConversationRead` | Listes Messages locataire et bailleur |
+| `EVENTS.LOCALE_CHANGED` `{ locale }` | `setLocale()` | `i18nBehavior` : les pages ouvertes changent de langue |
+| `EVENTS.BAILLEUR_ACCESS_LOST` | `app.js`, qui vérifie toutes les 30 s pendant que l'appli est ouverte | `bailleurGuardBehavior` (toutes les pages bailleur) : la page affichée se bloque |
+| `EVENTS.BAILLEUR_ACCOUNT_CHANGED` | activation, renouvellement, boost | Disponible (les pages relisent dans `onShow`) |
+| `EVENTS.FAVORITES_CHANGED`, `VISITES_CHANGED`, `RENT_PAID`, `LOGEMENTS_CHANGED`, `LOCATAIRES_CHANGED` | store / favorites | Disponibles pour les prochains écrans en direct |
+
+**S'abonner dans une page** (toujours se désabonner) :
+
+```javascript
+import { Bus } from '../../../utils/event/index';
+import { EVENTS } from '../../../utils/event/keys';
+
+Page({
+  onLoad() {
+    this.offMessages = Bus.on(EVENTS.MESSAGES_CHANGED, ({ side }) => {
+      if (side === 'client') this.reload();
+    });
+  },
+  onUnload() {
+    if (this.offMessages) this.offMessages();
+  },
+});
+```
+
+Dans un composant, s'abonner dans `lifetimes.attached` et se désabonner dans `lifetimes.detached`.

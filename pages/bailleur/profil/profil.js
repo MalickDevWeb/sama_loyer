@@ -9,6 +9,7 @@ import { STORAGE_KEYS } from '../../../utils/constants/index';
 import { setCustomTabBarActive } from '../../../utils/helpers/tab-bar';
 import { getBailleurAccount, BAILLEUR_PLANS, formatLongDate } from '../../../utils/helpers/store';
 import { requireBailleurAccess } from '../../../utils/helpers/store';
+import { bailleurGuardBehavior } from '../../../utils/behaviors/index';
 
 function initialsOf(name) {
   return String(name || '').trim().split(/\s+/).slice(0, 2).map((w) => w.charAt(0).toUpperCase()).join('') || 'B';
@@ -20,6 +21,9 @@ function formatPhone(phone) {
 }
 
 Page({
+  // Bloque la page si l'essai ou l'abonnement se termine pendant qu'elle est affichée
+  behaviors: [bailleurGuardBehavior],
+
   data: {
     statusBarHeight: 44,
     activeModal: null, // 'help' | 'security' | 'support' | null
