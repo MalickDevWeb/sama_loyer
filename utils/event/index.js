@@ -1,4 +1,4 @@
-import { eventBus } from "./builder";
+import { eventBus } from "./builder.js";
 
 /**
  * TCMPP Event Bus - Enterprise-Grade State Management + Event System

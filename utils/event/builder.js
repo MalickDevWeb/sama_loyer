@@ -1,5 +1,5 @@
 
-import { Validator } from "./validator";
+import { Validator } from "./validator.js";
 
 /**
  * Advanced Event Bus with full validation, async middleware, and replay capabilities

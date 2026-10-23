@@ -342,7 +342,7 @@ export function addStoredRentedHome(logement, amountPaid, options = {}) {
       {
         id: `rec-entree-${Date.now()}`,
         label: 'Entrée : avance + caution',
-        sub: `Payé le ${dateStr} · Orange Money`,
+        sub: `Payé le ${dateStr} · Max it`,
         amount: amountPaid || (logement.price + logement.caution),
         kind: 'entry',
         ref: `REC-ENT-${Date.now().toString().slice(-6)}`

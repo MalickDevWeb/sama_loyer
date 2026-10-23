@@ -1,0 +1,11 @@
+{
+  "name": "sama-loyer",
+  "version": "1.0.0",
+  "description": "Mini-Programme SAMA LOYER pour Orange Max it (TCMPP)",
+  "type": "module",
+  "scripts": {
+    "test": "node tests/run.js"
+  },
+  "author": "SAMA LOYER Team",
+  "license": "UNLICENSED"
+}

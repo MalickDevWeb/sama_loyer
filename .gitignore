@@ -1,2 +1,5 @@
 /utils/config.js
 .claude/
+.DS_Store
+*.DS_Store
+Thumbs.db

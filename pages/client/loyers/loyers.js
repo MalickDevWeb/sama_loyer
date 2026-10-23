@@ -215,7 +215,7 @@ Page({
   onShareReceipt() {
     if (!this.data.quittance) return;
     wx.setClipboardData({
-      data: `Quittance certifiée SAMA LOYER ${this.data.quittance.quittanceNo} · ${this.data.quittance.logementTitle} (${this.data.quittance.totalPayeText}) · Acquitté Orange Money`,
+      data: `Quittance certifiée SAMA LOYER ${this.data.quittance.quittanceNo} · ${this.data.quittance.logementTitle} (${this.data.quittance.totalPayeText}) · Acquitté Max it`,
       success: () => wx.showToast({ title: 'Lien de quittance copié', icon: 'success' })
     });
   },

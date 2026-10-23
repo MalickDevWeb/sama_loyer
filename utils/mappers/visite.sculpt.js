@@ -27,3 +27,4 @@ export const VisiteSchema = {
   note: '@link.note',
   createdAt: '@link.createdAt',
 };
+

@@ -45,7 +45,7 @@ export default {
 
   home: {
     greeting: 'Trouve ton prochain logement à Dakar',
-    subGreeting: 'Recherche intelligente certifiée par Orange Money',
+    subGreeting: 'Recherche intelligente certifiée par Max it',
     voiceCta: 'Dis ce que tu cherches',
     voiceListening: 'À l’écoute... (Wolof ou Français)',
     voiceStop: 'Arrêter l’écoute',
@@ -72,7 +72,7 @@ export default {
     paid: 'Payé',
     pending: 'En attente',
     late: 'En retard',
-    maxitGuarantee: 'Paiement sécurisé via Max it / Orange Money',
+    maxitGuarantee: 'Paiement sécurisé via Max it',
   },
 
   visites: {
@@ -96,7 +96,7 @@ export default {
     langFr: 'Français',
     langWo: 'Wolof',
     languageChangedToast: 'Langue changée avec succès !',
-    kycStatus: 'Identité vérifiée Orange Money',
+    kycStatus: 'Identité vérifiée Max it',
     notifications: 'Notifications SMS & Max it',
     helpCenter: 'Aide & Conditions légales',
     aboutApp: 'À propos de SAMA LOYER',

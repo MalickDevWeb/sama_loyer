@@ -168,5 +168,35 @@ Page({
   onCall(e) {
     const phone = e.currentTarget.dataset.phone || '771234567';
     wx.makePhoneCall({ phoneNumber: phone });
+  },
+
+  onCallClient(e) {
+    const phone = e.currentTarget.dataset.phone || '771234567';
+    wx.makePhoneCall({
+      phoneNumber: String(phone).replace(/\s+/g, '')
+    });
+  },
+
+  onWhatsAppClient(e) {
+    const { name, phone } = e.currentTarget.dataset || {};
+    const cleanPhone = String(phone || '77 123 45 67').replace(/\s+/g, '');
+    wx.setClipboardData({
+      data: cleanPhone,
+      success: () => {
+        wx.showModal({
+          title: 'WhatsApp · ' + (name || 'Locataire'),
+          content: 'Le numéro ' + cleanPhone + ' a été copié. Vous pouvez lui écrire directement sur WhatsApp.',
+          showCancel: false,
+          confirmText: 'Compris',
+          confirmColor: COLORS.navy
+        });
+      }
+    });
+  },
+
+  onGoClientsPage() {
+    wx.redirectTo({
+      url: '/pages/bailleur/locataires/locataires'
+    });
   }
 });

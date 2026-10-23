@@ -116,7 +116,7 @@ export function getContratForHome(homeId, userProfile = {}) {
     articles: [
       { title: 'Objet du contrat', hint: 'Ce qui est loué', text: `Le bailleur loue au locataire le logement « ${h.name} » situé à ${h.place}, pour en faire son habitation principale. Le logement ne peut pas être sous-loué sans accord écrit.` },
       { title: 'Durée et renouvellement', hint: '12 mois reconductibles', text: 'Le contrat est conclu pour 12 mois. Il se renouvelle automatiquement, sauf préavis de départ d’1 mois déposé via l’application SAMA LOYER.' },
-      { title: 'Loyer et paiement', hint: `${loyer} F avant le 5`, text: `Le loyer est fixé à ${loyer} FCFA par mois, payable avec Orange Money (Max it) via SAMA LOYER avant le 5 de chaque mois civil. Une quittance horodatée est émise instantanément.` },
+      { title: 'Loyer et paiement', hint: `${loyer} F avant le 5`, text: `Le loyer est fixé à ${loyer} FCFA par mois, payable avec Max it via SAMA LOYER avant le 5 de chaque mois civil. Une quittance horodatée est émise instantanément.` },
       { title: 'Caution', hint: `${caution} F, restituée en fin de bail`, text: `La caution versée de ${caution} FCFA (${moisCaution} mois) est restituée dans un délai maximal de 30 jours après l’état des lieux de sortie contradictoire.` },
       { title: 'Charges et fluides', hint: 'À la charge du locataire', text: 'L’eau (SEN’EAU) et l’électricité (Woyofal Senelec) disposent de compteurs privatifs et incombent exclusivement au locataire.' },
       { title: 'Obligations du locataire', hint: 'Entretien & bon usage', text: 'Le locataire veille au bon entretien des lieux loués, respecte la quiétude du voisinage et signale sans délai toute dégradation anormale.' },
@@ -149,7 +149,7 @@ export function buildQuittance(home = {}, receipt = {}, userProfile = {}) {
     montantLoyerText: `${formatMoney(amount)} F`,
     montantChargesText: '0 F (compteurs séparés)',
     totalPayeText: `${formatMoney(amount)} F`,
-    modePaiement: 'Orange Money via Max it',
+    modePaiement: 'Max it',
     statut: 'ACQUITTÉ',
     hashSecurite: `OM-SN-${Math.floor(100000000 + Math.random() * 900000000)}`
   };

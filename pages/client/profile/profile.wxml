@@ -226,7 +226,7 @@
           <view class="prof__phone-card-top">
             <view class="prof__phone-sim-badge">
               <view class="ic ic-check-green prof__badge-ic"></view>
-              <text>SIM & Wallet Orange Money</text>
+              <text>Compte & Solde Max it</text>
             </view>
           </view>
           <text class="prof__phone-number">{{ userPhone }}</text>
@@ -246,7 +246,7 @@
             <view class="prof__sec-bullet"></view>
             <view class="prof__sec-box-text">
               <text class="prof__sec-box-title">Paiements de loyers sécurisés</text>
-              <text class="prof__sec-box-sub">Toutes vos quittances et débits Orange Money sont envoyés vers ce numéro.</text>
+              <text class="prof__sec-box-sub">Toutes vos quittances et débits Max it sont envoyés vers ce numéro.</text>
             </view>
           </view>
         </view>
@@ -364,7 +364,7 @@
 
         <view class="prof__faq-item">
           <view class="prof__faq-q ic-row"><view class="ic ic-card-berry ic--sm"></view><text>Comment payer mon loyer ?</text></view>
-          <text class="prof__faq-a">Dans l'onglet « Mes loyers », appuyez sur « Payer le loyer ». La transaction s'effectue en toute sécurité avec Orange Money et génère automatiquement un reçu horodaté officiel.</text>
+          <text class="prof__faq-a">Dans l'onglet « Mes loyers », appuyez sur « Payer le loyer ». La transaction s'effectue en toute sécurité avec Max it et génère automatiquement un reçu horodaté officiel.</text>
         </view>
 
         <view class="prof__faq-item">
