@@ -1,4 +1,5 @@
 import { storage } from '../../../utils/storage.js';
+import { getBailleurEntryUrl } from '../../../utils/helpers/store';
 import { STORAGE_KEYS } from '../../../utils/constants/index';
 import { setCustomTabBarActive } from '../../../utils/helpers/tab-bar';
 import { getFavoriteIds } from '../../../utils/helpers/favorites';
@@ -378,7 +379,7 @@ Page({
 
   onSwitchToBailleur() {
     storage.set(STORAGE_KEYS.USER_ROLE, 'bailleur');
-    wx.reLaunch({ url: '/pages/bailleur/home/home' });
+    wx.reLaunch({ url: getBailleurEntryUrl() });
   },
 
   onAskLogout() {

@@ -12,9 +12,6 @@
           <text>Numéro vérifié · Max it</text>
         </view>
       </view>
-      <view class="sl-icon-btn sl-icon-btn--soft" hover-class="sl-hover" bindtap="onOpenPersonalInfo" aria-label="Modifier le profil">
-        <view class="ic ic-edit-navy prof__edit-ic"></view>
-      </view>
     </view>
 
     <view class="prof__stats">
@@ -29,29 +26,6 @@
       <view class="prof__stat" hover-class="sl-hover" bindtap="onNavMessages">
         <text class="prof__stat-num">{{ stats.conversations }}</text>
         <text class="prof__stat-label">Conversations</text>
-      </view>
-    </view>
-  </view>
-
-  <!-- Mon compte -->
-  <view class="prof__section">
-    <text class="prof__section-title">MON COMPTE</text>
-    <view class="prof__group">
-      <view class="prof__row" hover-class="prof__row--hover" bindtap="onOpenPersonalInfo">
-        <view class="ic ic-user-berry prof__row-ic"></view>
-        <view class="prof__row-text">
-          <text class="prof__row-label">Informations personnelles</text>
-          <text class="prof__row-sub">{{ userProfile.job ? userProfile.job + ' · ' + (userProfile.city || 'Dakar') : 'Modifier le nom, e-mail et profession' }}</text>
-        </view>
-        <view class="ic ic-chevron-grey prof__chev"></view>
-      </view>
-      <view class="prof__row" hover-class="prof__row--hover" bindtap="onOpenPhone">
-        <view class="ic ic-mobile-berry prof__row-ic"></view>
-        <view class="prof__row-text">
-          <text class="prof__row-label">Numéro de téléphone</text>
-          <text class="prof__row-sub">{{ userPhone }} · Certifié Orange</text>
-        </view>
-        <view class="ic ic-chevron-grey prof__chev"></view>
       </view>
     </view>
   </view>
@@ -110,15 +84,20 @@
     </view>
   </view>
 
-  <!-- Bailleur -->
+  <!-- Bouton Changer de profil (Bascule vers le profil Bailleur) -->
   <view class="prof__section">
-    <view class="prof__owner" hover-class="sl-hover" bindtap="onSwitchToBailleur">
-      <view class="prof__owner-ic"><view class="ic ic-home-plus-white"></view></view>
-      <view class="prof__owner-text">
-        <text class="prof__owner-title">Vous êtes bailleur ?</text>
-        <text class="prof__owner-sub">Publier et gérer mes annonces</text>
+    <view class="prof__switch-profile" hover-class="prof__switch-profile--hover" bindtap="onSwitchToBailleur">
+      <view class="prof__switch-profile-ic">
+        <text class="prof__switch-emoji">👥</text>
       </view>
-      <view class="ic ic-chevron-white prof__chev"></view>
+      <view class="prof__switch-profile-text">
+        <text class="prof__switch-profile-title">Changer de profil</text>
+        <text class="prof__switch-profile-sub">Basculer vers le profil Bailleur</text>
+      </view>
+      <view class="prof__switch-profile-badge">
+        <text>Bailleur</text>
+        <text class="prof__switch-chevron">›</text>
+      </view>
     </view>
   </view>
 
@@ -144,12 +123,8 @@
     </view>
   </view>
 
-  <!-- Déconnexion -->
+  <!-- Version SAMA LOYER -->
   <view class="prof__section prof__section--last">
-    <view class="prof__logout" hover-class="sl-hover" bindtap="onAskLogout">
-      <view class="ic ic-logout-danger prof__logout-ic"></view>
-      <text>Se déconnecter</text>
-    </view>
     <text class="prof__version">SAMA LOYER · version 1.0 (Orange Max it)</text>
   </view>
 
@@ -494,16 +469,6 @@
           Fermer
         </button>
       </view>
-    </view>
-  </view>
-
-  <!-- Confirmation déconnexion -->
-  <view wx:if="{{ confirmLogout }}" class="prof__overlay" catchtouchmove="noop" bindtap="onCancelLogout">
-    <view class="prof__dialog" catchtap="noop">
-      <text class="prof__dialog-title">Se déconnecter ?</text>
-      <text class="prof__dialog-text">Tes favoris, visites et messages restent enregistrés. Tu les retrouveras en te reconnectant avec ton numéro.</text>
-      <view class="prof__dialog-btn prof__dialog-btn--danger" hover-class="sl-hover" bindtap="onLogout">Se déconnecter</view>
-      <view class="prof__dialog-btn" hover-class="sl-hover" bindtap="onCancelLogout">Annuler</view>
     </view>
   </view>
 </view>
