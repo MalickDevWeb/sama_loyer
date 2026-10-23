@@ -1,6 +1,7 @@
 // pages/bailleur/demandes/demandes.js
 import { getStoredRawVisites, updateStoredVisiteStatus, getStoredLogements, getStoredConversations, getStoredLocataires } from '../../../utils/helpers/store';
 import { formatMoney } from '../../../utils/mocks/logements';
+import { requireBailleurAccess } from '../../../utils/helpers/store';
 
 Page({
   data: {
@@ -8,7 +9,8 @@ Page({
     activeTab: 'visites', // 'visites' | 'messages' | 'locataires'
     demandes: [],
     messagesList: [],
-    locataires: []
+    locataires: [],
+    expandedMap: {} // { [id]: boolean } pour déplier/replier les demandes
   },
 
   onLoad() {
@@ -23,6 +25,8 @@ Page({
   },
 
   onShow() {
+    // Sans abonnement actif, aucun accès : retour à l'accueil verrouillé
+    if (!requireBailleurAccess()) return;
     if (typeof this.getTabBar === 'function' && this.getTabBar()) {
       this.getTabBar().setData({ activeTab: 'b-messages' });
     }
@@ -101,6 +105,14 @@ Page({
   onSelectTab(e) {
     const tab = e.currentTarget.dataset.tab;
     this.setData({ activeTab: tab });
+  },
+
+  onToggleExpand(e) {
+    const id = e.currentTarget.dataset.id;
+    if (!id) return;
+    const expandedMap = { ...this.data.expandedMap };
+    expandedMap[id] = !expandedMap[id];
+    this.setData({ expandedMap });
   },
 
   onAccept(e) {

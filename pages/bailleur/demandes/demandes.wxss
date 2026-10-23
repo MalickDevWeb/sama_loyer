@@ -158,7 +158,7 @@
   background-color: #F4F6F9;
   padding: 18rpx 22rpx;
   border-radius: 18rpx;
-  margin-bottom: 20rpx;
+  margin-bottom: 0;
 }
 
 .cal-emoji {
@@ -169,6 +169,45 @@
   font-size: 26rpx;
   font-weight: 800;
   color: #0F1E3D;
+}
+
+/* Expansion container */
+.demande-expanded-body {
+  margin-top: 18rpx;
+  display: flex;
+  flex-direction: column;
+}
+
+/* --- Bouton Voir plus / Voir moins Demande --- */
+.demande-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12rpx;
+  padding: 18rpx 0 4rpx;
+  margin-top: 16rpx;
+  border-top: 1rpx solid #F0F2F6;
+}
+
+.demande-toggle--hover {
+  opacity: 0.75;
+}
+
+.demande-toggle-text {
+  font-size: 26rpx;
+  font-weight: 700;
+  color: #C8235F;
+}
+
+.demande-toggle-ic {
+  width: 28rpx;
+  height: 28rpx;
+  transform: rotate(90deg);
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.demande-toggle-ic--open {
+  transform: rotate(-90deg);
 }
 
 /* Message quote */

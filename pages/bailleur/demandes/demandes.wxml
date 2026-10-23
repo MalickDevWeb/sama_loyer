@@ -47,7 +47,7 @@
       <block wx:for="{{ demandes }}" wx:key="id">
         <view class="demande-card">
           <!-- En-tête de la carte : Avatar, Nom, Logement & Badge statut -->
-          <view class="demande-card-top">
+          <view class="demande-card-top" data-id="{{ item.id }}" bindtap="onToggleExpand">
             <view class="demande-user-info">
               <view class="avatar-circle-sm" style="background-color: {{ item.avatarBg }};">
                 <text class="avatar-sm-text">{{ item.initials }}</text>
@@ -63,37 +63,46 @@
           </view>
 
           <!-- Boîte du créneau horaire -->
-          <view class="demande-slot-box">
-            <text class="cal-emoji">📅</text>
+          <view class="demande-slot-box" data-id="{{ item.id }}" bindtap="onToggleExpand">
+            <view class="ic ic-cal-navy ic--sm"></view>
             <text class="slot-text">{{ item.dateLabel }}</text>
           </view>
 
-          <!-- Citation / message du locataire -->
-          <view wx:if="{{ item.message }}" class="quote-wrap">
-            <text class="demande-quote-text">{{ item.message }}</text>
-          </view>
-
-          <!-- Encadré vert de visite acceptée -->
-          <view wx:if="{{ item.notice }}" class="accepted-notice-box">
-            <text class="notice-sms-text">{{ item.notice }}</text>
-          </view>
-
-          <!-- Boutons Accepter / Refuser (uniquement si en attente) -->
-          <view wx:if="{{ item.isPending }}" class="action-buttons-group">
-            <view class="buttons-pair-row">
-              <button class="btn-refuser" data-id="{{ item.id }}" bindtap="onRefuse">
-                Refuser
-              </button>
-              <button class="btn-accepter" data-id="{{ item.id }}" bindtap="onAccept">
-                Accepter
-              </button>
+          <!-- Détails et actions visibles seulement après avoir cliqué sur "Voir plus" -->
+          <view wx:if="{{ expandedMap[item.id] }}" class="demande-expanded-body">
+            <!-- Citation / message du locataire -->
+            <view wx:if="{{ item.message }}" class="quote-wrap">
+              <text class="demande-quote-text">{{ item.message }}</text>
             </view>
 
-            <!-- Lien Proposer un autre horaire par message -->
-            <view class="propose-horaire-link" bindtap="onProposeHoraire">
-              <text class="chat-bubble-icon">💬</text>
-              <text class="propose-text">Proposer un autre horaire par message</text>
+            <!-- Encadré vert de visite acceptée -->
+            <view wx:if="{{ item.notice }}" class="accepted-notice-box">
+              <text class="notice-sms-text">{{ item.notice }}</text>
             </view>
+
+            <!-- Boutons Accepter / Refuser (uniquement si en attente) -->
+            <view wx:if="{{ item.isPending }}" class="action-buttons-group">
+              <view class="buttons-pair-row">
+                <button class="btn-refuser" data-id="{{ item.id }}" bindtap="onRefuse">
+                  Refuser
+                </button>
+                <button class="btn-accepter" data-id="{{ item.id }}" bindtap="onAccept">
+                  Accepter
+                </button>
+              </view>
+
+              <!-- Lien Proposer un autre horaire par message -->
+              <view class="propose-horaire-link" bindtap="onProposeHoraire">
+                <view class="ic ic-chat-muted ic--sm"></view>
+                <text class="propose-text">Proposer un autre horaire par message</text>
+              </view>
+            </view>
+          </view>
+
+          <!-- Bouton Voir plus / Voir moins -->
+          <view class="demande-toggle" hover-class="demande-toggle--hover" data-id="{{ item.id }}" catchtap="onToggleExpand" aria-label="{{ expandedMap[item.id] ? 'Voir moins' : 'Voir plus' }}">
+            <text class="demande-toggle-text">{{ expandedMap[item.id] ? 'Voir moins' : 'Voir plus' }}</text>
+            <view class="ic ic-chevron-berrydark demande-toggle-ic {{ expandedMap[item.id] ? 'demande-toggle-ic--open' : '' }}"></view>
           </view>
         </view>
       </block>
@@ -122,7 +131,7 @@
           </view>
 
           <view class="msg-event-pill">
-            <text>📅 {{ item.event }}</text>
+            <view class="ic-row"><view class="ic ic-cal-navy ic--xs"></view><text>{{ item.event }}</text></view>
           </view>
         </view>
       </block>
@@ -154,10 +163,10 @@
           <!-- Boutons directs d'appel et de message -->
           <view class="buttons-pair-row" style="margin-top: 20rpx;">
             <button class="btn-refuser" data-phone="{{ item.phoneRaw }}" bindtap="onCallClient">
-              📞 Appeler
+              <view class="ic-row"><view class="ic ic-phone-berry ic--sm"></view><text>Appeler</text></view>
             </button>
             <button class="btn-accepter" data-name="{{ item.name }}" data-phone="{{ item.phone }}" bindtap="onWhatsAppClient">
-              💬 WhatsApp
+              <view class="ic-row"><view class="ic ic-whatsapp-white ic--sm"></view><text>WhatsApp</text></view>
             </button>
           </view>
         </view>
@@ -166,7 +175,7 @@
       <!-- Bouton d'accès à la gestion complète -->
       <view class="see-all-clients-wrap">
         <button class="btn-see-all-clients" bindtap="onGoClientsPage">
-          Gérer tous mes locataires & quittances ›
+          <view class="ic-row"><text>Gérer tous mes locataires & quittances</text><view class="ic ic-chevron-navy ic--sm"></view></view>
         </button>
       </view>
     </view>
