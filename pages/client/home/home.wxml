@@ -320,46 +320,6 @@
     <view class="home-tab-spacer"></view>
   </scroll-view>
 
-  <!-- ======================================================== -->
-  <!-- MODAL ASSISTANT VOCAL (FRANÇAIS & WOLOF)                 -->
-  <!-- ======================================================== -->
-  <view wx:if="{{ showVoiceModal }}" class="modal-backdrop" bindtap="onCloseVoiceModal">
-    <view class="modal-card" catchtap="true">
-      <view class="modal-header">
-        <view class="modal-icon-badge">
-          <view class="icon-svg icon-mic-berry"></view>
-        </view>
-        <view class="modal-titles">
-          <text class="modal-title">Assistant Vocal SAMA LOYER</text>
-          <text class="modal-subtitle">Exprime ton besoin en français ou en wolof</text>
-        </view>
-        <view class="btn-close-modal" bindtap="onCloseVoiceModal">✕</view>
-      </view>
-
-      <!-- Ondes vocales animées -->
-      <view class="voice-anim-box">
-        <view class="voice-wave {{ isRecording ? 'voice-wave--recording' : '' }}" bindtap="onToggleRecord">
-          <view class="wave-bar bar-1"></view>
-          <view class="wave-bar bar-2"></view>
-          <view class="wave-bar bar-3"></view>
-          <view class="wave-bar bar-4"></view>
-          <view class="wave-bar bar-5"></view>
-        </view>
-        <text class="voice-status-text">{{ voiceStatus }}</text>
-      </view>
-
-      <!-- Exemples guidés Wolof / Français -->
-      <view class="voice-examples">
-        <text class="examples-heading">Exemples que tu peux dire :</text>
-        <block wx:for="{{ voicePrompts }}" wx:key="text">
-          <view class="example-item" data-item="{{ item }}" hover-class="sl-hover" bindtap="onApplyVoicePrompt">
-            <view class="example-badge {{ item.lang === 'WO' ? 'badge-wo' : 'badge-fr' }}">
-              {{ item.lang }}
-            </view>
-            <text class="example-text">« {{ item.text }} »</text>
-            <text class="example-arrow">›</text>
-          </view>
-        </block>
   <!-- Bouton flottant de défilement vers les logements (Image 1) -->
   <view 
     class="floating-scroll-down-btn" 
@@ -368,5 +328,53 @@
     aria-label="Voir les logements disponibles"
   >
     <text class="scroll-down-arrow">↓</text>
+  </view>
+
+  <!-- ======================================================== -->
+  <!-- MODAL ASSISTANT VOCAL SIMPLE & ÉPURÉ (WOLOF & FRANÇAIS)  -->
+  <!-- ======================================================== -->
+  <view wx:if="{{ showVoiceModal }}" class="modal-backdrop" bindtap="onCloseVoiceModal">
+    <view class="modal-card modal-card--simple" catchtap="true">
+      <view class="modal-header">
+        <view class="modal-icon-badge">
+          <view class="icon-svg icon-mic-berry"></view>
+        </view>
+        <view class="modal-titles">
+          <text class="modal-title">Recherche Vocale</text>
+          <text class="modal-subtitle">Parle en wolof ou en français</text>
+        </view>
+        <view class="btn-close-modal" hover-class="btn-close-hover" bindtap="onCloseVoiceModal">✕</view>
+      </view>
+
+      <!-- Micro épuré avec pulsation douce -->
+      <view class="simple-voice-center" bindtap="onToggleRecord">
+        <view class="simple-mic-orb {{ isRecording ? 'simple-mic-orb--active' : '' }}">
+          <view class="icon-svg icon-mic-white"></view>
+        </view>
+        <text class="simple-voice-status">{{ voiceStatus }}</text>
+        <text class="simple-voice-hint">{{ isRecording ? 'Touchez pour arrêter' : 'Touchez le micro pour parler' }}</text>
+      </view>
+
+      <!-- 3 Exemples rapides à toucher -->
+      <view class="simple-voice-chips">
+        <text class="chips-heading">Exemples rapides :</text>
+        <view class="chips-list">
+          <block wx:for="{{ voicePrompts }}" wx:key="text">
+            <view 
+              class="simple-prompt-chip" 
+              data-item="{{ item }}" 
+              hover-class="chip-hover" 
+              bindtap="onApplyVoicePrompt"
+            >
+              <view class="chip-lang-pill {{ item.lang === 'WO' ? 'chip-lang--wo' : 'chip-lang--fr' }}">
+                {{ item.lang }}
+              </view>
+              <text class="chip-text">{{ item.text }}</text>
+              <text class="chip-arrow">›</text>
+            </view>
+          </block>
+        </view>
+      </view>
+    </view>
   </view>
 </view>

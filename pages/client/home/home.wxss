@@ -1076,16 +1076,22 @@
 .modal-card {
   width: 100%;
   background-color: #FFFFFF;
-  border-radius: 40rpx 40rpx 0 0;
-  padding: 36rpx 36rpx calc(40rpx + env(safe-area-inset-bottom));
+  border-radius: 44rpx 44rpx 0 0;
+  padding: 36rpx 36rpx calc(48rpx + env(safe-area-inset-bottom));
   box-sizing: border-box;
+  animation: sheetSlideUp 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes sheetSlideUp {
+  0% { transform: translateY(100%); }
+  100% { transform: translateY(0); }
 }
 
 .modal-header {
   display: flex;
   align-items: center;
   gap: 18rpx;
-  margin-bottom: 28rpx;
+  margin-bottom: 24rpx;
 }
 
 .modal-icon-badge {
@@ -1096,6 +1102,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
 }
 
 .modal-titles {
@@ -1105,7 +1112,7 @@
 }
 
 .modal-title {
-  font-size: 30rpx;
+  font-size: 32rpx;
   font-weight: 800;
   color: #0F1E3D;
 }
@@ -1113,106 +1120,141 @@
 .modal-subtitle {
   font-size: 22rpx;
   color: #5B6475;
+  margin-top: 2rpx;
 }
 
 .btn-close-modal {
-  width: 60rpx;
-  height: 60rpx;
+  width: 64rpx;
+  height: 64rpx;
   border-radius: 50%;
   background-color: #F1F4F9;
   display: flex;
   align-items: center;
   justify-content: center;
   color: #5B6475;
-  font-size: 28rpx;
+  font-size: 30rpx;
+  font-weight: 700;
+  transition: all 0.15s ease;
 }
 
-.voice-anim-box {
+.btn-close-hover {
+  background-color: #E2E8F0;
+  transform: scale(0.92);
+}
+
+/* Micro épuré centré */
+.simple-voice-center {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 32rpx 0;
+  padding: 32rpx 0 28rpx;
 }
 
-.voice-wave {
+.simple-mic-orb {
+  width: 136rpx;
+  height: 136rpx;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #E6007A 0%, #C8235F 100%);
   display: flex;
   align-items: center;
-  gap: 10rpx;
-  height: 80rpx;
+  justify-content: center;
+  box-shadow: 0 8rpx 28rpx rgba(200, 35, 95, 0.32);
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.wave-bar {
-  width: 8rpx;
-  height: 24rpx;
-  background-color: #C8235F;
-  border-radius: 999rpx;
-  transition: height 0.2s ease;
+.simple-mic-orb--active {
+  animation: micPulse 1.5s infinite ease-in-out;
 }
 
-.voice-wave--recording .bar-1 { animation: waveAnim 0.7s infinite alternate ease-in-out; }
-.voice-wave--recording .bar-2 { animation: waveAnim 0.5s infinite alternate ease-in-out 0.1s; }
-.voice-wave--recording .bar-3 { animation: waveAnim 0.9s infinite alternate ease-in-out 0.2s; }
-.voice-wave--recording .bar-4 { animation: waveAnim 0.6s infinite alternate ease-in-out 0.15s; }
-.voice-wave--recording .bar-5 { animation: waveAnim 0.8s infinite alternate ease-in-out 0.25s; }
-
-@keyframes waveAnim {
-  0% { height: 16rpx; }
-  100% { height: 72rpx; }
+@keyframes micPulse {
+  0% { transform: scale(0.97); box-shadow: 0 0 0 0 rgba(200, 35, 95, 0.5); }
+  70% { transform: scale(1.05); box-shadow: 0 0 0 22rpx rgba(200, 35, 95, 0); }
+  100% { transform: scale(0.97); box-shadow: 0 0 0 0 rgba(200, 35, 95, 0); }
 }
 
-.voice-status-text {
-  font-size: 24rpx;
-  color: #5B6475;
-  margin-top: 20rpx;
+.icon-mic-white {
+  width: 52rpx;
+  height: 52rpx;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23FFFFFF' stroke-width='2.3' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='3' width='6' height='11' rx='3'/%3E%3Cpath d='M5 11a7 7 0 0 0 14 0'/%3E%3Cpath d='M12 18v3'/%3E%3C/svg%3E");
 }
 
-.voice-examples {
-  margin-top: 20rpx;
+.simple-voice-status {
+  font-size: 28rpx;
+  font-weight: 700;
+  color: #0F1E3D;
+  margin-top: 22rpx;
+  text-align: center;
+}
+
+.simple-voice-hint {
+  font-size: 22rpx;
+  color: #7A8CA5;
+  margin-top: 6rpx;
+}
+
+/* 3 Exemples rapides à toucher */
+.simple-voice-chips {
+  margin-top: 12rpx;
   display: flex;
   flex-direction: column;
   gap: 14rpx;
 }
 
-.examples-heading {
+.chips-heading {
   font-size: 24rpx;
   font-weight: 700;
-  color: #0F1E3D;
-  margin-bottom: 6rpx;
+  color: #7A8CA5;
+  margin-bottom: 4rpx;
 }
 
-.example-item {
+.chips-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12rpx;
+}
+
+.simple-prompt-chip {
   display: flex;
   align-items: center;
   gap: 16rpx;
-  background-color: #F8F9FA;
+  background-color: #F6F8FB;
   border-radius: 20rpx;
-  padding: 16rpx 20rpx;
+  padding: 16rpx 22rpx;
+  border: 1.5rpx solid #EAEFF6;
+  transition: all 0.15s ease;
 }
 
-.example-badge {
+.chip-hover {
+  background-color: #EDF2F8;
+  transform: scale(0.985);
+}
+
+.chip-lang-pill {
   font-size: 20rpx;
   font-weight: 800;
   border-radius: 8rpx;
   padding: 4rpx 10rpx;
+  flex-shrink: 0;
 }
 
-.badge-wo {
+.chip-lang--wo {
   background-color: #FEF3C7;
   color: #B45309;
 }
 
-.badge-fr {
+.chip-lang--fr {
   background-color: #E0E7FF;
   color: #4338CA;
 }
 
-.example-text {
+.chip-text {
   flex: 1;
-  font-size: 24rpx;
+  font-size: 26rpx;
+  font-weight: 600;
   color: #0F1E3D;
 }
 
-.example-arrow {
+.chip-arrow {
   color: #C8235F;
   font-size: 32rpx;
   font-weight: 700;

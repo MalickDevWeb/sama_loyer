@@ -4,6 +4,24 @@ import { STORAGE_KEYS } from '../../../utils/constants/index';
 import { getAllLogements } from '../../../utils/mocks/logements';
 import { getFavoritesMap, getFavoriteIds, toggleFavoriteId } from '../../../utils/helpers/favorites';
 
+function setTabBarVisible(page, visible) {
+  try {
+    if (visible) wx.showTabBar({ animation: false });
+    else wx.hideTabBar({ animation: false });
+  } catch (e) {}
+
+  try {
+    if (page && typeof page.getTabBar === 'function') {
+      const tb = page.getTabBar();
+      if (tb && typeof tb.setVisible === 'function') {
+        tb.setVisible(visible);
+      } else if (tb) {
+        tb.setData({ hidden: !visible });
+      }
+    }
+  } catch (e) {}
+}
+
 const NEAR_ZONES = {
   ouakam: ['ngor', 'mermoz', 'yoff', 'almadies'],
   ngor: ['ouakam', 'yoff', 'almadies'],
@@ -108,11 +126,8 @@ Page({
     isRecording: false,
     voiceStatus: 'À l’écoute… (Wolof / Français)',
     voicePrompts: [
-      { text: 'Chambre salon à Ouakam, budget 60 000 F', place: 'Ouakam', budget: '60 000', lang: 'FR' },
+      { text: 'Chambre salon à Ouakam, max 60 000 F', place: 'Ouakam', budget: '60 000', lang: 'FR' },
       { text: 'Dafa ma bëgg chambre 50 000 F ci Ngor', place: 'Ngor', budget: '50 000', lang: 'WO' },
-      { text: 'Chambre salon à Pikine Icotaf max 65 000 F', place: 'Pikine', budget: '65 000', lang: 'FR' },
-      { text: 'Studio meublé vers Pikine Rue 10, 95 000 F', place: 'Pikine', budget: '95 000', lang: 'FR' },
-      { text: 'Dafa ma bëgg appartement F3 Technopole 180 000 F', place: 'Pikine', budget: '180 000', lang: 'WO' },
       { text: 'Studio meublé vers Point E ou Mermoz', place: 'Point E', budget: '150 000', lang: 'FR' }
     ]
   },
@@ -319,18 +334,15 @@ Page({
   },
 
   // ==========================================
-  // RECHERCHE VOCALE (WOLOF ET FRANÇAIS)
+  // RECHERCHE VOCALE SIMPLE (WOLOF ET FRANÇAIS)
   // ==========================================
   onVoiceTap() {
+    setTabBarVisible(this, false);
     this.setData({
       showVoiceModal: true,
       isRecording: true,
-      voiceStatus: 'À l’écoute… Parlez en wolof ou en français'
+      voiceStatus: 'À l’écoute… Dis ce que tu cherches'
     });
-
-    if (wx.vibrateShort) {
-      wx.vibrateShort();
-    }
 
     try {
       const rm = wx.getRecorderManager ? wx.getRecorderManager() : null;
@@ -339,9 +351,9 @@ Page({
           this.setData({ isRecording: true, voiceStatus: 'Enregistrement en cours…' });
         });
         rm.onStop(() => {
-          this.setData({ isRecording: false, voiceStatus: 'Traitement vocal…' });
+          this.setData({ isRecording: false, voiceStatus: 'Touchez pour réécouter ou choisissez un exemple' });
         });
-        rm.start({ duration: 6000, sampleRate: 16000, format: 'mp3' });
+        rm.start({ duration: 5000, sampleRate: 16000, format: 'mp3' });
       }
     } catch (err) {}
   },
@@ -351,6 +363,7 @@ Page({
       const rm = wx.getRecorderManager ? wx.getRecorderManager() : null;
       if (rm) rm.stop();
     } catch (e) {}
+    setTabBarVisible(this, true);
     this.setData({ showVoiceModal: false, isRecording: false });
   },
 
@@ -358,7 +371,7 @@ Page({
     if (this.data.isRecording) {
       this.setData({
         isRecording: false,
-        voiceStatus: 'Touchez un exemple ci-dessous pour lancer la recherche'
+        voiceStatus: 'Touchez pour parler ou choisissez un exemple ci-dessous'
       });
       try {
         const rm = wx.getRecorderManager ? wx.getRecorderManager() : null;
@@ -367,9 +380,12 @@ Page({
     } else {
       this.setData({
         isRecording: true,
-        voiceStatus: 'À l’écoute… Parlez maintenant'
+        voiceStatus: 'À l’écoute… Parlez en wolof ou en français'
       });
-      if (wx.vibrateShort) wx.vibrateShort();
+      try {
+        const rm = wx.getRecorderManager ? wx.getRecorderManager() : null;
+        if (rm) rm.start({ duration: 5000, sampleRate: 16000, format: 'mp3' });
+      } catch (e) {}
     }
   },
 
@@ -377,15 +393,18 @@ Page({
     const item = e.currentTarget.dataset.item;
     if (!item) return;
 
-    if (wx.vibrateShort) {
-      wx.vibrateShort();
-    }
+    try {
+      const rm = wx.getRecorderManager ? wx.getRecorderManager() : null;
+      if (rm) rm.stop();
+    } catch (e) {}
 
     const parsed = parseNaturalQuery(item.text);
     const targetPlace = parsed.place || item.place || 'Ouakam';
     const targetBudget = parsed.budget || item.budget || '60 000';
     const numBudget = Number(String(targetBudget).replace(/\D/g, '')) || 0;
 
+    // Fermeture propre du modal et restauration de la TabBar
+    setTabBarVisible(this, true);
     this.setData({
       place: targetPlace,
       budget: targetBudget,
@@ -393,15 +412,8 @@ Page({
       isRecording: false
     });
 
+    // Lance la recherche avec EXACTEMENT la même animation et le même scroll que la recherche normale
     this.doSearch(targetPlace, numBudget, true);
-
-    this.showMagnifiqueToast({
-      title: 'Recherche vocale appliquée',
-      subtitle: `${targetPlace} · Max ${targetBudget} F`,
-      type: 'voice',
-      iconClass: 'icon-toast-mic',
-      duration: 2200
-    });
   },
 
   // ==========================================
