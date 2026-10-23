@@ -69,7 +69,7 @@ function Locations() {
 
       <div className="kpi-grid">
         <div className="kpi"><span className="kpi__label">Locations actives</span><span className="kpi__value">{active.length}</span><span className="kpi__delta" style={{ color: 'var(--muted)' }}>contrats signés dans l'appli</span></div>
-        <div className="kpi"><span className="kpi__label">Loyers attendus ce mois</span><span className="kpi__value">{fmt(monthRent)} F</span><span className="kpi__delta" style={{ color: 'var(--success)' }}>payés via Max it</span></div>
+        <div className="kpi"><span className="kpi__label">Loyers attendus ce mois</span><span className="kpi__value">{fmt(monthRent)} F</span><span className="kpi__delta" style={{ color: 'var(--success)' }}>prélevés via Max it</span></div>
         <div className="kpi"><span className="kpi__label">Loyers en retard</span><span className="kpi__value">{fmt(lateRent)} F</span><span className="kpi__delta" style={{ color: 'var(--danger)' }}>{count('late')} locataire(s)</span></div>
         <div className="kpi"><span className="kpi__label">Cautions détenues</span><span className="kpi__value">{fmt(cautions)} F</span><span className="kpi__delta" style={{ color: 'var(--warning-text)' }}>{count('notice')} à restituer bientôt</span></div>
       </div>
@@ -151,7 +151,7 @@ function Locations() {
                   className="btn btn--dark"
                   onClick={() => update(selected, {}, 'Rappel de loyer envoyé', `Rappel SMS envoyé à ${selected.tenant}.`)}
                 >
-                  <Icon d={ICONS.bell} size={15} strokeWidth={2.2} /> Envoyer un rappel
+                  <Icon d={ICONS.bell} size={15} strokeWidth={2.2} /> Rappel SMS
                 </button>
               )}
               {selected.status === 'notice' && (

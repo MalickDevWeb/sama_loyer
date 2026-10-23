@@ -60,7 +60,7 @@ function Login({ onLogin }: { onLogin: () => void }) {
       <section className="login__panel">
         <div className="login__card">
           {step === 'password' ? (
-            <form onSubmit={submitPassword} className="login__form">
+            <form key="password" onSubmit={submitPassword} className="login__form">
               <div>
                 <h2 className="login__title">Connexion</h2>
                 <p className="login__sub">Connecte-toi avec ton compte administrateur.</p>
@@ -77,7 +77,7 @@ function Login({ onLogin }: { onLogin: () => void }) {
               <button type="submit" className="btn btn--lg btn--berry login__btn">Continuer</button>
             </form>
           ) : (
-            <form onSubmit={submitCode} className="login__form">
+            <form key="code" onSubmit={submitCode} className="login__form">
               <div>
                 <span className="login__shield"><Icon d={ICONS.check} size={22} strokeWidth={2.6} /></span>
                 <h2 className="login__title">Double authentification</h2>
