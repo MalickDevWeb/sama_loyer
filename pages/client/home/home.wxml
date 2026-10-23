@@ -33,20 +33,23 @@
     scroll-into-view="{{ scrollTarget }}"
     scroll-with-animation="{{ true }}"
   >
-    <!-- En-tête SAMA LOYER avec sélecteur Locataire / Bailleur (Image 2) -->
+    <!-- En-tête SAMA LOYER -->
     <view class="sama-header" style="padding-top: {{ statusBarHeight + 12 }}px;">
-      <view class="sama-brand">
-        <view class="sama-brand__icon">
-          <view class="icon-svg icon-house-white"></view>
-        </view>
-        <view class="sama-brand__text">
-          <text class="brand-title">SAMA</text>
-          <text class="brand-sub">LOYER</text>
+      <!-- Ligne supérieure : Logo officiel SAMA LOYER -->
+      <view class="sama-header__top">
+        <view class="sama-brand">
+          <view class="sama-brand__icon">
+            <view class="icon-svg icon-house-white"></view>
+          </view>
+          <view class="sama-brand__text">
+            <text class="brand-title">SAMA</text>
+            <text class="brand-sub">LOYER</text>
+          </view>
         </view>
       </view>
 
-      <!-- Sélecteur de rôle en tête : Locataire (actif) / Bailleur (Image 2) -->
-      <view class="role-switch-pill">
+      <!-- Ligne 2 : Sélecteur de rôle pleine largeur (Locataire / Bailleur) -->
+      <view class="role-switch-bar">
         <view class="role-segment role-segment--active">
           <text class="role-icon">🏠</text>
           <text class="role-label">Locataire</text>

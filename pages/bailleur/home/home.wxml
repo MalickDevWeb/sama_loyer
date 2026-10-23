@@ -3,7 +3,7 @@
     
     <!-- Top Header Section (Fond clair) -->
     <view class="bailleur-header" style="padding-top: {{ statusBarHeight + 12 }}px;">
-      <!-- Ligne supérieure : Logo officiel SAMA LOYER + Sélecteur Locataire/Bailleur -->
+      <!-- Ligne supérieure : Logo officiel SAMA LOYER -->
       <view class="hero-top-row">
         <view class="sama-brand">
           <view class="sama-brand__icon">
@@ -14,22 +14,22 @@
             <text class="brand-sub">LOYER</text>
           </view>
         </view>
+      </view>
 
-        <!-- Sélecteur de rôle en tête : Locataire / Bailleur (actif) -->
-        <view class="role-switch-pill">
-          <view 
-            class="role-segment" 
-            hover-class="role-segment--hover" 
-            bindtap="onSwitchToClient"
-            aria-label="Basculer vers l'espace Locataire"
-          >
-            <text class="role-icon">🏠</text>
-            <text class="role-label">Locataire</text>
-          </view>
-          <view class="role-segment role-segment--active">
-            <text class="role-icon">👥</text>
-            <text class="role-label">Bailleur</text>
-          </view>
+      <!-- Ligne 2 : Sélecteur de rôle pleine largeur (Locataire / Bailleur actif) -->
+      <view class="role-switch-bar">
+        <view 
+          class="role-segment" 
+          hover-class="role-segment--hover" 
+          bindtap="onSwitchToClient"
+          aria-label="Basculer vers l'espace Locataire"
+        >
+          <text class="role-icon">🏠</text>
+          <text class="role-label">Locataire</text>
+        </view>
+        <view class="role-segment role-segment--active">
+          <text class="role-icon">👥</text>
+          <text class="role-label">Bailleur</text>
         </view>
       </view>
 

@@ -34,56 +34,67 @@
    1. EN-TÊTE SAMA LOYER
    ============================================================================ */
 .sama-header {
-  padding-left: 36rpx;
-  padding-right: 200rpx;
-  padding-bottom: 20rpx;
+  padding-left: 32rpx;
+  padding-right: 32rpx;
+  padding-bottom: 12rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+}
+
+.sama-header__top {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 16rpx;
+  justify-content: flex-start;
+  min-height: 72rpx;
 }
 
-/* Sélecteur de rôle en tête (Locataire / Bailleur) - Image 2 */
-.role-switch-pill {
+/* Sélecteur de rôle pleine largeur sous le logo (Locataire / Bailleur) */
+.role-switch-bar {
+  width: 100%;
   background-color: #EEF3F8;
   border-radius: 999rpx;
-  padding: 6rpx 8rpx;
-  display: inline-flex;
-  align-items: center;
-  gap: 6rpx;
-  box-shadow: inset 0 1rpx 3rpx rgba(15, 30, 61, 0.05);
-}
-
-.role-segment {
+  padding: 8rpx;
   display: flex;
   align-items: center;
   gap: 8rpx;
-  padding: 10rpx 22rpx;
+  box-sizing: border-box;
+  box-shadow: inset 0 2rpx 4rpx rgba(15, 30, 61, 0.05);
+}
+
+.role-segment {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12rpx;
+  height: 76rpx;
   border-radius: 999rpx;
-  font-size: 24rpx;
+  font-size: 26rpx;
   font-weight: 700;
   color: #4A5B78;
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  box-sizing: border-box;
 }
 
 .role-segment--active {
   background: linear-gradient(135deg, #E6007A 0%, #C8235F 100%);
   color: #FFFFFF;
-  box-shadow: 0 4rpx 14rpx rgba(200, 35, 95, 0.32);
+  box-shadow: 0 4rpx 16rpx rgba(200, 35, 95, 0.32);
 }
 
 .role-segment--hover {
   opacity: 0.85;
-  transform: scale(0.97);
+  transform: scale(0.98);
 }
 
 .role-icon {
-  font-size: 24rpx;
+  font-size: 26rpx;
   line-height: 1;
 }
 
 .role-label {
-  font-size: 24rpx;
+  font-size: 26rpx;
   font-weight: 800;
   line-height: 1;
 }
