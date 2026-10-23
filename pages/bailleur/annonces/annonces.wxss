@@ -51,14 +51,16 @@
 }
 
 .btn-top-add {
-  width: 72rpx;
-  height: 72rpx;
+  width: 76rpx;
+  height: 76rpx;
+  flex-shrink: 0;
   border-radius: 50%;
-  background-color: #C8235F;
+  background: linear-gradient(135deg, #E6007A 0%, #C8235F 100%);
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4rpx 16rpx rgba(200, 35, 95, 0.3);
+  box-shadow: 0 6rpx 18rpx rgba(200, 35, 95, 0.35);
+  margin-left: 20rpx;
 }
 
 .btn-top-add--hover {

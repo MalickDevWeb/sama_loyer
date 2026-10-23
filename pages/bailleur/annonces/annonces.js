@@ -1,22 +1,36 @@
 // pages/bailleur/annonces/annonces.js
 import { getStoredBailleurAnnonces, confirmBailleurAnnonce } from '../../../utils/helpers/store';
 import { storage } from '../../../utils/storage';
+import { withCover } from '../../../utils/mocks/media';
 
 Page({
   data: {
     statusBarHeight: 44,
+    headerPaddingTop: 92,
     activeFilter: 'all', // all | en_ligne | validation | loue
     annonces: [],
-    filteredAnnonces: []
+    filteredAnnonces: [],
+    counts: { all: 0, en_ligne: 0, validation: 0, loue: 0 }
   },
 
   onLoad() {
     try {
       const sys = wx.getSystemInfoSync();
+      const sb = sys.statusBarHeight || 44;
+      let headerPaddingTop = sb + 48;
+      if (typeof wx.getMenuButtonBoundingClientRect === 'function') {
+        const rect = wx.getMenuButtonBoundingClientRect();
+        if (rect && rect.bottom) {
+          headerPaddingTop = rect.bottom + 12;
+        }
+      }
       this.setData({
-        statusBarHeight: sys.statusBarHeight || 44
+        statusBarHeight: sb,
+        headerPaddingTop: headerPaddingTop
       });
-    } catch (e) {}
+    } catch (e) {
+      this.setData({ headerPaddingTop: 92 });
+    }
 
     this.loadAnnonces();
   },
@@ -50,7 +64,14 @@ Page({
     } else if (filter === 'loue') {
       list = list.filter(a => a.type === 'loue');
     }
-    this.setData({ filteredAnnonces: list });
+    const all = this.data.annonces;
+    const counts = {
+      all: all.length,
+      en_ligne: all.filter(a => a.type === 'en_ligne').length,
+      validation: all.filter(a => a.type === 'validation').length,
+      loue: all.filter(a => a.type === 'loue').length
+    };
+    this.setData({ filteredAnnonces: list.map(withCover), counts });
   },
 
   onConfirmDispo(e) {
@@ -124,7 +145,8 @@ Page({
     wx.showToast({ title: 'Remis en location ✓', icon: 'success' });
   },
 
-  onOpenAdd() {
+  // Bouton « + » en haut de l'onglet (et Corriger / Modifier) : ouvre le formulaire d'ajout
+  onGoAjouter() {
     wx.navigateTo({
       url: '/pages/bailleur/ajouter/ajouter'
     });

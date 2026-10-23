@@ -1,14 +1,14 @@
 <view class="annonces-page">
   <scroll-view class="annonces-scroll" scroll-y="{{true}}" enhanced="{{true}}" show-scrollbar="{{false}}">
     
-    <!-- En-tête avec bouton + rose en haut à droite -->
-    <view class="annonces-header" style="padding-top: {{ statusBarHeight + 14 }}px;">
+    <!-- En-tête avec bouton + rose en haut à droite (dégagé sous la capsule WeChat) -->
+    <view class="annonces-header" style="padding-top: {{ headerPaddingTop }}px;">
       <view class="header-top-row">
         <view class="header-titles">
           <text class="page-title">Mes annonces</text>
-          <text class="page-subtitle">3 en ligne · 2 en validation · 1 loué(s)</text>
+          <text class="page-subtitle">{{ counts.en_ligne }} en ligne · {{ counts.validation }} en validation · {{ counts.loue }} loué(s)</text>
         </view>
-        <view class="btn-top-add" bindtap="onGoAjouter">
+        <view class="btn-top-add" hover-class="btn-top-add--hover" bindtap="onGoAjouter" aria-label="Ajouter un logement">
           <text class="btn-top-plus">+</text>
         </view>
       </view>
@@ -21,28 +21,28 @@
             data-filter="all"
             bindtap="onFilterSelect"
           >
-            Toutes (6)
+            Toutes ({{ counts.all }})
           </view>
           <view 
             class="filter-pill {{ activeFilter === 'en_ligne' ? 'filter-pill--active' : '' }}"
             data-filter="en_ligne"
             bindtap="onFilterSelect"
           >
-            En ligne (3)
+            En ligne ({{ counts.en_ligne }})
           </view>
           <view 
             class="filter-pill {{ activeFilter === 'validation' ? 'filter-pill--active' : '' }}"
             data-filter="validation"
             bindtap="onFilterSelect"
           >
-            Validation (2)
+            Validation ({{ counts.validation }})
           </view>
           <view 
             class="filter-pill {{ activeFilter === 'loue' ? 'filter-pill--active' : '' }}"
             data-filter="loue"
             bindtap="onFilterSelect"
           >
-            Loué (1)
+            Loué ({{ counts.loue }})
           </view>
         </view>
       </scroll-view>
@@ -56,8 +56,8 @@
           <!-- Ligne Haute: Thumbnail à gauche + Infos à droite -->
           <view class="annonce-top-row">
             <!-- Thumbnail carrée avec icône maison douce -->
-            <view class="annonce-thumb" style="background-color: {{ item.thumbBg }};">
-              <view class="thumb-house-shape"></view>
+            <view class="annonce-thumb sl-photo" style="background-color: {{ item.thumbBg }}; background-image: url('{{ item.cover }}');">
+              <view wx:if="{{ !item.cover }}" class="thumb-house-shape"></view>
             </view>
 
             <!-- Colonne détails à droite -->
