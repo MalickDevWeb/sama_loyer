@@ -20,10 +20,6 @@
     "ignore": [
       {
         "type": "folder",
-        "value": "assets/Fonts"
-      },
-      {
-        "type": "folder",
         "value": "docs"
       },
       {
@@ -37,6 +33,26 @@
       {
         "type": "folder",
         "value": "back_office"
+      },
+      {
+        "type": "folder",
+        "value": ".gemini"
+      },
+      {
+        "type": "folder",
+        "value": ".claude"
+      },
+      {
+        "type": "folder",
+        "value": ".github"
+      },
+      {
+        "type": "folder",
+        "value": "tests"
+      },
+      {
+        "type": "file",
+        "value": "PAPA.md"
       }
     ]
   },

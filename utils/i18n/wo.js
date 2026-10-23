@@ -45,7 +45,7 @@ export default {
 
   home: {
     greeting: 'Wutal kër ci Ndakaaru bu yomb',
-    subGreeting: 'Kër yu wóor te leer ak Orange Money',
+    subGreeting: 'Kër yu wóor te leer ak Max it',
     voiceCta: 'Waxal li nga bëgg dégg',
     voiceListening: 'Mu ngi déglu... (Wolof walla Farañse)',
     voiceStop: 'Taxawal déglu gi',
@@ -72,7 +72,7 @@ export default {
     paid: 'Fey nañu ko ba noppi',
     pending: 'Mu ngi nég',
     late: 'Yeex na torop',
-    maxitGuarantee: 'Fey bu kawe te wóor ak Max it / Orange Money',
+    maxitGuarantee: 'Fey bu kawe te wóor ak Max it',
   },
 
   visites: {
@@ -96,7 +96,7 @@ export default {
     langFr: 'Farañse (Français)',
     langWo: 'Wolof',
     languageChangedToast: 'Làkk bi soppi nañu ko !',
-    kycStatus: 'Konte bu wóor ci Orange Money',
+    kycStatus: 'Konte bu wóor ci Max it',
     notifications: 'Bataaxal SMS ak Max it',
     helpCenter: 'Ndimbal ak yoon yi',
     aboutApp: 'Li ëmb SAMA LOYER',

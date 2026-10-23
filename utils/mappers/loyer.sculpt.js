@@ -28,3 +28,4 @@ export const LoyerSchema = {
   receiptNumber: '@link.receiptNumber',
   pdfUrl: '@link.pdfUrl',
 };
+

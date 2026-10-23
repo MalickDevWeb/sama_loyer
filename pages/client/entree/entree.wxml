@@ -381,7 +381,7 @@
           </view>
         </view>
 
-        <text class="loy__quittance-legal">Cette quittance électronique certifie le versement des fonds d'entrée via Orange Money et confère le droit à la prise de possession des clés.</text>
+        <text class="loy__quittance-legal">Cette quittance électronique certifie le versement des fonds d'entrée via Max it et confère le droit à la prise de possession des clés.</text>
       </view>
 
       <view class="loy__quittance-actions">

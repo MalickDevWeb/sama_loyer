@@ -109,5 +109,7 @@ Page({
       wx.hideLoading();
       this.say('Contrat officiel téléchargé (PDF certifié)');
     }, 600);
-  }
+  },
+
+  noop() {}
 });

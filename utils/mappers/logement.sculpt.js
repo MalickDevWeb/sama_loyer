@@ -48,3 +48,4 @@ export const LogementDetailSchema = {
   hasVideo: (data) => Boolean(data.video || data.video_url),
   video: '@link.video',
 };
+
