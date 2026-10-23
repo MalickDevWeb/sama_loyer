@@ -1,5 +1,6 @@
 import { LOGEMENTS, getLogementById, toLogementDetail } from '../../../utils/mocks/logements';
 import { isFavorite, toggleFavoriteId } from '../../../utils/helpers/favorites';
+import { COLORS } from '../../../utils/constants/theme';
 
 // Fiche affichée si l'id est absent ou inconnu
 const DEFAULT_LOGEMENT = toLogementDetail(getLogementById('icotaf-01') || LOGEMENTS[0]);
@@ -184,7 +185,7 @@ Page({
       title: 'Localisation approximative 📍',
       content: `${this.data.logement.placeDetails}\n\nPour la sécurité du logement, l’adresse exacte vous sera transmise après la confirmation du créneau de visite.`,
       confirmText: 'D’accord',
-      confirmColor: '#0F1E3D',
+      confirmColor: COLORS.navy,
       showCancel: false
     });
   },
@@ -257,7 +258,7 @@ Page({
         title: 'Demande envoyée ! 📅',
         content: `Votre demande pour le créneau "${this.data.selectedVisitDate}" a été transmise à ${this.data.logement.bailleur.name}.\n\nVous recevrez une notification dès sa confirmation.`,
         confirmText: 'Voir mes messages',
-        confirmColor: '#C8235F',
+        confirmColor: COLORS.berry,
         cancelText: 'Fermer',
         success: (res) => {
           if (res.confirm) {

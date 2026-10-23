@@ -7,6 +7,7 @@ import {
   formatLongDate,
   BAILLEUR_PLANS
 } from '../../../utils/helpers/store';
+import { COLORS } from '../../../utils/constants/theme';
 
 const MX_REDIRECT_MS = 1600;
 const DAY_MS = 24 * 60 * 60 * 1000;
@@ -191,7 +192,7 @@ Page({
         title: 'Reçus générés 📄',
         content: 'Vos reçus officiels certifiés pour la période ont été préparés.',
         confirmText: 'Ouvrir',
-        confirmColor: '#0F1E3D',
+        confirmColor: COLORS.navy,
         cancelText: 'Fermer',
         success: (res) => {
           if (res.confirm) {

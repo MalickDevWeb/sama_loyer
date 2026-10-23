@@ -5,6 +5,7 @@ import { storage } from '../../../utils/storage.js';
 import { STORAGE_KEYS } from '../../../utils/constants/index';
 import { setCustomTabBarActive } from '../../../utils/helpers/tab-bar';
 import { getCover } from '../../../utils/mocks/media';
+import { COLORS } from '../../../utils/constants/theme';
 
 const MX_REDIRECT_MS = 1600;
 
@@ -254,7 +255,7 @@ Page({
           title: 'Problème signalé',
           content: `« ${PROBLEM_CATEGORIES[res.tapIndex]} » a été envoyé à ${h.owner}. Tu seras prévenu·e de sa réponse dans Messages.`,
           showCancel: false,
-          confirmColor: '#C8235F',
+          confirmColor: COLORS.berry,
           confirmText: 'D’accord'
         });
       }
@@ -267,7 +268,7 @@ Page({
       title: 'Prévenir de ton départ ?',
       content: `${h.owner} recevra ton préavis d’un mois pour « ${h.name} ». Ta caution de ${fmt(h.deposit)} F te sera rendue après l’état des lieux.`,
       confirmText: 'Prévenir',
-      confirmColor: '#C8235F',
+      confirmColor: COLORS.berry,
       cancelText: 'Annuler',
       success: (res) => {
         if (res.confirm) wx.showToast({ title: 'Préavis envoyé', icon: 'success' });

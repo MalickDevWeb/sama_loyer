@@ -5,6 +5,7 @@ import { getFavoriteIds } from '../../../utils/helpers/favorites';
 import { getVisites } from '../../../utils/helpers/visites';
 import { getConversations } from '../../../utils/mocks/conversations';
 import { setLocale, getLocale } from '../../../utils/i18n/index';
+import { COLORS } from '../../../utils/constants/theme';
 
 const NOTIFS = [
   { id: 'msg', label: 'Nouveaux messages', sub: 'Quand un bailleur te répond' },
@@ -323,7 +324,7 @@ Page({
           title: 'Assistance Orange',
           content: 'Composez le 1444 depuis votre mobile Orange pour joindre le support Sama Loyer.',
           showCancel: false,
-          confirmColor: '#C8235F'
+          confirmColor: COLORS.berry
         });
       }
     });

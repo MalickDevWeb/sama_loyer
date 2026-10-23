@@ -3,6 +3,7 @@ import { setCustomTabBarActive } from '../../../utils/helpers/tab-bar';
 import { STORAGE_KEYS } from '../../../utils/constants/index';
 import { getAllLogements } from '../../../utils/mocks/logements';
 import { getFavoritesMap, getFavoriteIds, toggleFavoriteId } from '../../../utils/helpers/favorites';
+import { TINTS } from '../../../utils/constants/theme';
 
 function setTabBarVisible(page, visible) {
   try {
@@ -220,7 +221,7 @@ Page({
 
     const normQuery = normalize(pl);
     const allLogements = getAllLogements();
-    const tints = ['#FDEEF2', '#E8EEF5', '#F5EFE6', '#EAF7EE'];
+    const tints = TINTS;
 
     // Filtrage direct selon la localité et le budget
     const filtered = allLogements.filter((l) => {

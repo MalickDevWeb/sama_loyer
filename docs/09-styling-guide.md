@@ -1,5 +1,7 @@
 # Styling Guide
 
+> **SAMA LOYER :** pour les couleurs, la typographie et les espacements de l'appli, utilisez les tokens décrits dans [18-design-system.md](18-design-system.md). Ce guide décrit les utilitaires génériques du modèle de départ.
+
 ## Global Styles (`app.wxss`)
 
 The boilerplate includes a **mini-program-optimized utility CSS system** (~475 lines) with Bootstrap-compatible naming. All spacing uses `rpx` units for consistent cross-device rendering. Pages get these utilities automatically; components that need them use `styleIsolation: "apply-shared"`.
