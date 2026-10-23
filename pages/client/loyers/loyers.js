@@ -6,6 +6,7 @@ import { STORAGE_KEYS } from '../../../utils/constants/index';
 import { setCustomTabBarActive } from '../../../utils/helpers/tab-bar';
 import { getCover } from '../../../utils/mocks/media';
 import { COLORS } from '../../../utils/constants/theme';
+import { backendAPI } from '../../../utils/apis/index.js';
 
 const MX_REDIRECT_MS = 1600;
 
@@ -34,6 +35,7 @@ function setTabBarVisible(visible) {
 
 Page({
   data: {
+    uiState: 'content', // 'loading' | 'content' | 'error'
     statusBarHeight: 44,
     selectedId: '',
     subtitle: '',
@@ -167,9 +169,16 @@ Page({
     this.mxTimer = setTimeout(() => this.setData({ mx: 'maxit' }), MX_REDIRECT_MS);
   },
 
-  onMxValidate() {
+  async onMxValidate() {
     const cur = this.currentHome();
-    recordRentPayment(this.data.selectedId, cur.rent);
+    try {
+      await backendAPI.payLoyer(this.data.selectedId, {
+        amount: cur.rent,
+        paymentMethod: 'MAXIT'
+      });
+    } catch (err) {
+      recordRentPayment(this.data.selectedId, cur.rent);
+    }
     this.paid = storage.get(STORAGE_KEYS.RENT_PAID, {}) || {};
     this.refresh();
     // Quittance du loyer qui vient d'être payé (r-nov) pour « Télécharger » / « Partager le reçu »

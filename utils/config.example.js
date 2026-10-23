@@ -20,3 +20,4 @@ export const config = {
   /** Type d'autorisation OAuth2 */
   GRANT_TYPE: 'client_credentials',
 };
+

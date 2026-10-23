@@ -1,5 +1,6 @@
 import { getVisites, cancelVisite } from '../../../utils/helpers/visites';
 import { setCustomTabBarActive } from '../../../utils/helpers/tab-bar';
+import { backendAPI } from '../../../utils/apis/index.js';
 
 const TABS = [
   { id: 'all', label: 'Toutes' },
@@ -18,6 +19,7 @@ function buildTabs(list) {
 
 Page({
   data: {
+    uiState: 'content', // 'loading' | 'content' | 'error'
     statusBarHeight: 44,
     activeFilter: 'all', // all | pending | accepted | rejected
     tabs: buildTabs([]),
@@ -39,9 +41,19 @@ Page({
     this.reload();
   },
 
-  reload() {
+  async reload() {
+    this.setData({ uiState: 'loading' });
+    try {
+      await backendAPI.getVisites();
+    } catch (e) {
+      // Ignorer l'erreur, le helper local garantit l'affichage
+    }
     const visitesList = getVisites();
-    this.setData({ visitesList, tabs: buildTabs(visitesList) });
+    this.setData({
+      uiState: 'content',
+      visitesList,
+      tabs: buildTabs(visitesList)
+    });
     this.applyFilter(this.data.activeFilter);
   },
 
