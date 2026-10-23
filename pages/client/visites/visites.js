@@ -1,6 +1,7 @@
 import { getVisites, cancelVisite } from '../../../utils/helpers/visites';
 import { setCustomTabBarActive } from '../../../utils/helpers/tab-bar';
 import { backendAPI } from '../../../utils/apis/index.js';
+import { i18nBehavior } from '../../../utils/i18n/index.js';
 
 const TABS = [
   { id: 'all', label: 'Toutes' },
@@ -18,6 +19,8 @@ function buildTabs(list) {
 }
 
 Page({
+  behaviors: [i18nBehavior],
+
   data: {
     uiState: 'content', // 'loading' | 'content' | 'error'
     statusBarHeight: 44,

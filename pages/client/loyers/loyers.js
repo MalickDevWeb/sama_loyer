@@ -7,6 +7,7 @@ import { setCustomTabBarActive } from '../../../utils/helpers/tab-bar';
 import { getCover } from '../../../utils/mocks/media';
 import { COLORS } from '../../../utils/constants/theme';
 import { backendAPI } from '../../../utils/apis/index.js';
+import { i18nBehavior } from '../../../utils/i18n/index.js';
 
 const MX_REDIRECT_MS = 1600;
 
@@ -34,6 +35,8 @@ function setTabBarVisible(visible) {
 }
 
 Page({
+  behaviors: [i18nBehavior],
+
   data: {
     uiState: 'content', // 'loading' | 'content' | 'error'
     statusBarHeight: 44,
