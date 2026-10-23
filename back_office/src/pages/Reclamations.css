@@ -191,3 +191,10 @@
   outline: 2px solid var(--navy);
   outline-offset: -1px;
 }
+
+/* --- Invitation d'un membre --------------------------------------------- */
+.invite-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}

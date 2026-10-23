@@ -59,36 +59,109 @@
   gap: 6px;
 }
 
-/* --- Fenêtre de confirmation -------------------------------------------- */
-.dialog-backdrop {
-  position: fixed;
-  inset: 0;
-  z-index: 10;
-  background: rgba(15, 30, 61, 0.45);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-}
-
-.dialog {
-  width: min(440px, 100%);
-  border-radius: 20px;
-  background: var(--surface);
-  padding: 24px;
+/* --- Reçu de paiement ---------------------------------------------------- */
+.receipt {
+  border: 1px dashed var(--border);
+  border-radius: 16px;
+  padding: 18px;
   display: flex;
   flex-direction: column;
+  gap: 14px;
+}
+
+.receipt__brand {
+  display: flex;
+  align-items: center;
   gap: 10px;
 }
 
-.dialog__title {
-  margin: 0;
-  font-size: 19px;
-  font-weight: 800;
+.receipt__brand > span:last-child {
+  display: flex;
+  flex-direction: column;
+  font-size: 12px;
+  color: var(--muted);
 }
 
-.dialog__text {
-  margin: 0 0 6px;
-  font-size: 14px;
+.receipt__brand strong {
+  font-size: 15px;
+  color: var(--text);
+  letter-spacing: 0.04em;
+}
+
+.receipt__logo {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: var(--berry);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.receipt__amount {
+  padding: 14px;
+  border-radius: 14px;
+  background: var(--berry-soft);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
   color: var(--muted);
+}
+
+.receipt__amount strong {
+  font-size: 30px;
+  font-weight: 800;
+  color: var(--berry);
+}
+
+.receipt__rows {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.receipt__rows div {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  font-size: 14px;
+}
+
+.receipt__rows dt {
+  color: var(--muted);
+}
+
+.receipt__rows dd {
+  margin: 0;
+  font-weight: 700;
+  text-align: right;
+}
+
+.receipt__note {
+  margin: 0;
+  font-size: 12px;
+  color: var(--muted);
+  text-align: center;
+}
+
+/* Impression : seul le reçu est imprimé */
+@media print {
+  body * {
+    visibility: hidden;
+  }
+
+  #receipt,
+  #receipt * {
+    visibility: visible;
+  }
+
+  #receipt {
+    position: fixed;
+    inset: 24px;
+    border: 0;
+  }
 }

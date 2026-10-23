@@ -1,0 +1,215 @@
+/* ==========================================================================
+   Connexion administrateur (mot de passe puis code 2FA)
+   ========================================================================== */
+.login {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  background: var(--bg);
+}
+
+/* --- Panneau de marque -------------------------------------------------- */
+.login__brand {
+  position: relative;
+  overflow: hidden;
+  padding: 48px;
+  background: radial-gradient(circle at 85% 10%, rgba(200, 35, 95, 0.45) 0%, rgba(200, 35, 95, 0) 50%), var(--navy);
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 40px;
+}
+
+.login__logo {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.login__logo > span:last-child {
+  display: flex;
+  flex-direction: column;
+}
+
+.login__logo strong {
+  font-size: 22px;
+  letter-spacing: 0.04em;
+}
+
+.login__logo > span:last-child > span {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.3em;
+  color: var(--berry-light);
+}
+
+.login__logo-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 16px;
+  background: var(--berry);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 10px 30px rgba(200, 35, 95, 0.45);
+}
+
+.login__pitch h1 {
+  margin: 0 0 28px;
+  max-width: 440px;
+  font-size: 36px;
+  line-height: 1.15;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.login__pitch ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.login__pitch li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #d5dcec;
+}
+
+.login__pitch li svg {
+  flex: none;
+  padding: 7px;
+  box-sizing: content-box;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--berry-light);
+}
+
+.login__foot {
+  font-size: 13px;
+  color: #aeb8d0;
+}
+
+/* --- Formulaire --------------------------------------------------------- */
+.login__panel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 20px;
+}
+
+.login__card {
+  width: min(400px, 100%);
+  padding: 32px;
+  border-radius: 24px;
+  background: var(--surface);
+  box-shadow: 0 20px 60px rgba(15, 30, 61, 0.08);
+  animation: dialogIn 0.25s ease both;
+}
+
+.login__form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.login__title {
+  margin: 0;
+  font-size: 26px;
+  font-weight: 800;
+}
+
+.login__sub {
+  margin: 6px 0 0;
+  font-size: 14px;
+  line-height: 1.45;
+  color: var(--muted);
+}
+
+.login__shield {
+  width: 48px;
+  height: 48px;
+  margin-bottom: 14px;
+  border-radius: 14px;
+  background: var(--success-bg);
+  color: var(--success);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.form-field .login__code {
+  height: 56px;
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: 0.5em;
+  text-align: center;
+}
+
+.login__demo {
+  margin: -4px 0 0;
+  padding: 8px 12px;
+  border-radius: 10px;
+  background: var(--warning-soft);
+  font-size: 13px;
+  color: var(--warning-text);
+}
+
+.login__error {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--danger);
+}
+
+.login__btn {
+  width: 100%;
+  justify-content: center;
+}
+
+.login__back {
+  align-self: center;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+/* --- Mobile : le panneau de marque passe au-dessus ---------------------- */
+@media (max-width: 860px) {
+  .login {
+    grid-template-columns: 1fr;
+  }
+
+  .login__brand {
+    padding: 28px 20px;
+    gap: 20px;
+  }
+
+  .login__pitch h1 {
+    font-size: 24px;
+    margin-bottom: 0;
+  }
+
+  .login__pitch ul,
+  .login__foot {
+    display: none;
+  }
+
+  .login__panel {
+    align-items: flex-start;
+  }
+
+  .login__card {
+    padding: 24px;
+  }
+}

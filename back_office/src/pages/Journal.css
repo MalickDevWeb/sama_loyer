@@ -1,0 +1,82 @@
+/* ==========================================================================
+   Journal d'audit : frise chronologique des actions
+   ========================================================================== */
+.journal {
+  margin: 0;
+  padding: 8px 0;
+  list-style: none;
+}
+
+.journal__item {
+  position: relative;
+  display: grid;
+  grid-template-columns: 120px 20px minmax(0, 1fr);
+  align-items: start;
+  gap: 12px;
+  padding: 12px 20px;
+}
+
+.journal__item + .journal__item {
+  border-top: 1px solid var(--divider);
+}
+
+.journal__when {
+  padding-top: 1px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.journal__dot {
+  width: 12px;
+  height: 12px;
+  margin: 4px auto 0;
+  border-radius: 50%;
+  background: var(--berry);
+  box-shadow: 0 0 0 4px var(--berry-soft);
+}
+
+.journal__body {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.journal__action {
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.journal__meta {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.journal__module {
+  display: inline-block;
+  margin-right: 8px;
+  padding: 1px 8px;
+  border-radius: 999px;
+  background: var(--info-bg);
+  color: var(--navy);
+  font-size: 11px;
+  font-weight: 800;
+}
+
+@media (max-width: 600px) {
+  .journal__item {
+    grid-template-columns: 20px minmax(0, 1fr);
+    padding: 12px 16px;
+  }
+
+  .journal__when {
+    grid-column: 2;
+    grid-row: 2;
+  }
+
+  .journal__dot {
+    grid-row: 1;
+  }
+}

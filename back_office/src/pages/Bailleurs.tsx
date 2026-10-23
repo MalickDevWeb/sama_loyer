@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react'
 import { Avatar, Badge, Icon, Pills } from '../components/ui'
 import { ICONS, norm } from '../lib/utils'
 import { BAILLEURS, BAILLEUR_STATUS, type BailleurStatus } from '../data/mock'
+import { logAction } from '../lib/audit'
 import './Bailleurs.css'
 
 type Tab = 'all' | 'pending' | 'active' | 'suspended'
@@ -39,7 +40,10 @@ function Bailleurs() {
   const selected = all.find((b) => b.id === selectedId)
 
   const setStatus = (status: BailleurStatus) => {
-    if (selected) setOverrides((o) => ({ ...o, [selected.id]: status }))
+    if (!selected) return
+    setOverrides((o) => ({ ...o, [selected.id]: status }))
+    const action = { active: 'Identité vérifiée / compte actif', pending: 'Remis en vérification', suspended: 'Compte suspendu', rejected: "Pièce d'identité refusée" }[status]
+    logAction('Bailleurs', action, selected.name)
   }
 
   const tabs: { id: Tab; label: string }[] = [
@@ -132,8 +136,27 @@ function Bailleurs() {
             <div>
               <h3 className="bailleur-card__h3">Pièce d'identité</h3>
               <div className="id-docs">
-                <div>Recto</div>
-                <div>Verso</div>
+                <div className="id-card" aria-label={`Recto de la pièce de ${selected.name}`}>
+                  <span className="id-card__band">CARTE D'IDENTITÉ · CEDEAO</span>
+                  <span className="id-card__body">
+                    <span className="id-card__photo" style={{ background: selected.color }}>{selected.initials}</span>
+                    <span className="id-card__lines">
+                      <span className="id-card__name">{selected.name.toUpperCase()}</span>
+                      <span className="id-card__line" />
+                      <span className="id-card__line id-card__line--short" />
+                      <span className="id-card__line" />
+                    </span>
+                  </span>
+                  <span className="id-card__side">Recto</span>
+                </div>
+                <div className="id-card id-card--back" aria-label={`Verso de la pièce de ${selected.name}`}>
+                  <span className="id-card__lines">
+                    <span className="id-card__line" />
+                    <span className="id-card__line id-card__line--short" />
+                  </span>
+                  <span className="id-card__mrz">IDSEN&lt;&lt;{selected.initials}&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;</span>
+                  <span className="id-card__side">Verso</span>
+                </div>
               </div>
               <p className="bailleur-card__hint">Visible uniquement par les administrateurs. Jamais affichée aux locataires.</p>
             </div>

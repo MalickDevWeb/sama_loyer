@@ -208,3 +208,25 @@
   font-weight: 800;
   text-align: right;
 }
+
+.chart-total {
+  flex: none;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: var(--berry-soft);
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.chart-total strong {
+  color: var(--berry);
+  font-weight: 800;
+}
+
+.bar-chart__bar {
+  transition: height 0.35s ease;
+}
+
+.bar-chart__bar {
+  max-width: 56px;
+}

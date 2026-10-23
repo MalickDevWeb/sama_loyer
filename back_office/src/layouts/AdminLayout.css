@@ -85,11 +85,20 @@
   gap: 4px;
 }
 
+.admin__group {
+  margin: 12px 12px 2px;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #7f8aa6;
+}
+
 .admin__link {
   display: flex;
   align-items: center;
   gap: 10px;
-  min-height: 44px;
+  min-height: 40px;
   padding: 0 12px;
   border-radius: 12px;
   font-size: 14px;

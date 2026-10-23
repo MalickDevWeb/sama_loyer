@@ -29,8 +29,29 @@ export const photoOf = (label: string) => PHOTO[label] ?? PHOTO.Salon
 
 /* --- Tableau de bord ------------------------------------------------------ */
 
-export const SIGNUP_MONTHS = ['nov.', 'déc.', 'janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin', 'juil.', 'août', 'sept.', 'oct.']
-export const SIGNUPS = [420, 510, 480, 620, 700, 760, 820, 900, 1040, 1130, 1210, 1380]
+export type Range = 'w' | 'm' | 'y'
+
+/** Inscriptions selon la période choisie sur le tableau de bord */
+export const SIGNUPS_BY_RANGE: Record<Range, { title: string; sub: string; labels: string[]; values: number[] }> = {
+  w: {
+    title: 'Nouvelles inscriptions par jour',
+    sub: 'Locataires et bailleurs · 7 derniers jours',
+    labels: ['ven.', 'sam.', 'dim.', 'lun.', 'mar.', 'mer.', 'jeu.'],
+    values: [38, 52, 61, 44, 47, 55, 63],
+  },
+  m: {
+    title: 'Nouvelles inscriptions par semaine',
+    sub: 'Locataires et bailleurs · 30 derniers jours',
+    labels: ['1-7 oct.', '8-14 oct.', '15-21 oct.', '22-28 oct.'],
+    values: [300, 330, 350, 400],
+  },
+  y: {
+    title: 'Nouvelles inscriptions par mois',
+    sub: 'Locataires et bailleurs · 12 derniers mois',
+    labels: ['nov.', 'déc.', 'janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin', 'juil.', 'août', 'sept.', 'oct.'],
+    values: [420, 510, 480, 620, 700, 760, 820, 900, 1040, 1130, 1210, 1380],
+  },
+}
 
 export const ZONES: [string, number][] = [
   ['Dakar', 1340],
@@ -249,6 +270,132 @@ export const RULES = [
   { id: 'r-susp', label: 'Signalements avant suspension automatique', value: 3 },
 ]
 
+/* --- Annonces en ligne ---------------------------------------------------- */
+export type AnnonceStatus = 'online' | 'stale' | 'rented' | 'hidden'
+
+export const ANNONCE_STATUS: Record<AnnonceStatus, { label: string; tone: Tone }> = {
+  online: { label: 'En ligne', tone: 'success' },
+  stale: { label: 'À confirmer', tone: 'warning' },
+  rented: { label: 'Louée, encore visible', tone: 'danger' },
+  hidden: { label: 'Masquée', tone: 'neutral' },
+}
+
+export interface AnnonceEnLigne {
+  id: string
+  title: string
+  zone: string
+  owner: string
+  price: number
+  views: number
+  confirmed: string
+  photo: string
+  boosted: boolean
+  status: AnnonceStatus
+}
+
+export const ANNONCES_EN_LIGNE: AnnonceEnLigne[] = [
+  { id: 'a1', title: 'Chambre salon', zone: 'Icotaf, Pikine', owner: 'Moussa Diallo', price: 65000, views: 412, confirmed: 'il y a 2 j', photo: 'Salon', boosted: true, status: 'online' },
+  { id: 'a2', title: 'Studio meublé', zone: 'Pikine Rue 10', owner: 'Moussa Diallo', price: 95000, views: 298, confirmed: 'il y a 5 j', photo: 'Studio', boosted: true, status: 'online' },
+  { id: 'a3', title: 'Appartement F4', zone: 'Mermoz', owner: 'Awa Ndour', price: 350000, views: 187, confirmed: 'il y a 24 j', photo: 'Cuisine', boosted: false, status: 'rented' },
+  { id: 'a4', title: 'Appartement F3', zone: 'Technopole, Pikine', owner: 'Awa Ndour', price: 180000, views: 156, confirmed: 'il y a 1 j', photo: 'Chambre', boosted: false, status: 'online' },
+  { id: 'a5', title: 'Chambre', zone: 'Yoff Virage', owner: 'Ousmane Faye', price: 50000, views: 64, confirmed: 'il y a 26 j', photo: 'Façade', boosted: false, status: 'stale' },
+  { id: 'a6', title: 'Chambre', zone: 'Guinaw Rails', owner: 'Ousmane Faye', price: 45000, views: 233, confirmed: 'il y a 9 j', photo: 'Douche', boosted: false, status: 'hidden' },
+  { id: 'a7', title: 'Studio', zone: 'Ouakam', owner: 'Khady Ndiaye', price: 85000, views: 41, confirmed: 'il y a 22 j', photo: 'Vue', boosted: false, status: 'stale' },
+  { id: 'a8', title: 'Chambre salon', zone: 'Thiaroye', owner: 'Fatou Kane', price: 55000, views: 120, confirmed: 'il y a 3 j', photo: 'Extérieur', boosted: false, status: 'online' },
+]
+
+/* --- Locations et loyers ------------------------------------------------- */
+export type LocationStatus = 'ok' | 'late' | 'notice' | 'ended'
+export type MonthState = 'paid' | 'late' | 'due'
+
+export const LOCATION_STATUS: Record<LocationStatus, { label: string; tone: Tone }> = {
+  ok: { label: 'À jour', tone: 'success' },
+  late: { label: 'En retard', tone: 'danger' },
+  notice: { label: 'Préavis de départ', tone: 'warning' },
+  ended: { label: 'Terminée', tone: 'neutral' },
+}
+
+export interface Location {
+  id: string
+  tenant: string
+  logement: string
+  owner: string
+  rent: number
+  caution: number
+  start: string
+  next: string
+  via: string
+  contract: string
+  status: LocationStatus
+  info: string
+  months: { m: string; s: MonthState }[]
+}
+
+const lastMonths = (...s: MonthState[]) =>
+  ['mai', 'juin', 'juil.', 'août', 'sept.', 'oct.'].slice(-s.length).map((m, i) => ({ m, s: s[i] }))
+
+export const LOCATIONS: Location[] = [
+  { id: 'l1', tenant: 'Aminata Sy', logement: 'Chambre salon · Icotaf', owner: 'Moussa Diallo', rent: 65000, caution: 65000, start: '1 mai 2026', next: '1 nov.', via: 'Louer sans visite', contract: 'CT-2026-0412', status: 'ok', info: 'Tous les loyers payés avec Max it, à l’heure.', months: lastMonths('paid', 'paid', 'paid', 'paid', 'paid', 'paid') },
+  { id: 'l2', tenant: 'Ousmane Ba', logement: 'Studio meublé · Pikine Rue 10', owner: 'Moussa Diallo', rent: 95000, caution: 190000, start: '1 juil. 2026', next: '1 nov.', via: 'Après visite', contract: 'CT-2026-0538', status: 'ok', info: 'Loyer d’octobre payé le 20 oct.', months: lastMonths('paid', 'paid', 'paid', 'paid') },
+  { id: 'l3', tenant: 'Modou Sarr', logement: 'Appartement F3 · Technopole', owner: 'Awa Ndour', rent: 180000, caution: 180000, start: '1 juin 2026', next: '1 oct.', via: 'Après visite', contract: 'CT-2026-0471', status: 'late', info: 'Loyer d’octobre non payé : 22 jours de retard. 2 rappels SMS envoyés.', months: lastMonths('paid', 'paid', 'paid', 'paid', 'late') },
+  { id: 'l4', tenant: 'Cheikh Ndiaye', logement: 'Chambre · Guinaw Rails', owner: 'Ousmane Faye', rent: 45000, caution: 45000, start: '1 mai 2026', next: '1 oct.', via: 'Louer sans visite', contract: 'CT-2026-0398', status: 'late', info: 'Paiement en espèces déclaré par le locataire, pas encore confirmé par le bailleur.', months: lastMonths('paid', 'paid', 'paid', 'paid', 'paid', 'late') },
+  { id: 'l5', tenant: 'Binta Sow', logement: 'Chambre salon · Thiaroye', owner: 'Fatou Kane', rent: 55000, caution: 55000, start: '1 août 2026', next: '1 nov.', via: 'Après visite', contract: 'CT-2026-0602', status: 'notice', info: 'Préavis envoyé le 30 sept. : départ le 31 oct. Caution de 55 000 F à restituer.', months: lastMonths('paid', 'paid', 'paid') },
+  { id: 'l6', tenant: 'Mariama Diop', logement: 'Studio · Ouakam', owner: 'Khady Ndiaye', rent: 85000, caution: 85000, start: '1 févr. 2026', next: '—', via: 'Après visite', contract: 'CT-2026-0117', status: 'ended', info: 'Bail terminé le 30 sept. Caution restituée le 3 oct.', months: lastMonths('paid', 'paid', 'paid', 'paid', 'paid') },
+]
+
+/* --- Locataires ------------------------------------------------------------ */
+export type LocataireStatus = 'active' | 'flagged' | 'suspended'
+
+export const LOCATAIRE_STATUS: Record<LocataireStatus, { label: string; tone: Tone }> = {
+  active: { label: 'Actif', tone: 'success' },
+  flagged: { label: 'Signalé', tone: 'warning' },
+  suspended: { label: 'Suspendu', tone: 'danger' },
+}
+
+export interface Locataire {
+  id: string
+  name: string
+  initials: string
+  color: string
+  phone: string
+  logement: string
+  since: string
+  paid: number
+  onTime: number
+  reports: number
+  status: LocataireStatus
+  note: string
+}
+
+export const LOCATAIRES: Locataire[] = [
+  { id: 't1', name: 'Aminata Sy', initials: 'AS', color: '#C8235F', phone: '+221 77 ••• •• 18', logement: 'Chambre salon · Icotaf', since: '28 avr. 2026', paid: 6, onTime: 100, reports: 0, status: 'active', note: 'Locataire modèle : 6 loyers payés à l’heure avec Max it.' },
+  { id: 't2', name: 'Ousmane Ba', initials: 'OB', color: '#0F1E3D', phone: '+221 78 ••• •• 52', logement: 'Studio meublé · Pikine Rue 10', since: '20 juin 2026', paid: 4, onTime: 100, reports: 0, status: 'active', note: 'Aucun incident.' },
+  { id: 't3', name: 'Modou Sarr', initials: 'MS', color: '#5B4BB7', phone: '+221 76 ••• •• 07', logement: 'Appartement F3 · Technopole', since: '25 mai 2026', paid: 4, onTime: 75, reports: 1, status: 'flagged', note: 'Loyer d’octobre en retard. Signalé par le bailleur pour non-paiement.' },
+  { id: 't4', name: 'Cheikh Ndiaye', initials: 'CN', color: '#8A5A00', phone: '+221 70 ••• •• 33', logement: 'Chambre · Guinaw Rails', since: '29 avr. 2026', paid: 5, onTime: 80, reports: 0, status: 'active', note: 'Dernier paiement déclaré en espèces, à confirmer par le bailleur.' },
+  { id: 't5', name: 'Binta Sow', initials: 'BS', color: '#11643F', phone: '+221 77 ••• •• 90', logement: 'Chambre salon · Thiaroye', since: '27 juil. 2026', paid: 3, onTime: 100, reports: 0, status: 'active', note: 'Préavis de départ en cours (31 oct.).' },
+  { id: 't6', name: 'Pape Diouf', initials: 'PD', color: '#3A4458', phone: '+221 76 ••• •• 61', logement: '—', since: '2 oct. 2026', paid: 0, onTime: 0, reports: 3, status: 'suspended', note: 'Suspendu : 3 bailleurs signalent des visites réservées sans venir et des messages insultants.' },
+]
+
+/* --- Abonnés bailleurs ----------------------------------------------------- */
+export interface Abonne {
+  id: string
+  name: string
+  plan: 'Essai 30 jours' | 'Pro mensuel'
+  start: string
+  end: string
+  daysLeft: number
+}
+
+export const ABONNES: Abonne[] = [
+  { id: 's1', name: 'Moussa Diallo', plan: 'Pro mensuel', start: '15 oct. 2026', end: '14 nov. 2026', daysLeft: 22 },
+  { id: 's2', name: 'Awa Ndour', plan: 'Pro mensuel', start: '27 sept. 2026', end: '27 oct. 2026', daysLeft: 4 },
+  { id: 's3', name: 'Khady Ndiaye', plan: 'Essai 30 jours', start: '20 oct. 2026', end: '19 nov. 2026', daysLeft: 27 },
+  { id: 's4', name: 'Ibrahima Sarr', plan: 'Essai 30 jours', start: '19 oct. 2026', end: '18 nov. 2026', daysLeft: 26 },
+  { id: 's5', name: 'Fatou Kane', plan: 'Essai 30 jours', start: '26 sept. 2026', end: '26 oct. 2026', daysLeft: 3 },
+  { id: 's6', name: 'Mamadou Gueye', plan: 'Pro mensuel', start: '11 sept. 2026', end: '11 oct. 2026', daysLeft: -12 },
+  { id: 's7', name: 'Ousmane Faye', plan: 'Pro mensuel', start: '30 août 2026', end: '30 sept. 2026', daysLeft: -23 },
+]
+
 /* --- Compteurs (barre latérale, tableau de bord) ----------------------------
    Calculés depuis les listes ci-dessus pour que tous les écrans affichent
    les mêmes chiffres. */
@@ -258,19 +405,34 @@ export const COUNTS = {
   reclamations: REPORTS.length,
   urgentes: REPORTS.filter((r) => r.prio === 'Urgent').length,
   txEchec: TRANSACTIONS.filter((t) => t.status === 'Échoué').length,
+  annoncesAVerifier: ANNONCES_EN_LIGNE.filter((a) => a.status === 'stale' || a.status === 'rented').length,
+  loyersRetard: LOCATIONS.filter((l) => l.status === 'late').length,
+  locatairesSignales: LOCATAIRES.filter((l) => l.status === 'flagged').length,
+  abonnesAExpirer: ABONNES.filter((a) => a.daysLeft >= 0 && a.daysLeft <= 7).length,
 }
 
-export const DASHBOARD_KPIS = [
-  { label: 'Utilisateurs inscrits', value: '12 480', delta: '+8 % sur 30 jours', tone: 'up', to: '' },
-  { label: 'Bailleurs actifs', value: '1 236', delta: `${COUNTS.bailleurs} à vérifier`, tone: 'warn', to: '/bailleurs' },
-  { label: 'Annonces en ligne', value: '3 412', delta: `${COUNTS.annonces} en validation`, tone: 'warn', to: '/validation' },
-  { label: 'Abonnés Pro', value: '214', delta: '+19 ce mois', tone: 'up', to: '/premium' },
-  { label: 'Loyers payés (30 j)', value: '27,4 M F', delta: '1 027 paiements Max it', tone: 'up', to: '/transactions' },
-] as const
+type Tendance = 'up' | 'down' | 'warn'
+
+/** Indicateurs du haut du tableau de bord, selon la période */
+export function kpisFor(range: Range): { label: string; value: string; delta: string; tone: Tendance; to: string }[] {
+  const p = {
+    w: { j: '7 j', users: '+2 % sur 7 jours', rent: '6,3 M F', rentN: '241 paiements Max it', pro: '+5 cette semaine' },
+    m: { j: '30 j', users: '+8 % sur 30 jours', rent: '27,4 M F', rentN: '1 027 paiements Max it', pro: '+19 ce mois' },
+    y: { j: '12 mois', users: '+64 % sur 12 mois', rent: '298 M F', rentN: '11 240 paiements Max it', pro: '+182 sur 12 mois' },
+  }[range]
+  return [
+    { label: 'Utilisateurs inscrits', value: '12 480', delta: p.users, tone: 'up', to: '' },
+    { label: 'Bailleurs actifs', value: '1 236', delta: `${COUNTS.bailleurs} à vérifier`, tone: 'warn', to: '/bailleurs' },
+    { label: 'Annonces en ligne', value: '3 412', delta: `${COUNTS.annonces} en validation`, tone: 'warn', to: '/validation' },
+    { label: 'Abonnés Pro', value: '214', delta: p.pro, tone: 'up', to: '/premium' },
+    { label: `Loyers payés (${p.j})`, value: p.rent, delta: p.rentN, tone: 'up', to: '/transactions' },
+  ]
+}
 
 export const TODO = [
   { n: COUNTS.annonces, label: 'Annonces à valider', sub: `La plus ancienne attend depuis ${ANNONCES_A_VALIDER[0].wait}`, to: '/validation', color: '#C8235F' },
   { n: COUNTS.bailleurs, label: 'Bailleurs à vérifier', sub: 'Pièces d’identité envoyées', to: '/bailleurs', color: '#0F1E3D' },
   { n: COUNTS.reclamations, label: 'Réclamations ouvertes', sub: `${COUNTS.urgentes} urgentes`, to: '/reclamations', color: '#A3261F' },
+  { n: COUNTS.loyersRetard, label: 'Loyers en retard', sub: 'Rappels SMS à suivre', to: '/locations', color: '#C8235F' },
   { n: COUNTS.txEchec, label: 'Paiements en échec', sub: 'À vérifier avec Max it', to: '/transactions', color: '#8A5A00' },
 ]

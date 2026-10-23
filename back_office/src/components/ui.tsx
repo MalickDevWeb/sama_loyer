@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react'
+import { useEffect, useRef, type ReactNode } from 'react'
 import { ICONS } from '../lib/utils'
 
 /* ==========================================================================
@@ -78,5 +78,68 @@ export function Avatar({ initials, color, size = 36 }: { initials: string; color
     <span className="avatar" style={{ width: size, height: size, background: color, fontSize: size > 40 ? 17 : 13 }}>
       {initials}
     </span>
+  )
+}
+
+/** Fenêtre modale : fond cliquable, touche Échap, focus sur la fenêtre à l'ouverture */
+export function Modal({
+  title,
+  onClose,
+  children,
+  role = 'dialog',
+  wide = false,
+}: {
+  title: string
+  onClose: () => void
+  children: ReactNode
+  role?: 'dialog' | 'alertdialog'
+  wide?: boolean
+}) {
+  const ref = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    ref.current?.focus()
+    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && onClose()
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [onClose])
+
+  return (
+    <div className="dialog-backdrop" onClick={onClose}>
+      <div
+        ref={ref}
+        tabIndex={-1}
+        role={role}
+        aria-modal="true"
+        aria-label={title}
+        className={`dialog${wide ? ' dialog--wide' : ''}`}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="dialog__head">
+          <h2 className="dialog__title">{title}</h2>
+          <button type="button" className="dialog__close" aria-label="Fermer" onClick={onClose}>
+            <Icon d={ICONS.close} size={18} strokeWidth={2.4} />
+          </button>
+        </div>
+        {children}
+      </div>
+    </div>
+  )
+}
+
+/** Message de confirmation en bas de l'écran, qui disparaît seul */
+export function Toast({ message, onDone }: { message: string; onDone: () => void }) {
+  useEffect(() => {
+    const t = window.setTimeout(onDone, 3200)
+    return () => window.clearTimeout(t)
+  }, [message, onDone])
+
+  return (
+    <div role="status" className="toast-float">
+      <span className="toast-float__icon">
+        <Icon d={ICONS.check} size={14} strokeWidth={3} />
+      </span>
+      {message}
+    </div>
   )
 }

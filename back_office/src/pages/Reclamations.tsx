@@ -1,6 +1,6 @@
-import { useState } from 'react'
+import { useCallback, useState, type FormEvent } from 'react'
 import { Link } from 'react-router-dom'
-import { Badge, CheckMark, Switch } from '../components/ui'
+import { Badge, CheckMark, Modal, Switch, Toast } from '../components/ui'
 import {
   FEATURES,
   PERMISSIONS,
@@ -11,6 +11,7 @@ import {
   TICKETS,
   TICKET_TONE,
 } from '../data/mock'
+import { logAction } from '../lib/audit'
 import './Reclamations.css'
 
 type Tab = 'reports' | 'support' | 'roles' | 'settings'
@@ -22,6 +23,23 @@ function Reclamations() {
   const [perms, setPerms] = useState(() => ROLES.map((r) => [...r.perms]))
   const [features, setFeatures] = useState(() => Object.fromEntries(FEATURES.map((f) => [f.id, f.on])))
   const [saved, setSaved] = useState(false)
+  // Nombre de membres par rôle (augmente à chaque invitation)
+  const [members, setMembers] = useState(() => ROLES.map((r) => parseInt(r.members, 10) || 0))
+  const [inviting, setInviting] = useState(false)
+  const [toast, setToast] = useState('')
+  const closeInvite = useCallback(() => setInviting(false), [])
+  const clearToast = useCallback(() => setToast(''), [])
+
+  const sendInvite = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    const data = new FormData(e.currentTarget)
+    const name = String(data.get('name'))
+    const ri = Number(data.get('role'))
+    setMembers((m) => m.map((n, i) => (i === ri ? n + 1 : n)))
+    logAction('Équipe', `Membre invité (${ROLES[ri].name})`, name)
+    setInviting(false)
+    setToast(`Invitation envoyée à ${name} (${ROLES[ri].name}).`)
+  }
 
   const openCount = REPORTS.filter((r) => !closed[r.id]).length
 
@@ -70,10 +88,16 @@ function Reclamations() {
                   <span className="report__result">{result}</span>
                 ) : (
                   <div className="report__actions">
-                    <button type="button" className="btn btn--md" onClick={() => setClosed((c) => ({ ...c, [r.id]: 'Classé sans suite' }))}>
+                    <button type="button" className="btn btn--md" onClick={() => {
+                      setClosed((c) => ({ ...c, [r.id]: 'Classé sans suite' }))
+                      logAction('Réclamations', 'Signalement classé sans suite', r.title)
+                    }}>
                       Classer sans suite
                     </button>
-                    <button type="button" className="btn btn--md btn--danger" onClick={() => setClosed((c) => ({ ...c, [r.id]: r.done }))}>
+                    <button type="button" className="btn btn--md btn--danger" onClick={() => {
+                      setClosed((c) => ({ ...c, [r.id]: r.done }))
+                      logAction('Réclamations', r.done, r.target)
+                    }}>
                       {r.actLabel}
                     </button>
                   </div>
@@ -122,7 +146,7 @@ function Reclamations() {
               <h2 className="card-title">Rôles et permissions</h2>
               <p className="card-subtitle roles__subtitle">Chaque membre de l'équipe n'a accès qu'à ce dont il a besoin.</p>
             </div>
-            <button type="button" className="btn btn--md btn--dark">+ Inviter un membre</button>
+            <button type="button" className="btn btn--md btn--dark" onClick={() => setInviting(true)}>+ Inviter un membre</button>
           </div>
           <div className="table-scroll">
             <table className="table table--compact" style={{ minWidth: 720 }}>
@@ -140,7 +164,7 @@ function Reclamations() {
                     <td>
                       <span className="cell-stack">
                         <strong>{r.name}</strong>
-                        <span style={{ color: 'var(--muted)' }}>{r.members}</span>
+                        <span style={{ color: 'var(--muted)' }}>{members[ri]} membre{members[ri] > 1 ? 's' : ''}</span>
                       </span>
                     </td>
                     {PERMISSIONS.map((p, pi) => {
@@ -194,6 +218,7 @@ function Reclamations() {
             onSubmit={(e) => {
               e.preventDefault()
               setSaved(true)
+              logAction('Équipe', 'Règles générales modifiées', 'Paramètres de la plateforme')
             }}
             onChange={() => setSaved(false)}
           >
@@ -209,6 +234,36 @@ function Reclamations() {
           </form>
         </div>
       )}
+
+      {inviting && (
+        <Modal title="Inviter un membre" onClose={closeInvite}>
+          <form className="invite-form" onSubmit={sendInvite}>
+            <label className="form-field">
+              <span>Nom complet</span>
+              <input name="name" required placeholder="Ex. Ndèye Fall" />
+            </label>
+            <label className="form-field">
+              <span>E-mail professionnel</span>
+              <input name="email" type="email" required placeholder="prenom.nom@samaloyer.sn" />
+            </label>
+            <label className="form-field">
+              <span>Rôle</span>
+              <select name="role" defaultValue={1}>
+                {ROLES.map((r, i) => (
+                  <option key={r.name} value={i} disabled={i === 0}>{r.name}</option>
+                ))}
+              </select>
+            </label>
+            <span className="form-field__hint">Le membre reçoit un lien d'activation et devra activer la double authentification (2FA).</span>
+            <div className="dialog__actions">
+              <button type="button" className="btn btn--lg" onClick={closeInvite}>Annuler</button>
+              <button type="submit" className="btn btn--lg btn--berry">Envoyer l'invitation</button>
+            </div>
+          </form>
+        </Modal>
+      )}
+
+      {toast && <Toast message={toast} onDone={clearToast} />}
     </div>
   )
 }

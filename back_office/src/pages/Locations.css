@@ -1,0 +1,64 @@
+/* ==========================================================================
+   Locations et loyers
+   ========================================================================== */
+.months {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.months__item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.months__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.months__item--paid {
+  background: var(--success-bg);
+  color: var(--success-text);
+}
+
+.months__item--late {
+  background: var(--danger-bg);
+  color: var(--danger);
+}
+
+.months__item--due {
+  background: var(--surface-2);
+  color: var(--muted);
+}
+
+/* Contrat (fenêtre) */
+.contract {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 16px;
+  border-radius: 16px;
+  border: 1px dashed var(--border);
+}
+
+.contract__lead,
+.contract__sign {
+  margin: 0;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.contract__sign {
+  padding-top: 10px;
+  border-top: 1px solid var(--divider);
+  color: var(--success-text);
+  font-weight: 700;
+}

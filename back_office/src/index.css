@@ -490,3 +490,335 @@ a.kpi:hover {
   justify-content: center;
   flex-shrink: 0;
 }
+
+/* --- Fenêtre de confirmation -------------------------------------------- */
+.dialog-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  background: rgba(15, 30, 61, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.dialog {
+  width: min(440px, 100%);
+  border-radius: 20px;
+  background: var(--surface);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.dialog__title {
+  margin: 0;
+  font-size: 19px;
+  font-weight: 800;
+}
+
+.dialog__text {
+  margin: 0 0 6px;
+  font-size: 14px;
+  color: var(--muted);
+}
+
+.dialog--wide {
+  width: min(560px, 100%);
+}
+
+.dialog__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 4px;
+}
+
+.dialog__close {
+  flex: none;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  border: 0;
+  background: var(--surface-2);
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.dialog__close:hover {
+  background: var(--neutral-bg);
+}
+
+.dialog__actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 8px;
+}
+
+@keyframes dialogIn {
+  from { opacity: 0; transform: translateY(8px) scale(0.98); }
+  to { opacity: 1; transform: none; }
+}
+
+/* --- Champs de formulaire ------------------------------------------------ */
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-field > span {
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.form-field input,
+.form-field select,
+.form-field textarea {
+  width: 100%;
+  min-height: 44px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  padding: 0 12px;
+  font: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.form-field textarea {
+  padding: 10px 12px;
+  min-height: 80px;
+  resize: vertical;
+}
+
+.form-field input:focus,
+.form-field select:focus,
+.form-field textarea:focus {
+  outline: 2px solid var(--navy);
+  outline-offset: -1px;
+}
+
+.form-field__hint {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+/* --- Notification flottante --------------------------------------------- */
+.toast-float {
+  position: fixed;
+  left: 50%;
+  bottom: 24px;
+  z-index: 60;
+  transform: translateX(-50%);
+  max-width: calc(100vw - 32px);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 18px 12px 12px;
+  border-radius: 14px;
+  background: var(--navy);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  box-shadow: 0 12px 32px rgba(15, 30, 61, 0.3);
+  animation: toastIn 0.25s ease both;
+}
+
+.toast-float__icon {
+  flex: none;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--success);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@keyframes toastIn {
+  from { opacity: 0; transform: translate(-50%, 10px); }
+  to { opacity: 1; transform: translate(-50%, 0); }
+}
+
+/* --- Recherche, grille d’infos, notes (partagés) ------------------------- */
+.search-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 0 12px;
+  height: 44px;
+  width: min(320px, 100%);
+  color: var(--muted);
+}
+
+.search-box input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  outline: none;
+  font-size: 14px;
+  height: 40px;
+  background: transparent;
+  color: var(--text);
+}
+
+.search-box:focus-within {
+  border-color: var(--navy);
+}
+
+@media (max-width: 600px) {
+  .search-box {
+    width: 100%;
+  }
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  font-size: 13px;
+}
+
+.info-grid > div {
+  padding: 10px;
+  border-radius: 12px;
+  background: var(--surface-2);
+}
+
+.info-grid span {
+  display: block;
+  color: var(--muted);
+}
+
+.note {
+  font-size: 13px;
+  line-height: 1.45;
+  padding: 10px 12px;
+  border-radius: 12px;
+}
+
+.note--success {
+  background: var(--success-soft);
+  color: var(--success-text);
+}
+
+.note--warning {
+  background: var(--warning-soft);
+  color: var(--warning-text);
+}
+
+.note--danger {
+  background: var(--danger-soft);
+  color: #8a2019;
+}
+
+.note--neutral {
+  background: var(--surface-2);
+  color: var(--text-2);
+}
+
+/* --- Liste + fiche de détail (Bailleurs, Locataires, Locations…) ---------- */
+.list-card {
+  flex: 2 1 520px;
+}
+
+.list-row {
+  cursor: pointer;
+}
+
+.list-row:hover {
+  background: var(--surface-2);
+}
+
+.list-row--on,
+.list-row--on:hover {
+  background: var(--berry-soft);
+}
+
+.list-who {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  text-align: left;
+  color: var(--text);
+  font: inherit;
+}
+
+.list-meta {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.list-thumb {
+  width: 48px;
+  height: 48px;
+  flex: 0 0 48px;
+  border-radius: 10px;
+  object-fit: cover;
+  background: var(--surface-2);
+}
+
+.detail-card {
+  flex: 1 1 300px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  align-self: flex-start;
+}
+
+.detail-card__head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.detail-card__title {
+  margin: 0 0 4px;
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.detail-card__h3 {
+  margin: 0 0 8px;
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.detail-card__hint {
+  margin: 0;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.detail-card__actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.detail-card__actions .btn {
+  justify-content: center;
+}
+
+.page-tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}

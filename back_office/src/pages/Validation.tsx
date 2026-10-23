@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Badge, CheckMark } from '../components/ui'
 import { ANNONCES_A_VALIDER, REFUSAL_REASONS, VALIDATION_CHECKS, photoOf } from '../data/mock'
+import { logAction } from '../lib/audit'
 import './Validation.css'
 
 type Decision = 'ok' | 'fix' | 'no'
@@ -37,6 +38,8 @@ function Validation() {
     setCurrentId(next ? next.id : null)
     setChecks([])
     setChoosing(null)
+    const label = kind === 'ok' ? 'Annonce approuvée et mise en ligne' : kind === 'fix' ? `Correction demandée : ${reason}` : `Annonce refusée : ${reason}`
+    logAction('Annonces', label, `${current.title} · ${current.place}`)
     if (kind === 'ok') setLog(`« ${current.title} » approuvée et mise en ligne.`)
     else if (kind === 'fix') setLog(`Correction demandée pour « ${current.title} » : ${reason}.`)
     else setLog(`« ${current.title} » refusée : ${reason}.`)

@@ -2,10 +2,8 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Badge, Icon } from '../components/ui'
 import { ICONS, fmt } from '../lib/utils'
-import { DASHBOARD_KPIS, SIGNUP_MONTHS, SIGNUPS, TODO, TRANSACTIONS, TX_TONE, ZONES } from '../data/mock'
+import { SIGNUPS_BY_RANGE, TODO, TRANSACTIONS, TX_TONE, ZONES, kpisFor, type Range } from '../data/mock'
 import './Dashboard.css'
-
-type Range = 'w' | 'm' | 'y'
 
 const RANGES: { id: Range; label: string }[] = [
   { id: 'w', label: '7 jours' },
@@ -15,11 +13,13 @@ const RANGES: { id: Range; label: string }[] = [
 
 const DELTA_COLOR = { up: 'var(--success)', down: 'var(--danger)', warn: 'var(--warning-text)' }
 
-const CHART_MAX = 1400
 const ZONE_MAX = ZONES[0][1]
 
 function Dashboard() {
   const [range, setRange] = useState<Range>('m')
+  const chart = SIGNUPS_BY_RANGE[range]
+  const chartMax = Math.max(...chart.values) * 1.05
+  const total = chart.values.reduce((s, v) => s + v, 0)
 
   return (
     <div className="page dashboard">
@@ -41,7 +41,7 @@ function Dashboard() {
       </div>
 
       <div className="kpi-grid">
-        {DASHBOARD_KPIS.map((k) => {
+        {kpisFor(range).map((k) => {
           const body = (
             <>
               <span className="kpi__label">{k.label}</span>
@@ -59,28 +59,33 @@ function Dashboard() {
 
       <div className="row row--stretch">
         <section className="card dashboard__signups">
-          <h2 className="card-title">Nouvelles inscriptions par mois</h2>
-          <p className="card-subtitle">Locataires et bailleurs · 12 derniers mois</p>
+          <div className="card-head">
+            <div>
+              <h2 className="card-title">{chart.title}</h2>
+              <p className="card-subtitle">{chart.sub}</p>
+            </div>
+            <span className="chart-total"><strong>{fmt(total)}</strong> inscriptions</span>
+          </div>
           <div
             className="bar-chart"
             role="img"
-            aria-label="Inscriptions mensuelles, de 420 en novembre 2025 à 1 380 en octobre 2026"
+            aria-label={`${chart.title} : ${chart.labels.map((l, i) => `${l} ${chart.values[i]}`).join(', ')}`}
           >
-            {SIGNUPS.map((v, i) => {
-              const last = i === SIGNUPS.length - 1
+            {chart.values.map((v, i) => {
+              const last = i === chart.values.length - 1
               return (
-                <div key={SIGNUP_MONTHS[i]} className="bar-chart__col" title={`${SIGNUP_MONTHS[i]} : ${fmt(v)} inscriptions`}>
+                <div key={chart.labels[i]} className="bar-chart__col" title={`${chart.labels[i]} : ${fmt(v)} inscriptions`}>
                   {last && <span className="bar-chart__value">{fmt(v)}</span>}
                   <div
                     className={`bar-chart__bar${last ? ' bar-chart__bar--last' : ''}`}
-                    style={{ height: Math.round((v / CHART_MAX) * 200) }}
+                    style={{ height: Math.round((v / chartMax) * 200) }}
                   />
                 </div>
               )
             })}
           </div>
           <div className="bar-chart__labels">
-            {SIGNUP_MONTHS.map((m) => (
+            {chart.labels.map((m) => (
               <span key={m}>{m}</span>
             ))}
           </div>

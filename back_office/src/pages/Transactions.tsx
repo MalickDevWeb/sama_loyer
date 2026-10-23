@@ -1,8 +1,9 @@
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Badge, Icon, Pills } from '../components/ui'
+import { Badge, Icon, Modal, Pills, Toast } from '../components/ui'
 import { ICONS } from '../lib/utils'
 import { TRANSACTIONS, TX_TONE, type Transaction, type TxStatus, type TxType } from '../data/mock'
+import { logAction } from '../lib/audit'
 import './Transactions.css'
 
 type Tab = 'all' | TxStatus
@@ -26,21 +27,24 @@ function Transactions() {
   // Statuts modifiés par les actions de l'admin (en attendant l'API)
   const [overrides, setOverrides] = useState<Record<string, TxStatus>>({})
   const [refundRef, setRefundRef] = useState<string | null>(null)
-  const confirmRef = useRef<HTMLButtonElement>(null)
+  const [receiptRef, setReceiptRef] = useState<string | null>(null)
+  const [toast, setToast] = useState('')
+  const closeRefund = useCallback(() => setRefundRef(null), [])
+  const closeReceipt = useCallback(() => setReceiptRef(null), [])
+  const clearToast = useCallback(() => setToast(''), [])
 
   const all = TRANSACTIONS.map((x) => ({ ...x, status: overrides[x.ref] ?? x.status }))
   const list = all.filter((x) => (tab === 'all' || x.status === tab) && (type === 'all' || x.type === type))
   const toRefund = all.find((x) => x.ref === refundRef)
+  const receipt = all.find((x) => x.ref === receiptRef)
 
   const setStatus = (ref: string, status: TxStatus) => setOverrides((o) => ({ ...o, [ref]: status }))
 
-  useEffect(() => {
-    if (!toRefund) return
-    confirmRef.current?.focus()
-    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && setRefundRef(null)
-    window.addEventListener('keydown', onKey)
-    return () => window.removeEventListener('keydown', onKey)
-  }, [toRefund])
+  const checkOperator = (x: Transaction) => {
+    setStatus(x.ref, 'Réussi')
+    logAction('Transactions', 'Paiement confirmé par Max it', `${x.ref} · ${x.user}`)
+    setToast(`Paiement ${x.ref} confirmé par Max it.`)
+  }
 
   const tabs = [
     { id: 'all' as Tab, label: `Toutes (${all.length})` },
@@ -62,9 +66,9 @@ function Transactions() {
 
       <div className="features-strip">
         <span className="features-strip__title">Fonctionnalités de paiement :</span>
-        <Badge tone="success">Premium et Boost · activé</Badge>
+        <Badge tone="success">Loyers via Max it · activé</Badge>
+        <Badge tone="success">Abonnement Pro et Boost · activé</Badge>
         <Badge tone="success">Remboursements · activé</Badge>
-        <Badge tone="neutral">Loyers dans l'appli · désactivé</Badge>
         <Link to="/reclamations" className="features-strip__link">Gérer</Link>
       </div>
 
@@ -108,13 +112,13 @@ function Transactions() {
                   <td className="tx-actions-cell">
                     <div className="tx-actions">
                       {(x.status === 'Réussi' || x.status === 'Remboursé') && (
-                        <button type="button" className="btn btn--sm">Reçu</button>
+                        <button type="button" className="btn btn--sm" onClick={() => setReceiptRef(x.ref)}>Reçu</button>
                       )}
                       {x.status === 'Réussi' && x.type !== 'Remboursement' && (
                         <button type="button" className="btn btn--sm btn--danger-outline" onClick={() => setRefundRef(x.ref)}>Rembourser</button>
                       )}
                       {(x.status === 'Échoué' || x.status === 'En attente') && (
-                        <button type="button" className="btn btn--sm" onClick={() => setStatus(x.ref, 'Réussi')}>Vérifier chez l'opérateur</button>
+                        <button type="button" className="btn btn--sm" onClick={() => checkOperator(x)}>Vérifier chez Max it</button>
                       )}
                     </div>
                   </td>
@@ -127,34 +131,62 @@ function Transactions() {
       </section>
 
       {toRefund && (
-        <div className="dialog-backdrop" onClick={() => setRefundRef(null)}>
-          <div
-            role="alertdialog"
-            aria-modal="true"
-            aria-labelledby="refund-title"
-            className="dialog"
-            onClick={(e) => e.stopPropagation()}
+        <Modal title={`Rembourser ${toRefund.user} ?`} role="alertdialog" onClose={closeRefund}>
+          <p className="dialog__text">
+            {toRefund.label} · {toRefund.ref} · <strong>{toRefund.amount}</strong>. Le montant sera renvoyé sur le compte
+            {' '}{toRefund.method} de l'utilisateur. La mise en avant liée sera arrêtée.
+          </p>
+          <button
+            type="button"
+            className="btn btn--lg btn--danger"
+            onClick={() => {
+              setStatus(toRefund.ref, 'Remboursé')
+              logAction('Transactions', 'Remboursement effectué', `${toRefund.user} · ${toRefund.amount}`)
+              setRefundRef(null)
+              setToast(`${toRefund.amount} remboursés à ${toRefund.user}.`)
+            }}
           >
-            <h2 id="refund-title" className="dialog__title">Rembourser {toRefund.user} ?</h2>
-            <p className="dialog__text">
-              {toRefund.label} · {toRefund.ref}. Le montant sera renvoyé sur le compte {toRefund.method} de l'utilisateur.
-              La mise en avant liée sera arrêtée.
-            </p>
-            <button
-              ref={confirmRef}
-              type="button"
-              className="btn btn--lg btn--danger"
-              onClick={() => {
-                setStatus(toRefund.ref, 'Remboursé')
-                setRefundRef(null)
-              }}
-            >
-              Confirmer le remboursement
-            </button>
-            <button type="button" className="btn btn--lg" onClick={() => setRefundRef(null)}>Annuler</button>
-          </div>
-        </div>
+            Confirmer le remboursement
+          </button>
+          <button type="button" className="btn btn--lg" onClick={closeRefund}>Annuler</button>
+        </Modal>
       )}
+
+      {receipt && (
+        <Modal title="Reçu de paiement" onClose={closeReceipt}>
+          <div className="receipt" id="receipt">
+            <div className="receipt__brand">
+              <span className="receipt__logo"><Icon d={ICONS.home} size={18} strokeWidth={2.4} /></span>
+              <span>
+                <strong>SAMA LOYER</strong>
+                <span>Reçu n° {receipt.ref}</span>
+              </span>
+            </div>
+            <div className="receipt__amount">
+              <span>{receipt.status === 'Remboursé' ? 'Montant remboursé' : 'Montant payé'}</span>
+              <strong>{receipt.amount}</strong>
+              <Badge tone={TX_TONE[receipt.status]}>{receipt.status}</Badge>
+            </div>
+            <dl className="receipt__rows">
+              <div><dt>Date</dt><dd>{receipt.date} 2026</dd></div>
+              <div><dt>Payé par</dt><dd>{receipt.user}</dd></div>
+              <div><dt>Motif</dt><dd>{receipt.label}</dd></div>
+              <div><dt>Moyen de paiement</dt><dd>{receipt.method}</dd></div>
+              <div><dt>Bénéficiaire</dt><dd>{receipt.type === 'Loyer' ? 'Bailleur (compte Max it)' : 'SAMA LOYER'}</dd></div>
+            </dl>
+            <p className="receipt__note">Reçu généré automatiquement après validation du paiement par Max it.</p>
+          </div>
+          <div className="dialog__actions">
+            <button type="button" className="btn btn--lg" onClick={closeReceipt}>Fermer</button>
+            <button type="button" className="btn btn--lg btn--dark" onClick={() => window.print()}>
+              <Icon d={ICONS.download} size={16} strokeWidth={2.2} />
+              Imprimer / PDF
+            </button>
+          </div>
+        </Modal>
+      )}
+
+      {toast && <Toast message={toast} onDone={clearToast} />}
     </div>
   )
 }
