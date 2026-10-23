@@ -498,7 +498,13 @@ export function getStoredConversation(convIdOrLogementId) {
   );
 }
 
-export function addStoredMessage(convId, message) {
+/**
+ * Ajoute un message à une conversation locataire (la crée si besoin).
+ * @param {string} convId
+ * @param {Object} message
+ * @param {string} [logementId] - logement d'une nouvelle conversation
+ */
+export function addStoredMessage(convId, message, logementId) {
   const convs = getStoredConversations();
   const d = new Date();
   const timeStr = `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
@@ -527,7 +533,7 @@ export function addStoredMessage(convId, message) {
     // Nouvelle conversation créée automatiquement
     nextConvs.unshift({
       id: convId,
-      logementId: convId,
+      logementId: logementId || convId,
       time: timeStr,
       unread: 0,
       avatarBg: '#0F1E3D',
@@ -580,9 +586,13 @@ export function getStoredBailleurConversation(convId) {
  * Ajoute un message (ou un événement de visite) à une conversation du bailleur.
  * @param {string} convId
  * @param {Object} message - { from: 'me' | 'them', text, time } ou { event: true, … }
+ * @param {Object} [conv] - conversation à créer si elle n'existe pas encore (nouveau contact)
  */
-export function addStoredBailleurMessage(convId, message) {
-  const next = getStoredBailleurConversations().map((c) =>
+export function addStoredBailleurMessage(convId, message, conv) {
+  const convs = getStoredBailleurConversations();
+  const exists = convs.some((c) => c.id === convId);
+  const base = exists ? convs : [Object.assign({}, conv, { id: convId, unread: 0, messages: [] }), ...convs];
+  const next = base.map((c) =>
     c.id === convId
       ? Object.assign({}, c, { time: message.time || c.time, messages: [...(c.messages || []), message] })
       : c
