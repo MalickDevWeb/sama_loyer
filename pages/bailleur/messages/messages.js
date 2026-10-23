@@ -1,8 +1,8 @@
 import { setCustomTabBarActive } from '../../../utils/helpers/tab-bar';
 import { requireBailleurAccess, getStoredBailleurConversations } from '../../../utils/helpers/store';
 import { bailleurGuardBehavior } from '../../../utils/behaviors/index';
-import { Bus } from '../../../utils/event/index';
 import { EVENTS } from '../../../utils/event/keys';
+import { navigateWithData } from '../../../utils/helpers/nav-data';
 
 // Conversations enregistrées ; statut affiché : « Candidate », « Locataire »… (1re partie du tag)
 const loadConversations = () =>
@@ -36,13 +36,10 @@ Page({
     } catch (e) {}
 
     // Nouveau message ou discussion lue : la liste se met à jour en direct
-    this.offMessages = Bus.on(EVENTS.MESSAGES_CHANGED, ({ side }) => {
+    // (listen() vient de busBehavior, inclus dans bailleurGuardBehavior)
+    this.listen(EVENTS.MESSAGES_CHANGED, ({ side }) => {
       if (side === 'bailleur') this.reload();
     });
-  },
-
-  onUnload() {
-    if (this.offMessages) this.offMessages();
   },
 
   onShow() {
@@ -74,7 +71,10 @@ Page({
     wx.redirectTo({ url: '/pages/bailleur/demandes/demandes' });
   },
 
+  // La conversation est transmise à la discussion : pas de rechargement
   onOpenConversation(e) {
-    wx.navigateTo({ url: `/pages/bailleur/conversation/conversation?id=${e.currentTarget.dataset.id}` });
+    const id = e.currentTarget.dataset.id;
+    const conv = (this.all || []).find((c) => c.id === id);
+    navigateWithData(`/pages/bailleur/conversation/conversation?id=${id}`, conv);
   }
 });

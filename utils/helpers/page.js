@@ -84,7 +84,8 @@ export const createPageHelpers = (page, stateBindings = {}) => {
      */
     subscribe() {
       Object.entries(stateBindings).forEach(([pageKey, stateKey]) => {
-        const unsub = eventBus.onState(stateKey, (value) => {
+        // onState transmet { key, value, oldValue } : on ne garde que la valeur
+        const unsub = eventBus.onState(stateKey, ({ value }) => {
           page.setData({ [pageKey]: value });
         });
         unsubscribers.push(unsub);

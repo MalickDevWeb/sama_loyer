@@ -16,6 +16,7 @@ import wo from './wo.js';
 import { storage } from '../storage.js';
 import { Bus } from '../event/index.js';
 import { EVENTS } from '../event/keys.js';
+import { busBehavior } from '../behaviors/bus.js';
 
 const STORAGE_LOCALE_KEY = 'app_user_locale';
 const MESSAGES = { fr, wo };
@@ -72,6 +73,9 @@ export function setLocale(locale) {
 
 /** Injecte le dictionnaire et la langue dans data.i18n et data.currentLocale */
 export const i18nBehavior = Behavior({
+  // listen() : abonnement coupé automatiquement à la fermeture de la page
+  behaviors: [busBehavior],
+
   data: {
     i18n: getMessages(),
     currentLocale: getLocale(),
@@ -79,14 +83,11 @@ export const i18nBehavior = Behavior({
 
   lifetimes: {
     attached() {
-      this._offLocale = Bus.on(EVENTS.LOCALE_CHANGED, ({ locale }) => {
+      this.listen(EVENTS.LOCALE_CHANGED, ({ locale }) => {
         if (locale !== this.data.currentLocale) {
           this.setData({ i18n: getMessages(locale), currentLocale: locale });
         }
       });
-    },
-    detached() {
-      if (this._offLocale) this._offLocale();
     },
   },
 

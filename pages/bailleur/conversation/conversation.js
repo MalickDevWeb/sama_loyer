@@ -44,7 +44,8 @@ Page({
     const name = options && options.name ? decodeURIComponent(options.name) : '';
     // Conversation enregistrée (messages déjà échangés) ou nouveau contact
     const base = getBailleurConversation(id, name);
-    const stored = getStoredBailleurConversation(base.id);
+    const received = this.receiveNavData(options); // transmise par la liste Messages
+    const stored = received || getStoredBailleurConversation(base.id);
     const conv = stored ? Object.assign({}, base, stored) : base;
     markBailleurConversationRead(conv.id);
 

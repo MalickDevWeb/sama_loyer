@@ -2,6 +2,7 @@ import { storage } from '../../../../utils/storage.js';
 import { CLIENT_TABS, BAILLEUR_TABS, STORAGE_KEYS } from '../../../../utils/constants/index';
 import { Bus } from '../../../../utils/event/index';
 import { STATE_KEYS } from '../../../../utils/event/keys';
+import { busBehavior } from '../../../../utils/behaviors/index';
 
 // Onglet qui porte le badge « messages non lus » selon l'espace
 const MESSAGES_TAB = { client: 'messages', bailleur: 'b-messages' };
@@ -13,6 +14,9 @@ function badgeText(n) {
 }
 
 Component({
+  // watchState() : abonnements EventBus coupés automatiquement au retrait du composant
+  behaviors: [busBehavior],
+
   properties: {
     activeTab: {
       type: String,
@@ -41,15 +45,9 @@ Component({
       this.syncTabs();
 
       // EventBus : badge des messages non lus et bandeau hors connexion, en direct
-      const refresh = () => this.syncTabs();
-      this._unsubs = [
-        Bus.onState(STATE_KEYS.UNREAD_CLIENT, refresh),
-        Bus.onState(STATE_KEYS.UNREAD_BAILLEUR, refresh),
-        Bus.onState(STATE_KEYS.NETWORK_CONNECTED, ({ value }) => this.setData({ offline: value === false })),
-      ];
-    },
-    detached() {
-      (this._unsubs || []).forEach((off) => off());
+      this.watchState(STATE_KEYS.UNREAD_CLIENT, () => this.syncTabs());
+      this.watchState(STATE_KEYS.UNREAD_BAILLEUR, () => this.syncTabs());
+      this.watchState(STATE_KEYS.NETWORK_CONNECTED, (connected) => this.setData({ offline: connected === false }));
     },
   },
 
