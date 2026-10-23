@@ -2,6 +2,7 @@
 import { getStoredRawVisites, updateStoredVisiteStatus, getStoredLogements, getStoredConversations, getStoredLocataires } from '../../../utils/helpers/store';
 import { formatMoney } from '../../../utils/mocks/logements';
 import { requireBailleurAccess } from '../../../utils/helpers/store';
+import { COLORS } from '../../../utils/constants/theme';
 
 Page({
   data: {
@@ -131,7 +132,7 @@ Page({
       title: 'Refuser cette demande ?',
       content: 'Le locataire sera notifié avec bienveillance.',
       confirmText: 'Refuser',
-      confirmColor: '#C8235F',
+      confirmColor: COLORS.berry,
       cancelText: 'Annuler',
       success: (res) => {
         if (res.confirm) {

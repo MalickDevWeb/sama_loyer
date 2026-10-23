@@ -3,6 +3,7 @@ import { getStoredBailleurAnnonces, confirmBailleurAnnonce } from '../../../util
 import { storage } from '../../../utils/storage';
 import { withCover } from '../../../utils/mocks/media';
 import { requireBailleurAccess } from '../../../utils/helpers/store';
+import { COLORS } from '../../../utils/constants/theme';
 
 Page({
   data: {
@@ -104,7 +105,7 @@ Page({
       title: 'Marquer comme loué ?',
       content: 'Ce logement sera retiré des résultats de recherche des locataires.',
       confirmText: "Oui, c'est loué",
-      confirmColor: '#0F1E3D',
+      confirmColor: COLORS.navy,
       cancelText: 'Annuler',
       success: (res) => {
         if (res.confirm) {

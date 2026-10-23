@@ -1,5 +1,6 @@
 import { getStoredLocataires, confirmLocataireCashPayment } from '../../../utils/helpers/store';
 import { requireBailleurAccess } from '../../../utils/helpers/store';
+import { COLORS } from '../../../utils/constants/theme';
 
 // pages/bailleur/locataires/locataires.js
 // Loyer mensuel lu dans « Studio · Pikine Rue 10 · 95 000 F »
@@ -215,7 +216,7 @@ Page({
       content: 'Voulez-vous notifier Cheikh Fall que vous n’avez pas encore perçu les 95 000 F ?',
       confirmText: 'Notifier',
       cancelText: 'Annuler',
-      confirmColor: '#C8235F',
+      confirmColor: COLORS.berry,
       success: (res) => {
         if (res.confirm) {
           wx.showToast({ title: 'Notification envoyée', icon: 'success' });
