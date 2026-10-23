@@ -5,6 +5,7 @@ import { backendAPI } from '../../../utils/apis/index.js';
 import { getFavoritesMap, getFavoriteIds, toggleFavoriteId } from '../../../utils/helpers/favorites';
 import { TINTS } from '../../../utils/constants/theme';
 import { navigateWithData } from '../../../utils/helpers/nav-data';
+import { i18nBehavior } from '../../../utils/i18n/index.js';
 
 function setTabBarVisible(page, visible) {
   try {
@@ -97,6 +98,8 @@ function parseNaturalQuery(text) {
 }
 
 Page({
+  behaviors: [i18nBehavior],
+
   data: {
     uiState: 'content', // 'loading' | 'content' | 'error' (Machine à états PMT)
     focusField: '', // champ actif (lieu | budget) : halo + icône animée
