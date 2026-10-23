@@ -1,5 +1,5 @@
-<view class="sama-page {{ searchState === 'loading' ? 'sama-page--dark' : '' }}">
-  <!-- Toast / Notification Flottante Haute Couture -->
+<view class="sama-page">
+  <!-- Toast Flottant SAMA LOYER -->
   <view 
     wx:if="{{ toast.visible }}" 
     class="sama-floating-toast {{ toast.hiding ? 'toast--hide' : 'toast--show' }}" 
@@ -24,372 +24,266 @@
     </view>
   </view>
 
-  <!-- ======================================================== -->
-  <!-- ÉTAT 1 : ACCUEIL FORMULAIRE (Image 1)                    -->
-  <!-- ======================================================== -->
-  <view wx:if="{{ searchState === 'form' }}" class="state-container">
-    <scroll-view 
-      class="sama-scroll" 
-      scroll-y="{{true}}" 
-      enhanced="{{true}}" 
-      show-scrollbar="{{false}}"
-    >
-      <!-- En-tête avec SAMA LOYER -->
-      <view class="sama-header" style="padding-top: {{ statusBarHeight + 12 }}px;">
-        <view class="sama-brand">
-          <view class="sama-brand__icon">
-            <view class="icon-svg icon-house-white"></view>
-          </view>
-          <view class="sama-brand__text">
-            <text class="brand-title">SAMA</text>
-            <text class="brand-sub">LOYER</text>
-          </view>
-        </view>
-      </view>
-
-      <!-- Carte d'accroche dégradée rose avec filigrane maison -->
-      <view class="hero-pink-card">
-        <view class="hero-watermark"></view>
-        
-        <!-- Badge utilisateur / Salamalekum -->
-        <view class="hero-user-pill">
-          <text class="pill-red-dot">•</text>
-          <text class="pill-user-text">Salamalekum, Awa</text>
-        </view>
-
-        <!-- Titre d'accroche -->
-        <view class="hero-headline">
-          <text class="hero-title-dark">Trouve ton logement.</text>
-          <text class="hero-title-accent">Simplement.</text>
-        </view>
-
-        <text class="hero-subtitle">Dis-nous où et combien. L'IA choisit pour toi.</text>
-
-        <!-- Tags de réassurance -->
-        <view class="hero-trust-badges">
-          <view class="trust-badge">
-            <text class="trust-check">✓</text>
-            <text>Annonces vérifiées</text>
-          </view>
-          <view class="trust-badge">
-            <text class="trust-check">✓</text>
-            <text>Paiement Max it</text>
-          </view>
-        </view>
-      </view>
-
-      <!-- Formulaire de recherche -->
-      <view class="sama-form">
-        <!-- Champ Localité -->
-        <view class="form-group">
-          <text class="form-label">Localité</text>
-          <view class="input-box">
-            <view class="icon-svg icon-pin-berry"></view>
-            <input
-              id="lieu"
-              class="input-field"
-              type="text"
-              value="{{ place }}"
-              bindinput="onPlaceInput"
-              bindconfirm="onSearchTap"
-              confirm-type="search"
-              placeholder="Ex. Ouakam, Ngor, Yoff, Almadies…"
-              placeholder-class="input-placeholder"
-            />
-            <view wx:if="{{ place }}" class="input-clear-btn" bindtap="onClearPlace">✕</view>
-          </view>
-        </view>
-
-        <!-- Champ Budget -->
-        <view class="form-group">
-          <text class="form-label">Budget maximum par mois</text>
-          <view class="input-box">
-            <view class="icon-svg icon-card-berry"></view>
-            <input
-              id="budget"
-              class="input-field"
-              type="number"
-              value="{{ budget }}"
-              bindinput="onBudgetInput"
-              bindconfirm="onSearchTap"
-              confirm-type="search"
-              placeholder="Ex. 60 000"
-              placeholder-class="input-placeholder"
-            />
-            <view wx:if="{{ budget }}" class="input-clear-btn" bindtap="onClearBudget">✕</view>
-            <text class="input-suffix">F CFA</text>
-          </view>
-        </view>
-
-        <!-- Bouton split : Rechercher (gauche) + Parler (droite) -->
-        <view class="split-search-btn">
-          <view class="split-left" bindtap="onSearchTap">
-            <view class="icon-svg icon-search-white"></view>
-            <text class="btn-search-label">Rechercher</text>
-          </view>
-          <view class="split-right-pill" bindtap="onVoiceTap">
-            <view class="icon-svg icon-mic-berry"></view>
-            <text class="btn-voice-label">Parler</text>
-          </view>
-        </view>
-
-        <!-- Note d'aide sous le bouton -->
-        <text class="form-help-hint">Écris ci-dessus, ou touche « Parler » en wolof ou en français</text>
-
-        <!-- Carte Mes favoris -->
-        <view class="favorites-nav-card" bindtap="onGoToFavorites">
-          <view class="fav-icon-box">
-            <view class="icon-svg icon-heart-fill-berry"></view>
-          </view>
-          <view class="fav-meta">
-            <text class="fav-title">Mes favoris</text>
-            <text class="fav-sub">{{ favoritesCount }} logement{{ favoritesCount > 1 ? 's' : '' }} enregistré{{ favoritesCount > 1 ? 's' : '' }}</text>
-          </view>
-          <text class="fav-chevron">›</text>
-        </view>
-      </view>
-
-      <view class="form-scroll-spacer"></view>
-    </scroll-view>
-  </view>
-
-  <!-- ======================================================== -->
-  <!-- ÉTAT 2 : "L'IA CHERCHE POUR TOI..." (Image 2)           -->
-  <!-- ======================================================== -->
-  <view wx:if="{{ searchState === 'loading' }}" class="ai-loading-screen">
-    <!-- En-tête dark -->
+  <!-- Défilement continu : Formulaire + Résultats en dessous sans redirection -->
+  <scroll-view 
+    class="sama-scroll" 
+    scroll-y="{{true}}" 
+    enhanced="{{true}}" 
+    show-scrollbar="{{false}}"
+  >
+    <!-- En-tête SAMA LOYER -->
     <view class="sama-header" style="padding-top: {{ statusBarHeight + 12 }}px;">
       <view class="sama-brand">
         <view class="sama-brand__icon">
           <view class="icon-svg icon-house-white"></view>
         </view>
         <view class="sama-brand__text">
-          <text class="brand-title brand-title--white">SAMA</text>
+          <text class="brand-title">SAMA</text>
           <text class="brand-sub">LOYER</text>
         </view>
       </view>
     </view>
 
-    <!-- Centre de l'animation IA -->
-    <view class="ai-loading-center">
-      <!-- Anneau concentrique lumineux pulsant -->
-      <view class="ai-pulse-outer">
-        <view class="ai-pulse-ring"></view>
-        <view class="ai-pulse-core">
-          <text class="ai-star-sparkle">✦</text>
-        </view>
+    <!-- Carte d'accroche dégradée rose avec filigrane maison -->
+    <view class="hero-pink-card">
+      <view class="hero-watermark"></view>
+      
+      <!-- Badge utilisateur / Salamalekum -->
+      <view class="hero-user-pill">
+        <text class="pill-red-dot">•</text>
+        <text class="pill-user-text">Salamalekum, Awa</text>
       </view>
 
-      <!-- Titre principal -->
-      <text class="ai-loading-title">L'IA cherche pour toi...</text>
+      <!-- Titre d'accroche -->
+      <view class="hero-headline">
+        <text class="hero-title-dark">Trouve ton logement.</text>
+        <text class="hero-title-accent">Simplement.</text>
+      </view>
 
-      <!-- Checklist progressive des 3 étapes -->
-      <view class="ai-steps-checklist">
-        <!-- Étape 1 -->
-        <view class="ai-step-row {{ step1Done ? 'ai-step-row--active' : '' }}">
-          <view class="ai-step-circle {{ step1Done ? 'circle--done' : 'circle--pending' }}">
-            <text wx:if="{{ step1Done }}">✓</text>
-          </view>
-          <text class="ai-step-text">Je lis ta demande</text>
+      <text class="hero-subtitle">Indique ta localité et ton budget. Les résultats s'affichent directement ci-dessous.</text>
+
+      <!-- Tags de réassurance -->
+      <view class="hero-trust-badges">
+        <view class="trust-badge">
+          <text class="trust-check">✓</text>
+          <text>Annonces vérifiées</text>
         </view>
-
-        <!-- Étape 2 -->
-        <view class="ai-step-row {{ step2Done ? 'ai-step-row--active' : '' }}">
-          <view class="ai-step-circle {{ step2Done ? 'circle--done' : 'circle--pending' }}">
-            <text wx:if="{{ step2Done }}">✓</text>
-          </view>
-          <text class="ai-step-text">Je compare les logements du quartier</text>
-        </view>
-
-        <!-- Étape 3 -->
-        <view class="ai-step-row {{ step3Done ? 'ai-step-row--active' : '' }}">
-          <view class="ai-step-circle {{ step3Done ? 'circle--done' : 'circle--pending' }}">
-            <text wx:if="{{ step3Done }}">✓</text>
-          </view>
-          <text class="ai-step-text">Je choisis les 3 meilleurs</text>
+        <view class="trust-badge">
+          <text class="trust-check">✓</text>
+          <text>Paiement Max it</text>
         </view>
       </view>
     </view>
-  </view>
 
-  <!-- ======================================================== -->
-  <!-- ÉTAT 3 : RÉSULTATS RECOMMANDÉS (Image 3 + Maquette)      -->
-  <!-- ======================================================== -->
-  <view wx:if="{{ searchState === 'results' }}" class="ai-results-screen">
-    <scroll-view class="ai-results-scroll" scroll-y="{{true}}" enhanced="{{true}}" show-scrollbar="{{false}}">
-      <!-- En-tête -->
-      <view class="sama-header" style="padding-top: {{ statusBarHeight + 12 }}px;">
-        <view class="sama-brand">
-          <view class="sama-brand__icon">
-            <view class="icon-svg icon-house-white"></view>
-          </view>
-          <view class="sama-brand__text">
-            <text class="brand-title">SAMA</text>
-            <text class="brand-sub">LOYER</text>
-          </view>
+    <!-- Formulaire de recherche (Critères ajustables à tout moment) -->
+    <view class="sama-form">
+      <!-- Champ Localité -->
+      <view class="form-group">
+        <text class="form-label">Localité</text>
+        <view class="input-box">
+          <view class="icon-svg icon-pin-berry"></view>
+          <input
+            id="lieu"
+            class="input-field"
+            type="text"
+            value="{{ place }}"
+            bindinput="onPlaceInput"
+            bindconfirm="onSearchTap"
+            confirm-type="search"
+            placeholder="Ex. Ouakam, Ngor, Yoff, Almadies…"
+            placeholder-class="input-placeholder"
+          />
+          <view wx:if="{{ place }}" class="input-clear-btn" bindtap="onClearPlace">✕</view>
         </view>
       </view>
 
-      <!-- Bandeau Dark "Tes 3 meilleurs logements" -->
-      <view class="results-hero-banner">
-        <view class="results-hero-top">
-          <view class="results-ia-tag">
-            <text class="ia-sparkle">✦</text>
-            <text class="ia-tag-text">CHOISIS PAR L'IA</text>
-          </view>
-          <view class="btn-close-results" bindtap="onModifyTap">✕</view>
-        </view>
-
-        <text class="results-hero-title">Tes 3 meilleurs logements</text>
-
-        <view class="results-filter-pills">
-          <view wx:if="{{ qPlace }}" class="filter-pill">{{ qPlace }}</view>
-          <view wx:if="{{ qBudget }}" class="filter-pill">{{ formattedBudget }} F max</view>
+      <!-- Champ Budget -->
+      <view class="form-group">
+        <text class="form-label">Budget maximum par mois</text>
+        <view class="input-box">
+          <view class="icon-svg icon-card-berry"></view>
+          <input
+            id="budget"
+            class="input-field"
+            type="number"
+            value="{{ budget }}"
+            bindinput="onBudgetInput"
+            bindconfirm="onSearchTap"
+            confirm-type="search"
+            placeholder="Ex. 60 000"
+            placeholder-class="input-placeholder"
+          />
+          <view wx:if="{{ budget }}" class="input-clear-btn" bindtap="onClearBudget">✕</view>
+          <text class="input-suffix">F CFA</text>
         </view>
       </view>
 
-      <!-- Liste des 3 cartes logements recommandées -->
-      <view class="ai-recs-container">
-        <block wx:for="{{ recs }}" wx:key="id">
-          <view class="rec-card {{ item.rank === 1 ? 'rec-card--best' : '' }}" data-item="{{ item }}" bindtap="onListingTap">
-            <!-- Bloc Hero avec couleur teintée et dessin architectural -->
-            <view class="rec-card__hero" style="background-color: {{ item.tintBg }};">
-              <view class="rec-card__rank-row">
-                <view class="rec-card__rank">{{ item.rank }}</view>
-                <view wx:if="{{ item.rank === 1 }}" class="rec-card__badge-best">Meilleur choix</view>
-              </view>
-              <view class="rec-card__house-illu"></view>
-            </view>
-
-            <!-- Corps de la carte -->
-            <view class="rec-card__body">
-              <text class="rec-card__type">{{ item.typeLabel }}</text>
-              <text class="rec-card__title">{{ item.title }}</text>
-              <text class="rec-card__place">{{ item.place }}</text>
-              
-              <view class="rec-card__price-row">
-                <text class="rec-card__price">{{ item.formattedPrice }}</text>
-                <text class="rec-card__unit">F / mois</text>
-              </view>
-
-              <!-- Tag match IA vert pastel -->
-              <view class="rec-card__match-pill">
-                <text class="match-check">✓</text>
-                <text class="match-desc">{{ item.reason }}</text>
-              </view>
-            </view>
-          </view>
-        </block>
+      <!-- Bouton split : Rechercher (gauche) + Parler (droite) -->
+      <view class="split-search-btn">
+        <view class="split-left" hover-class="sl-hover" bindtap="onSearchTap">
+          <view class="icon-svg icon-search-white"></view>
+          <text class="btn-search-label">Rechercher</text>
+        </view>
+        <view class="split-right-pill" hover-class="sl-hover" bindtap="onVoiceTap">
+          <view class="icon-svg icon-mic-berry"></view>
+          <text class="btn-voice-label">Parler</text>
+        </view>
       </view>
 
-      <!-- Espace pour ne pas être masqué par la barre fixe -->
-      <view class="sticky-bar-spacer"></view>
-    </scroll-view>
+      <!-- Note d'aide sous le bouton -->
+      <text class="form-help-hint">Écris ci-dessus, ou touche « Parler » en wolof ou en français</text>
 
-    <!-- Barre d'action fixe inférieure : Modifier | Voir tous les logements -->
-    <view class="results-sticky-bar">
-      <button class="btn-modify-outline" bindtap="onModifyTap">Modifier</button>
-      <button class="btn-see-all-primary" bindtap="onGoToAllResults">Voir tous les logements</button>
+      <!-- Carte Mes favoris -->
+      <view class="favorites-nav-card" hover-class="sl-hover" bindtap="onGoToFavorites">
+        <view class="fav-icon-box">
+          <view class="icon-svg icon-heart-fill-berry"></view>
+        </view>
+        <view class="fav-meta">
+          <text class="fav-title">Mes favoris</text>
+          <text class="fav-sub">{{ favoritesCount }} logement{{ favoritesCount > 1 ? 's' : '' }} enregistré{{ favoritesCount > 1 ? 's' : '' }}</text>
+        </view>
+        <text class="fav-chevron">›</text>
+      </view>
     </view>
-  </view>
 
-  <!-- ======================================================== -->
-  <!-- ÉTAT 4 : SI LA RECHERCHE ÉCHOUE ("si on fail le recherche")-->
-  <!-- ======================================================== -->
-  <view wx:if="{{ searchState === 'failed' }}" class="ai-failed-screen">
-    <scroll-view class="ai-failed-scroll" scroll-y="{{true}}" enhanced="{{true}}" show-scrollbar="{{false}}">
-      <!-- En-tête -->
-      <view class="sama-header" style="padding-top: {{ statusBarHeight + 12 }}px;">
-        <view class="sama-brand">
-          <view class="sama-brand__icon">
-            <view class="icon-svg icon-house-white"></view>
-          </view>
-          <view class="sama-brand__text">
-            <text class="brand-title">SAMA</text>
-            <text class="brand-sub">LOYER</text>
-          </view>
-        </view>
-      </view>
-
-      <!-- Contenu d'analyse IA sans résultat exact -->
-      <view class="ai-failed-content">
-        <view class="failed-badge">
-          <text class="failed-badge__icon">✦</text>
-          <text class="failed-badge__text">ANALYSE IA SAMA LOYER</text>
-        </view>
-
-        <text class="failed-title">Pas de logement à ce prix exact</text>
-        <text class="failed-desc">Nous n'avons pas trouvé de logement à {{ qPlace || 'cette zone' }} pour un budget de {{ budget || 'ce montant' }} F CFA.</text>
-
-        <!-- Bulle conseils IA -->
-        <view class="failed-tips-box">
-          <view class="tips-box-header">
-            <text class="tips-icon">💡</text>
-            <text class="tips-title">Conseils de l'IA SAMA LOYER :</text>
-          </view>
-          <view class="tips-body">
-            <view class="tip-line">
-              <text class="tip-dot">•</text>
-              <text class="tip-text">À {{ qPlace || 'Dakar' }}, les loyers démarrent généralement à partir de <text class="tip-strong">70 000 F CFA</text>.</text>
+    <!-- ======================================================== -->
+    <!-- SECTION RÉSULTATS : AFFICHÉS DIRECTEMENT SOUS LES CRITÈRES -->
+    <!-- ======================================================== -->
+    <view class="inline-results-section">
+      <!-- Cas A : Des logements correspondent -->
+      <block wx:if="{{ results && results.length > 0 }}">
+        <!-- En-tête des résultats trouvés -->
+        <view class="inline-results-header">
+          <view class="results-count-row">
+            <text class="results-count-title">{{ resultsCount }} logement{{ resultsCount > 1 ? 's' : '' }} disponible{{ resultsCount > 1 ? 's' : '' }}</text>
+            <view class="results-live-dot">
+              <text class="live-dot-pulse">•</text>
+              <text class="live-dot-text">Disponibles</text>
             </view>
-            <view class="tip-line">
-              <text class="tip-dot">•</text>
-              <text class="tip-text">Des alternatives existent dans les quartiers voisins :</text>
-            </view>
-            <!-- Suggestions cliquables -->
-            <view class="nearby-zones-row">
-              <block wx:for="{{ fallbackZones }}" wx:key="*this">
-                <view class="zone-pill" data-zone="{{ item }}" bindtap="onSelectFallbackZone">
-                  <text>📍 {{ item }}</text>
-                </view>
-              </block>
-            </view>
+          </view>
+          <view class="results-pills-row">
+            <view class="res-pill">📍 {{ searchedPlace || 'Tout Dakar' }}</view>
+            <view wx:if="{{ searchedBudget }}" class="res-pill">💰 Max {{ searchedBudget }} F</view>
           </view>
         </view>
 
-        <!-- Section des alternatives les plus proches -->
-        <view wx:if="{{ fallbackListings && fallbackListings.length > 0 }}" class="fallback-section">
-          <text class="fallback-section-title">Logements les plus proches de tes critères :</text>
-          <block wx:for="{{ fallbackListings }}" wx:key="id">
-            <view class="rec-card" data-item="{{ item }}" bindtap="onListingTap">
+        <!-- Liste verticale des cartes logements -->
+        <view class="results-cards-list">
+          <block wx:for="{{ results }}" wx:key="id">
+            <view 
+              class="rec-card {{ index === 0 ? 'rec-card--best' : '' }}" 
+              data-item="{{ item }}" 
+              hover-class="sl-hover"
+              bindtap="onListingTap"
+            >
+              <!-- Hero illustration teintée avec rang et favoris -->
               <view class="rec-card__hero" style="background-color: {{ item.tintBg }};">
                 <view class="rec-card__rank-row">
                   <view class="rec-card__rank">{{ item.rank }}</view>
+                  <view wx:if="{{ index === 0 }}" class="rec-card__badge-best">Meilleur choix</view>
+                  <view wx:if="{{ item.verified }}" class="rec-card__badge-verified">✓ Vérifié</view>
                 </view>
+
+                <!-- Bouton favori en haut à droite -->
+                <view 
+                  class="rec-card__fav-btn" 
+                  data-id="{{ item.id }}" 
+                  catchtap="onToggleFavorite"
+                >
+                  <view class="icon-svg {{ item.isFav ? 'icon-heart-fill-berry' : 'icon-heart-outline' }}"></view>
+                </view>
+
                 <view class="rec-card__house-illu"></view>
               </view>
+
+              <!-- Corps de la carte -->
               <view class="rec-card__body">
-                <text class="rec-card__type">{{ item.typeLabel }}</text>
+                <view class="rec-card__meta-top">
+                  <text class="rec-card__type">{{ item.typeLabel }}</text>
+                </view>
                 <text class="rec-card__title">{{ item.title }}</text>
-                <text class="rec-card__place">{{ item.place }}</text>
+                <text class="rec-card__place">📍 {{ item.place }}</text>
                 
                 <view class="rec-card__price-row">
                   <text class="rec-card__price">{{ item.formattedPrice }}</text>
-                  <text class="rec-card__unit">F / mois</text>
+                  <text class="rec-card__unit">F CFA / mois</text>
                 </view>
 
-                <view class="rec-card__match-pill rec-card__match-pill--near">
-                  <text class="match-check">ℹ</text>
-                  <text class="match-desc">{{ item.reason }}</text>
+                <!-- Équipements phares -->
+                <view wx:if="{{ item.equipements && item.equipements.length > 0 }}" class="rec-card__tags">
+                  <text wx:for="{{ item.equipements }}" wx:for-item="eq" wx:key="*this" class="rec-tag">{{ eq }}</text>
                 </view>
               </view>
             </view>
           </block>
         </view>
-      </view>
+      </block>
 
-      <view class="sticky-bar-spacer"></view>
-    </scroll-view>
+      <!-- Cas B : Aucun logement ne correspond aux critères -->
+      <block wx:elif="{{ hasSearched && results.length === 0 }}">
+        <view class="empty-results-box">
+          <view class="empty-icon-circle">
+            <view class="empty-home-icon">🏠</view>
+          </view>
 
-    <!-- Barre d'action fixe inférieure : Modifier | Voir tous les logements -->
-    <view class="results-sticky-bar">
-      <button class="btn-modify-outline" bindtap="onModifyTap">Modifier</button>
-      <button class="btn-see-all-primary" bindtap="onGoToAllResults">Voir tous les logements</button>
+          <text class="empty-title">Aucun logement trouvé</text>
+
+          <view class="empty-message-card">
+            <text class="empty-desc">
+              Aucun logement ne correspond à votre recherche selon le budget de <text class="empty-bold">{{ searchedBudget ? searchedBudget + ' F CFA' : 'ce montant' }}</text> et la localité renseignée (<text class="empty-bold">{{ searchedPlace || 'cette zone' }}</text>).
+            </text>
+            <text class="empty-sub-tip">
+              Vous pouvez modifier directement votre budget ou votre localité ci-dessus pour affiner votre recherche, ou essayer l'une des options suivantes :
+            </text>
+          </view>
+
+          <!-- Suggestions de quartiers proches cliquables -->
+          <view class="empty-suggestions-block">
+            <text class="suggestions-label">📍 Quartiers disponibles à proximité :</text>
+            <view class="suggestions-chips-row">
+              <block wx:for="{{ fallbackZones }}" wx:key="*this">
+                <view 
+                  class="suggest-chip" 
+                  data-zone="{{ item }}" 
+                  hover-class="sl-hover"
+                  bindtap="onSelectFallbackZone"
+                >
+                  <text>📍 {{ item }}</text>
+                </view>
+              </block>
+            </view>
+          </view>
+
+          <!-- Suggestions d'ajustement du budget -->
+          <view class="empty-suggestions-block">
+            <text class="suggestions-label">💰 Ajuster le budget :</text>
+            <view class="suggestions-chips-row">
+              <view class="suggest-chip suggest-chip--budget" data-add="15000" hover-class="sl-hover" bindtap="onApplyBudgetBump">
+                <text>+15 000 F</text>
+              </view>
+              <view class="suggest-chip suggest-chip--budget" data-add="30000" hover-class="sl-hover" bindtap="onApplyBudgetBump">
+                <text>+30 000 F</text>
+              </view>
+              <view class="suggest-chip suggest-chip--budget" data-add="0" hover-class="sl-hover" bindtap="onApplyBudgetBump">
+                <text>Sans limite de budget</text>
+              </view>
+            </view>
+          </view>
+
+          <!-- Bouton réinitialiser -->
+          <button class="empty-reset-btn" hover-class="sl-hover" bindtap="onResetSearch">
+            Voir tous les logements disponibles
+          </button>
+        </view>
+      </block>
     </view>
-  </view>
+
+    <!-- Espacement inférieur pour la barre d'onglets personnalisée -->
+    <view class="home-tab-spacer"></view>
+  </scroll-view>
 
   <!-- ======================================================== -->
-  <!-- MODAL / ASSISTANT VOCAL (FRANÇAIS & WOLOF)               -->
+  <!-- MODAL ASSISTANT VOCAL (FRANÇAIS & WOLOF)                 -->
   <!-- ======================================================== -->
   <view wx:if="{{ showVoiceModal }}" class="modal-backdrop" bindtap="onCloseVoiceModal">
     <view class="modal-card" catchtap="true">
@@ -398,7 +292,7 @@
           <view class="icon-svg icon-mic-berry"></view>
         </view>
         <view class="modal-titles">
-          <text class="modal-title">Assistant Vocal SAMA IA</text>
+          <text class="modal-title">Assistant Vocal SAMA LOYER</text>
           <text class="modal-subtitle">Exprime ton besoin en français ou en wolof</text>
         </view>
         <view class="btn-close-modal" bindtap="onCloseVoiceModal">✕</view>
@@ -420,7 +314,7 @@
       <view class="voice-examples">
         <text class="examples-heading">Exemples que tu peux dire :</text>
         <block wx:for="{{ voicePrompts }}" wx:key="text">
-          <view class="example-item" data-item="{{ item }}" bindtap="onApplyVoicePrompt">
+          <view class="example-item" data-item="{{ item }}" hover-class="sl-hover" bindtap="onApplyVoicePrompt">
             <view class="example-badge {{ item.lang === 'WO' ? 'badge-wo' : 'badge-fr' }}">
               {{ item.lang }}
             </view>

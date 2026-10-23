@@ -15,7 +15,8 @@ const NEAR_ZONES = {
   'grand yoff': ['liberte', 'yoff'],
   pikine: ['thiaroye', 'keur massar', 'grand yoff'],
   thiaroye: ['pikine', 'keur massar'],
-  'keur massar': ['pikine', 'thiaroye']
+  'keur massar': ['pikine', 'thiaroye'],
+  almadies: ['ngor', 'ouakam', 'yoff']
 };
 
 function formatMoney(n) {
@@ -80,17 +81,16 @@ Page({
     statusBarHeight: 24,
     place: 'Ouakam',
     budget: '60 000',
-    qPlace: 'Ouakam',
-    qBudget: 60000,
-    formattedBudget: '60 000',
-    searchState: 'form', // 'form' | 'loading' | 'results' | 'failed'
-    step1Done: false,
-    step2Done: false,
-    step3Done: false,
-    recs: [],
-    fallbackListings: [],
-    fallbackZones: ['Ngor', 'Yoff', 'Mermoz', 'Grand Yoff'],
-    minObservedPrice: '55 000',
+
+    // Résultats affichés directement sur la même page
+    hasSearched: false,
+    results: [],
+    resultsCount: 0,
+    searchedPlace: '',
+    searchedBudget: '',
+
+    fallbackZones: ['Ouakam', 'Ngor', 'Yoff', 'Mermoz', 'Almadies', 'Pikine'],
+
     favorites: {},
     favoritesCount: 4,
     toast: {
@@ -131,9 +131,11 @@ Page({
     const favIds = getFavoriteIds();
     this.setData({
       favorites: getFavoritesMap(),
-      favoritesCount: favIds.length || 4,
-      searchState: 'form'
+      favoritesCount: favIds.length || 4
     });
+
+    // Lancement de la recherche initiale directement sous les critères
+    this.doSearch(this.data.place, 60000);
   },
 
   onShow() {
@@ -147,13 +149,12 @@ Page({
       favoritesCount: favIds.length || 4
     });
 
-    if (this.data.searchState === 'form') {
-      try { wx.showTabBar({ animation: false }); } catch (e) {}
-    }
+    // Assure l'affichage permanent de la TabBar
+    try { wx.showTabBar({ animation: false }); } catch (e) {}
   },
 
   // ==========================================
-  // RECHERCHE ÉCRITE & CHAMPS DU FORMULAIRE
+  // CHAMPS DU FORMULAIRE
   // ==========================================
   onPlaceInput(e) {
     this.setData({ place: e.detail.value || '' });
@@ -174,177 +175,100 @@ Page({
     this.setData({ budget: '' });
   },
 
-  // Clic sur "Rechercher"
+  // ==========================================
+  // RECHERCHE DIRECTE SUR LA MÊME PAGE (SANS REDIRECTION)
+  // ==========================================
   onSearchTap() {
-    const pl = this.data.place.trim();
-    const b = Number(String(this.data.budget).replace(/\D/g, '')) || 0;
-    this.startAiSearch(pl, b);
+    this.doSearch();
   },
 
-  // ==========================================
-  // SÉQUENCE D'ANALYSE IA ("L'IA cherche pour toi...")
-  // ==========================================
-  startAiSearch(targetPlace, targetBudgetNum) {
-    const pl = (targetPlace !== undefined ? targetPlace : this.data.place).trim();
-    const numBudget = targetBudgetNum !== undefined 
-      ? targetBudgetNum 
+  doSearch(targetPlace, targetBudgetNum) {
+    const rawPlace = targetPlace !== undefined ? targetPlace : this.data.place;
+    const pl = (rawPlace || '').trim();
+    const numBudget = targetBudgetNum !== undefined
+      ? Number(targetBudgetNum) || 0
       : (Number(String(this.data.budget).replace(/\D/g, '')) || 0);
+
+    const normQuery = normalize(pl);
+    const allLogements = getAllLogements();
+    const tints = ['#FDEEF2', '#E8EEF5', '#F5EFE6', '#EAF7EE'];
+
+    // Filtrage direct selon la localité et le budget
+    const filtered = allLogements.filter((l) => {
+      // Filtre lieu
+      let matchPlace = true;
+      if (normQuery) {
+        const normPlace = normalize(l.place);
+        const normZone = normalize(l.zone);
+        const normTitle = normalize(l.title);
+        matchPlace = normPlace.includes(normQuery) || 
+                     normZone.includes(normQuery) || 
+                     normTitle.includes(normQuery) ||
+                     normQuery.includes(normZone);
+      }
+
+      // Filtre budget (loyer mensuel <= budget maximum)
+      let matchBudget = true;
+      if (numBudget > 0) {
+        matchBudget = l.price <= numBudget;
+      }
+
+      return matchPlace && matchBudget;
+    });
+
+    // Mise en forme des résultats
+    const results = filtered.map((l, i) => ({
+      ...l,
+      rank: i + 1,
+      formattedPrice: formatMoney(l.price),
+      tintBg: tints[i % tints.length],
+      isFav: !!this.data.favorites[l.id]
+    }));
 
     if (wx.vibrateShort) {
       wx.vibrateShort();
     }
 
-    // Masque la TabBar pour immersion plein écran fluide
-    try {
-      wx.hideTabBar({ animation: true });
-    } catch (e) {}
-
     this.setData({
-      searchState: 'loading',
-      qPlace: pl,
-      qBudget: numBudget,
-      step1Done: false,
-      step2Done: false,
-      step3Done: false
+      hasSearched: true,
+      results,
+      resultsCount: results.length,
+      searchedPlace: pl,
+      searchedBudget: numBudget > 0 ? formatMoney(numBudget) : ''
     });
-
-    // Étape 1 : Lecture de la demande (400ms)
-    setTimeout(() => {
-      this.setData({ step1Done: true });
-    }, 450);
-
-    // Étape 2 : Comparaison dans le quartier (1100ms)
-    setTimeout(() => {
-      this.setData({ step2Done: true });
-    }, 1100);
-
-    // Étape 3 : Sélection des meilleurs (1700ms)
-    setTimeout(() => {
-      this.setData({ step3Done: true });
-    }, 1700);
-
-    // Finalisation & Transition vers Résultats ou Échec (2100ms)
-    setTimeout(() => {
-      this.executeAiSearch(pl, numBudget);
-    }, 2100);
   },
 
-  // Moteur de scoring et matching IA
-  executeAiSearch(qPlace, budget) {
-    const q = normalize(qPlace);
-    const zoneKey = Object.keys(NEAR_ZONES).find((z) => q && (q.indexOf(z) >= 0 || z.indexOf(q) >= 0)) || '';
-    
-    // Tentes assorties pour l'illustration des cartes (Rose, Bleu brume, Beige doux)
-    const tints = ['#FDEEF2', '#E8EEF5', '#F5EFE6'];
-
-    // 1. Recherche exacte
-    const allLogements = getAllLogements();
-    const scored = allLogements.map((l) => {
-      let s = 0;
-      let why = '';
-      const inZone = zoneKey && l.zone === zoneKey;
-      const nearZone = zoneKey && (NEAR_ZONES[zoneKey] || []).indexOf(l.zone) >= 0;
-
-      if (inZone) {
-        s += 50;
-        why = 'Dans ton quartier';
-      } else if (nearZone) {
-        s += 30;
-        why = `Juste à côté de ${qPlace || 'ta zone'}`;
-      } else if (!q) {
-        s += 25;
-        why = 'Recommandé à Dakar';
-      } else {
-        why = 'Bon rapport qualité-prix';
-      }
-
-      if (budget > 0) {
-        if (l.price <= budget) {
-          s += 40 - Math.round(((budget - l.price) / budget) * 15);
-          why += ' · dans ton budget';
-        } else if (l.price <= budget * 1.08) {
-          s += 8;
-          why += ' · légèrement au-dessus';
-        } else {
-          s -= 120; // En dehors du budget
-        }
-      } else {
-        s += 20;
-      }
-
-      return Object.assign({}, l, { score: s, why });
-    })
-      .filter((l) => l.score > 0)
-      .sort((a, b) => b.score - a.score)
-      .slice(0, 3);
-
-    if (scored.length > 0) {
-      const recs = scored.map((l, i) => ({
-        ...l,
-        rank: i + 1,
-        formattedPrice: formatMoney(l.price),
-        reason: l.why,
-        tintBg: tints[i % tints.length]
-      }));
-
-      if (wx.vibrateShort) wx.vibrateShort();
-
-      this.setData({
-        recs,
-        formattedBudget: formatMoney(budget),
-        searchState: 'results'
-      });
-    } else {
-      // 2. Recherche échouée ("fail le recherche") -> Proposer alternatives IA
-      const fallbackNearby = zoneKey && NEAR_ZONES[zoneKey] 
-        ? NEAR_ZONES[zoneKey].map(k => k.charAt(0).toUpperCase() + k.slice(1))
-        : ['Ngor', 'Yoff', 'Mermoz', 'Grand Yoff'];
-
-      // Trouver les logements disponibles les plus proches en termes de zone ou budget
-      const fallbacks = allLogements.filter(l => {
-        if (zoneKey && (l.zone === zoneKey || (NEAR_ZONES[zoneKey] || []).includes(l.zone))) return true;
-        return l.price <= (budget > 0 ? budget * 1.3 : 100000);
-      })
-      .slice(0, 2)
-      .map((l, i) => ({
-        ...l,
-        rank: i + 1,
-        formattedPrice: formatMoney(l.price),
-        reason: zoneKey && l.zone === zoneKey ? 'Dans ton quartier · budget supérieur' : 'Quartier voisin disponible',
-        tintBg: tints[i % tints.length]
-      }));
-
-      if (wx.vibrateShort) wx.vibrateShort();
-
-      this.setData({
-        recs: [],
-        fallbackZones: fallbackNearby,
-        fallbackListings: fallbacks,
-        searchState: 'failed'
-      });
-    }
-  },
-
-  // Revenir au formulaire pour modifier les critères
-  onModifyTap() {
-    this.setData({ searchState: 'form' });
-    try {
-      wx.showTabBar({ animation: true });
-    } catch (e) {}
-  },
-
-  // Clic sur une suggestion de quartier voisin en cas d'échec
+  // ==========================================
+  // ACTIONS D'AFFINAGE EN CAS DE RÉSULTAT VIDE OU MODIFICATION
+  // ==========================================
   onSelectFallbackZone(e) {
     const zone = e.currentTarget.dataset.zone;
     if (!zone) return;
     this.setData({ place: zone });
-    this.startAiSearch(zone, this.data.qBudget);
+    this.doSearch(zone, this.data.budget ? Number(String(this.data.budget).replace(/\D/g, '')) : 0);
   },
 
-  // Aller vers tous les résultats
-  onGoToAllResults() {
+  onApplyBudgetBump(e) {
+    const add = Number(e.currentTarget.dataset.add) || 0;
+    const current = Number(String(this.data.budget).replace(/\D/g, '')) || 50000;
+    const nextBudget = add > 0 ? current + add : 0;
+    const formatted = nextBudget > 0 ? formatMoney(nextBudget) : '';
+    this.setData({ budget: formatted });
+    this.doSearch(this.data.place, nextBudget);
+  },
+
+  onResetSearch() {
+    this.setData({ place: '', budget: '' });
+    this.doSearch('', 0);
+  },
+
+  // Clic sur une carte logement -> Détail du logement
+  onListingTap(e) {
+    const item = e.currentTarget.dataset.item;
+    if (!item || !item.id) return;
+
     wx.navigateTo({
-      url: `/pages/client/search/results?place=${encodeURIComponent(this.data.place || 'Ouakam')}&budget=${encodeURIComponent(this.data.budget || '60 000')}`
+      url: `/pages/client/logement-detail/logement-detail?id=${item.id}`
     });
   },
 
@@ -352,16 +276,6 @@ Page({
   onGoToFavorites() {
     wx.navigateTo({
       url: '/pages/client/favoris/favoris'
-    });
-  },
-
-  // Clic sur une carte logement -> Détail
-  onListingTap(e) {
-    const item = e.currentTarget.dataset.item;
-    if (!item) return;
-
-    wx.navigateTo({
-      url: `/pages/client/logement-detail/logement-detail?id=${item.id}`
     });
   },
 
@@ -386,7 +300,7 @@ Page({
           this.setData({ isRecording: true, voiceStatus: 'Enregistrement en cours…' });
         });
         rm.onStop(() => {
-          this.setData({ isRecording: false, voiceStatus: 'Traitement vocal IA…' });
+          this.setData({ isRecording: false, voiceStatus: 'Traitement vocal…' });
         });
         rm.start({ duration: 6000, sampleRate: 16000, format: 'mp3' });
       }
@@ -440,9 +354,20 @@ Page({
       isRecording: false
     });
 
-    this.startAiSearch(targetPlace, numBudget);
+    this.doSearch(targetPlace, numBudget);
+
+    this.showMagnifiqueToast({
+      title: 'Recherche vocale appliquée',
+      subtitle: `${targetPlace} · Max ${targetBudget} F`,
+      type: 'voice',
+      iconClass: 'icon-toast-mic',
+      duration: 2200
+    });
   },
 
+  // ==========================================
+  // GESTION DES FAVORIS DIRECTEMENT SUR LES CARTES
+  // ==========================================
   onToggleFavorite(e) {
     const id = e.currentTarget.dataset.id;
     if (!id) return;
@@ -450,11 +375,22 @@ Page({
     const liked = !this.data.favorites[id];
     toggleFavoriteId(id, liked);
     const favIds = getFavoriteIds();
-    this.setData({
-      favorites: getFavoritesMap(),
-      favoritesCount: favIds.length || 0
+    const favMap = getFavoritesMap();
+
+    // Met à jour les résultats en local
+    const updatedResults = this.data.results.map((r) => {
+      if (r.id === id) {
+        return { ...r, isFav: liked };
+      }
+      return r;
     });
-    
+
+    this.setData({
+      favorites: favMap,
+      favoritesCount: favIds.length || 0,
+      results: updatedResults
+    });
+
     this.showMagnifiqueToast({
       title: liked ? 'Ajouté aux favoris' : 'Retiré des favoris',
       subtitle: liked ? 'Retrouve ce logement dans tes favoris' : '',
@@ -464,8 +400,8 @@ Page({
     });
   },
 
-  // Toast Flottant Haute Couture
-  showMagnifiqueToast({ title, subtitle = '', type = 'search', iconClass = 'icon-toast-search', duration = 2600 }) {
+  // Toast Flottant SAMA LOYER
+  showMagnifiqueToast({ title, subtitle = '', type = 'search', iconClass = 'icon-toast-search', duration = 2400 }) {
     if (this._toastTimer) clearTimeout(this._toastTimer);
     if (this._toastHideTimer) clearTimeout(this._toastHideTimer);
 
