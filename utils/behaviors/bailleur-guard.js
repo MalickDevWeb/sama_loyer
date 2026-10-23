@@ -11,23 +11,23 @@
 // La vérification classique dans onShow (requireBailleurAccess) reste en place.
 // ============================================================================
 
-import { Bus } from '../event/index.js';
 import { EVENTS } from '../event/keys.js';
+import { busBehavior } from './bus.js';
 import { requireBailleurAccess } from '../helpers/store.js';
 
 export const bailleurGuardBehavior = Behavior({
+  // listen() se désabonne tout seul quand la page se ferme
+  behaviors: [busBehavior],
+
   lifetimes: {
     attached() {
-      this._offAccessLost = Bus.on(EVENTS.BAILLEUR_ACCESS_LOST, () => {
+      this.listen(EVENTS.BAILLEUR_ACCESS_LOST, () => {
         // Seule la page affichée réagit (évite plusieurs redirections)
         const pages = getCurrentPages();
         if (pages[pages.length - 1] !== this) return;
         if (typeof this.onBailleurAccessLost === 'function') this.onBailleurAccessLost();
         else requireBailleurAccess();
       });
-    },
-    detached() {
-      if (this._offAccessLost) this._offAccessLost();
     },
   },
 });
