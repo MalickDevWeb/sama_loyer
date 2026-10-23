@@ -1,7 +1,7 @@
 import { storage } from '../../../utils/storage.js';
 import { setCustomTabBarActive } from '../../../utils/helpers/tab-bar';
 import { STORAGE_KEYS } from '../../../utils/constants/index';
-import { getAllLogements } from '../../../utils/mocks/logements';
+import { backendAPI } from '../../../utils/apis/index.js';
 import { getFavoritesMap, getFavoriteIds, toggleFavoriteId } from '../../../utils/helpers/favorites';
 import { TINTS } from '../../../utils/constants/theme';
 import { navigateWithData } from '../../../utils/helpers/nav-data';
@@ -98,6 +98,7 @@ function parseNaturalQuery(text) {
 
 Page({
   data: {
+    uiState: 'content', // 'loading' | 'content' | 'error' (Machine à états PMT)
     focusField: '', // champ actif (lieu | budget) : halo + icône animée
     statusBarHeight: 24,
     place: 'Ouakam',
@@ -211,7 +212,7 @@ Page({
     this.doSearch(undefined, undefined, true);
   },
 
-  doSearch(targetPlace, targetBudgetNum, shouldScroll = false) {
+  async doSearch(targetPlace, targetBudgetNum, shouldScroll = false) {
     if (this.data.isSearching) return;
 
     const rawPlace = targetPlace !== undefined ? targetPlace : this.data.place;
@@ -221,7 +222,15 @@ Page({
       : (Number(String(this.data.budget).replace(/\D/g, '')) || 0);
 
     const normQuery = normalize(pl);
-    const allLogements = getAllLogements();
+    this.setData({ isSearching: true, uiState: 'loading' });
+
+    let allLogements = [];
+    try {
+      allLogements = await backendAPI.getLogements();
+    } catch (err) {
+      allLogements = [];
+    }
+
     const tints = TINTS;
     // Logements complets par id : transmis tels quels au détail (pas de rechargement)
     this.rawById = {};
@@ -254,14 +263,16 @@ Page({
     const results = filtered.map((l, i) => ({
       ...l,
       rank: i + 1,
-      formattedPrice: formatMoney(l.price),
+      formattedPrice: l.priceFormatted || formatMoney(l.price),
       tintBg: tints[i % tints.length],
       isFav: !!this.data.favorites[l.id]
     }));
 
     if (!shouldScroll) {
       this.setData({
+        isSearching: false,
         hasSearched: true,
+        uiState: 'content',
         results,
         resultsCount: results.length,
         searchedPlace: pl,
@@ -271,12 +282,11 @@ Page({
     }
 
     // Micro-interaction fluide sur le bouton
-    this.setData({ isSearching: true });
-
     setTimeout(() => {
       this.setData({
         isSearching: false,
         hasSearched: true,
+        uiState: 'content',
         results,
         resultsCount: results.length,
         searchedPlace: pl,

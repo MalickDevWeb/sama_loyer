@@ -10,6 +10,7 @@ export const LogementCardSchema = {
   id: '@link.id',
   title: '@link.title',
   place: '@link.place',
+  zone: '@link.zone',
   price: '@link.price',
   priceFormatted: (data) => {
     const p = data.price || data.loyer || 0;
@@ -48,4 +49,3 @@ export const LogementDetailSchema = {
   hasVideo: (data) => Boolean(data.video || data.video_url),
   video: '@link.video',
 };
-
