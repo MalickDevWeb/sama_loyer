@@ -490,16 +490,39 @@ page {
   white-space: nowrap;
 }
 
+/* Masquer les barres de defilement mobile */
+::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  color: transparent !important;
+  background: transparent !important;
+}
+
+page, html, body {
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+
+page::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  color: transparent !important;
+}
+
 scroll-view {
   -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
 }
 
 scroll-view::-webkit-scrollbar {
-  display: none;
-  width: 0;
-  height: 0;
-  color: transparent;
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  color: transparent !important;
 }
 
 .menu-tabs {
@@ -509,11 +532,19 @@ scroll-view::-webkit-scrollbar {
 }
 
 .scrollable {
-  scrollbar-width: none;
+  scrollbar-width: none !important;
 }
 
 .scrollable::-webkit-scrollbar,
 .menu-tabs::-webkit-scrollbar {
-  display: none;
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
 }
 
+/* Photo de logement en fond (URL distante passée en style inline) */
+.sl-photo {
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}

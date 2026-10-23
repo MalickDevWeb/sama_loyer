@@ -1,13 +1,17 @@
 /* pages/bailleur/locataires/locataires.wxss */
 .mes-locataires-page {
-  min-height: 100vh;
+  height: 100vh;
+  overflow: hidden;
   background-color: #F8F9FA;
   box-sizing: border-box;
 }
 
 .locataires-scroll {
+  height: 100%;
   padding: 0 28rpx;
   box-sizing: border-box;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
 }
 
 /* En-tête */
@@ -287,21 +291,7 @@
   color: #FFFFFF;
 }
 
-/* Ligne footer : Caution + Écrire */
-.card-foot-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-top: 1rpx dashed #E2E8F0;
-  padding-top: 16rpx;
-}
-
-.caution-detenue-txt {
-  font-size: 22rpx;
-  color: #64748B;
-  font-weight: 500;
-}
-
+/* Bouton Écrire (fenêtre détail) */
 .btn-ecrire-pill {
   display: flex;
   align-items: center;
@@ -415,4 +405,118 @@
 
 .bottom-spacer-bailleur {
   height: 160rpx;
+}
+
+/* Liste simplifiée : une seule ligne par locataire */
+.locataire-item-card .card-head-row {
+  margin-bottom: 0;
+}
+
+.locataire-item-card .locataire-name-title {
+  text-decoration: underline;
+  text-decoration-color: #D5DAE3;
+}
+
+.locataires-empty {
+  padding: 32rpx 8rpx;
+  font-size: 26rpx;
+  color: #64748B;
+}
+
+/* ================= Fenêtre détail d'un locataire ================= */
+.loc-sheet-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1000;
+  background: rgba(15, 30, 61, 0.55);
+  display: flex;
+  align-items: flex-end;
+}
+
+.loc-sheet {
+  width: 100%;
+  max-height: 88vh;
+  overflow-y: auto;
+  box-sizing: border-box;
+  background: #FFFFFF;
+  border-radius: 40rpx 40rpx 0 0;
+  padding: 20rpx 32rpx calc(40rpx + env(safe-area-inset-bottom));
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+}
+
+.loc-sheet-handle {
+  width: 80rpx;
+  height: 8rpx;
+  border-radius: 4rpx;
+  background: #E2E8F0;
+  margin: 0 auto 8rpx;
+}
+
+.loc-sheet .card-head-row {
+  margin-bottom: 0;
+}
+
+.loc-sheet-close {
+  width: 60rpx;
+  height: 60rpx;
+  border-radius: 50%;
+  background: #F1F5F9;
+  color: #0F1E3D;
+  font-size: 26rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.loc-sheet-status-row,
+.loc-sheet-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.loc-sheet .banner-notice-box,
+.loc-sheet .action-buttons-pair-row {
+  margin: 0;
+}
+
+.loc-sheet-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+  padding: 20rpx 0;
+  border-top: 1rpx dashed #E2E8F0;
+}
+
+.loc-sheet-label {
+  font-size: 26rpx;
+  color: #64748B;
+}
+
+.loc-sheet-value {
+  font-size: 26rpx;
+  font-weight: 800;
+  color: #0F1E3D;
+}
+
+.loc-sheet-write {
+  justify-content: center;
+  height: 92rpx;
+  border-radius: 24rpx;
+}
+
+.loc-sheet-write .ecrire-label-txt {
+  font-size: 28rpx;
+}
+
+
+.locataires-scroll::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
 }

@@ -7,14 +7,18 @@
 .demandes-page {
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
+  height: 100vh;
+  overflow: hidden;
   background-color: #F8F9FA;
   box-sizing: border-box;
 }
 
 .demandes-scroll {
+  height: 100%;
   flex: 1;
   box-sizing: border-box;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
 }
 
 /* En-tête */
@@ -360,4 +364,11 @@
 .horaires-link__chev {
   width: 32rpx;
   height: 32rpx;
+}
+
+
+.demandes-scroll::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
 }

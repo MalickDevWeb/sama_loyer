@@ -5,14 +5,18 @@
 .annonces-page {
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
+  height: 100vh;
+  overflow: hidden;
   background-color: #F8F9FA;
   box-sizing: border-box;
 }
 
 .annonces-scroll {
+  height: 100%;
   flex: 1;
   box-sizing: border-box;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
 }
 
 /* En-tête */
@@ -55,6 +59,11 @@
   align-items: center;
   justify-content: center;
   box-shadow: 0 4rpx 16rpx rgba(200, 35, 95, 0.3);
+}
+
+.btn-top-add--hover {
+  opacity: 0.8;
+  transform: scale(0.94);
 }
 
 .btn-top-plus {
@@ -365,4 +374,11 @@
 
 .scroll-spacer {
   height: 180rpx;
+}
+
+
+.annonces-scroll::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
 }

@@ -577,3 +577,12 @@ page {
 .sl-mx-right {
   text-align: right;
 }
+
+
+/* Masquer les barres de defilement */
+::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  color: transparent !important;
+}

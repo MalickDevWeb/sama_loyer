@@ -1,3 +1,5 @@
+@import "/styles/icons.wxss";
+
 /* ==========================================================================
    Page Premium et Revenus Bailleur - SAMA LOYER (Page 14 exact Claude/PDF)
    ========================================================================== */
@@ -5,14 +7,18 @@
 .premium-page {
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
+  height: 100vh;
+  overflow: hidden;
   background-color: #F8F9FA;
   box-sizing: border-box;
 }
 
 .premium-scroll {
+  height: 100%;
   flex: 1;
   box-sizing: border-box;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
 }
 
 /* En-tête */
@@ -535,4 +541,31 @@
 
 .scroll-spacer {
   height: 180rpx;
+}
+
+/* Retour vers l'onglet Profil */
+.premium-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 8rpx;
+  margin-bottom: 12rpx;
+  font-size: 26rpx;
+  font-weight: 700;
+  color: #0F1E3D;
+}
+
+.premium-back--hover {
+  opacity: 0.7;
+}
+
+.premium-back-ic {
+  width: 32rpx;
+  height: 32rpx;
+}
+
+
+.premium-scroll::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
 }
