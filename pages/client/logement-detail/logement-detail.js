@@ -2,12 +2,14 @@ import { LOGEMENTS, getLogementById, toLogementDetail } from '../../../utils/moc
 import { isFavorite, toggleFavoriteId } from '../../../utils/helpers/favorites';
 import { COLORS } from '../../../utils/constants/theme';
 import { takeNavData } from '../../../utils/helpers/nav-data';
+import { backendAPI } from '../../../utils/apis/index.js';
 
 // Fiche affichée si l'id est absent ou inconnu
 const DEFAULT_LOGEMENT = toLogementDetail(getLogementById('icotaf-01') || LOGEMENTS[0]);
 
 Page({
   data: {
+    uiState: 'content', // 'loading' | 'content' | 'error'
     statusBarHeight: 24,
     headerTop: 54,
     logement: DEFAULT_LOGEMENT,
@@ -48,10 +50,26 @@ Page({
     const logement = found ? toLogementDetail(found) : DEFAULT_LOGEMENT;
 
     this.setData({
+      uiState: 'content',
       headerTop: top,
       logement,
       isFavorite: isFavorite(logement.id)
     });
+
+    if (!passed && options && options.id) {
+      this.fetchDetailFromApi(decodeURIComponent(options.id));
+    }
+  },
+
+  async fetchDetailFromApi(id) {
+    try {
+      const data = await backendAPI.getLogementById(id);
+      if (data) {
+        this.setData({ logement: toLogementDetail(data) });
+      }
+    } catch (e) {
+      // Le fallback initial reste affiché
+    }
   },
 
   onBackTap() {
