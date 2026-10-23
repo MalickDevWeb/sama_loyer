@@ -1,6 +1,7 @@
 import { getLogementById, FAVORITE_SAVED_LABELS } from '../../../utils/mocks/logements';
 import { getFavoriteIds, toggleFavoriteId } from '../../../utils/helpers/favorites';
 import { t, i18nBehavior } from '../../../utils/i18n/index';
+import { navigateWithData } from '../../../utils/helpers/nav-data';
 
 const UNDO_DELAY_MS = 4000;
 
@@ -15,22 +16,25 @@ function statusText(l) {
 }
 
 // Construit les cartes à partir des IDs favoris et du catalogue
-function buildFavoritesList() {
+function buildFavoritesList(rawById = {}) {
   return getFavoriteIds()
     .map(getLogementById)
     .filter(Boolean)
-    .map((l) => ({
-      id: l.id,
-      isPremium: !!l.isPremium,
-      price: formatMoney(l.price),
-      title: l.title,
-      place: l.place,
-      status: l.status || 'disponible',
-      statusText: statusText(l),
-      saved: FAVORITE_SAVED_LABELS[l.id] || t('favoris.savedToday'),
-      bg: l.tint,
-      cover: l.cover
-    }));
+    .map((l) => {
+      rawById[l.id] = l; // logement complet, transmis au détail
+      return {
+        id: l.id,
+        isPremium: !!l.isPremium,
+        price: formatMoney(l.price),
+        title: l.title,
+        place: l.place,
+        status: l.status || 'disponible',
+        statusText: statusText(l),
+        saved: FAVORITE_SAVED_LABELS[l.id] || t('favoris.savedToday'),
+        bg: l.tint,
+        cover: l.cover
+      };
+    });
 }
 
 function subtitleFor(n) {
@@ -67,7 +71,9 @@ Page({
   },
 
   refresh() {
-    const all = buildFavoritesList();
+    // Logements complets par id : transmis tels quels au détail (pas de rechargement)
+    this.rawById = {};
+    const all = buildFavoritesList(this.rawById);
     const visible = this.data.filter === 'dispo' ? all.filter((f) => f.status !== 'rented') : all;
     this.setData({ visible, subtitle: subtitleFor(all.length) });
   },
@@ -102,9 +108,10 @@ Page({
 
   onCardTap(e) {
     const id = e.currentTarget.dataset.id;
-    wx.navigateTo({
-      url: `/pages/client/logement-detail/logement-detail?id=${encodeURIComponent(id)}`
-    });
+    navigateWithData(
+      `/pages/client/logement-detail/logement-detail?id=${encodeURIComponent(id)}`,
+      this.rawById && this.rawById[id]
+    );
   },
 
   onSearchHome() {

@@ -1,8 +1,9 @@
 import { setCustomTabBarActive } from '../../../utils/helpers/tab-bar';
 import { enrichConversation } from '../../../utils/mocks/conversations';
 import { getStoredConversations } from '../../../utils/helpers/store';
-import { Bus } from '../../../utils/event/index';
 import { EVENTS } from '../../../utils/event/keys';
+import { busBehavior } from '../../../utils/behaviors/index';
+import { navigateWithData } from '../../../utils/helpers/nav-data';
 
 // Conversations enregistrées (dernier message et non-lus à jour)
 const loadConversations = () => getStoredConversations().map(enrichConversation).filter(Boolean);
@@ -21,6 +22,9 @@ const withAria = (c) => ({
 });
 
 Page({
+  // listen() : abonnement EventBus coupé automatiquement à la fermeture
+  behaviors: [busBehavior],
+
   data: {
     statusBarHeight: 24,
     filter: 'all', // 'all' | 'unread'
@@ -38,13 +42,9 @@ Page({
     } catch (e) {}
 
     // Nouveau message ou discussion lue : la liste se met à jour en direct
-    this.offMessages = Bus.on(EVENTS.MESSAGES_CHANGED, ({ side }) => {
+    this.listen(EVENTS.MESSAGES_CHANGED, ({ side }) => {
       if (side === 'client') this.reload();
     });
-  },
-
-  onUnload() {
-    if (this.offMessages) this.offMessages();
   },
 
   onShow() {
@@ -75,8 +75,11 @@ Page({
     this.setData({ query: e.detail.value || '' }, () => this.refresh());
   },
 
+  // La conversation est transmise à la discussion : pas de rechargement
   onOpenChat(e) {
-    wx.navigateTo({ url: `/pages/client/chat/chat?id=${e.currentTarget.dataset.id}` });
+    const id = e.currentTarget.dataset.id;
+    const conversation = (this.all || []).find((c) => c.id === id);
+    navigateWithData(`/pages/client/chat/chat?id=${id}`, conversation);
   },
 
   onSearchHome() {

@@ -4,6 +4,7 @@ import { STORAGE_KEYS } from '../../../utils/constants/index';
 import { getAllLogements } from '../../../utils/mocks/logements';
 import { getFavoritesMap, getFavoriteIds, toggleFavoriteId } from '../../../utils/helpers/favorites';
 import { TINTS } from '../../../utils/constants/theme';
+import { navigateWithData } from '../../../utils/helpers/nav-data';
 
 function setTabBarVisible(page, visible) {
   try {
@@ -222,6 +223,9 @@ Page({
     const normQuery = normalize(pl);
     const allLogements = getAllLogements();
     const tints = TINTS;
+    // Logements complets par id : transmis tels quels au détail (pas de rechargement)
+    this.rawById = {};
+    allLogements.forEach((l) => { this.rawById[l.id] = l; });
 
     // Filtrage direct selon la localité et le budget
     const filtered = allLogements.filter((l) => {
@@ -316,9 +320,10 @@ Page({
     const item = e.currentTarget.dataset.item;
     if (!item || !item.id) return;
 
-    wx.navigateTo({
-      url: `/pages/client/logement-detail/logement-detail?id=${item.id}`
-    });
+    navigateWithData(
+      `/pages/client/logement-detail/logement-detail?id=${item.id}`,
+      this.rawById && this.rawById[item.id]
+    );
   },
 
   // ==========================================

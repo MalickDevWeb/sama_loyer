@@ -1,5 +1,6 @@
 import { findConversation, enrichConversation } from '../../../utils/mocks/conversations';
 import { getStoredConversations, addStoredMessage, markConversationRead } from '../../../utils/helpers/store';
+import { takeNavData } from '../../../utils/helpers/nav-data';
 
 function now() {
   const d = new Date();
@@ -45,11 +46,14 @@ Page({
     
     // Conversation enregistrée (avec les messages déjà envoyés), complétée pour l'affichage
     const key = paramId || paramLogement || 'moussa-d';
-    let conversation = null;
-    try {
-      const stored = getStoredConversations().find((c) => c.id === key || c.logementId === key);
-      conversation = enrichConversation(stored);
-    } catch (e) {}
+    // Reçue de la liste Messages, sinon lue dans le stockage
+    let conversation = takeNavData(options);
+    if (!conversation) {
+      try {
+        const stored = getStoredConversations().find((c) => c.id === key || c.logementId === key);
+        conversation = enrichConversation(stored);
+      } catch (e) {}
+    }
 
     if (!conversation) {
       conversation = findConversation({

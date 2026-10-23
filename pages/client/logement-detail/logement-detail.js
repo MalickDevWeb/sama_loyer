@@ -1,6 +1,7 @@
 import { LOGEMENTS, getLogementById, toLogementDetail } from '../../../utils/mocks/logements';
 import { isFavorite, toggleFavoriteId } from '../../../utils/helpers/favorites';
 import { COLORS } from '../../../utils/constants/theme';
+import { takeNavData } from '../../../utils/helpers/nav-data';
 
 // Fiche affichée si l'id est absent ou inconnu
 const DEFAULT_LOGEMENT = toLogementDetail(getLogementById('icotaf-01') || LOGEMENTS[0]);
@@ -41,7 +42,9 @@ Page({
     } catch (e) {
       top = 54;
     }
-    const found = options && options.id ? getLogementById(decodeURIComponent(options.id)) : null;
+    // Logement transmis par la page précédente (évite un appel), sinon chargé par son id
+    const passed = takeNavData(options);
+    const found = passed || (options && options.id ? getLogementById(decodeURIComponent(options.id)) : null);
     const logement = found ? toLogementDetail(found) : DEFAULT_LOGEMENT;
 
     this.setData({
