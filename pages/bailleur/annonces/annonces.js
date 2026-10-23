@@ -2,6 +2,7 @@
 import { getStoredBailleurAnnonces, confirmBailleurAnnonce } from '../../../utils/helpers/store';
 import { storage } from '../../../utils/storage';
 import { withCover } from '../../../utils/mocks/media';
+import { requireBailleurAccess } from '../../../utils/helpers/store';
 
 Page({
   data: {
@@ -10,7 +11,8 @@ Page({
     activeFilter: 'all', // all | en_ligne | validation | loue
     annonces: [],
     filteredAnnonces: [],
-    counts: { all: 0, en_ligne: 0, validation: 0, loue: 0 }
+    counts: { all: 0, en_ligne: 0, validation: 0, loue: 0 },
+    expandedMap: {} // { [id]: boolean } pour déplier/replier avec "Voir plus"
   },
 
   onLoad() {
@@ -36,6 +38,8 @@ Page({
   },
 
   onShow() {
+    // Sans abonnement actif, aucun accès : retour à l'accueil verrouillé
+    if (!requireBailleurAccess()) return;
     if (typeof this.getTabBar === 'function' && this.getTabBar()) {
       this.getTabBar().setData({ activeTab: 'b-annonces' });
     }
@@ -72,6 +76,14 @@ Page({
       loue: all.filter(a => a.type === 'loue').length
     };
     this.setData({ filteredAnnonces: list.map(withCover), counts });
+  },
+
+  onToggleExpand(e) {
+    const id = e.currentTarget.dataset.id;
+    if (!id) return;
+    const expandedMap = { ...this.data.expandedMap };
+    expandedMap[id] = !expandedMap[id];
+    this.setData({ expandedMap });
   },
 
   onConfirmDispo(e) {

@@ -53,8 +53,8 @@
       <block wx:for="{{ filteredAnnonces }}" wx:key="id">
         <view class="annonce-card">
           
-          <!-- Ligne Haute: Thumbnail à gauche + Infos à droite -->
-          <view class="annonce-top-row">
+          <!-- Ligne Haute: Thumbnail à gauche + Infos à droite (Cliquable pour déplier) -->
+          <view class="annonce-top-row" data-id="{{ item.id }}" bindtap="onToggleExpand">
             <!-- Thumbnail carrée avec icône maison douce -->
             <view class="annonce-thumb sl-photo" style="background-color: {{ item.thumbBg }}; background-image: url('{{ item.cover }}');">
               <view wx:if="{{ !item.cover }}" class="thumb-house-shape"></view>
@@ -74,47 +74,56 @@
             </view>
           </view>
 
-          <!-- Notice contextuelle pleine largeur -->
-          <view class="notice-box {{ item.noticeClass }}">
-            <text class="notice-text">{{ item.notice }}</text>
-          </view>
-
-          <!-- Statut confirmé vert plein/centre -->
-          <view wx:if="{{ item.isConfirmed }}" class="confirmed-bar">
-            <text class="check-icon">✓</text>
-            <text class="confirmed-bar-text">Disponibilité confirmée</text>
-          </view>
-
-          <!-- Gros Bouton Vert Reconfirmation 7 jours -->
-          <view wx:if="{{ item.needsConfirm }}" class="reconfirm-action-box">
-            <button class="btn-reconfirm" data-id="{{ item.id }}" bindtap="onConfirmDispo">
-              <text class="check-icon">✓</text> Toujours libre : je confirme
-            </button>
-          </view>
-
-          <!-- Bouton Corriger pour modération -->
-          <view wx:if="{{ item.canCorrect }}" class="correct-action-box">
-            <button class="btn-correct" bindtap="onGoAjouter">
-              Corriger et renvoyer
-            </button>
-          </view>
-
-          <!-- Bouton Remettre en ligne si loué -->
-          <view wx:if="{{ item.canRelist }}" class="relist-action-box">
-            <button class="btn-relist" data-id="{{ item.id }}" bindtap="onRelist">
-              Le logement est libre : remettre en ligne
-            </button>
-          </view>
-
-          <!-- Boutons Modifier / C'est loué pour annonces en ligne -->
-          <view wx:if="{{ item.type === 'en_ligne' }}" class="card-bottom-actions">
-            <view class="btn-subaction" bindtap="onGoAjouter">
-              <text class="pencil-sub">✎</text>
-              <text class="subaction-label">Modifier</text>
+          <!-- Détails et actions visibles seulement après avoir cliqué sur "Voir plus" -->
+          <view wx:if="{{ expandedMap[item.id] }}" class="annonce-expanded-body">
+            <!-- Notice contextuelle pleine largeur -->
+            <view class="notice-box {{ item.noticeClass }}">
+              <text class="notice-text">{{ item.notice }}</text>
             </view>
-            <view class="btn-subaction" data-id="{{ item.id }}" bindtap="onMarkLoue">
-              <text class="subaction-label">C'est loué</text>
+
+            <!-- Statut confirmé vert plein/centre -->
+            <view wx:if="{{ item.isConfirmed }}" class="confirmed-bar">
+              <view class="ic ic-check-green ic--sm"></view>
+              <text class="confirmed-bar-text">Disponibilité confirmée</text>
             </view>
+
+            <!-- Gros Bouton Vert Reconfirmation 7 jours -->
+            <view wx:if="{{ item.needsConfirm }}" class="reconfirm-action-box">
+              <button class="btn-reconfirm" data-id="{{ item.id }}" bindtap="onConfirmDispo">
+                <view class="ic ic-check-white ic--sm"></view><text>Toujours libre : je confirme</text>
+              </button>
+            </view>
+
+            <!-- Bouton Corriger pour modération -->
+            <view wx:if="{{ item.canCorrect }}" class="correct-action-box">
+              <button class="btn-correct" bindtap="onGoAjouter">
+                Corriger et renvoyer
+              </button>
+            </view>
+
+            <!-- Bouton Remettre en ligne si loué -->
+            <view wx:if="{{ item.canRelist }}" class="relist-action-box">
+              <button class="btn-relist" data-id="{{ item.id }}" bindtap="onRelist">
+                Le logement est libre : remettre en ligne
+              </button>
+            </view>
+
+            <!-- Boutons Modifier / C'est loué pour annonces en ligne -->
+            <view wx:if="{{ item.type === 'en_ligne' }}" class="card-bottom-actions">
+              <view class="btn-subaction" bindtap="onGoAjouter">
+                <view class="ic ic-edit-navy ic--sm"></view>
+                <text class="subaction-label">Modifier</text>
+              </view>
+              <view class="btn-subaction" data-id="{{ item.id }}" bindtap="onMarkLoue">
+                <text class="subaction-label">C'est loué</text>
+              </view>
+            </view>
+          </view>
+
+          <!-- Bouton Voir plus / Voir moins -->
+          <view class="annonce-toggle" hover-class="annonce-toggle--hover" data-id="{{ item.id }}" catchtap="onToggleExpand" aria-label="{{ expandedMap[item.id] ? 'Voir moins' : 'Voir plus' }}">
+            <text class="annonce-toggle-text">{{ expandedMap[item.id] ? 'Voir moins' : 'Voir plus' }}</text>
+            <view class="ic ic-chevron-berrydark annonce-toggle-ic {{ expandedMap[item.id] ? 'annonce-toggle-ic--open' : '' }}"></view>
           </view>
         </view>
       </block>

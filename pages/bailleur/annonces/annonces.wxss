@@ -123,7 +123,7 @@
   display: flex;
   gap: 24rpx;
   align-items: flex-start;
-  margin-bottom: 22rpx;
+  margin-bottom: 0;
 }
 
 .annonce-thumb {
@@ -372,6 +372,45 @@
   font-size: 26rpx;
   font-weight: 700;
   color: #0F1E3D;
+}
+
+/* Expansion container */
+.annonce-expanded-body {
+  margin-top: 22rpx;
+  display: flex;
+  flex-direction: column;
+}
+
+/* --- Bouton Voir plus / Voir moins Annonce --- */
+.annonce-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12rpx;
+  padding: 20rpx 0 4rpx;
+  margin-top: 18rpx;
+  border-top: 1rpx solid #F0F2F6;
+}
+
+.annonce-toggle--hover {
+  opacity: 0.75;
+}
+
+.annonce-toggle-text {
+  font-size: 26rpx;
+  font-weight: 700;
+  color: #C8235F;
+}
+
+.annonce-toggle-ic {
+  width: 28rpx;
+  height: 28rpx;
+  transform: rotate(90deg);
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.annonce-toggle-ic--open {
+  transform: rotate(-90deg);
 }
 
 .scroll-spacer {
