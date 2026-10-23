@@ -1,33 +1,34 @@
 // ============================================================================
-// I18N — Traductions de l'interface
+// I18N — Gestionnaire de langues SAMA LOYER (Français & Wolof)
 //
 // DANS LE JS :
-//   import { t } from '../../utils/i18n/index';
+//   import { t, setLocale, getLocale } from '../../utils/i18n/index';
 //   wx.showToast({ title: t('favoris.removed') });
-//   t('favoris.subtitle', { count: 3 })  // "3 logements enregistrés"
 //
-// DANS LE WXML (via la behavior, qui injecte le dictionnaire dans data.i18n) :
+// DANS LE WXML :
 //   import { i18nBehavior } from '../../utils/i18n/index';
 //   Page({ behaviors: [i18nBehavior], ... });
-//   <text>{{ i18n.favoris.title }}</text>
-//
-// AJOUTER UNE LANGUE : créer wo.js avec les mêmes clés et l'ajouter à MESSAGES.
+//   <text>{{ i18n.common.search }}</text>
 // ============================================================================
 
 import fr from './fr.js';
+import wo from './wo.js';
+import { storage } from '../storage.js';
 
-const MESSAGES = { fr };
+const STORAGE_LOCALE_KEY = 'app_user_locale';
+const MESSAGES = { fr, wo };
 const DEFAULT_LOCALE = 'fr';
 
-let currentLocale = DEFAULT_LOCALE;
+let currentLocale = storage.get(STORAGE_LOCALE_KEY, DEFAULT_LOCALE);
 
 function lookup(dict, key) {
+  if (!dict) return undefined;
   return key.split('.').reduce((node, part) => (node && node[part] !== undefined ? node[part] : undefined), dict);
 }
 
 /**
- * Traduit une clé ("page.cle") et remplace les paramètres {nom}.
- * Retombe sur le français, puis sur la clé elle-même si elle est absente.
+ * Traduit une clé ("domaine.cle") et remplace les paramètres {nom}.
+ * Retombe sur le français si la clé wolof est absente, puis sur la clé elle-même.
  * @param {string} key
  * @param {Object} [params]
  * @returns {string}
@@ -36,28 +37,52 @@ export function t(key, params = {}) {
   let text = lookup(MESSAGES[currentLocale], key);
   if (text === undefined) text = lookup(MESSAGES[DEFAULT_LOCALE], key);
   if (text === undefined) {
-    console.warn(`[i18n] Clé manquante : ${key}`);
     return key;
   }
   return String(text).replace(/\{(\w+)\}/g, (match, name) => (params[name] !== undefined ? params[name] : match));
 }
 
 /** @returns {Object} Dictionnaire de la langue courante */
-export function getMessages() {
-  return MESSAGES[currentLocale] || MESSAGES[DEFAULT_LOCALE];
+export function getMessages(locale) {
+  const loc = locale || currentLocale;
+  return MESSAGES[loc] || MESSAGES[DEFAULT_LOCALE];
+}
+
+/** @returns {string} 'fr' | 'wo' */
+export function getLocale() {
+  return currentLocale;
 }
 
 /**
- * Change la langue courante (les pages déjà ouvertes gardent l'ancienne).
- * @param {string} locale - ex. 'fr'
+ * Change la langue courante et la persiste en local storage.
+ * @param {'fr'|'wo'} locale
  */
 export function setLocale(locale) {
-  if (MESSAGES[locale]) currentLocale = locale;
+  if (MESSAGES[locale]) {
+    currentLocale = locale;
+    storage.set(STORAGE_LOCALE_KEY, locale);
+    return true;
+  }
+  return false;
 }
 
-/** Injecte le dictionnaire dans data.i18n pour l'utiliser dans le WXML */
+/** Injecte le dictionnaire et la langue dans data.i18n et data.currentLocale */
 export const i18nBehavior = Behavior({
   data: {
     i18n: getMessages(),
+    currentLocale: getLocale(),
+  },
+
+  pageLifetimes: {
+    show() {
+      const stored = storage.get(STORAGE_LOCALE_KEY, DEFAULT_LOCALE);
+      if (stored !== this.data.currentLocale) {
+        currentLocale = stored;
+        this.setData({
+          i18n: getMessages(stored),
+          currentLocale: stored,
+        });
+      }
+    },
   },
 });

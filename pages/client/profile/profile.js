@@ -4,6 +4,7 @@ import { setCustomTabBarActive } from '../../../utils/helpers/tab-bar';
 import { getFavoriteIds } from '../../../utils/helpers/favorites';
 import { getVisites } from '../../../utils/helpers/visites';
 import { getConversations } from '../../../utils/mocks/conversations';
+import { setLocale, getLocale } from '../../../utils/i18n/index';
 
 const NOTIFS = [
   { id: 'msg', label: 'Nouveaux messages', sub: 'Quand un bailleur te répond' },
@@ -354,6 +355,7 @@ Page({
     if (lang === this.prefs.lang) return;
     this.prefs.lang = lang;
     this.savePrefs();
+    setLocale(lang);
     wx.showToast({
       title: lang === 'wo' ? 'Kàllaama : Wolof' : 'Langue : Français',
       icon: 'none'

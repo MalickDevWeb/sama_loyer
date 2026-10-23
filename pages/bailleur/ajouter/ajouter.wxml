@@ -1,7 +1,7 @@
 <view class="ajouter-page">
   <!-- En-tête fixe : retour + titre (à gauche de la capsule WeChat) + progression -->
-  <view class="aj-head" style="padding-top: {{ navTop }}px;">
-    <view class="aj-nav" style="height: {{ navHeight }}px; padding-right: {{ capsuleSpace }}px;">
+  <view class="aj-head" style="{{ headStyle }}">
+    <view class="aj-nav" style="{{ navStyle }}">
       <view class="aj-back" hover-class="aj-hover" bindtap="onClose" aria-label="{{ step === 2 ? 'Étape précédente' : 'Fermer' }}">
         <view class="ic ic--md {{ step === 2 ? 'ic-back-navy' : 'ic-close-navy' }}"></view>
       </view>
@@ -10,13 +10,13 @@
 
     <view wx:if="{{ step < 3 }}" class="aj-progress">
       <view class="aj-progress-track">
-        <view class="aj-progress-fill" style="width: {{ step === 1 ? 50 : 100 }}%;"></view>
+        <view class="aj-progress-fill {{ step === 1 ? 'aj-progress-fill--half' : '' }}"></view>
       </view>
       <text class="aj-progress-label">Étape {{ step }} sur 2 · {{ step === 1 ? 'Le logement' : 'Photos et atouts' }}</text>
     </view>
   </view>
 
-  <view class="aj-body" style="padding-top: {{ bodyTop }}px;">
+  <view class="aj-body" style="{{ bodyStyle }}">
 
     <!-- ================= ÉTAPE 1 : LE LOGEMENT ================= -->
     <view wx:if="{{ step === 1 }}" class="aj-step">
@@ -75,8 +75,8 @@
 
         <text class="aj-label aj-label--mt">Caution</text>
         <view class="aj-segment">
-          <view class="aj-seg {{ cautionMonths === 1 ? 'aj-seg--on' : '' }}" bindtap="onSelectCaution" data-months="{{ 1 }}">1 mois</view>
-          <view class="aj-seg {{ cautionMonths === 2 ? 'aj-seg--on' : '' }}" bindtap="onSelectCaution" data-months="{{ 2 }}">2 mois</view>
+          <view class="aj-seg {{ cautionMonths === 1 ? 'aj-seg--on' : '' }}" bindtap="onSelectCaution" data-months="1">1 mois</view>
+          <view class="aj-seg {{ cautionMonths === 2 ? 'aj-seg--on' : '' }}" bindtap="onSelectCaution" data-months="2">2 mois</view>
         </view>
 
         <view class="aj-total">
@@ -97,7 +97,7 @@
       <view class="aj-card">
         <view class="aj-card-head">
           <text class="aj-label aj-label--flat">Photos</text>
-          <text class="aj-count">{{ photos.length }} / 8</text>
+          <text class="aj-count">{{ photoCount }} / 8</text>
         </view>
         <view class="photo-grid">
           <view wx:for="{{ photos }}" wx:key="*this" class="photo-cell">
@@ -107,7 +107,7 @@
               <view class="ic ic-close-white"></view>
             </view>
           </view>
-          <view wx:if="{{ photos.length < 8 }}" class="photo-cell photo-add" hover-class="aj-hover" bindtap="onAddPhotos" aria-label="Ajouter des photos">
+          <view wx:if="{{ canAddPhoto }}" class="photo-cell photo-add" hover-class="aj-hover" bindtap="onAddPhotos" aria-label="Ajouter des photos">
             <view class="ic ic-photo-navy photo-add-ic"></view>
             <text class="photo-add-txt">Ajouter</text>
           </view>
@@ -119,7 +119,7 @@
         </view>
         <view wx:if="{{ video }}" class="video-row">
           <view class="video-thumb" hover-class="aj-hover" bindtap="onPlayVideo" aria-label="Lire la vidéo">
-            <image wx:if="{{ video.poster }}" class="photo-img" src="{{ video.poster }}" mode="aspectFill" />
+            <image wx:if="{{ videoPoster }}" class="photo-img" src="{{ videoPoster }}" mode="aspectFill" />
             <view class="video-play"><view class="ic ic-play-white ic--sm"></view></view>
           </view>
           <view class="video-info">
@@ -177,7 +177,7 @@
       <text class="aj-done-sub">Elle est en cours de validation. Tu recevras un SMS dès qu'elle sera en ligne.</text>
 
       <view class="aj-recap">
-        <image wx:if="{{ photos[0] }}" class="aj-recap-img" src="{{ photos[0] }}" mode="aspectFill" />
+        <image wx:if="{{ coverPhoto }}" class="aj-recap-img" src="{{ coverPhoto }}" mode="aspectFill" />
         <view class="aj-recap-body">
           <text class="aj-recap-title">{{ selectedType }} à {{ selectedQuartier }}</text>
           <text class="aj-recap-price">{{ loyerFormatted }} F / mois</text>

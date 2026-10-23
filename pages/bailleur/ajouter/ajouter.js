@@ -6,14 +6,25 @@ import { requireBailleurAccess } from '../../../utils/helpers/store';
 
 const MAX_PHOTOS = 8;
 const DEMO_MEDIA = getMedia('nouvelle-annonce');
+const DEMO_PHOTOS = DEMO_MEDIA.gallery.slice(0, 3).map((g) => g.url);
+
+// Photos + compteur affiché (le WXML n'utilise que des variables simples)
+const photoState = (photos) => ({
+  photos,
+  photoCount: photos.length,
+  canAddPhoto: photos.length < MAX_PHOTOS,
+  coverPhoto: photos[0] || ''
+});
+
+// Vidéo + affiche de la miniature
+const videoState = (video) => ({ video, videoPoster: video ? video.poster : '', hasVideo: !!video });
 
 Page({
   data: {
     // En-tête calé sur la capsule WeChat (valeurs recalculées dans onLoad)
-    navTop: 44,
-    navHeight: 32,
-    capsuleSpace: 100,
-    bodyTop: 120,
+    headStyle: 'padding-top: 44px;',
+    navStyle: 'height: 32px; padding-right: 100px;',
+    bodyStyle: 'padding-top: 124px;',
     step: 1, // 1 : le logement → 2 : photos et atouts → 3 : confirmation
 
     // Étape 1 : Type & Quartier
@@ -42,8 +53,13 @@ Page({
     description: '',
 
     // Étape 2 : Photos & Vidéo (pré-remplies avec des médias de démo, remplaçables)
-    photos: DEMO_MEDIA.gallery.slice(0, 3).map((g) => g.url),
+    // Mêmes clés que photoState() / videoState(), écrites en clair pour l'éditeur WXML
+    photos: DEMO_PHOTOS,
+    photoCount: DEMO_PHOTOS.length,
+    canAddPhoto: true,
+    coverPhoto: DEMO_PHOTOS[0],
     video: DEMO_MEDIA.video, // { src, poster } | null
+    videoPoster: DEMO_MEDIA.video.poster,
     hasVideo: true,
   },
 
@@ -63,7 +79,12 @@ Page({
       // Hauteur de l'en-tête : barre de navigation + barre de progression (~40 px)
       const bodyTop = navTop + navHeight + 48;
       const initialStep = options && options.step ? Math.min(Math.max(Number(options.step) || 1, 1), 2) : 1;
-      this.setData({ navTop, navHeight, capsuleSpace, bodyTop, step: initialStep });
+      this.setData({
+        headStyle: `padding-top: ${navTop}px;`,
+        navStyle: `height: ${navHeight}px; padding-right: ${capsuleSpace}px;`,
+        bodyStyle: `padding-top: ${bodyTop}px;`,
+        step: initialStep
+      });
     } catch (e) {}
 
     this.updateFinancialSummary();
@@ -159,7 +180,7 @@ Page({
       sizeType: ['compressed'],
       success: (res) => {
         const added = (res.tempFiles || []).map((f) => f.tempFilePath);
-        this.setData({ photos: this.data.photos.concat(added) });
+        this.setData(photoState(this.data.photos.concat(added)));
       }
     });
   },
@@ -171,7 +192,7 @@ Page({
 
   onRemovePhoto(e) {
     const i = Number(e.currentTarget.dataset.index);
-    this.setData({ photos: this.data.photos.filter((_, k) => k !== i) });
+    this.setData(photoState(this.data.photos.filter((_, k) => k !== i)));
   },
 
   onPickVideo() {
@@ -183,7 +204,7 @@ Page({
       success: (res) => {
         const f = (res.tempFiles || [])[0];
         if (!f) return;
-        this.setData({ video: { src: f.tempFilePath, poster: f.thumbTempFilePath || '' }, hasVideo: true });
+        this.setData(videoState({ src: f.tempFilePath, poster: f.thumbTempFilePath || '' }));
       }
     });
   },
@@ -199,7 +220,7 @@ Page({
   },
 
   onRemoveVideo() {
-    this.setData({ video: null, hasVideo: false });
+    this.setData(videoState(null));
   },
 
   onNextStep() {
@@ -263,9 +284,8 @@ Page({
       step: 1,
       adresseDetail: '',
       description: '',
-      photos: [],
-      video: null,
-      hasVideo: false
+      ...photoState([]),
+      ...videoState(null)
     });
     wx.pageScrollTo && wx.pageScrollTo({ scrollTop: 0, duration: 0 });
   },
