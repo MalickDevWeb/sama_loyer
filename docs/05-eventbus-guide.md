@@ -265,22 +265,46 @@ onUnload() {
 | `EVENTS.BAILLEUR_ACCOUNT_CHANGED` | activation, renouvellement, boost | Disponible (les pages relisent dans `onShow`) |
 | `EVENTS.FAVORITES_CHANGED`, `VISITES_CHANGED`, `RENT_PAID`, `LOGEMENTS_CHANGED`, `LOCATAIRES_CHANGED` | store / favorites | Disponibles pour les prochains écrans en direct |
 
-**S'abonner dans une page** (toujours se désabonner) :
+**S'abonner dans une page ou un composant** : utiliser `busBehavior` ([utils/behaviors](../utils/behaviors/README.fr.md)). Les abonnements sont coupés automatiquement à la fermeture, sans risque de fuite.
 
 ```javascript
-import { Bus } from '../../../utils/event/index';
+import { busBehavior } from '../../../utils/behaviors/index';
 import { EVENTS } from '../../../utils/event/keys';
 
 Page({
+  behaviors: [busBehavior],
   onLoad() {
-    this.offMessages = Bus.on(EVENTS.MESSAGES_CHANGED, ({ side }) => {
+    this.listen(EVENTS.MESSAGES_CHANGED, ({ side }) => {
       if (side === 'client') this.reload();
     });
-  },
-  onUnload() {
-    if (this.offMessages) this.offMessages();
   },
 });
 ```
 
-Dans un composant, s'abonner dans `lifetimes.attached` et se désabonner dans `lifetimes.detached`.
+### Alléger les appels API
+
+**1. Transmettre un objet à la page suivante** ([utils/helpers/nav-data.js](../utils/helpers/nav-data.js)) : une liste qui a déjà l'objet le confie à l'EventBus. Seul un petit jeton passe dans l'URL, et la page suivante le lit une seule fois. Sans jeton (lien partagé, QR code), elle charge normalement par son id.
+
+```javascript
+// Liste
+navigateWithData(`/pages/client/logement-detail/logement-detail?id=${id}`, logement);
+// Détail (onLoad)
+const logement = takeNavData(options) || await backendAPI.getLogementDetail(options.id);
+```
+
+Déjà en place : Accueil et Favoris vers la fiche logement, Messages vers la discussion (locataire et bailleur).
+
+**2. Cache des lectures** ([utils/apis/cache.js](../utils/apis/cache.js)) : les méthodes de lecture de `backendAPI` passent par `cached()`.
+
+| Lecture | Durée en cache | Vidée par |
+|---|---|---|
+| `getLogements(filtres)` | 5 min | `LOGEMENTS_CHANGED` |
+| `getLogementDetail(id)` | 10 min | `LOGEMENTS_CHANGED` |
+| `getLoyers()` | 1 min | `RENT_PAID`, `payLoyer()` |
+| `getVisites()` | 1 min | `VISITES_CHANGED`, `createVisite()` |
+| `getBailleurAnnonces()` / `getBailleurLocataires()` | 1 min | `LOGEMENTS_CHANGED` / `LOCATAIRES_CHANGED` |
+
+- Deux demandes identiques en même temps ne font qu'un appel.
+- `{ force: true }` ignore le cache (tirer pour rafraîchir).
+- `resetSession()` vide tout le cache.
+
