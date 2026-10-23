@@ -1,0 +1,158 @@
+# 🤖 FRONTEND ARCHITECTURE RULES — WECHAT MINI PROGRAM
+# Ce fichier est lu automatiquement par l'IA (Cursor, Copilot, Windsurf).
+# Il impose les règles d'architecture pour ce projet.
+
+You are an expert Frontend Developer working on a WeChat Mini Program.
+You MUST follow ALL rules in this document for every code change.
+
+---
+
+## 🎯 MAGIC KEYWORDS — Lis le prompt, active le bon mode
+
+| Mot-Clé dans le prompt | Comportement imposé |
+|---|---|
+| `@UI-MOCK` | Crée l'UI avec de fausses données. N'appelle AUCUNE API. |
+| `@API-CONNECT` | Connecte une page existante au backend (Mapper + Méthode API). |
+| `@FULL-FEATURE` | Crée l'UI ET l'API en même temps. Pas de données Mock. |
+
+---
+
+## RÈGLE 0 — Isolation (Anti-Conflit Git)
+
+- Travaille UNIQUEMENT dans le dossier du module demandé.
+- Ne touche JAMAIS aux fichiers globaux (`app.js`, `utils/`, `components/`) sans que l'utilisateur le demande explicitement.
+- Chaque page/composant vit dans son propre dossier de 4 fichiers (`.js`, `.wxml`, `.wxss`, `.json`).
+
+---
+
+## RÈGLE 1 — Créer une Interface (UI)
+
+### Structure obligatoire
+
+```
+pages/ma-page/
+  ├── index.js      ← Logique + State Machine
+  ├── index.wxml    ← Vue + WXS Import
+  ├── index.wxss    ← Styles scoped (BEM)
+  └── index.json    ← Config
+
+components/mon-composant/   ← Composants globaux partagés
+  └── (mêmes 4 fichiers)
+```
+
+### State Machine (TOUJOURS)
+
+Toute page doit exposer une variable `uiState` pour piloter l'affichage.
+
+```javascript
+Page({
+  data: {
+    uiState: 'content', // 'loading' | 'content' | 'empty' | 'error'
+    mockData: { name: "Mock User", price: 15000 }
+  }
+});
+```
+
+```xml
+<view wx:if="{{uiState === 'loading'}}" class="skeleton animate-pulse" />
+<view wx:elif="{{uiState === 'content'}}" class="container animate-fade-in">
+  <text>{{ mockData.name }}</text>
+</view>
+<view wx:elif="{{uiState === 'empty'}}"><text>Aucun résultat</text></view>
+<view wx:elif="{{uiState === 'error'}}"><text>Erreur. Réessaie.</text></view>
+```
+
+### Formatage WXS (OBLIGATOIRE, jamais dans le JS)
+
+```xml
+<wxs src="../../utils/wxs/filters.wxs" module="f" />
+<text>{{ f.formatPrice(mockData.price) }}</text>
+```
+
+> WXS = ES5 UNIQUEMENT. Pas de `const`, pas de `=>`, pas de destructuring.
+
+### Page vs Composant (NE PAS CONFONDRE)
+
+- **Page** : utilise `onLoad()`, `onShow()`, `onUnload()`
+- **Composant** : utilise `lifetimes: { attached() {}, detached() {} }`
+- **Composant → Page** : `this.triggerEvent('action', data)` (PAS Bus.emit)
+- **Données globales** : `Bus.setState('cle', data)` / `Bus.onState('cle', cb)`
+
+### Composants Globaux vs Locaux
+
+- `components/layout/` = Composants partagés (NavBar, Modal). Utilisent `Bus.onState`.
+- `pages/ma-page/components/` = Composants locaux à la page uniquement.
+
+### Animations CSS (Copier-Coller)
+
+```css
+.animate-fade-in { animation: fadeIn 0.3s ease-out forwards; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+.animate-slide-up { animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+@keyframes slideUp {
+  from { transform: translateY(100%); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+/* TOUJOURS sur les barres fixes en bas */
+.safe-bottom { padding-bottom: env(safe-area-inset-bottom); }
+```
+
+### Performance setData
+
+- Met dans `this.data` UNIQUEMENT les variables rendues dans le `.wxml`.
+- Variables JS pures (timers, IDs) → `this.myTimer = ...` (pas de setData).
+
+---
+
+## RÈGLE 2 — Consommer une API
+
+### Ordre d'implémentation (ne jamais dévier)
+
+1. Ajouter l'URL dans `ENDPOINTS` du fichier `.api.js` du domaine.
+2. Créer le Schema `json-sculpt` dans `utils/mappers/`.
+3. Créer la méthode dans la classe `.api.js`.
+4. Appeler depuis la page dans un `try/catch/finally`.
+
+### Template Méthode API
+
+```javascript
+async getMyData(params) {
+  await authenticate();                                          // Token auto
+  const res = await httpClient.get(ENDPOINTS.MY_URL, { query: params });
+  if (!res.success) throw new Error(res.error?.message);        // Erreur
+  return sculpt.data({ data: res.data, to: MySchema });         // Données propres
+}
+```
+
+### Template Appel Page
+
+```javascript
+async loadData() {
+  this.setData({ uiState: 'loading' });
+  try {
+    const data = await myAPI.getMyData();
+    this.setData({ data, uiState: 'content' });
+  } catch (error) {
+    this.setData({ uiState: 'error' });
+    wx.showToast({ title: error.message, icon: 'none' });
+  }
+}
+```
+
+### Règles API strictes
+
+- JAMAIS `wx.request()` directement → Toujours `httpClient`
+- JAMAIS gérer le token manuellement → `authenticate()` le fait seul
+- JAMAIS passer le JSON brut à l'UI → Toujours `sculpt.data()`
+- JAMAIS `wx.getStorageSync()` → Utiliser `storage.get()`
+- Constantes et URLs → `utils/constants/index.js` et `utils/config.js`
+- Erreurs business → Classes custom (`ValidationError`, `NetworkError`, etc.)
+
+---
+
+## RÈGLE 3 — i18n (Zéro Texte en Dur)
+
+JAMAIS de texte en dur dans `.wxml` ou `.js`.
+Toujours utiliser les clés de traduction : `{{ t('ma.cle') }}`

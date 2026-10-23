@@ -1,0 +1,14 @@
+# Fichiers système (Mac, Linux, Windows)
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Éditeurs
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs
+*.log
+
