@@ -11,6 +11,8 @@ const DEFAULT_AVATAR_BG = '#0F1E3D';
 export const CONVERSATIONS = [
   {
     id: 'moussa-d',
+    status: 'Visite demandée',
+    statusKind: 'visit',
     logementId: 'icotaf-01',
     time: '10:43',
     unread: 2,
@@ -26,6 +28,8 @@ export const CONVERSATIONS = [
   },
   {
     id: 'awa-n',
+    status: 'Disponible',
+    statusKind: 'ok',
     logementId: 'pikine-rue10',
     time: 'Hier',
     unread: 1,
@@ -37,6 +41,8 @@ export const CONVERSATIONS = [
   },
   {
     id: 'ibrahima-s',
+    status: 'En attente',
+    statusKind: 'wait',
     logementId: 'technopole-01',
     time: 'Lun.',
     unread: 0,
@@ -47,6 +53,8 @@ export const CONVERSATIONS = [
   },
   {
     id: 'fatou-k',
+    status: 'Déjà loué',
+    statusKind: 'off',
     logementId: 'guinaw-01',
     time: '18 oct.',
     unread: 0,
@@ -58,7 +66,7 @@ export const CONVERSATIONS = [
   }
 ];
 
-// Conversations avec les bailleurs des logements loués (page Mon loyer).
+// Conversations avec les bailleurs des logements loués (page Mes loyers).
 // Elles ne sont pas dans la liste Messages ; le logement est décrit sur place.
 const RENTAL_CONVERSATIONS = [
   {

@@ -14,7 +14,7 @@ pages/
 │   ├── home/                    # Home: written & AI voice search (Wolof/FR), 3 recommendations
 │   ├── search/                  # Search results with filters & map view
 │   ├── logement-detail/         # Property detail sheet (photos, deposit, visits)
-│   ├── loyers/                  # My Rent: rent summary, certified receipt, OM/Wave payment
+│   ├── loyers/                  # My Rent: rent summary, certified receipt, Max it payment
 │   ├── visites/                 # Visit tracking (confirmed, past, canceled)
 │   ├── demande-visite/          # Book visit schedule slot
 │   ├── messages/                # Inbox conversations

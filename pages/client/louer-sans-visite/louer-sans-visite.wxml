@@ -8,7 +8,7 @@
   >
     <view class="toast-pill-body">
       <view class="toast-icon-wrapper {{ toast.type === 'success' ? 'toast-icon--success' : 'toast-icon--warning' }}">
-        <text class="toast-symbol">{{ toast.type === 'success' ? '✓' : 'ℹ' }}</text>
+        <view class="ic ic--sm {{ toast.type === 'success' ? 'ic-check-white' : 'ic-info-white' }}"></view>
       </view>
       <view class="toast-text-block">
         <view class="toast-main-line">
@@ -19,7 +19,7 @@
         </view>
       </view>
       <view class="toast-badge-sparkle">
-        <text class="toast-sparkle-symbol">✨</text>
+        <view class="ic ic-sparkle-amber ic--sm"></view>
       </view>
     </view>
   </view>
@@ -54,14 +54,14 @@
         data-id="{{ item.id }}"
         bindtap="onOpenMedia"
       >
-        <view class="lsv__media-thumb" style="background: {{ item.tint }};">
-          <view class="ic ic-{{ item.icon }}-navy"></view>
+        <view class="lsv__media-thumb sl-photo" style="background-color: {{ item.tint }}; background-image: url('{{ item.thumb }}');">
+          <view class="lsv__media-play"><view class="ic ic-{{ item.icon }}-navy"></view></view>
         </view>
         <view class="lsv__media-text">
           <text class="lsv__media-label">{{ item.label }}</text>
           <text class="lsv__media-sub">{{ item.sub }}</text>
         </view>
-        <text class="sl-badge {{ item.seen ? 'sl-badge--green' : 'sl-badge--navy' }}">{{ item.seen ? 'Vu ✓' : 'Regarder' }}</text>
+        <text class="sl-badge {{ item.seen ? 'sl-badge--green' : 'sl-badge--navy' }}">{{ item.seen ? 'Vu' : 'Regarder' }}</text>
       </view>
     </view>
     <view class="lsv__video-call" hover-class="sl-hover" bindtap="onVideoCall">
@@ -122,51 +122,73 @@
   <view wx:if="{{ showMediaRequiredModal }}" class="sama-modal-overlay" bindtap="onCloseMediaModal">
     <view class="sama-modal-card" catchtap="noop">
       <!-- Bouton fermer -->
-      <view class="modal-close-round" bindtap="onCloseMediaModal">✕</view>
+      <view class="modal-close-round" bindtap="onCloseMediaModal"><view class="ic ic-close-grey ic--sm"></view></view>
 
       <!-- Badge icône supérieure -->
       <view class="modal-illu-badge">
-        <text class="modal-illu-emoji">📸</text>
+        <view class="ic ic-camera-berry ic--xl"></view>
       </view>
 
       <text class="modal-title">Photos et vidéo requises</text>
-      <text class="modal-desc">Pour ta sécurité et être certain que le logement te convient, prends quelques secondes pour consulter les 4 photos et la vidéo de visite.</text>
+      <text class="modal-desc">Pour ta sécurité et être certain que le logement te convient, prends quelques secondes pour consulter les 5 photos et la vidéo de visite.</text>
 
       <!-- 2 cartes d'actions rapides -->
       <view class="modal-actions-list">
         <view class="modal-media-item {{ media[0].seen ? 'modal-media-item--done' : '' }}" bindtap="onViewPhotosFromModal">
           <view class="modal-media-icon icon--photos">
-            <text>🖼</text>
+            <view class="ic ic-image-berry ic--md"></view>
           </view>
           <view class="modal-media-text">
-            <text class="modal-media-name">Regarder les 4 photos</text>
-            <text class="modal-media-detail">Salon, chambre, douche, cour</text>
+            <text class="modal-media-name">Regarder les 5 photos</text>
+            <text class="modal-media-detail">Salon, chambre, douche, cuisine, extérieur</text>
           </view>
           <view class="modal-media-status {{ media[0].seen ? 'status--done' : 'status--pending' }}">
-            {{ media[0].seen ? 'Vu ✓' : 'Voir' }}
+            <view class="ic-row"><view wx:if="{{ media[0].seen }}" class="ic ic-check-white ic--xs"></view><text>{{ media[0].seen ? 'Vu' : 'Voir' }}</text></view>
           </view>
         </view>
 
         <view class="modal-media-item {{ media[1].seen ? 'modal-media-item--done' : '' }}" bindtap="onViewVideoFromModal">
           <view class="modal-media-icon icon--video">
-            <text>🎬</text>
+            <view class="ic ic-film-navy ic--md"></view>
           </view>
           <view class="modal-media-text">
             <text class="modal-media-name">Visionner la vidéo</text>
-            <text class="modal-media-detail">0:28 · filmée par le bailleur</text>
+            <text class="modal-media-detail">Filmée par le bailleur</text>
           </view>
           <view class="modal-media-status {{ media[1].seen ? 'status--done' : 'status--pending' }}">
-            {{ media[1].seen ? 'Vu ✓' : 'Voir' }}
+            <view class="ic-row"><view wx:if="{{ media[1].seen }}" class="ic ic-check-white ic--xs"></view><text>{{ media[1].seen ? 'Vu' : 'Voir' }}</text></view>
           </view>
         </view>
       </view>
 
       <!-- Bouton principal validation -->
       <button class="btn-modal-confirm" bindtap="onConfirmAllSeenFromModal">
-        J'ai tout regardé, déverrouiller ✓
+        <view class="ic-row"><text>J'ai tout regardé, déverrouiller</text><view class="ic ic-check-white ic--sm"></view></view>
       </button>
 
       <view class="modal-close-link" bindtap="onCloseMediaModal">Plus tard</view>
+    </view>
+  </view>
+
+  <!-- Lecteur de la vidéo de visite -->
+  <view wx:if="{{ video }}" class="lsv__player-overlay" catchtouchmove="noop">
+    <view class="lsv__player">
+      <view class="lsv__player-head">
+        <text class="lsv__player-title">Vidéo de visite</text>
+        <view class="lsv__player-close" hover-class="sl-hover" bindtap="onCloseVideo" aria-label="Fermer la vidéo">
+          <view class="ic ic-close-white"></view>
+        </view>
+      </view>
+      <video
+        class="lsv__player-video"
+        src="{{ video.src }}"
+        poster="{{ video.poster }}"
+        autoplay="{{ true }}"
+        object-fit="cover"
+        show-fullscreen-btn="{{ true }}"
+        bindended="onCloseVideo"
+      ></video>
+      <view class="sl-btn sl-btn--berry lsv__player-btn" hover-class="sl-hover" bindtap="onCloseVideo">J'ai regardé la vidéo</view>
     </view>
   </view>
 </view>

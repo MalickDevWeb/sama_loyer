@@ -812,3 +812,26 @@
   width: 0 !important;
   height: 0 !important;
 }
+
+/* ==========================================================================
+   LOGO SAMA LOYER FIXE — reste en haut pendant le défilement
+   ========================================================================== */
+.sama-fixed-bar {
+  flex: none;
+  position: relative;
+  z-index: 50;
+  padding: 0 32rpx 12rpx;
+  background-color: #FFFFFF;
+}
+
+.sama-fixed-bar .hero-top-row {
+  margin-bottom: 0;
+}
+
+.bailleur-scroll {
+  height: 0;
+}
+
+.bailleur-header {
+  padding-top: 8rpx;
+}

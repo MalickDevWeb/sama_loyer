@@ -437,3 +437,84 @@
   to { opacity: 0; transform: translateY(-16rpx) scale(0.94); }
 }
 
+
+/* --- Vignettes photo / vidéo ---------------------------------------------- */
+.lsv__media-thumb {
+  overflow: hidden;
+}
+
+.lsv__media-play {
+  width: 52rpx;
+  height: 52rpx;
+  border-radius: 26rpx;
+  background: rgba(255, 255, 255, 0.92);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.lsv__media-play .ic {
+  width: 28rpx;
+  height: 28rpx;
+}
+
+/* --- Lecteur vidéo -------------------------------------------------------- */
+.lsv__player-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1200;
+  background: rgba(8, 15, 32, 0.92);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32rpx;
+  box-sizing: border-box;
+}
+
+.lsv__player {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 24rpx;
+}
+
+.lsv__player-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.lsv__player-title {
+  font-size: 32rpx;
+  font-weight: 800;
+  color: #FFFFFF;
+}
+
+.lsv__player-close {
+  width: 64rpx;
+  height: 64rpx;
+  border-radius: 32rpx;
+  background: rgba(255, 255, 255, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.lsv__player-close .ic {
+  width: 28rpx;
+  height: 28rpx;
+}
+
+.lsv__player-video {
+  width: 100%;
+  height: 420rpx;
+  border-radius: 28rpx;
+  overflow: hidden;
+}
+
+.lsv__player-btn {
+  flex: none;
+}

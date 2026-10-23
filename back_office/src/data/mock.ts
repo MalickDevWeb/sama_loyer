@@ -1,29 +1,36 @@
 // ============================================================================
 // DONNÉES DE DÉMONSTRATION DU BACK OFFICE
 // Une section par écran. À remplacer par les appels API quand le backend
-// Sama Loyer sera prêt. "[PRIX]" / "[MONTANT]" = tarifs pas encore fixés.
+// Sama Loyer sera prêt. Tarifs alignés sur la mini-app (paiement Max it).
 // ============================================================================
 
 import type { Tone } from '../components/ui'
+import { fmt } from '../lib/utils'
+
+/* --- Tarifs (identiques à la mini-app) ----------------------------------- */
+export const PRICES = { pro: 15000, boost7: 1500, boost30: 6000 }
+const F = (n: number) => `${fmt(n)} F`
+
+/** Photo de logement libre de droits (même banque que la mini-app) */
+const photo = (id: string) => `https://images.unsplash.com/photo-${id}?w=480&q=70&auto=format&fit=crop`
+const PHOTO: Record<string, string> = {
+  Salon: photo('1522708323590-d24dbb6b0267'),
+  Chambre: photo('1540518614846-7eded433c457'),
+  Cuisine: photo('1484154218962-a197022b5858'),
+  Douche: photo('1552321554-5fefe8c9ef14'),
+  Toilettes: photo('1584622650111-993a426fbf0a'),
+  Façade: photo('1568605114967-8130f3a36994'),
+  Cour: photo('1600585154340-be6161a56a0c'),
+  Extérieur: photo('1512917774080-9991f1c4c750'),
+  Vue: photo('1505691938895-1758d7feb511'),
+  Studio: photo('1502672260266-1c1ef2d93688'),
+}
+export const photoOf = (label: string) => PHOTO[label] ?? PHOTO.Salon
 
 /* --- Tableau de bord ------------------------------------------------------ */
-export const DASHBOARD_KPIS = [
-  { label: 'Utilisateurs inscrits', value: '12 480', delta: '+8 % sur 30 jours', tone: 'up', to: '' },
-  { label: 'Bailleurs actifs', value: '1 236', delta: '8 à vérifier', tone: 'warn', to: '/bailleurs' },
-  { label: 'Annonces en ligne', value: '3 412', delta: '12 en validation', tone: 'warn', to: '/validation' },
-  { label: 'Abonnés Premium', value: '214', delta: '+19 ce mois', tone: 'up', to: '/premium' },
-  { label: 'Transactions (30 j)', value: '1 027', delta: '3 en échec', tone: 'down', to: '/transactions' },
-] as const
 
 export const SIGNUP_MONTHS = ['nov.', 'déc.', 'janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin', 'juil.', 'août', 'sept.', 'oct.']
 export const SIGNUPS = [420, 510, 480, 620, 700, 760, 820, 900, 1040, 1130, 1210, 1380]
-
-export const TODO = [
-  { n: 12, label: 'Annonces à valider', sub: 'La plus ancienne attend depuis 19 h', to: '/validation', color: '#C8235F' },
-  { n: 8, label: 'Bailleurs à vérifier', sub: 'Pièces d’identité envoyées', to: '/bailleurs', color: '#0F1E3D' },
-  { n: 5, label: 'Réclamations ouvertes', sub: '2 urgentes', to: '/reclamations', color: '#A3261F' },
-  { n: 3, label: 'Paiements en échec', sub: 'À vérifier avec l’opérateur', to: '/transactions', color: '#8A5A00' },
-]
 
 export const ZONES: [string, number][] = [
   ['Dakar', 1340],
@@ -35,7 +42,7 @@ export const ZONES: [string, number][] = [
 
 /* --- Transactions --------------------------------------------------------- */
 export type TxStatus = 'Réussi' | 'Échoué' | 'En attente' | 'Remboursé'
-export type TxType = 'Premium' | 'Boost' | 'Remboursement'
+export type TxType = 'Loyer' | 'Abonnement' | 'Boost' | 'Remboursement'
 
 export const TX_TONE: Record<TxStatus, Tone> = {
   Réussi: 'success',
@@ -56,14 +63,15 @@ export interface Transaction {
 }
 
 export const TRANSACTIONS: Transaction[] = [
-  { ref: 'TX-26-10-4821', date: '22 oct. 10:14', user: 'Moussa Diallo', type: 'Premium', label: 'Premium mensuel', method: 'Orange Money', amount: '[PRIX] F', status: 'Réussi' },
-  { ref: 'TX-26-10-4820', date: '22 oct. 09:52', user: 'Awa Ndour', type: 'Boost', label: 'Boost 7 jours', method: 'Orange Money', amount: '[PRIX] F', status: 'Réussi' },
-  { ref: 'TX-26-10-4819', date: '21 oct. 18:30', user: 'Ibrahima Sarr', type: 'Boost', label: 'Boost 30 jours', method: 'Orange Money', amount: '[PRIX] F', status: 'Échoué' },
-  { ref: 'TX-26-10-4818', date: '21 oct. 16:05', user: 'Fatou Kane', type: 'Premium', label: 'Premium mensuel', method: 'Orange Money', amount: '[PRIX] F', status: 'En attente' },
-  { ref: 'TX-26-10-4817', date: '20 oct. 11:41', user: 'Cheikh Fall', type: 'Remboursement', label: 'Remboursement', method: 'Orange Money', amount: '[PRIX] F', status: 'Remboursé' },
-  { ref: 'TX-26-10-4816', date: '20 oct. 08:22', user: 'Khady Ndiaye', type: 'Boost', label: 'Boost 7 jours', method: 'Orange Money', amount: '[PRIX] F', status: 'Réussi' },
-  { ref: 'TX-26-10-4815', date: '19 oct. 19:47', user: 'Mamadou Gueye', type: 'Premium', label: 'Premium mensuel', method: 'Orange Money', amount: '[PRIX] F', status: 'Échoué' },
-  { ref: 'TX-26-10-4814', date: '19 oct. 14:03', user: 'Aïssatou Ba', type: 'Premium', label: 'Premium mensuel', method: 'Orange Money', amount: '[PRIX] F', status: 'Réussi' },
+  { ref: 'TX-26-10-4821', date: '22 oct. 10:14', user: 'Aminata Sy', type: 'Loyer', label: 'Loyer oct. · Chambre salon Icotaf', method: 'Max it', amount: F(65000), status: 'Réussi' },
+  { ref: 'TX-26-10-4820', date: '22 oct. 09:52', user: 'Moussa Diallo', type: 'Abonnement', label: 'Abonnement Pro mensuel', method: 'Max it', amount: F(PRICES.pro), status: 'Réussi' },
+  { ref: 'TX-26-10-4819', date: '21 oct. 18:30', user: 'Ibrahima Sarr', type: 'Boost', label: 'Boost 30 jours', method: 'Max it', amount: F(PRICES.boost30), status: 'Échoué' },
+  { ref: 'TX-26-10-4818', date: '21 oct. 16:05', user: 'Fatou Kane', type: 'Abonnement', label: 'Abonnement Pro mensuel', method: 'Max it', amount: F(PRICES.pro), status: 'En attente' },
+  { ref: 'TX-26-10-4817', date: '20 oct. 11:41', user: 'Cheikh Fall', type: 'Remboursement', label: 'Remboursement Boost 7 jours', method: 'Max it', amount: F(PRICES.boost7), status: 'Remboursé' },
+  { ref: 'TX-26-10-4816', date: '20 oct. 08:22', user: 'Ousmane Ba', type: 'Loyer', label: 'Loyer oct. · Studio Pikine Rue 10', method: 'Max it', amount: F(95000), status: 'Réussi' },
+  { ref: 'TX-26-10-4815', date: '19 oct. 19:47', user: 'Khady Ndiaye', type: 'Boost', label: 'Boost 7 jours', method: 'Max it', amount: F(PRICES.boost7), status: 'Réussi' },
+  { ref: 'TX-26-10-4814', date: '19 oct. 14:03', user: 'Mamadou Gueye', type: 'Abonnement', label: 'Abonnement Pro mensuel', method: 'Max it', amount: F(PRICES.pro), status: 'Échoué' },
+  { ref: 'TX-26-10-4813', date: '19 oct. 09:30', user: 'Aïssatou Ba', type: 'Abonnement', label: 'Abonnement Pro mensuel', method: 'Max it', amount: F(PRICES.pro), status: 'Réussi' },
 ]
 
 /* --- Bailleurs ------------------------------------------------------------ */
@@ -80,16 +88,16 @@ export interface Bailleur {
   since: string
   reports: number
   status: BailleurStatus
-  plan: 'Premium' | 'Gratuit'
+  plan: 'Pro' | 'Essai 30 jours' | 'Expiré'
 }
 
 export const BAILLEURS: Bailleur[] = [
-  { id: 'b1', name: 'Moussa Diallo', initials: 'MD', color: '#0F1E3D', phone: '+221 77 ••• •• 41', zone: 'Pikine', ads: 6, since: '12 mars 2026', reports: 0, status: 'active', plan: 'Premium' },
-  { id: 'b2', name: 'Khady Ndiaye', initials: 'KN', color: '#C8235F', phone: '+221 76 ••• •• 08', zone: 'Ouakam', ads: 2, since: '20 oct. 2026', reports: 0, status: 'pending', plan: 'Gratuit' },
-  { id: 'b3', name: 'Ibrahima Sarr', initials: 'IS', color: '#5B4BB7', phone: '+221 78 ••• •• 77', zone: 'Pikine Technopole', ads: 1, since: '19 oct. 2026', reports: 0, status: 'pending', plan: 'Gratuit' },
-  { id: 'b4', name: 'Ousmane Faye', initials: 'OF', color: '#8A5A00', phone: '+221 70 ••• •• 13', zone: 'Guédiawaye', ads: 4, since: '2 juin 2026', reports: 3, status: 'suspended', plan: 'Gratuit' },
-  { id: 'b5', name: 'Awa Ndour', initials: 'AN', color: '#11643F', phone: '+221 77 ••• •• 92', zone: 'Pikine Rue 10', ads: 3, since: '8 janv. 2026', reports: 1, status: 'active', plan: 'Premium' },
-  { id: 'b6', name: 'Fatou Kane', initials: 'FK', color: '#3A4458', phone: '+221 76 ••• •• 55', zone: 'Thiaroye', ads: 1, since: '21 oct. 2026', reports: 0, status: 'pending', plan: 'Gratuit' },
+  { id: 'b1', name: 'Moussa Diallo', initials: 'MD', color: '#0F1E3D', phone: '+221 77 ••• •• 41', zone: 'Pikine', ads: 6, since: '12 mars 2026', reports: 0, status: 'active', plan: 'Pro' },
+  { id: 'b2', name: 'Khady Ndiaye', initials: 'KN', color: '#C8235F', phone: '+221 76 ••• •• 08', zone: 'Ouakam', ads: 2, since: '20 oct. 2026', reports: 0, status: 'pending', plan: 'Essai 30 jours' },
+  { id: 'b3', name: 'Ibrahima Sarr', initials: 'IS', color: '#5B4BB7', phone: '+221 78 ••• •• 77', zone: 'Pikine Technopole', ads: 1, since: '19 oct. 2026', reports: 0, status: 'pending', plan: 'Essai 30 jours' },
+  { id: 'b4', name: 'Ousmane Faye', initials: 'OF', color: '#8A5A00', phone: '+221 70 ••• •• 13', zone: 'Guédiawaye', ads: 4, since: '2 juin 2026', reports: 3, status: 'suspended', plan: 'Expiré' },
+  { id: 'b5', name: 'Awa Ndour', initials: 'AN', color: '#11643F', phone: '+221 77 ••• •• 92', zone: 'Pikine Rue 10', ads: 3, since: '8 janv. 2026', reports: 1, status: 'active', plan: 'Pro' },
+  { id: 'b6', name: 'Fatou Kane', initials: 'FK', color: '#3A4458', phone: '+221 76 ••• •• 55', zone: 'Thiaroye', ads: 1, since: '21 oct. 2026', reports: 0, status: 'pending', plan: 'Essai 30 jours' },
 ]
 
 export const BAILLEUR_STATUS: Record<BailleurStatus, { label: string; tone: Tone; note: string }> = {
@@ -110,14 +118,13 @@ export interface AnnonceAValider {
   owner: string
   ownerOk: boolean
   wait: string
-  photos: string[]
+  photos: string[] // libellés des pièces, voir photoOf()
   video: boolean
   desc: string
   equip: string
   flags: string[]
 }
 
-export const TINTS = ['#FBE3EC', '#E3E9F5', '#F3ECE1', '#E2F0EA', '#EDE6F5', '#FBE3EC']
 
 export const ANNONCES_A_VALIDER: AnnonceAValider[] = [
   {
@@ -166,9 +173,10 @@ export const REFUSAL_REASONS = [
 
 /* --- Premium -------------------------------------------------------------- */
 export const OFFERS = [
-  { id: 'pm', label: 'Premium mensuel', price: '[PRIX] F / mois', sub: '3 annonces mises en avant · badge Premium', sold: '214 abonnés actifs' },
-  { id: 'b7', label: 'Boost 7 jours', price: '[PRIX] F', sub: '1 annonce en haut de son quartier', sold: '86 achats ce mois' },
-  { id: 'b30', label: 'Boost 30 jours', price: '[PRIX] F', sub: '1 annonce en haut de son quartier', sold: '41 achats ce mois' },
+  { id: 'trial', label: 'Essai gratuit', price: '0 F · 30 jours', sub: 'Accès complet, une seule fois par bailleur', sold: '58 essais en cours' },
+  { id: 'pm', label: 'Pro mensuel', price: `${F(PRICES.pro)} / mois`, sub: 'Annonces illimitées · badge Pro', sold: '214 abonnés actifs' },
+  { id: 'b7', label: 'Boost 7 jours', price: F(PRICES.boost7), sub: '1 annonce en tête de son quartier', sold: '86 achats ce mois' },
+  { id: 'b30', label: 'Boost 30 jours', price: F(PRICES.boost30), sub: '1 annonce en tête de son quartier', sold: '41 achats ce mois' },
 ]
 
 export const SPONSORED = [
@@ -180,12 +188,15 @@ export const SPONSORED = [
 ]
 
 export const PREMIUM_PAYMENTS = [
-  { who: 'Moussa Diallo', what: 'Premium mensuel', method: 'Orange Money', date: '15 oct.', amount: '[PRIX] F' },
-  { who: 'Awa Ndour', what: 'Boost 30 jours', method: 'Orange Money', date: '14 oct.', amount: '[PRIX] F' },
-  { who: 'Khady Ndiaye', what: 'Boost 7 jours', method: 'Orange Money', date: '12 oct.', amount: '[PRIX] F' },
-  { who: 'Mamadou Gueye', what: 'Premium mensuel', method: 'Orange Money', date: '11 oct.', amount: '[PRIX] F' },
-  { who: 'Aïssatou Ba', what: 'Premium mensuel', method: 'Orange Money', date: '9 oct.', amount: '[PRIX] F' },
+  { who: 'Moussa Diallo', what: 'Pro mensuel', method: 'Max it', date: '22 oct.', amount: F(PRICES.pro) },
+  { who: 'Awa Ndour', what: 'Boost 30 jours', method: 'Max it', date: '14 oct.', amount: F(PRICES.boost30) },
+  { who: 'Khady Ndiaye', what: 'Boost 7 jours', method: 'Max it', date: '19 oct.', amount: F(PRICES.boost7) },
+  { who: 'Aïssatou Ba', what: 'Pro mensuel', method: 'Max it', date: '19 oct.', amount: F(PRICES.pro) },
+  { who: 'Ndèye Fall', what: 'Pro mensuel', method: 'Max it', date: '9 oct.', amount: F(PRICES.pro) },
 ]
+
+/** Revenus Premium du mois : abonnés Pro + boosts vendus */
+export const PREMIUM_REVENUE_30D = 214 * PRICES.pro + 86 * PRICES.boost7 + 41 * PRICES.boost30
 
 /* --- Réclamations et paramètres ------------------------------------------ */
 export type Priority = 'Urgent' | 'Moyen' | 'Faible'
@@ -224,9 +235,9 @@ export const ROLES = [
 
 export const FEATURES = [
   { id: 'voice', label: 'Recherche vocale (wolof et français)', sub: 'Micro sur l’accueil et dans les messages', on: true },
-  { id: 'premium', label: 'Premium et Boost', sub: 'Mise en avant payante des annonces', on: true },
-  { id: 'rent', label: 'Paiement des loyers dans l’appli', sub: 'Le locataire paie son loyer directement via Orange Money', on: false },
-  { id: 'contract', label: 'Contrat de location en ligne', sub: 'Modèle de contrat à signer dans l’appli', on: false },
+  { id: 'premium', label: 'Abonnement Pro et Boost', sub: 'Abonnement bailleur et mise en avant payante, via Max it', on: true },
+  { id: 'rent', label: 'Paiement des loyers dans l’appli', sub: 'Le locataire paie son loyer avec Max it et reçoit son reçu', on: true },
+  { id: 'contract', label: 'Contrat de location en ligne', sub: 'Modèle de contrat à signer dans l’appli', on: true },
   { id: 'refund', label: 'Remboursements', sub: 'Autorise l’équipe Finance à rembourser', on: true },
   { id: 'autohide', label: 'Masquage automatique', sub: 'Masque les annonces non confirmées', on: true },
 ]
@@ -236,4 +247,30 @@ export const RULES = [
   { id: 'r-remind', label: 'Rappel de confirmation de disponibilité (jours)', value: 7 },
   { id: 'r-hide', label: 'Annonce masquée si non confirmée depuis (jours)', value: 21 },
   { id: 'r-susp', label: 'Signalements avant suspension automatique', value: 3 },
+]
+
+/* --- Compteurs (barre latérale, tableau de bord) ----------------------------
+   Calculés depuis les listes ci-dessus pour que tous les écrans affichent
+   les mêmes chiffres. */
+export const COUNTS = {
+  annonces: ANNONCES_A_VALIDER.length,
+  bailleurs: BAILLEURS.filter((b) => b.status === 'pending').length,
+  reclamations: REPORTS.length,
+  urgentes: REPORTS.filter((r) => r.prio === 'Urgent').length,
+  txEchec: TRANSACTIONS.filter((t) => t.status === 'Échoué').length,
+}
+
+export const DASHBOARD_KPIS = [
+  { label: 'Utilisateurs inscrits', value: '12 480', delta: '+8 % sur 30 jours', tone: 'up', to: '' },
+  { label: 'Bailleurs actifs', value: '1 236', delta: `${COUNTS.bailleurs} à vérifier`, tone: 'warn', to: '/bailleurs' },
+  { label: 'Annonces en ligne', value: '3 412', delta: `${COUNTS.annonces} en validation`, tone: 'warn', to: '/validation' },
+  { label: 'Abonnés Pro', value: '214', delta: '+19 ce mois', tone: 'up', to: '/premium' },
+  { label: 'Loyers payés (30 j)', value: '27,4 M F', delta: '1 027 paiements Max it', tone: 'up', to: '/transactions' },
+] as const
+
+export const TODO = [
+  { n: COUNTS.annonces, label: 'Annonces à valider', sub: `La plus ancienne attend depuis ${ANNONCES_A_VALIDER[0].wait}`, to: '/validation', color: '#C8235F' },
+  { n: COUNTS.bailleurs, label: 'Bailleurs à vérifier', sub: 'Pièces d’identité envoyées', to: '/bailleurs', color: '#0F1E3D' },
+  { n: COUNTS.reclamations, label: 'Réclamations ouvertes', sub: `${COUNTS.urgentes} urgentes`, to: '/reclamations', color: '#A3261F' },
+  { n: COUNTS.txEchec, label: 'Paiements en échec', sub: 'À vérifier avec Max it', to: '/transactions', color: '#8A5A00' },
 ]

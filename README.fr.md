@@ -39,7 +39,7 @@ flowchart TD
     
     D -->|Mode Locataire| E["Profil Client"]
     E --> E1["🔍 Recherche IA écrite & vocale (Wolof / Français)"]
-    E --> E2["💳 Mon loyer : synthèse, paiement Orange Money/Wave"]
+    E --> E2["💳 Mon loyer : synthèse, paiement Max it"]
     E --> E3["📄 Quittance officielle certifiée (PDF téléchargeable)"]
     E --> E4["📅 Visites & Messagerie directe"]
     

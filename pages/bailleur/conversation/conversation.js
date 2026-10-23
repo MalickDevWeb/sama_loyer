@@ -1,5 +1,6 @@
 import { getBailleurConversation } from '../../../utils/mocks/bailleur-conversations';
 import { addStoredMessage } from '../../../utils/helpers/store';
+import { requireBailleurAccess } from '../../../utils/helpers/store';
 
 function now() {
   const d = new Date();
@@ -18,6 +19,11 @@ Page({
     actions: [],
     draft: '',
     scrollTo: ''
+  },
+
+  onShow() {
+    // Sans abonnement actif, aucun accès : retour à l'accueil verrouillé
+    if (!requireBailleurAccess()) return;
   },
 
   onLoad(options) {

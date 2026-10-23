@@ -2,7 +2,7 @@
   <!-- En-tête bleu marine -->
   <view class="contrat__hero" style="padding-top: {{ statusBarHeight + 14 }}px;">
     <view class="contrat__hero-top">
-      <view class="sl-icon-btn sl-icon-btn--glass" hover-class="sl-hover" bindtap="onBack" aria-label="Retour à Mon loyer">
+      <view class="sl-icon-btn sl-icon-btn--glass" hover-class="sl-hover" bindtap="onBack" aria-label="Retour à Mes loyers">
         <view class="ic ic-back-white"></view>
       </view>
       <text class="contrat__num">{{ contrat.numero }}</text>

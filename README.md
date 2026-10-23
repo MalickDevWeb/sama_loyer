@@ -64,7 +64,7 @@ pages/
 │   ├── home/                    # AI search (text & Wolof/FR voice), 3 smart recommendations
 │   ├── search/                  # Filterable listings, map toggle, category chips
 │   ├── logement-detail/         # Detailed property view, slides, booking, deposit
-│   ├── loyers/                  # "My Rent" : 125 000 F overview, receipts, Wave/OM payments
+│   ├── loyers/                  # "My Rent" : 125 000 F overview, receipts, Max it payments
 │   ├── visites/                 # Visit tracking (confirmed, past, canceled)
 │   ├── demande-visite/          # Book visit schedule slot
 │   ├── messages/                # Inbox conversations

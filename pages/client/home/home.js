@@ -96,6 +96,7 @@ function parseNaturalQuery(text) {
 
 Page({
   data: {
+    focusField: '', // champ actif (lieu | budget) : halo + icône animée
     statusBarHeight: 24,
     place: 'Ouakam',
     budget: '60 000',
@@ -173,6 +174,15 @@ Page({
   // ==========================================
   // CHAMPS DU FORMULAIRE
   // ==========================================
+  // Mise en avant du champ en cours de saisie (motion design)
+  onFieldFocus(e) {
+    this.setData({ focusField: e.currentTarget.dataset.field });
+  },
+
+  onFieldBlur() {
+    this.setData({ focusField: '' });
+  },
+
   onPlaceInput(e) {
     this.setData({ place: e.detail.value || '' });
   },

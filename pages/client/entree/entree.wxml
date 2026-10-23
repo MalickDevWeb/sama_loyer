@@ -192,7 +192,7 @@
     <view wx:if="{{ !done && step > 1 }}" class="sl-btn sl-btn--outline entree__back" hover-class="sl-hover" bindtap="onPrevStep">Retour</view>
     <view wx:if="{{ !done }}" class="sl-btn {{ nextEnabled ? 'sl-btn--berry' : 'sl-btn--soft' }}" hover-class="{{ nextEnabled ? 'sl-hover' : 'none' }}" bindtap="onNext">{{ nextText }}</view>
     <view wx:if="{{ hasRest }}" class="sl-btn sl-btn--berry" hover-class="sl-hover" bindtap="onPayRest">Payer le reste ({{ restText }})</view>
-    <view wx:if="{{ done && !hasRest }}" class="sl-btn sl-btn--berry" hover-class="sl-hover" bindtap="onSeeLoyer">Voir mon loyer</view>
+    <view wx:if="{{ done && !hasRest }}" class="sl-btn sl-btn--berry" hover-class="sl-hover" bindtap="onSeeLoyer">Voir mes loyers</view>
   </view>
 
   <!-- ================= CONTRAT COMPLET (plein écran) ================= -->

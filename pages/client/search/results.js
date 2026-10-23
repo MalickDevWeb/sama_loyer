@@ -1,5 +1,6 @@
 import { setCustomTabBarActive } from '../../../utils/helpers/tab-bar';
 import { getFavoritesMap, isFavorite, toggleFavoriteId } from '../../../utils/helpers/favorites';
+import { withCover } from '../../../utils/mocks/media';
 
 function withFavorites(items) {
   const favs = getFavoritesMap();
@@ -82,9 +83,9 @@ Page({
     searchQuery: 'Chambre à Pikine',
     headlineText: 'Logements à Pikine',
     activeCategory: 'chambre', // 'tous' | 'chambre' | 'studio'
-    premiumListings: PREMIUM_LISTINGS,
-    listings: ALL_SEARCH_LISTINGS,
-    filteredListings: ALL_SEARCH_LISTINGS,
+    premiumListings: PREMIUM_LISTINGS.map(withCover),
+    listings: ALL_SEARCH_LISTINGS.map(withCover),
+    filteredListings: ALL_SEARCH_LISTINGS.map(withCover),
     sortOption: 'Plus récents',
     showVoiceModal: false,
     showFilterModal: false,

@@ -12,6 +12,10 @@ Page({
     currentSlideIndex: 0,
     isExpandedDesc: false,
     isFavorite: true,
+    heartPop: false, // petite animation du cœur au clic
+    solidHeader: false, // barre du haut blanche une fois la photo dépassée
+    showShare: false,
+    playingVideo: false,
     showVisitModal: false,
     selectedVisitDate: 'Demain à 16h',
     visitSlots: [
@@ -55,23 +59,94 @@ Page({
     }
   },
 
-  onShareTap() {
-    wx.showShareMenu({
-      withShareTicket: true,
-      menus: ['shareAppMessage', 'shareTimeline']
-    });
-    wx.showToast({ title: 'Lien de partage copié', icon: 'none' });
+  // --- Barre du haut ------------------------------------------------------------
+  onDetailScroll(e) {
+    const solid = e.detail.scrollTop > 240;
+    if (solid !== this.data.solidHeader) this.setData({ solidHeader: solid });
   },
 
+  // --- Partage ---------------------------------------------------------------------
+  shareLink() {
+    return `https://samaloyer.sn/logement/${this.data.logement.id}`;
+  },
+
+  shareText() {
+    const l = this.data.logement;
+    return `🏠 ${l.title} · ${l.price} FCFA / mois\n📍 ${l.placeDetails}\nVu sur SAMA LOYER : ${this.shareLink()}`;
+  },
+
+  onShareTap() {
+    this.setData({ showShare: true });
+  },
+
+  onCloseShare() {
+    this.setData({ showShare: false });
+  },
+
+  onShareWhatsApp() {
+    wx.setClipboardData({
+      data: this.shareText(),
+      success: () => {
+        this.setData({ showShare: false });
+        wx.showToast({ title: 'Message copié, colle-le dans WhatsApp', icon: 'none', duration: 2500 });
+      }
+    });
+  },
+
+  onCopyLink() {
+    wx.setClipboardData({
+      data: this.shareLink(),
+      success: () => {
+        this.setData({ showShare: false });
+        wx.showToast({ title: 'Lien copié', icon: 'success' });
+      }
+    });
+  },
+
+  onShareMore() {
+    wx.showShareMenu({ withShareTicket: true, menus: ['shareAppMessage', 'shareTimeline'] });
+    this.setData({ showShare: false });
+    wx.showToast({ title: 'Touche ••• en haut pour plus d’options', icon: 'none', duration: 2500 });
+  },
+
+  // Carte envoyée par « À un proche » (bouton open-type="share") et le menu •••
+  onShareAppMessage() {
+    const l = this.data.logement;
+    this.setData({ showShare: false });
+    return {
+      title: `${l.title} · ${l.price} FCFA / mois`,
+      path: `/pages/client/logement-detail/logement-detail?id=${l.id}`,
+      imageUrl: l.slides && l.slides[0] ? l.slides[0].url : ''
+    };
+  },
+
+  onShareTimeline() {
+    const l = this.data.logement;
+    return { title: `${l.title} · ${l.price} FCFA / mois`, query: `id=${l.id}` };
+  },
+
+  // --- J'aime ----------------------------------------------------------------------
   onToggleFavorite() {
     const fav = !this.data.isFavorite;
-    this.setData({ isFavorite: fav });
+    this.setData({ isFavorite: fav, heartPop: fav });
     toggleFavoriteId(this.data.logement.id, fav);
+    if (fav && wx.vibrateShort) wx.vibrateShort({ type: 'light' });
+    clearTimeout(this.popTimer);
+    this.popTimer = setTimeout(() => this.setData({ heartPop: false }), 400);
 
     wx.showToast({
       title: fav ? 'Ajouté aux favoris ❤️' : 'Retiré des favoris',
       icon: 'none'
     });
+  },
+
+  // --- Vidéo de visite -----------------------------------------------------------
+  onPlayVideo() {
+    this.setData({ playingVideo: true });
+  },
+
+  onCloseVideo() {
+    this.setData({ playingVideo: false });
   },
 
   onPrevSlide() {
@@ -90,6 +165,13 @@ Page({
     const idx = Number(e.currentTarget.dataset.index);
     if (!isNaN(idx)) {
       this.setData({ currentSlideIndex: idx });
+    }
+  },
+
+  // Glisser dans la galerie (photos / vidéo)
+  onSwiperChange(e) {
+    if (e.detail.source === 'touch' || e.detail.source === 'autoplay' || e.detail.current !== this.data.currentSlideIndex) {
+      this.setData({ currentSlideIndex: e.detail.current });
     }
   },
 

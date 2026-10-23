@@ -1,3 +1,5 @@
+@import "/styles/icons.wxss";
+
 /* ============================================================================
    TCMPP BOILERPLATE — GLOBAL STYLES
    Mini-program-optimized utility system with Bootstrap-compatible naming.

@@ -1,35 +1,30 @@
 <view class="detail-page">
   
   <!-- Zone défilante -->
-  <scroll-view class="detail-scroll" scroll-y="{{true}}" enhanced="{{true}}" show-scrollbar="{{false}}">
+  <scroll-view class="detail-scroll" scroll-y="{{true}}" enhanced="{{true}}" show-scrollbar="{{false}}" bindscroll="onDetailScroll">
     
     <!-- Zone Carrousel / Image principale -->
     <view class="hero-carousel" style="background-color: {{ logement.slides[currentSlideIndex].bg }};">
       
-      <!-- Barre d'action flottante supérieure (positionnée sous la capsule native) -->
-      <view class="floating-header" style="top: {{ headerTop }}px;">
-        <view class="btn-circle-nav" bindtap="onBackTap">
-          <view class="icon-svg icon-arrow-left"></view>
-        </view>
-        <view class="floating-header__right">
-          <view class="btn-circle-nav" bindtap="onShareTap">
-            <view class="icon-svg icon-share"></view>
+      <!-- Galerie réelle : photos par pièce + vidéo de visite (glisser pour changer) -->
+      <swiper class="hero-swiper" current="{{ currentSlideIndex }}" duration="300" bindchange="onSwiperChange">
+        <swiper-item wx:for="{{ logement.slides }}" wx:key="id">
+          <image class="hero-media" src="{{ item.url }}" mode="aspectFill" lazy-load="{{ true }}" />
+          <!-- Vidéo : affiche + bouton lecture ; elle s'ouvre dans un lecteur dédié -->
+          <view wx:if="{{ item.isVideo }}" class="hero-play" hover-class="hero-play--hover" bindtap="onPlayVideo" aria-label="Lire la vidéo de visite">
+            <view class="hero-play-btn"><view class="dh-ic dh-ic-play"></view></view>
+            <text class="hero-play-txt">Lire la visite vidéo</text>
           </view>
-          <view class="btn-circle-nav" bindtap="onToggleFavorite">
-            <text class="heart-icon {{ isFavorite ? 'heart-active' : '' }}">{{ isFavorite ? '♥' : '♡' }}</text>
-          </view>
-        </view>
-      </view>
-
-      <!-- Illustration filaire maison -->
-      <view class="hero-house-drawing"></view>
+        </swiper-item>
+      </swiper>
+      <view class="hero-shade"></view>
 
       <!-- Flèches de navigation carrousel -->
       <view class="carousel-nav-btn btn-prev" bindtap="onPrevSlide">
-        <text class="nav-arrow-char">‹</text>
+        <view class="ic ic-chevron-left-navy ic--md"></view>
       </view>
       <view class="carousel-nav-btn btn-next" bindtap="onNextSlide">
-        <text class="nav-arrow-char">›</text>
+        <view class="ic ic-chevron-navy ic--md"></view>
       </view>
 
       <!-- Badges sur l'image (Salon / 1/5) -->
@@ -42,11 +37,11 @@
       <block wx:for="{{ logement.slides }}" wx:key="id">
         <view
           class="thumb-item {{ currentSlideIndex === index ? 'thumb-item--active' : '' }}"
-          style="background-color: {{ item.bg }};"
+          style="background-color: {{ item.bg }}; background-image: url('{{ item.url }}');"
           data-index="{{ index }}"
           bindtap="onSelectThumb"
         >
-          <text wx:if="{{ item.isVideo }}" class="thumb-play-icon">▶</text>
+          <view wx:if="{{ item.isVideo }}" class="thumb-play-badge"><view class="ic ic-play-navy ic--xs"></view></view>
         </view>
       </block>
     </view>
@@ -56,7 +51,7 @@
       
       <!-- Ligne de tags -->
       <view class="meta-tags-row">
-        <view class="tag-premium">★ Premium</view>
+        <view class="tag-premium ic-row"><view class="ic ic-star-white ic--xs"></view><text>Premium</text></view>
         <view class="tag-type">{{ logement.typeLabel }}</view>
         <text class="meta-published">{{ logement.publishedAgo }}</text>
       </view>
@@ -78,7 +73,7 @@
 
       <!-- Carte de disponibilité confirmée (Verte) -->
       <view class="availability-card">
-        <view class="avail-check-circle">✓</view>
+        <view class="avail-check-circle"><view class="ic ic-check-white ic--sm"></view></view>
         <view class="avail-text-col">
           <text class="avail-title">{{ logement.dispoDate }}</text>
           <text class="avail-subtitle">{{ logement.dispoConfirmed }}</text>
@@ -127,7 +122,7 @@
         <view class="conditions-bullets">
           <block wx:for="{{ logement.conditions }}" wx:key="*this">
             <view class="bullet-item">
-              <text class="bullet-dot">•</text>
+              <view class="bullet-dot ui-dot"></view>
               <text class="bullet-text">{{ item }}</text>
             </view>
           </block>
@@ -136,10 +131,10 @@
         <!-- Bouton Consigner la caution & avance -->
         <view class="caution-cta-box" bindtap="onPayCaution">
           <view class="caution-cta-left">
-            <text class="caution-cta-title">🔒 Consigner la caution & avance</text>
+            <view class="caution-cta-title ic-row"><view class="ic ic-lock-navy ic--sm"></view><text>Consigner la caution & avance</text></view>
             <text class="caution-cta-sub">Séquestre sécurisé Sama · Déblocage après clés</text>
           </view>
-          <text class="caution-cta-arrow">›</text>
+          <view class="ic ic-chevron-navy ic--md"></view>
         </view>
       </view>
 
@@ -181,7 +176,7 @@
           </view>
           <!-- Bouton ouvrir la carte -->
           <view class="btn-open-map" bindtap="onOpenMap">
-            <text class="map-btn-icon">↗</text>
+            <view class="ic ic-external-navy ic--sm"></view>
             <text>Ouvrir la carte</text>
           </view>
         </view>
@@ -203,7 +198,7 @@
           <view class="landlord-meta">
             <text class="landlord-name">{{ logement.bailleur.name }}</text>
             <view class="verified-label">
-              <text class="verified-check">✓</text>
+              <view class="ic ic-check-green ic--xs"></view>
               <text>Identité vérifiée</text>
             </view>
             <text class="landlord-response">{{ logement.bailleur.responseTime }}</text>
@@ -216,13 +211,94 @@
 
       <!-- Signalement de l'annonce -->
       <view class="report-box" bindtap="onReportListing">
-        <text class="report-flag">⚐</text>
+        <view class="ic ic-flag-grey ic--sm"></view>
         <text class="report-text">Signaler cette annonce</text>
       </view>
 
       <view class="scroll-spacer"></view>
     </view>
   </scroll-view>
+
+  <!-- ======================================================== -->
+  <!-- BARRE DU HAUT FIXE : retour, partager, j'aime (jamais masqués) -->
+  <!-- Transparente sur la photo, blanche dès qu'on fait défiler -->
+  <!-- ======================================================== -->
+  <view class="dh-bar {{ solidHeader ? 'dh-bar--solid' : '' }}" style="padding-top: {{ headerTop }}px;">
+    <view class="dh-row">
+      <view class="dh-btn" hover-class="dh-btn--hover" bindtap="onBackTap" aria-label="Retour">
+        <view class="icon-svg icon-arrow-left"></view>
+      </view>
+      <text class="dh-title {{ solidHeader ? 'dh-title--on' : '' }}">{{ logement.title }}</text>
+      <view class="dh-btn" hover-class="dh-btn--hover" bindtap="onShareTap" aria-label="Partager ce logement">
+        <view class="dh-ic dh-ic-share"></view>
+      </view>
+      <view class="dh-btn {{ isFavorite ? 'dh-btn--liked' : '' }}" hover-class="dh-btn--hover" bindtap="onToggleFavorite" aria-label="{{ isFavorite ? 'Retirer des favoris' : 'Ajouter aux favoris' }}">
+        <view class="dh-ic {{ isFavorite ? 'dh-ic-heart-on' : 'dh-ic-heart' }} {{ heartPop ? 'dh-ic--pop' : '' }}"></view>
+      </view>
+    </view>
+  </view>
+
+  <!-- ======================================================== -->
+  <!-- PANNEAU DE PARTAGE -->
+  <!-- ======================================================== -->
+  <view wx:if="{{ showShare }}" class="share-overlay" catchtouchmove="noop" bindtap="onCloseShare">
+    <view class="share-sheet" catchtap="noop" aria-label="Partager ce logement">
+      <view class="share-handle"></view>
+      <text class="share-title">Partager ce logement</text>
+
+      <!-- Aperçu de ce qui sera partagé -->
+      <view class="share-card">
+        <image class="share-card-img" src="{{ logement.slides[0].url }}" mode="aspectFill" />
+        <view class="share-card-body">
+          <text class="share-card-title">{{ logement.title }}</text>
+          <text class="share-card-place">{{ logement.placeDetails }}</text>
+          <text class="share-card-price">{{ logement.price }} FCFA <text class="share-card-unit">/ mois</text></text>
+        </view>
+      </view>
+
+      <view class="share-grid">
+        <button class="share-opt share-opt-btn" open-type="share" hover-class="share-opt--hover">
+          <view class="share-opt-ic share-opt-ic--berry"><view class="dh-ic dh-ic-send"></view></view>
+          <text class="share-opt-txt">À un proche</text>
+        </button>
+        <view class="share-opt" hover-class="share-opt--hover" bindtap="onShareWhatsApp">
+          <view class="share-opt-ic share-opt-ic--green"><view class="dh-ic dh-ic-whatsapp"></view></view>
+          <text class="share-opt-txt">WhatsApp</text>
+        </view>
+        <view class="share-opt" hover-class="share-opt--hover" bindtap="onCopyLink">
+          <view class="share-opt-ic share-opt-ic--navy"><view class="dh-ic dh-ic-link"></view></view>
+          <text class="share-opt-txt">Copier le lien</text>
+        </view>
+        <view class="share-opt" hover-class="share-opt--hover" bindtap="onShareMore">
+          <view class="share-opt-ic share-opt-ic--grey"><view class="dh-ic dh-ic-dots"></view></view>
+          <text class="share-opt-txt">Plus</text>
+        </view>
+      </view>
+
+      <view class="share-cancel" hover-class="share-opt--hover" bindtap="onCloseShare">Annuler</view>
+    </view>
+  </view>
+
+  <!-- ======================================================== -->
+  <!-- LECTEUR DE LA VIDÉO DE VISITE -->
+  <!-- ======================================================== -->
+  <view wx:if="{{ playingVideo }}" class="vplayer-overlay" catchtouchmove="noop">
+    <view class="vplayer-head" style="padding-top: {{ headerTop }}px;">
+      <text class="vplayer-title">Visite vidéo</text>
+      <view class="vplayer-close" hover-class="dh-btn--hover" bindtap="onCloseVideo" aria-label="Fermer la vidéo">
+        <view class="dh-ic dh-ic-close"></view>
+      </view>
+    </view>
+    <video
+      class="vplayer-video"
+      src="{{ logement.video.src }}"
+      poster="{{ logement.video.poster }}"
+      autoplay="{{ true }}"
+      object-fit="contain"
+      show-fullscreen-btn="{{ true }}"
+    ></video>
+    <text class="vplayer-note">{{ logement.title }} · filmée par le bailleur</text>
+  </view>
 
   <!-- ======================================================== -->
   <!-- BARRE D'ACTIONS FIXE INFÉRIEURE -->
@@ -256,8 +332,8 @@
   <view wx:if="{{ showVisitModal }}" class="modal-backdrop" bindtap="onCloseVisitModal">
     <view class="visit-sheet" catchtap="noop">
       <view class="visit-sheet__header">
-        <text class="visit-sheet__title">Planifier une visite 📅</text>
-        <view class="modal-close" bindtap="onCloseVisitModal">✕</view>
+        <view class="visit-sheet__title ic-row"><view class="ic ic-cal-berry ic--md"></view><text>Planifier une visite</text></view>
+        <view class="modal-close" bindtap="onCloseVisitModal"><view class="ic ic-close-grey ic--sm"></view></view>
       </view>
       
       <text class="visit-sheet__sub">Choisissez un créneau disponible avec {{ logement.bailleur.name }} :</text>
@@ -270,7 +346,7 @@
             bindtap="onSelectSlot"
           >
             <text class="slot-text">{{ item }}</text>
-            <text wx:if="{{ selectedVisitDate === item }}" class="slot-check">✓</text>
+            <view wx:if="{{ selectedVisitDate === item }}" class="ic ic-check-berry ic--sm"></view>
           </view>
         </block>
       </view>

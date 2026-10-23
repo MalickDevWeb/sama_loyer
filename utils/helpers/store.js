@@ -135,7 +135,7 @@ const DEFAULT_LOCATAIRES = [
     status: 'payes',
     statusLabel: 'Payé',
     bannerType: 'success',
-    bannerText: 'Payé le 3 oct. · Wave (payé par son frère) · reçu envoyé',
+    bannerText: 'Payé le 3 oct. · Max it (payé par son frère) · reçu envoyé',
     cautionDetenue: '45 000 F',
     phone: '77 333 44 55'
   },
@@ -148,7 +148,7 @@ const DEFAULT_LOCATAIRES = [
     status: 'payes',
     statusLabel: 'Payé',
     bannerType: 'success',
-    bannerText: 'Payé le 5 oct. · Orange Money · reçu envoyé',
+    bannerText: 'Payé le 5 oct. · Max it · reçu envoyé',
     cautionDetenue: '320 000 F',
     phone: '77 555 66 77'
   }
@@ -198,6 +198,8 @@ export function addStoredLogement(data) {
     equipements: data.equipements || ['Toilettes privées', 'Compteur Woyofal'],
     description: data.description || 'Logement propre et bien situé.',
     tint: data.tint || '#FBE3EC',
+    // 1re photo choisie par le bailleur (sinon photo de démo, voir utils/mocks/media.js)
+    cover: data.cover || '',
     isPremium: !!data.isPremium,
     status: 'validation' // 'en_ligne' | 'validation' | 'loue'
   };
@@ -212,6 +214,7 @@ export function addStoredLogement(data) {
     tag: 'En validation',
     tagClass: 'tag-validation',
     thumbBg: newLogement.tint,
+    cover: newLogement.cover,
     title: newLogement.title,
     placeName: `${newLogement.place} · `,
     price: `${formatMoney(newLogement.price)} F`,
@@ -514,4 +517,122 @@ export function addStoredMessage(convId, message) {
 
   storage.set(STORAGE_KEYS.CONVERSATIONS, nextConvs);
   return fullMsg;
+}
+
+// ============================================================================
+// 6. COMPTE BAILLEUR (activation à la première connexion)
+// Essai gratuit de 30 jours ou abonnement Pro payé avec Max it.
+// ============================================================================
+
+export const BAILLEUR_PLANS = {
+  trial: { id: 'trial', label: 'Essai gratuit', days: 30, price: 0 },
+  pro: { id: 'pro', label: 'Pro mensuel', days: 30, price: 15000 }
+};
+
+const MONTHS_LONG = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'];
+
+export function formatLongDate(ts) {
+  const d = new Date(ts);
+  return `${d.getDate()} ${MONTHS_LONG[d.getMonth()]} ${d.getFullYear()}`;
+}
+
+export function getBailleurAccount() {
+  return storage.get(STORAGE_KEYS.BAILLEUR_ACCOUNT, null);
+}
+
+// Accès à l'espace bailleur : uniquement avec un essai ou un abonnement EN COURS
+export function isBailleurActivated() {
+  const account = getBailleurAccount();
+  return !!(account && account.activatedAt && account.expiresAt > Date.now());
+}
+
+// Abonnement (ou essai) arrivé à échéance : il faut repayer avec Max it
+export function isBailleurExpired() {
+  const account = getBailleurAccount();
+  return !!(account && account.activatedAt && account.expiresAt <= Date.now());
+}
+
+// L'essai gratuit de 30 jours n'est offert qu'une seule fois
+export function canStartBailleurTrial() {
+  const account = getBailleurAccount();
+  return !(account && (account.trialUsed || account.plan === 'trial'));
+}
+
+// Garde à appeler dans onShow de chaque page bailleur (sauf l'accueil, qui affiche
+// l'écran d'activation) : sans abonnement actif, retour à l'accueil verrouillé.
+export function requireBailleurAccess() {
+  if (isBailleurActivated()) return true;
+  wx.reLaunch({ url: '/pages/bailleur/home/home' });
+  return false;
+}
+
+// Les infos (nom, numéro) viennent du compte Max it : aucun formulaire à remplir
+export function activateBailleurAccount(plan) {
+  const chosen = BAILLEUR_PLANS[plan] || BAILLEUR_PLANS.trial;
+  const profile = storage.get(STORAGE_KEYS.USER_PROFILE, null) || {};
+  const now = Date.now();
+  const account = {
+    fullName: profile.fullName || 'Moussa Diop',
+    phone: profile.phone || '771234567',
+    city: profile.city || '',
+    plan: chosen.id,
+    trialUsed: chosen.id === 'trial' || !canStartBailleurTrial(),
+    activatedAt: now,
+    expiresAt: now + chosen.days * 24 * 60 * 60 * 1000
+  };
+  storage.set(STORAGE_KEYS.BAILLEUR_ACCOUNT, account);
+  return account;
+}
+
+const DAY_MS = 24 * 60 * 60 * 1000;
+
+// Paiements du bailleur (abonnement, boosts) affichés en tête de l'historique Premium
+export function getBailleurPayments() {
+  return storage.get(STORAGE_KEYS.BAILLEUR_PAYMENTS, []) || [];
+}
+
+function addBailleurPayment(title, amount) {
+  const d = new Date();
+  const months = ['janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin', 'juil.', 'août', 'sept.', 'oct.', 'nov.', 'déc.'];
+  const payment = {
+    id: `pay-${Date.now()}`,
+    type: 'debit',
+    title,
+    meta: `${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()} · Max it`,
+    amount: `- ${formatMoney(amount)} F`,
+    amountClass: 'amount-debit'
+  };
+  storage.set(STORAGE_KEYS.BAILLEUR_PAYMENTS, [payment, ...getBailleurPayments()]);
+  return payment;
+}
+
+// Abonnement Pro payé avec Max it : +30 jours à partir de la fin actuelle (ou d'aujourd'hui si expiré)
+export function renewBailleurSubscription() {
+  const account = getBailleurAccount();
+  if (!account) {
+    // Première souscription : 30 jours à partir d'aujourd'hui
+    const created = activateBailleurAccount('pro');
+    addBailleurPayment('Abonnement Pro mensuel', BAILLEUR_PLANS.pro.price);
+    return created;
+  }
+  const base = Math.max(Date.now(), account.expiresAt || 0);
+  const next = Object.assign({}, account, {
+    plan: 'pro',
+    trialUsed: true,
+    expiresAt: base + BAILLEUR_PLANS.pro.days * DAY_MS
+  });
+  storage.set(STORAGE_KEYS.BAILLEUR_ACCOUNT, next);
+  addBailleurPayment('Abonnement Pro mensuel', BAILLEUR_PLANS.pro.price);
+  return next;
+}
+
+// Boost d'une annonce, payé à part avec Max it (abonnement actif requis)
+export function addBailleurBoost(option) {
+  const account = getBailleurAccount() || {};
+  const boost = { id: option.id, title: option.title, until: Date.now() + option.days * DAY_MS };
+  storage.set(STORAGE_KEYS.BAILLEUR_ACCOUNT, Object.assign({}, account, {
+    boosts: [boost, ...(account.boosts || [])]
+  }));
+  addBailleurPayment(option.title, option.price);
+  return boost;
 }

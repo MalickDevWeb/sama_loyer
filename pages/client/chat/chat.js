@@ -72,7 +72,7 @@ Page({
   },
 
   onPropertyBannerTap() {
-    // Logement déjà loué (conversation ouverte depuis Mon loyer) : pas de fiche annonce
+    // Logement déjà loué (conversation ouverte depuis Mes loyers) : pas de fiche annonce
     if (!this.data.conversation.logementId) {
       wx.switchTab({ url: '/pages/client/loyers/loyers' });
       return;

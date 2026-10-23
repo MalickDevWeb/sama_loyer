@@ -8,6 +8,7 @@ import { storage } from '../../../utils/storage.js';
 import { STORAGE_KEYS } from '../../../utils/constants/index';
 import { setCustomTabBarActive } from '../../../utils/helpers/tab-bar';
 import { getBailleurAccount, BAILLEUR_PLANS, formatLongDate } from '../../../utils/helpers/store';
+import { requireBailleurAccess } from '../../../utils/helpers/store';
 
 function initialsOf(name) {
   return String(name || '').trim().split(/\s+/).slice(0, 2).map((w) => w.charAt(0).toUpperCase()).join('') || 'B';
@@ -31,7 +32,7 @@ Page({
       fullName: 'Moussa Diop',
       initials: 'MD',
       phone: '+221 77 123 45 67',
-      publication: 'Instantanée sans validation'
+      publication: 'Instantanée'
     },
     subscription: {
       plan: 'Premium mensuel',
@@ -49,6 +50,8 @@ Page({
   },
 
   onShow() {
+    // Sans abonnement actif, aucun accès : retour à l'accueil verrouillé
+    if (!requireBailleurAccess()) return;
     setCustomTabBarActive(this, 'b-profil');
     this.loadAccount();
   },

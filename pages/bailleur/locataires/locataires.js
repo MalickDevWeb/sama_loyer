@@ -1,6 +1,17 @@
 import { getStoredLocataires, confirmLocataireCashPayment } from '../../../utils/helpers/store';
+import { requireBailleurAccess } from '../../../utils/helpers/store';
 
 // pages/bailleur/locataires/locataires.js
+// Loyer mensuel lu dans « Studio · Pikine Rue 10 · 95 000 F »
+function rentOf(l) {
+  const last = String(l.property || '').split(' · ').pop();
+  return Number(last.replace(/\D/g, '')) || 0;
+}
+
+function fmt(n) {
+  return String(n || 0).replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+}
+
 const INITIAL_LOCATAIRES = [
   {
     id: 'cheikh',
@@ -37,7 +48,7 @@ const INITIAL_LOCATAIRES = [
     status: 'payes',
     statusLabel: 'Payé',
     bannerType: 'success',
-    bannerText: 'Payé le 3 oct. · Wave (payé par son frère) · reçu envoyé',
+    bannerText: 'Payé le 3 oct. · Max it (payé par son frère) · reçu envoyé',
     cautionDetenue: '45 000 F',
     phone: '77 333 44 55'
   },
@@ -50,7 +61,7 @@ const INITIAL_LOCATAIRES = [
     status: 'payes',
     statusLabel: 'Payé',
     bannerType: 'success',
-    bannerText: 'Payé le 5 oct. · Orange Money · reçu envoyé',
+    bannerText: 'Payé le 5 oct. · Max it · reçu envoyé',
     cautionDetenue: '320 000 F',
     phone: '77 555 66 77'
   }
@@ -73,6 +84,8 @@ Page({
 
     locataires: INITIAL_LOCATAIRES,
     filteredLocataires: INITIAL_LOCATAIRES,
+    filters: [],
+    detail: null, // locataire affiché dans la fenêtre de détail
 
     problemes: [
       {
@@ -104,6 +117,8 @@ Page({
   },
 
   onShow() {
+    // Sans abonnement actif, aucun accès : retour à l'accueil verrouillé
+    if (!requireBailleurAccess()) return;
     if (typeof this.getTabBar === 'function' && this.getTabBar()) {
       this.getTabBar().setData({ activeTab: 'b-locataires' });
     }
@@ -111,21 +126,37 @@ Page({
   },
 
   loadLocataires() {
-    const locataires = getStoredLocataires();
-    const nbPayes = locataires.filter(l => l.status === 'payes').length;
-    const nbAConfirmer = locataires.filter(l => l.status === 'a_confirmer').length;
-    const nbEnRetard = locataires.filter(l => l.status === 'en_retard').length;
-
-    this.setData({
-      locataires,
-      'kpi.totalCount': locataires.length,
-      'kpi.nbPayes': nbPayes,
-      'kpi.nbAConfirmer': nbAConfirmer,
-      'kpi.nbEnRetard': nbEnRetard,
-      'kpi.montantRecu': `${nbPayes * 100000} F`
-    }, () => {
+    this.setData({ locataires: getStoredLocataires() }, () => {
       this.applyFilter(this.data.activeFilter);
     });
+  },
+
+  // Synthèse (montants réels) + compteurs des filtres, recalculés à chaque changement
+  computeKpi() {
+    const list = this.data.locataires;
+    const count = (s) => list.filter(l => l.status === s).length;
+    const total = list.reduce((a, l) => a + rentOf(l), 0);
+    const recu = list.filter(l => l.status === 'payes').reduce((a, l) => a + rentOf(l), 0);
+    const nbPayes = count('payes');
+    const nbAConfirmer = count('a_confirmer');
+    const nbEnRetard = count('en_retard');
+    return {
+      kpi: Object.assign({}, this.data.kpi, {
+        totalCount: list.length,
+        nbPayes,
+        nbAConfirmer,
+        nbEnRetard,
+        montantRecu: `${fmt(recu)} F`,
+        montantTotal: `${fmt(total)} F`,
+        pct: total ? Math.round((recu / total) * 100) : 0
+      }),
+      filters: [
+        { id: 'all', label: 'Tous', count: list.length },
+        { id: 'a_confirmer', label: 'À confirmer', count: nbAConfirmer },
+        { id: 'en_retard', label: 'En retard', count: nbEnRetard },
+        { id: 'payes', label: 'Payés', count: nbPayes }
+      ]
+    };
   },
 
   onSelectFilter(e) {
@@ -143,8 +174,25 @@ Page({
     } else if (filter === 'payes') {
       list = list.filter(l => l.status === 'payes');
     }
-    this.setData({ filteredLocataires: list });
+    // La fenêtre de détail suit les changements de statut (paiement confirmé, etc.)
+    const detail = this.data.detail
+      ? (this.data.locataires.find(l => l.id === this.data.detail.id) || null)
+      : null;
+    this.setData(Object.assign({ filteredLocataires: list, detail }, this.computeKpi()));
   },
+
+  // Fenêtre de détail : toutes les infos et actions d'un locataire
+  onOpenLocataire(e) {
+    const id = e.currentTarget.dataset.id;
+    const detail = this.data.locataires.find(l => l.id === id);
+    if (detail) this.setData({ detail });
+  },
+
+  onCloseLocataire() {
+    this.setData({ detail: null });
+  },
+
+  noop() {},
 
   // Actions Cheikh Fall (À confirmer)
   onConfirmerPaiementCheikh() {
@@ -213,12 +261,7 @@ Page({
         return l;
       });
 
-      this.setData({
-        locataires: updated,
-        'kpi.nbPayes': this.data.kpi.nbPayes + 1,
-        'kpi.nbEnRetard': 0,
-        'kpi.montantRecu': '290 000 F'
-      });
+      this.setData({ locataires: updated });
       this.applyFilter(this.data.activeFilter);
 
       wx.showToast({ title: 'Loyer validé !', icon: 'success' });

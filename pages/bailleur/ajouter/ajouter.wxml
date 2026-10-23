@@ -1,209 +1,206 @@
 <view class="ajouter-page">
-  <!-- Nav Bar with Close button & Step indicator -->
-  <view class="nav-bar-custom" style="padding-top: {{ statusBarHeight }}px; height: {{ navBarHeight }}px;">
-    <view class="btn-close" bindtap="onClose">
-      <text class="close-icon">{{ step === 5 ? '✕' : (step === 1 ? '✕' : '←') }}</text>
-    </view>
-    <text class="nav-title">Ajouter un logement</text>
-    <text class="step-label">{{ step }}/5</text>
-  </view>
-
-  <!-- Segmented Progress Bar (5 bars) -->
-  <view class="progress-bar-row" style="top: {{ statusBarHeight + navBarHeight }}px;">
-    <view class="progress-segment {{ step >= 1 ? 'active' : '' }}"></view>
-    <view class="progress-segment {{ step >= 2 ? 'active' : '' }}"></view>
-    <view class="progress-segment {{ step >= 3 ? 'active' : '' }}"></view>
-    <view class="progress-segment {{ step >= 4 ? 'active' : '' }}"></view>
-    <view class="progress-segment {{ step >= 5 ? 'active' : '' }}"></view>
-  </view>
-
-  <!-- STEP 1: Type de bien & Quartier -->
-  <view class="step-container" wx:if="{{ step === 1 }}" style="margin-top: {{ statusBarHeight + navBarHeight + 20 }}px;">
-    <text class="step-heading">Quel type de logement louez-vous ?</text>
-    <text class="step-subheading">Sélectionnez le type et la zone pour que les locataires le trouvent facilement.</text>
-
-    <view class="form-section-title">Type de logement</view>
-    <view class="chip-grid">
-      <view 
-        wx:for="{{ typeList }}" 
-        wx:key="*this" 
-        class="chip-item {{ selectedType === item ? 'chip-item-active' : '' }}"
-        bindtap="onSelectType"
-        data-type="{{ item }}"
-      >
-        <text class="chip-text">{{ item }}</text>
+  <!-- En-tête fixe : retour + titre (à gauche de la capsule WeChat) + progression -->
+  <view class="aj-head" style="padding-top: {{ navTop }}px;">
+    <view class="aj-nav" style="height: {{ navHeight }}px; padding-right: {{ capsuleSpace }}px;">
+      <view class="aj-back" hover-class="aj-hover" bindtap="onClose" aria-label="{{ step === 2 ? 'Étape précédente' : 'Fermer' }}">
+        <view class="ic ic--md {{ step === 2 ? 'ic-back-navy' : 'ic-close-navy' }}"></view>
       </view>
+      <text class="aj-nav-title">{{ step === 3 ? 'Annonce envoyée' : 'Nouvelle annonce' }}</text>
     </view>
 
-    <view class="form-section-title" style="margin-top: 40rpx;">Quartier à Dakar</view>
-    <view class="chip-grid">
-      <view 
-        wx:for="{{ quartierList }}" 
-        wx:key="*this" 
-        class="chip-item {{ selectedQuartier === item ? 'chip-item-active' : '' }}"
-        bindtap="onSelectQuartier"
-        data-quartier="{{ item }}"
-      >
-        <text class="chip-text">{{ item }}</text>
+    <view wx:if="{{ step < 3 }}" class="aj-progress">
+      <view class="aj-progress-track">
+        <view class="aj-progress-fill" style="width: {{ step === 1 ? 50 : 100 }}%;"></view>
       </view>
-    </view>
-
-    <view class="form-section-title" style="margin-top: 40rpx;">Précision de l'adresse (rue, repère)</view>
-    <input 
-      class="text-input-field" 
-      placeholder="Ex: Cité Avion, près de la pharmacie" 
-      value="{{ adresseDetail }}" 
-      bindinput="onInputAdresse"
-    />
-  </view>
-
-  <!-- STEP 2: Loyer & Conditions financières -->
-  <view class="step-container" wx:if="{{ step === 2 }}" style="margin-top: {{ statusBarHeight + navBarHeight + 20 }}px;">
-    <text class="step-heading">Loyer et conditions financières</text>
-    <text class="step-subheading">Fixez un loyer juste et conforme au marché dakarois.</text>
-
-    <view class="form-section-title">Loyer mensuel (FCFA)</view>
-    <view class="input-with-suffix">
-      <input 
-        class="text-input-field number-input" 
-        type="number" 
-        placeholder="65 000" 
-        value="{{ loyer }}" 
-        bindinput="onInputLoyer"
-      />
-      <text class="input-suffix">F / mois</text>
-    </view>
-
-    <view class="form-section-title" style="margin-top: 40rpx;">Caution demandée</view>
-    <view class="segmented-choice">
-      <view 
-        class="choice-btn {{ cautionMonths === 1 ? 'choice-btn-active' : '' }}" 
-        bindtap="onSelectCaution" 
-        data-months="{{ 1 }}"
-      >
-        1 mois
-      </view>
-      <view 
-        class="choice-btn {{ cautionMonths === 2 ? 'choice-btn-active' : '' }}" 
-        bindtap="onSelectCaution" 
-        data-months="{{ 2 }}"
-      >
-        2 mois
-      </view>
-    </view>
-
-    <!-- Financial summary card -->
-    <view class="financial-summary-card">
-      <view class="summary-row">
-        <text class="summary-label">Avance (1er mois)</text>
-        <text class="summary-val">{{ loyerFormatted }} F</text>
-      </view>
-      <view class="summary-row">
-        <text class="summary-label">Caution ({{ cautionMonths }} mois)</text>
-        <text class="summary-val">{{ cautionFormatted }} F</text>
-      </view>
-      <view class="summary-divider"></view>
-      <view class="summary-row summary-total-row">
-        <text class="summary-total-label">Total pour entrer</text>
-        <text class="summary-total-val">{{ totalEntreeFormatted }} F</text>
-      </view>
+      <text class="aj-progress-label">Étape {{ step }} sur 2 · {{ step === 1 ? 'Le logement' : 'Photos et atouts' }}</text>
     </view>
   </view>
 
-  <!-- STEP 3: Équipements & Description -->
-  <view class="step-container" wx:if="{{ step === 3 }}" style="margin-top: {{ statusBarHeight + navBarHeight + 20 }}px;">
-    <text class="step-heading">Équipements et détails</text>
-    <text class="step-subheading">Ce que propose le logement au futur locataire.</text>
+  <view class="aj-body" style="padding-top: {{ bodyTop }}px;">
 
-    <view class="form-section-title">Équipements inclus</view>
-    <view class="equipments-list">
-      <view 
-        wx:for="{{ equipements }}" 
-        wx:key="id" 
-        class="equipment-checkbox-row {{ item.checked ? 'equipment-checked' : '' }}"
-        bindtap="onToggleEquipment"
-        data-id="{{ item.id }}"
-      >
-        <view class="custom-checkbox {{ item.checked ? 'custom-checkbox-active' : '' }}">
-          <text wx:if="{{ item.checked }}" class="check-mark">✓</text>
+    <!-- ================= ÉTAPE 1 : LE LOGEMENT ================= -->
+    <view wx:if="{{ step === 1 }}" class="aj-step">
+      <text class="aj-heading">Ton logement</text>
+      <text class="aj-sub">Type, quartier et loyer : l'essentiel pour être trouvé.</text>
+
+      <view class="aj-card">
+        <text class="aj-label">Type de logement</text>
+        <view class="chip-grid">
+          <view
+            wx:for="{{ typeList }}"
+            wx:key="*this"
+            class="chip-item {{ selectedType === item ? 'chip-item-active' : '' }}"
+            bindtap="onSelectType"
+            data-type="{{ item }}"
+          >{{ item }}</view>
         </view>
-        <text class="equipment-label">{{ item.label }}</text>
+      </view>
+
+      <view class="aj-card">
+        <text class="aj-label">Quartier à Dakar</text>
+        <view class="chip-grid">
+          <view
+            wx:for="{{ quartierList }}"
+            wx:key="*this"
+            class="chip-item {{ selectedQuartier === item ? 'chip-item-active' : '' }}"
+            bindtap="onSelectQuartier"
+            data-quartier="{{ item }}"
+          >{{ item }}</view>
+        </view>
+        <view class="aj-field aj-field--mt">
+          <view class="ic ic-pin-berry ic--sm"></view>
+          <input
+            class="aj-input"
+            placeholder="Repère : rue, pharmacie, mosquée…"
+            placeholder-class="aj-placeholder"
+            value="{{ adresseDetail }}"
+            bindinput="onInputAdresse"
+          />
+        </view>
+      </view>
+
+      <view class="aj-card">
+        <text class="aj-label">Loyer mensuel</text>
+        <view class="aj-field aj-field--money">
+          <input
+            class="aj-input aj-input--money"
+            type="number"
+            placeholder="65000"
+            placeholder-class="aj-placeholder"
+            value="{{ loyer }}"
+            bindinput="onInputLoyer"
+          />
+          <text class="aj-suffix">F / mois</text>
+        </view>
+
+        <text class="aj-label aj-label--mt">Caution</text>
+        <view class="aj-segment">
+          <view class="aj-seg {{ cautionMonths === 1 ? 'aj-seg--on' : '' }}" bindtap="onSelectCaution" data-months="{{ 1 }}">1 mois</view>
+          <view class="aj-seg {{ cautionMonths === 2 ? 'aj-seg--on' : '' }}" bindtap="onSelectCaution" data-months="{{ 2 }}">2 mois</view>
+        </view>
+
+        <view class="aj-total">
+          <view class="aj-total-left">
+            <text class="aj-total-label">Total pour entrer</text>
+            <text class="aj-total-detail">Avance {{ loyerFormatted }} F + caution {{ cautionFormatted }} F</text>
+          </view>
+          <text class="aj-total-val">{{ totalEntreeFormatted }} F</text>
+        </view>
       </view>
     </view>
 
-    <view class="form-section-title" style="margin-top: 40rpx;">Description courte</view>
-    <textarea 
-      class="textarea-field" 
-      placeholder="Décrivez les atouts : pièce lumineuse, quartier calme, proche des transports..." 
-      value="{{ description }}" 
-      bindinput="onInputDescription"
-      maxlength="400"
-    ></textarea>
-  </view>
+    <!-- ================= ÉTAPE 2 : PHOTOS ET ATOUTS ================= -->
+    <view wx:if="{{ step === 2 }}" class="aj-step">
+      <text class="aj-heading">Photos et atouts</text>
+      <text class="aj-sub">Une annonce avec photos et vidéo se loue 3× plus vite.</text>
 
-  <!-- STEP 4: Photos & Vidéo -->
-  <view class="step-container" wx:if="{{ step === 4 }}" style="margin-top: {{ statusBarHeight + navBarHeight + 20 }}px;">
-    <text class="step-heading">Photos et visite vidéo</text>
-    <text class="step-subheading">Une annonce avec des photos claires et une vidéo loue 3× plus vite.</text>
+      <view class="aj-card">
+        <view class="aj-card-head">
+          <text class="aj-label aj-label--flat">Photos</text>
+          <text class="aj-count">{{ photos.length }} / 8</text>
+        </view>
+        <view class="photo-grid">
+          <view wx:for="{{ photos }}" wx:key="*this" class="photo-cell">
+            <image class="photo-img" src="{{ item }}" mode="aspectFill" data-index="{{ index }}" bindtap="onPreviewPhoto" />
+            <text wx:if="{{ index === 0 }}" class="photo-cover-tag">Couverture</text>
+            <view class="photo-remove" data-index="{{ index }}" catchtap="onRemovePhoto" aria-label="Retirer la photo">
+              <view class="ic ic-close-white"></view>
+            </view>
+          </view>
+          <view wx:if="{{ photos.length < 8 }}" class="photo-cell photo-add" hover-class="aj-hover" bindtap="onAddPhotos" aria-label="Ajouter des photos">
+            <view class="ic ic-photo-navy photo-add-ic"></view>
+            <text class="photo-add-txt">Ajouter</text>
+          </view>
+        </view>
 
-    <view class="media-upload-grid">
-      <view class="media-card media-card-success">
-        <view class="media-icon-wrap">📸</view>
-        <text class="media-title">Photos du logement</text>
-        <text class="media-status">✓ 3 photos préparées</text>
+        <view class="aj-card-head aj-card-head--mt">
+          <text class="aj-label aj-label--flat">Vidéo de visite</text>
+          <text class="aj-count">60 s max</text>
+        </view>
+        <view wx:if="{{ video }}" class="video-row">
+          <view class="video-thumb" hover-class="aj-hover" bindtap="onPlayVideo" aria-label="Lire la vidéo">
+            <image wx:if="{{ video.poster }}" class="photo-img" src="{{ video.poster }}" mode="aspectFill" />
+            <view class="video-play"><view class="ic ic-play-white ic--sm"></view></view>
+          </view>
+          <view class="video-info">
+            <text class="video-ok">Vidéo ajoutée</text>
+            <view class="video-links">
+              <text class="video-link" bindtap="onPickVideo">Remplacer</text>
+              <text class="video-link video-link--danger" bindtap="onRemoveVideo">Retirer</text>
+            </view>
+          </view>
+        </view>
+        <view wx:else class="video-empty" hover-class="aj-hover" bindtap="onPickVideo">
+          <view class="ic ic-video-berry photo-add-ic"></view>
+          <text class="photo-add-txt">Filmer ou choisir une vidéo</text>
+        </view>
       </view>
 
-      <view class="media-card {{ hasVideo ? 'media-card-success' : '' }}" bindtap="onToggleVideo">
-        <view class="media-icon-wrap">🎥</view>
-        <text class="media-title">Vidéo de visite (0:28)</text>
-        <text class="media-status">{{ hasVideo ? '✓ Vidéo ajoutée' : '+ Ajouter une vidéo' }}</text>
+      <view class="aj-card">
+        <text class="aj-label">Équipements inclus</text>
+        <view class="chip-grid">
+          <view
+            wx:for="{{ equipements }}"
+            wx:key="id"
+            class="chip-item chip-item--eq {{ item.checked ? 'chip-item-active' : '' }}"
+            bindtap="onToggleEquipment"
+            data-id="{{ item.id }}"
+          >
+            <view wx:if="{{ item.checked }}" class="ic ic-check-berry ic--xs"></view>
+            <text>{{ item.label }}</text>
+          </view>
+        </view>
+
+        <text class="aj-label aj-label--mt">Description <text class="aj-optional">(facultatif)</text></text>
+        <textarea
+          class="aj-textarea"
+          placeholder="Pièce lumineuse, quartier calme, proche des transports…"
+          placeholder-class="aj-placeholder"
+          value="{{ description }}"
+          bindinput="onInputDescription"
+          maxlength="400"
+        ></textarea>
+      </view>
+
+      <view class="aj-note">
+        <view class="ic ic-bulb-amber ic--sm"></view>
+        <text>Notre équipe vérifie l'annonce et les photos sous 24 h ouvrées.</text>
       </view>
     </view>
 
-    <view class="info-alert-box">
-      <text class="info-alert-icon">💡</text>
-      <text class="info-alert-text">Notre équipe valide l'annonce et vérifie les photos sous 24h ouvrées.</text>
+    <!-- ================= ÉTAPE 3 : CONFIRMATION ================= -->
+    <view wx:if="{{ step === 3 }}" class="aj-done">
+      <view class="aj-done-badge">
+        <view class="ic ic-check-white ic--xl"></view>
+      </view>
+      <text class="aj-done-title">Annonce envoyée !</text>
+      <text class="aj-done-sub">Elle est en cours de validation. Tu recevras un SMS dès qu'elle sera en ligne.</text>
+
+      <view class="aj-recap">
+        <image wx:if="{{ photos[0] }}" class="aj-recap-img" src="{{ photos[0] }}" mode="aspectFill" />
+        <view class="aj-recap-body">
+          <text class="aj-recap-title">{{ selectedType }} à {{ selectedQuartier }}</text>
+          <text class="aj-recap-price">{{ loyerFormatted }} F / mois</text>
+          <view class="aj-recap-pill"><view class="ic ic-clock-amber ic--xs"></view><text>En validation · sous 24 h</text></view>
+        </view>
+      </view>
     </view>
   </view>
 
-  <!-- STEP 5: Confirmation (Écran de succès) -->
-  <view class="center-content" wx:if="{{ step === 5 }}">
-    <view class="clock-circle-icon">
-      <text class="clock-emoji">🕒</text>
+  <!-- Barre d'action fixe -->
+  <view class="aj-bottom">
+    <view wx:if="{{ step === 1 }}" class="aj-btn aj-btn--navy" hover-class="aj-hover" bindtap="onNextStep">
+      <text>Continuer</text>
+      <view class="ic ic-arrow-right-white ic--sm"></view>
     </view>
-
-    <text class="confirmation-title">Annonce envoyée</text>
-    <text class="confirmation-sub">Elle est en cours de validation. Tu recevras un SMS dès qu'elle sera en ligne.</text>
-
-    <view class="badge-validation-pill">
-      En validation · sous 24 h
+    <view wx:if="{{ step === 2 }}" class="aj-btn aj-btn--berry" hover-class="aj-hover" bindtap="onPublishListing">
+      <text>Publier l'annonce</text>
     </view>
-  </view>
-
-  <!-- Sticky Bottom Actions -->
-  <view class="bottom-action-container">
-    <button 
-      wx:if="{{ step < 4 }}" 
-      class="btn-primary-action" 
-      bindtap="onNextStep"
-    >
-      Continuer
-    </button>
-
-    <button 
-      wx:if="{{ step === 4 }}" 
-      class="btn-primary-action btn-publish" 
-      bindtap="onPublishListing"
-    >
-      Publier l'annonce
-    </button>
-
-    <button 
-      wx:if="{{ step === 5 }}" 
-      class="btn-voir-annonces" 
-      bindtap="onVoirAnnonces"
-    >
-      Voir mes annonces
-    </button>
+    <block wx:if="{{ step === 3 }}">
+      <view class="aj-btn aj-btn--navy" hover-class="aj-hover" bindtap="onVoirAnnonces">
+        <text>Voir mes annonces</text>
+      </view>
+      <view class="aj-link" hover-class="aj-hover" bindtap="onAddAnother">Ajouter un autre logement</view>
+    </block>
   </view>
 </view>

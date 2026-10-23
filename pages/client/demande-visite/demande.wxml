@@ -14,7 +14,7 @@
   <!-- ===== FORMULAIRE ===== -->
   <block wx:if="{{ !sent }}">
     <view class="dv__logement">
-      <view class="dv__thumb" style="background: {{ logement.tint }};"></view>
+      <view class="dv__thumb sl-photo" style="background-color: {{ logement.tint }}; background-image: url('{{ logement.cover }}');"></view>
       <view class="dv__logement-text">
         <text class="dv__logement-title">{{ logement.title }}</text>
         <text class="dv__logement-price">{{ logement.price }}</text>

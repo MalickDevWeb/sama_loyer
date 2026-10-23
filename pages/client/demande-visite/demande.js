@@ -49,7 +49,8 @@ Page({
         price: `${formatMoney(l.price)} FCFA / mois`,
         owner: `${l.bailleurName} · répond en moins d'1 h`,
         ownerName: l.bailleurName,
-        tint: l.tint
+        tint: l.tint,
+        cover: l.cover
       }
     });
     this.refresh();

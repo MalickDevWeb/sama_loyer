@@ -42,6 +42,7 @@ export function getVisites() {
         place: `${l.place} · ${formatMoney(l.price)} F`,
         bailleur: `Bailleur : ${l.bailleurName}`,
         tint: l.tint,
+        cover: l.cover,
         canNavigate: v.status === 'accepted',
         canMessage: v.status === 'accepted',
         canCancel: v.status === 'pending'

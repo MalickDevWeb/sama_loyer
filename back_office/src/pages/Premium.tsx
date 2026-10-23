@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Switch } from '../components/ui'
-import { OFFERS, PREMIUM_PAYMENTS, SPONSORED } from '../data/mock'
+import { OFFERS, PREMIUM_PAYMENTS, PREMIUM_REVENUE_30D, SPONSORED } from '../data/mock'
+import { fmt } from '../lib/utils'
 import './Premium.css'
 
 function YesNo({ ok }: { ok: boolean }) {
@@ -9,7 +10,7 @@ function YesNo({ ok }: { ok: boolean }) {
 }
 
 function Premium() {
-  const [activeOffers, setActiveOffers] = useState<Record<string, boolean>>({ pm: true, b7: true, b30: true })
+  const [activeOffers, setActiveOffers] = useState<Record<string, boolean>>({ trial: true, pm: true, b7: true, b30: true })
   const [removed, setRemoved] = useState<Record<string, boolean>>({})
 
   // Une annonce n'est mise en avant que si les 3 conditions sont vraies
@@ -18,24 +19,24 @@ function Premium() {
     const live = p.sub && p.valid && p.dispo && !isRemoved
     let why = ''
     if (isRemoved) why = 'Retirée manuellement'
-    else if (!p.sub) why = 'Masquée : abonnement expiré'
-    else if (!p.valid) why = 'Masquée : pas validée'
-    else if (!p.dispo) why = 'Masquée : non disponible'
+    else if (!p.sub) why = 'Abonnement expiré'
+    else if (!p.valid) why = 'Pas validée'
+    else if (!p.dispo) why = 'Déjà louée'
     return { ...p, live, why }
   })
 
   return (
     <div className="page">
       <div>
-        <h1 className="page-title">Abonnements Premium</h1>
-        <p className="page-subtitle">Offres, paiements confirmés et annonces sponsorisées</p>
+        <h1 className="page-title">Abonnements et Boost</h1>
+        <p className="page-subtitle">Offres bailleurs, paiements Max it et annonces mises en avant</p>
       </div>
 
       <div className="kpi-grid">
-        <div className="kpi"><span className="kpi__label">Abonnés actifs</span><span className="kpi__value">214</span></div>
+        <div className="kpi"><span className="kpi__label">Abonnés Pro actifs</span><span className="kpi__value">214</span></div>
         <div className="kpi"><span className="kpi__label">Expirent sous 7 jours</span><span className="kpi__value">23</span></div>
         <div className="kpi"><span className="kpi__label">Annonces sponsorisées</span><span className="kpi__value">{rows.filter((r) => r.live).length}</span></div>
-        <div className="kpi"><span className="kpi__label">Paiements Premium (30 j)</span><span className="kpi__value">[MONTANT] F</span></div>
+        <div className="kpi"><span className="kpi__label">Revenus abonnements (30 j)</span><span className="kpi__value">{fmt(PREMIUM_REVENUE_30D)} F</span></div>
       </div>
 
       <section className="card">
@@ -70,7 +71,7 @@ function Premium() {
         <section className="card premium__sponsored">
           <h2 className="card-title">Annonces sponsorisées</h2>
           <p className="card-subtitle">
-            Une annonce n'est mise en avant que si les 3 conditions sont vraies. Le Premium ne contourne jamais la validation.
+            Une annonce n'est mise en avant que si les 3 conditions sont vraies. L'abonnement ne contourne jamais la validation.
           </p>
           <div className="table-scroll">
             <table className="table table--compact" style={{ minWidth: 620 }}>

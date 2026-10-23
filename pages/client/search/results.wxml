@@ -21,7 +21,7 @@
       </view>
 
       <view class="toast-badge-sparkle">
-        <text class="toast-sparkle-symbol">✨</text>
+        <view class="ic ic-sparkle-amber ic--sm"></view>
       </view>
     </view>
   </view>
@@ -30,15 +30,15 @@
     
     <!-- En-tête avec retour et carte -->
     <view class="search-top-nav" style="padding-top: {{ statusBarHeight + 10 }}px;">
-      <view class="btn-back" bindtap="onBackTap">‹</view>
+      <view class="btn-back" bindtap="onBackTap"><view class="ic ic-chevron-left-navy ic--md"></view></view>
       <text class="top-nav-title">Résultats de recherche</text>
-      <view class="btn-map-icon">🗺</view>
+      <view class="btn-map-icon"><view class="ic ic-map-navy ic--md"></view></view>
     </view>
 
     <!-- Barre de recherche -->
     <view class="search-bar-row">
       <view class="search-input-pill">
-        <text class="search-lens">🔍</text>
+        <view class="ic ic-search-muted ic--sm"></view>
         <input 
           class="search-input" 
           value="{{ searchQuery }}" 
@@ -48,8 +48,8 @@
           placeholder="Rechercher quartier ou type…"
         />
       </view>
-      <view class="btn-mic-round" bindtap="onMicTap">🎙</view>
-      <view class="btn-filter-icon" bindtap="onFilterTap">⚙</view>
+      <view class="btn-mic-round" bindtap="onMicTap"><view class="ic ic-mic-white ic--md"></view></view>
+      <view class="btn-filter-icon" bindtap="onFilterTap"><view class="ic ic-sliders-navy ic--md"></view></view>
     </view>
 
     <!-- Titre et compteur -->
@@ -65,7 +65,7 @@
     <scroll-view class="category-pills-scroll" scroll-x="{{true}}">
       <view class="pills-row">
         <view class="cat-pill pill-filter-btn">
-          <text>⚡ Filtres</text>
+          <view class="ic-row"><view class="ic ic-bolt-berry ic--xs"></view><text>Filtres</text></view>
         </view>
         <view class="cat-pill {{ activeCategory === 'tous' ? 'cat-pill--active' : '' }}" data-cat="tous" bindtap="onCategorySelect">
           <text>Tous</text>
@@ -82,7 +82,7 @@
     <!-- Section Bailleurs Premium -->
     <view class="section-container">
       <view class="section-header-row">
-        <text class="section-title-pink">★ Bailleurs Premium</text>
+        <view class="section-title-pink ic-row"><view class="ic ic-star-berry ic--sm"></view><text>Bailleurs Premium</text></view>
         <text class="section-sub-grey">Des logements mis en avant</text>
       </view>
 
@@ -90,16 +90,16 @@
         <view class="premium-cards-track">
           <block wx:for="{{ premiumListings }}" wx:key="id">
             <view class="premium-card" data-id="{{ item.id }}" bindtap="onCardTap">
-              <view class="premium-card-thumb" style="background-color: {{ item.bg }};">
-                <view class="thumb-badge-premium">★ Premium</view>
-                <view class="thumb-heart-icon">{{ item.isFavorite ? '♥' : '♡' }}</view>
-                <view class="thumb-house-outline"></view>
+              <view class="premium-card-thumb sl-photo" style="background-color: {{ item.bg }}; background-image: url('{{ item.cover }}');">
+                <view class="thumb-badge-premium ic-row"><view class="ic ic-star-white ic--xs"></view><text>Premium</text></view>
+                <view class="thumb-heart-icon"><view class="ic ic--sm {{ item.isFavorite ? 'ic-heart-fill-berry' : 'ic-heart-navy' }}"></view></view>
+                <view wx:if="{{ !item.cover }}" class="thumb-house-outline"></view>
               </view>
               <view class="premium-card-info">
                 <text class="card-price-bold">{{ item.price }}</text>
                 <text class="card-title-bold">{{ item.title }}</text>
                 <text class="card-place-grey">{{ item.place }}</text>
-                <view class="card-dispo-tag">✓ {{ item.badge }}</view>
+                <view class="card-dispo-tag ic-row"><view class="ic ic-check-green ic--xs"></view><text>{{ item.badge }}</text></view>
               </view>
             </view>
           </block>
@@ -113,7 +113,7 @@
         <text class="available-title">Logements disponibles</text>
         <view class="sort-dropdown">
           <text class="sort-label">Trier</text>
-          <text class="sort-value">Plus récents ▾</text>
+          <view class="sort-value ic-row"><text>Plus récents</text><view class="ic ic-chevron-down-navy ic--xs"></view></view>
         </view>
       </view>
 
@@ -122,13 +122,13 @@
         <block wx:if="{{ filteredListings && filteredListings.length > 0 }}">
           <block wx:for="{{ filteredListings }}" wx:key="id">
             <view class="avail-card" data-id="{{ item.id }}" bindtap="onCardTap">
-              <view class="avail-thumb" style="background-color: {{ item.bg }};">
-                <view class="thumb-house-outline-sm"></view>
+              <view class="avail-thumb sl-photo" style="background-color: {{ item.bg }}; background-image: url('{{ item.cover }}');">
+                <view wx:if="{{ !item.cover }}" class="thumb-house-outline-sm"></view>
               </view>
               <view class="avail-content">
                 <view class="avail-price-row">
                   <text class="avail-price">{{ item.price }}</text>
-                  <text class="avail-heart {{ item.isFavorite ? 'avail-heart--active' : '' }}">{{ item.isFavorite ? '♥' : '♡' }}</text>
+                  <view class="ic ic--md {{ item.isFavorite ? 'ic-heart-fill-berry' : 'ic-heart-navy' }}"></view>
                 </view>
                 <text class="avail-title">{{ item.title }}</text>
                 <text class="avail-place">{{ item.place }}</text>
@@ -148,7 +148,7 @@
         <!-- État si la recherche ne donne aucun résultat ("fail le recherche") -->
         <view wx:else class="search-empty-state">
           <view class="empty-icon-circle">
-            <text class="empty-icon-symbol">🔍</text>
+            <view class="ic ic-search-navy ic--xl"></view>
           </view>
           <text class="empty-title">Aucun logement trouvé</text>
           <text class="empty-desc">Aucune annonce ne correspond exactement à tes critères. Essaie de modifier la localité ou d'augmenter ton budget.</text>
@@ -171,14 +171,14 @@
       <view class="sheet-header">
         <view class="sheet-header-left">
           <view class="voice-icon-pulse">
-            <text class="voice-mic-char">🎙</text>
+            <view class="ic ic-mic-white ic--md"></view>
           </view>
           <view class="sheet-title-col">
             <text class="sheet-main-title">Recherche Vocale IA</text>
             <text class="sheet-sub-title">Comprend le Wolof et le Français</text>
           </view>
         </view>
-        <view class="sheet-close-btn" bindtap="onCloseVoiceModal">✕</view>
+        <view class="sheet-close-btn" bindtap="onCloseVoiceModal"><view class="ic ic-close-grey ic--sm"></view></view>
       </view>
 
       <!-- Soundwave Visual Banner -->
@@ -208,11 +208,11 @@
         >
           <view class="voice-card-top">
             <view class="lang-tag lang-wolof">🇸🇳 WOLOF</view>
-            <text class="voice-arrow-pill">Sélectionner →</text>
+            <view class="voice-arrow-pill ic-row"><text>Sélectionner</text><view class="ic ic-arrow-right-berry ic--xs"></view></view>
           </view>
           <text class="voice-quote">« Dafa ma bëgg chambre ci Pikine 65 000 F »</text>
           <view class="voice-translation">
-            <text class="ai-sparkle">✦ IA :</text>
+            <view class="ai-sparkle ic-row"><view class="ic ic-sparkle-berry ic--xs"></view><text>IA :</text></view>
             <text class="ai-meaning">Chambre à Pikine · 65 000 FCFA max</text>
           </view>
         </view>
@@ -228,11 +228,11 @@
         >
           <view class="voice-card-top">
             <view class="lang-tag lang-fr">🇫🇷 FRANÇAIS</view>
-            <text class="voice-arrow-pill">Sélectionner →</text>
+            <view class="voice-arrow-pill ic-row"><text>Sélectionner</text><view class="ic ic-arrow-right-berry ic--xs"></view></view>
           </view>
           <text class="voice-quote">« Recherche chambre ou studio à Pikine »</text>
           <view class="voice-translation">
-            <text class="ai-sparkle">✦ IA :</text>
+            <view class="ai-sparkle ic-row"><view class="ic ic-sparkle-berry ic--xs"></view><text>IA :</text></view>
             <text class="ai-meaning">Logements disponibles à Pikine</text>
           </view>
         </view>
@@ -248,11 +248,11 @@
         >
           <view class="voice-card-top">
             <view class="lang-tag lang-fr">🇫🇷 DAKAR</view>
-            <text class="voice-arrow-pill">Sélectionner →</text>
+            <view class="voice-arrow-pill ic-row"><text>Sélectionner</text><view class="ic ic-arrow-right-berry ic--xs"></view></view>
           </view>
           <text class="voice-quote">« Studio meublé 95 000 F max »</text>
           <view class="voice-translation">
-            <text class="ai-sparkle">✦ IA :</text>
+            <view class="ai-sparkle ic-row"><view class="ic ic-sparkle-berry ic--xs"></view><text>IA :</text></view>
             <text class="ai-meaning">Studios meublés avec entrée indépendante</text>
           </view>
         </view>
@@ -273,7 +273,7 @@
         <view class="sheet-header-left">
           <text class="sheet-main-title">Type de logement</text>
         </view>
-        <view class="sheet-close-btn" bindtap="onCloseFilterModal">✕</view>
+        <view class="sheet-close-btn" bindtap="onCloseFilterModal"><view class="ic ic-close-grey ic--sm"></view></view>
       </view>
 
       <view class="category-options-list">

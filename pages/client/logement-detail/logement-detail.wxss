@@ -36,56 +36,11 @@
   transition: background-color 0.25s;
 }
 
-.floating-header {
-  position: absolute;
-  left: 0;
-  right: 0;
-  z-index: 10;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding-left: 36rpx;
-  padding-right: 36rpx;
-}
 
-.floating-header__right {
-  display: flex;
-  align-items: center;
-  gap: 16rpx;
-}
 
-.btn-circle-nav {
-  width: 80rpx;
-  height: 80rpx;
-  border-radius: 40rpx;
-  background-color: #FFFFFF;
-  box-shadow: 0 4rpx 16rpx rgba(15, 30, 61, 0.12);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
 
-.heart-icon {
-  font-size: 38rpx;
-  color: #D1D5DB;
-  line-height: 1;
-}
 
-.heart-active {
-  color: #C8235F;
-}
 
-.hero-house-drawing {
-  position: absolute;
-  bottom: 0;
-  width: 380rpx;
-  height: 320rpx;
-  background-repeat: no-repeat;
-  background-position: center bottom;
-  background-size: contain;
-  opacity: 0.85;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='150' viewBox='0 0 180 150' fill='none' stroke='%238A8F9E' stroke-width='2' stroke-linejoin='round'%3E%3Cpath d='M20 150V60L75 20l55 40v90H20z'/%3E%3Crect x='40' y='45' width='20' height='20' rx='2'/%3E%3Crect x='40' y='75' width='20' height='20' rx='2'/%3E%3Crect x='85' y='45' width='20' height='20' rx='2'/%3E%3Cpath d='M85 150V90h20v60'/%3E%3Cpath d='M130 150V80h40v70'/%3E%3C/svg%3E");
-}
 
 .carousel-nav-btn {
   position: absolute;
@@ -999,4 +954,428 @@
   justify-content: center;
   flex-shrink: 0;
   margin-left: auto;
+}
+
+/* ============================================================================
+   GALERIE RÉELLE (photos + vidéo de visite)
+   ============================================================================ */
+.hero-swiper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+.hero-media {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* Léger dégradé pour garder lisibles les boutons et badges posés sur la photo */
+.hero-shade {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2;
+  pointer-events: none;
+  background: linear-gradient(180deg, rgba(15, 30, 61, 0.35) 0%, rgba(15, 30, 61, 0) 28%, rgba(15, 30, 61, 0) 70%, rgba(15, 30, 61, 0.4) 100%);
+}
+
+.carousel-nav-btn {
+  z-index: 6;
+}
+
+.thumb-item {
+  background-size: cover;
+  background-position: center;
+  overflow: hidden;
+}
+
+.thumb-play-badge {
+  width: 48rpx;
+  height: 48rpx;
+  border-radius: 24rpx;
+  background: rgba(255, 255, 255, 0.92);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ============================================================================
+   BARRE DU HAUT FIXE (retour · partager · j'aime) — toujours visible
+   ============================================================================ */
+.dh-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 60;
+  padding-bottom: 16rpx;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.dh-bar--solid {
+  background-color: #FFFFFF;
+  box-shadow: 0 6rpx 20rpx rgba(15, 30, 61, 0.08);
+}
+
+.dh-row {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  padding: 0 32rpx;
+}
+
+.dh-title {
+  flex: 1;
+  min-width: 0;
+  font-size: 30rpx;
+  font-weight: 800;
+  color: #0F1E3D;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.dh-title--on {
+  opacity: 1;
+}
+
+.dh-btn {
+  width: 80rpx;
+  height: 80rpx;
+  flex: 0 0 80rpx;
+  border-radius: 40rpx;
+  background-color: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 6rpx 18rpx rgba(15, 30, 61, 0.18);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dh-btn--hover {
+  transform: scale(0.92);
+}
+
+.dh-bar--solid .dh-btn {
+  background-color: #F4F6FA;
+  box-shadow: none;
+}
+
+.dh-btn--liked,
+.dh-bar--solid .dh-btn--liked {
+  background-color: #FDE8EF;
+}
+
+.dh-ic {
+  width: 40rpx;
+  height: 40rpx;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+}
+
+.dh-ic--pop {
+  animation: dh-pop 0.4s ease-out;
+}
+
+@keyframes dh-pop {
+  0% { transform: scale(1); }
+  40% { transform: scale(1.35); }
+  100% { transform: scale(1); }
+}
+
+.dh-ic-share { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230F1E3D' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 3v12'/%3E%3Cpath d='M7 8l5-5 5 5'/%3E%3Cpath d='M5 13v5a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-5'/%3E%3C/svg%3E"); }
+.dh-ic-heart { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230F1E3D' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 20.5s-7.5-4.6-9.3-9.6C1.5 7.5 3.8 4.5 7 4.5c2 0 3.6 1.1 5 3 1.4-1.9 3-3 5-3 3.2 0 5.5 3 4.3 6.4-1.8 5-9.3 9.6-9.3 9.6z'/%3E%3C/svg%3E"); }
+.dh-ic-heart-on { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23C8235F' stroke='%23C8235F' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 20.5s-7.5-4.6-9.3-9.6C1.5 7.5 3.8 4.5 7 4.5c2 0 3.6 1.1 5 3 1.4-1.9 3-3 5-3 3.2 0 5.5 3 4.3 6.4-1.8 5-9.3 9.6-9.3 9.6z'/%3E%3C/svg%3E"); }
+.dh-ic-send { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23FFFFFF' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M22 2L11 13'/%3E%3Cpath d='M22 2l-7 20-4-9-9-4 20-7z'/%3E%3C/svg%3E"); }
+.dh-ic-whatsapp { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23FFFFFF' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3.5 20.5l1.3-4A8.5 8.5 0 1 1 8 19.6l-4.5 0.9z'/%3E%3Cpath d='M9 8.5c0 3.5 3 6.5 6.5 6.5l1-1.5-2-1-1 1c-1-.5-2-1.5-2.5-2.5l1-1-1-2L9 8.5z'/%3E%3C/svg%3E"); }
+.dh-ic-link { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23FFFFFF' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7'/%3E%3Cpath d='M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7'/%3E%3C/svg%3E"); }
+.dh-ic-dots { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%230F1E3D'%3E%3Ccircle cx='5' cy='12' r='2'/%3E%3Ccircle cx='12' cy='12' r='2'/%3E%3Ccircle cx='19' cy='12' r='2'/%3E%3C/svg%3E"); }
+.dh-ic-play { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23C8235F'%3E%3Cpath d='M8 5.5v13a1 1 0 0 0 1.5.9l10-6.5a1 1 0 0 0 0-1.7l-10-6.5A1 1 0 0 0 8 5.5z'/%3E%3C/svg%3E"); }
+.dh-ic-close { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23FFFFFF' stroke-width='2.4' stroke-linecap='round'%3E%3Cpath d='M6 6l12 12M18 6L6 18'/%3E%3C/svg%3E"); }
+
+/* --- Bouton lecture sur la diapo vidéo ------------------------------------ */
+.hero-play {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16rpx;
+  background: rgba(15, 30, 61, 0.25);
+}
+
+.hero-play--hover {
+  background: rgba(15, 30, 61, 0.4);
+}
+
+.hero-play-btn {
+  width: 128rpx;
+  height: 128rpx;
+  border-radius: 64rpx;
+  background: #FFFFFF;
+  box-shadow: 0 12rpx 32rpx rgba(15, 30, 61, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hero-play-btn .dh-ic {
+  width: 56rpx;
+  height: 56rpx;
+  margin-left: 6rpx;
+}
+
+.hero-play-txt {
+  padding: 8rpx 22rpx;
+  border-radius: 999rpx;
+  background: rgba(15, 30, 61, 0.75);
+  color: #FFFFFF;
+  font-size: 24rpx;
+  font-weight: 800;
+}
+
+.hero-swiper swiper-item {
+  position: relative;
+}
+
+/* ============================================================================
+   PANNEAU DE PARTAGE
+   ============================================================================ */
+.share-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1100;
+  background: rgba(15, 30, 61, 0.5);
+  display: flex;
+  align-items: flex-end;
+}
+
+.share-sheet {
+  width: 100%;
+  box-sizing: border-box;
+  background: #FFFFFF;
+  border-radius: 44rpx 44rpx 0 0;
+  padding: 16rpx 32rpx calc(24rpx + env(safe-area-inset-bottom));
+  display: flex;
+  flex-direction: column;
+  gap: 24rpx;
+  animation: share-rise 0.3s ease-out;
+}
+
+@keyframes share-rise {
+  from { transform: translateY(60rpx); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.share-handle {
+  width: 72rpx;
+  height: 8rpx;
+  border-radius: 4rpx;
+  background: #E4E7EE;
+  margin: 0 auto;
+}
+
+.share-title {
+  font-size: 34rpx;
+  font-weight: 800;
+  color: #0F1E3D;
+  text-align: center;
+}
+
+.share-card {
+  display: flex;
+  gap: 20rpx;
+  padding: 16rpx;
+  border-radius: 28rpx;
+  background: #F7F8FA;
+  border: 2rpx solid #ECEFF2;
+}
+
+.share-card-img {
+  width: 152rpx;
+  height: 128rpx;
+  flex: 0 0 152rpx;
+  border-radius: 20rpx;
+  background: #E3E9F5;
+}
+
+.share-card-body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 4rpx;
+}
+
+.share-card-title {
+  font-size: 28rpx;
+  font-weight: 800;
+  color: #0F1E3D;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.share-card-place {
+  font-size: 24rpx;
+  color: #5B6475;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.share-card-price {
+  font-size: 28rpx;
+  font-weight: 800;
+  color: #C8235F;
+}
+
+.share-card-unit {
+  font-size: 22rpx;
+  font-weight: 600;
+  color: #5B6475;
+}
+
+.share-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12rpx;
+}
+
+.share-opt {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12rpx;
+  padding: 12rpx 0;
+  border-radius: 24rpx;
+}
+
+/* Réinitialise le style natif du <button open-type="share"> */
+.share-opt-btn {
+  margin: 0;
+  padding: 12rpx 0;
+  background: transparent;
+  line-height: normal;
+  font-size: inherit;
+  width: auto;
+}
+
+.share-opt-btn::after {
+  border: none;
+}
+
+.share-opt--hover {
+  background: #F4F6FA;
+}
+
+.share-opt-ic {
+  width: 104rpx;
+  height: 104rpx;
+  border-radius: 52rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.share-opt-ic .dh-ic {
+  width: 44rpx;
+  height: 44rpx;
+}
+
+.share-opt-ic--berry { background: linear-gradient(135deg, #E0457E 0%, #C8235F 100%); box-shadow: 0 8rpx 18rpx rgba(200, 35, 95, 0.3); }
+.share-opt-ic--green { background: linear-gradient(135deg, #3DD27A 0%, #1FA35C 100%); box-shadow: 0 8rpx 18rpx rgba(31, 163, 92, 0.3); }
+.share-opt-ic--navy { background: linear-gradient(135deg, #2B3F6B 0%, #0F1E3D 100%); box-shadow: 0 8rpx 18rpx rgba(15, 30, 61, 0.3); }
+.share-opt-ic--grey { background: #EEF0F4; }
+
+.share-opt-txt {
+  font-size: 22rpx;
+  font-weight: 700;
+  color: #0F1E3D;
+}
+
+.share-cancel {
+  height: 92rpx;
+  line-height: 92rpx;
+  border-radius: 28rpx;
+  background: #F4F6FA;
+  text-align: center;
+  font-size: 28rpx;
+  font-weight: 800;
+  color: #0F1E3D;
+}
+
+/* ============================================================================
+   LECTEUR VIDÉO
+   ============================================================================ */
+.vplayer-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1200;
+  background: #070D1C;
+  display: flex;
+  flex-direction: column;
+}
+
+.vplayer-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-left: 32rpx;
+  padding-right: 32rpx;
+  padding-bottom: 20rpx;
+}
+
+.vplayer-title {
+  font-size: 32rpx;
+  font-weight: 800;
+  color: #FFFFFF;
+}
+
+.vplayer-close {
+  width: 72rpx;
+  height: 72rpx;
+  border-radius: 36rpx;
+  background: rgba(255, 255, 255, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.vplayer-close .dh-ic {
+  width: 32rpx;
+  height: 32rpx;
+}
+
+.vplayer-video {
+  width: 100%;
+  flex: 1;
+}
+
+.vplayer-note {
+  padding: 24rpx 32rpx calc(32rpx + env(safe-area-inset-bottom));
+  font-size: 24rpx;
+  color: rgba(255, 255, 255, 0.7);
+  text-align: center;
 }

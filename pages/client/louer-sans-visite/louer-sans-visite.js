@@ -1,8 +1,9 @@
 import { getLogementById } from '../../../utils/mocks/logements';
+import { getMedia } from '../../../utils/mocks/media';
 
 const MEDIA = [
-  { id: 'photos', label: 'Les 4 photos', sub: 'Salon, chambre, douche, cour', icon: 'photo', tint: '#FBE3EC' },
-  { id: 'video', label: 'La vidéo de visite', sub: '0:28 · filmée par le bailleur', icon: 'play-line', tint: '#E3E9F5' }
+  { id: 'photos', label: 'Les 5 photos', sub: 'Salon, chambre, douche, cuisine, extérieur', icon: 'photo', tint: '#FBE3EC' },
+  { id: 'video', label: 'La vidéo de visite', sub: 'Filmée par le bailleur', icon: 'play-line', tint: '#E3E9F5' }
 ];
 
 const GUARDS = [
@@ -24,6 +25,7 @@ Page({
     ready: false,
     todoText: '',
     showMediaRequiredModal: false,
+    video: null, // { src, poster } quand le lecteur vidéo est ouvert
     toast: {
       visible: false,
       hiding: false,
@@ -40,7 +42,10 @@ Page({
     } catch (e) {}
 
     const id = options && options.id ? decodeURIComponent(options.id) : 'icotaf-01';
-    this.setData({ logementId: getLogementById(id) ? id : 'icotaf-01' });
+    const logementId = getLogementById(id) ? id : 'icotaf-01';
+    this.setData({ logementId });
+    // Mêmes photos et vidéo que sur la fiche du logement
+    this.mediaSet = getMedia(logementId);
 
     this.seen = {};
     this.ok = {};
@@ -51,7 +56,11 @@ Page({
     const seenAll = MEDIA.every((m) => this.seen[m.id]);
     const okAll = CHECKS.every((c, i) => this.ok[i]);
     this.setData({
-      media: MEDIA.map((m) => ({ ...m, seen: !!this.seen[m.id] })),
+      media: MEDIA.map((m) => ({
+        ...m,
+        seen: !!this.seen[m.id],
+        thumb: m.id === 'video' ? this.mediaSet.video.poster : this.mediaSet.gallery[0].url
+      })),
       checks: CHECKS.map((label, i) => ({ label, on: !!this.ok[i], locked: i === 0 && !seenAll })),
       ready: seenAll && okAll,
       todoText: !seenAll ? 'Regarde d’abord les photos et la vidéo' : 'Coche les 2 cases pour continuer'
@@ -65,13 +74,36 @@ Page({
   },
 
   onOpenMedia(e) {
-    const id = e.currentTarget.dataset.id;
-    this.seen[id] = true;
+    if (e.currentTarget.dataset.id === 'video') this.openVideo();
+    else this.openPhotos();
+  },
+
+  // Galerie plein écran native (glisser entre les photos)
+  openPhotos() {
+    const urls = this.mediaSet.gallery.map((g) => g.url);
+    wx.previewImage({ urls, current: urls[0] });
+    this.seen.photos = true;
     this.refresh();
-    
     this.showFloatingToast({
-      title: id === 'video' ? 'Vidéo validée 🎬' : 'Photos validées 📸',
-      subtitle: id === 'video' ? 'Visite vidéo (0:28) visionnée' : 'Les 4 photos ont été consultées',
+      title: 'Photos validées 📸',
+      subtitle: 'Les 5 photos ont été consultées',
+      type: 'success',
+      duration: 2200
+    });
+  },
+
+  // Lecteur vidéo en fenêtre ; la vidéo compte comme vue à la fermeture
+  openVideo() {
+    this.setData({ video: this.mediaSet.video });
+  },
+
+  onCloseVideo() {
+    this.setData({ video: null });
+    this.seen.video = true;
+    this.refresh();
+    this.showFloatingToast({
+      title: 'Vidéo validée 🎬',
+      subtitle: 'La vidéo de visite a été visionnée',
       type: 'success',
       duration: 2200
     });
@@ -110,27 +142,13 @@ Page({
   },
 
   onViewPhotosFromModal() {
-    this.seen['photos'] = true;
-    this.refresh();
     this.setData({ showMediaRequiredModal: false });
-    this.showFloatingToast({
-      title: 'Photos validées 📸',
-      subtitle: 'Les 4 photos ont été consultées avec succès',
-      type: 'success',
-      duration: 2200
-    });
+    this.openPhotos();
   },
 
   onViewVideoFromModal() {
-    this.seen['video'] = true;
-    this.refresh();
     this.setData({ showMediaRequiredModal: false });
-    this.showFloatingToast({
-      title: 'Vidéo validée 🎬',
-      subtitle: 'La vidéo de visite (0:28) a été visionnée',
-      type: 'success',
-      duration: 2200
-    });
+    this.openVideo();
   },
 
   onConfirmAllSeenFromModal() {

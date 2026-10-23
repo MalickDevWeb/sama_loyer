@@ -3,7 +3,10 @@ import { STORAGE_KEYS } from '../../../utils/constants/index';
 import {
   getBailleurAccount,
   isBailleurActivated,
+  isBailleurExpired,
+  canStartBailleurTrial,
   activateBailleurAccount,
+  renewBailleurSubscription,
   formatLongDate,
   BAILLEUR_PLANS
 } from '../../../utils/helpers/store';
@@ -21,6 +24,8 @@ Page({
     historyOpen: false,
     // Première connexion : espace grisé tant que l'essai ou l'abonnement n'est pas choisi
     locked: false,
+    expired: false, // essai / abonnement terminé : il faut repayer
+    canTrial: true, // l'essai gratuit n'est offert qu'une fois
     mx: '', // '' | confirm | redirect | maxit | done
     activatedPlan: '',
     activatedUntil: '',
@@ -60,12 +65,15 @@ Page({
     const account = getBailleurAccount();
     this.setData({
       locked: !isBailleurActivated(),
+      expired: isBailleurExpired(),
+      canTrial: canStartBailleurTrial(),
       bailleurName: account && account.fullName ? account.fullName.split(' ')[0] : this.data.bailleurName
     });
   },
 
   // --- Activation : essai gratuit ou abonnement Max it --------------------------
   onStartTrial() {
+    if (!canStartBailleurTrial()) return;
     this.activate('trial');
   },
 
@@ -90,7 +98,8 @@ Page({
   },
 
   activate(plan) {
-    const account = activateBailleurAccount(plan);
+    // Pro = paiement Max it : même logique que « Gérer mon abonnement » (+30 jours, historique)
+    const account = plan === 'pro' ? renewBailleurSubscription() : activateBailleurAccount(plan);
     this.syncAccount();
     this.setData({
       mx: 'done',

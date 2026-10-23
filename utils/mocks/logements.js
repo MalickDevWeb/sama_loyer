@@ -1,5 +1,6 @@
 import { storage } from '../storage.js';
 import { STORAGE_KEYS } from '../constants/index.js';
+import { getMedia, withCover } from './media.js';
 
 // ============================================================================
 // LOGEMENTS — SOURCE UNIQUE DE DONNÉES FICTIVES (MOCK)
@@ -356,7 +357,7 @@ const EQUIP_ICON_RULES = [
   { icon: 'cour', words: ['cour', 'balcon', 'terrasse', 'jardin', 'vue', 'plage'] }
 ];
 
-function formatMoney(n) {
+export function formatMoney(n) {
   return String(n || 0).replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
 }
 
@@ -383,10 +384,10 @@ export function getAllLogements() {
   try {
     const stored = storage.get(STORAGE_KEYS.LOGEMENTS, null);
     if (Array.isArray(stored) && stored.length > 0) {
-      return stored;
+      return stored.map(withCover);
     }
   } catch (e) {}
-  return LOGEMENTS;
+  return LOGEMENTS.map(withCover);
 }
 
 /**
@@ -408,7 +409,7 @@ export function toLogementDetail(l) {
   const desc = l.description || '';
   const total = (l.caution || 0) + (l.avance || 0) + (l.frais || 0);
 
-  return Object.assign({
+  const detail = Object.assign({
     id: l.id,
     title: l.title,
     tagPremium: !!l.isPremium,
@@ -438,10 +439,13 @@ export function toLogementDetail(l) {
       responseTime: 'Répond en général en moins d\'une heure',
       phone: l.phone
     },
-    slides: [
-      { id: 1, label: l.typeLabel, bg: l.tint },
-      { id: 2, label: 'Intérieur', bg: '#FCE7F0' },
-      { id: 3, label: 'Quartier', bg: '#E2F0EA' }
-    ]
   }, l.details || {});
+
+  // Galerie réelle (photos par pièce + vidéo de visite), identique pour un même logement
+  const media = getMedia(l.id);
+  detail.slides = media.gallery
+    .map((g) => ({ id: g.id, label: g.label, url: g.url, bg: l.tint }))
+    .concat({ id: 'video', label: 'Vidéo visite', isVideo: true, url: media.video.poster, video: media.video.src, bg: '#0F1E3D' });
+  detail.video = media.video;
+  return detail;
 }

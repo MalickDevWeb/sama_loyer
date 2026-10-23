@@ -1,3 +1,4 @@
+import { requireBailleurAccess } from '../../../utils/helpers/store';
 const HOMES = ['Chambre salon · Icotaf', 'Studio · Pikine Rue 10', 'Chambre · Pikine Est'];
 const DAYS = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'];
 const HOURS = ['9 h', '10 h', '11 h', '12 h', '16 h', '17 h', '18 h', '19 h'];
@@ -17,6 +18,11 @@ Page({
     blocks: ['Dimanche 1er novembre'],
     remote: true,
     saved: false
+  },
+
+  onShow() {
+    // Sans abonnement actif, aucun accès : retour à l'accueil verrouillé
+    if (!requireBailleurAccess()) return;
   },
 
   onLoad() {

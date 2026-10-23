@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Badge, CheckMark } from '../components/ui'
-import { ANNONCES_A_VALIDER, REFUSAL_REASONS, TINTS, VALIDATION_CHECKS } from '../data/mock'
+import { ANNONCES_A_VALIDER, REFUSAL_REASONS, VALIDATION_CHECKS, photoOf } from '../data/mock'
 import './Validation.css'
 
 type Decision = 'ok' | 'fix' | 'no'
@@ -59,7 +59,7 @@ function Validation() {
 
       <div className="row">
         <section aria-label="File d'attente" className="card queue">
-          {pending.map((a, i) => (
+          {pending.map((a) => (
             <button
               key={a.id}
               type="button"
@@ -67,7 +67,7 @@ function Validation() {
               className="queue__item"
               onClick={() => select(a.id)}
             >
-              <span className="queue__thumb" style={{ background: TINTS[i % TINTS.length] }} />
+              <img className="queue__thumb" src={photoOf(a.photos[0])} alt="" loading="lazy" />
               <span className="queue__text">
                 <span className="queue__title">{a.title}</span>
                 <span className="queue__meta">{a.place} · attend depuis {a.wait}</span>
@@ -106,11 +106,19 @@ function Validation() {
             <div>
               <h3 className="review__h3">Photos ({current.photos.length}) et vidéo</h3>
               <div className="photos">
-                {[...current.photos, ...(current.video ? ['Vidéo 0:28'] : [])].map((p, i) => (
-                  <div key={p} className="photos__item" style={{ background: TINTS[i % TINTS.length] }}>
+                {current.photos.map((p) => (
+                  <div key={p} className="photos__item">
+                    <img src={photoOf(p)} alt={p} loading="lazy" />
                     <span>{p}</span>
                   </div>
                 ))}
+                {current.video && (
+                  <div className="photos__item photos__item--video">
+                    <img src={photoOf(current.photos[0])} alt="" loading="lazy" />
+                    <span className="photos__play" aria-hidden="true">▶</span>
+                    <span>Vidéo 0:28</span>
+                  </div>
+                )}
               </div>
             </div>
 

@@ -20,6 +20,7 @@ export const STORAGE_KEYS = {
   RENT_PAID: 'sama_rent_paid', // { [logementId]: true } — loyer du mois payé
   USER_PROFILE: 'sama_user_profile', // { fullName, phone, email, job, city }
   PROFILE_PREFS: 'sama_profile_prefs', // { notifs: { msg, visit, new, price }, lang }
+  BAILLEUR_PAYMENTS: 'sama_bailleur_payments', // paiements Max it du bailleur (abonnement, boosts)
   BAILLEUR_ACCOUNT: 'sama_bailleur_account', // { fullName, phone, city, plan: 'trial'|'pro', activatedAt, expiresAt } — nom et numéro repris du compte Max it
   IMAGE_CACHE: 'tc-image-cache',
 };
@@ -74,7 +75,7 @@ export const CLIENT_TABS = [
   },
   {
     id: 'loyers',
-    label: 'Mon loyer',
+    label: 'Mes loyers',
     badge: '2',
     url: '/pages/client/loyers/loyers',
   },

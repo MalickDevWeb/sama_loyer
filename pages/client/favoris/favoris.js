@@ -28,7 +28,8 @@ function buildFavoritesList() {
       status: l.status || 'disponible',
       statusText: statusText(l),
       saved: FAVORITE_SAVED_LABELS[l.id] || t('favoris.savedToday'),
-      bg: l.tint
+      bg: l.tint,
+      cover: l.cover
     }));
 }
 

@@ -4,6 +4,7 @@ import { getStoredRentedHomes, recordRentPayment } from '../../../utils/helpers/
 import { storage } from '../../../utils/storage.js';
 import { STORAGE_KEYS } from '../../../utils/constants/index';
 import { setCustomTabBarActive } from '../../../utils/helpers/tab-bar';
+import { getCover } from '../../../utils/mocks/media';
 
 const MX_REDIRECT_MS = 1600;
 
@@ -15,6 +16,11 @@ function todayShort() {
   const months = ['janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin', 'juil.', 'août', 'sept.', 'oct.', 'nov.', 'déc.'];
   const d = new Date();
   return `${d.getDate()} ${months[d.getMonth()]}`;
+}
+
+// Nom court affiché dans « Mes loyers » : le détail des toilettes reste dans « Voir les détails »
+function shortName(name) {
+  return String(name || '').replace(/\s*avec\s+(des\s+)?toilettes?\s+priv[ée]es?/i, '').trim() || name;
 }
 
 // La barre d'onglets passerait au-dessus des fenêtres Max it et reçu : on la masque
@@ -38,6 +44,7 @@ Page({
     cur: {},
     history: [],
     historyOpen: false,
+    detailsOpen: false,
     mx: '', // '' | confirm | redirect | maxit | done
     mxLabel: '',
     receipt: null
@@ -112,15 +119,17 @@ Page({
       segments: rentedHomes.map((x) => ({ id: x.id, weight: x.rent, paid: !!paid[x.id] })),
       homes: rentedHomes.map((x) => ({
         id: x.id,
-        name: x.name,
+        name: shortName(x.name),
         rent: fmt(x.rent),
         tint: x.tint,
+        cover: getCover(String(x.id).replace(/^rented-/, '')),
         on: x.id === h.id,
         paid: !!paid[x.id]
       })),
       cur: {
         id: h.id,
-        name: h.name,
+        name: shortName(h.name),
+        fullName: h.name,
         place: h.place,
         owner: h.owner,
         since: h.since,
@@ -131,7 +140,7 @@ Page({
         contract: h.contract,
         paid: isPaid
       },
-      mxLabel: `Loyer de ${RENT_MONTH} · ${h.name}`,
+      mxLabel: `Loyer de ${RENT_MONTH} · ${shortName(h.name)}`,
       history: history.map((r) => ({ ...r, amountText: `${fmt(r.amount)} F` }))
     });
   },
@@ -161,13 +170,15 @@ Page({
     const cur = this.currentHome();
     recordRentPayment(this.data.selectedId, cur.rent);
     this.paid = storage.get(STORAGE_KEYS.RENT_PAID, {}) || {};
-    this.setData({ mx: 'done' });
     this.refresh();
+    // Quittance du loyer qui vient d'être payé (r-nov) pour « Télécharger » / « Partager le reçu »
+    const r = this.data.history.find((x) => x.id === 'r-nov');
+    this.setData({ mx: 'done', quittance: r ? this.buildReceipt(r) : null });
   },
 
   onMxClose() {
     clearTimeout(this.mxTimer);
-    this.setData({ mx: '' });
+    this.setData({ mx: '', quittance: this.data.receipt ? this.data.quittance : null });
     setTabBarVisible(true);
   },
 
@@ -176,13 +187,15 @@ Page({
     const r = this.data.history[Number(e.currentTarget.dataset.index) || 0];
     if (!r) return;
     setTabBarVisible(false);
-    const cur = this.currentHome();
+    this.setData({ detailsOpen: false, receipt: r, quittance: this.buildReceipt(r) });
+  },
+
+  buildReceipt(r) {
     const profile = storage.get(STORAGE_KEYS.USER_PROFILE, null) || {
       fullName: 'Awa Diop',
       phone: '+221 77 123 45 12'
     };
-    const quittance = buildQuittance(cur, r, profile);
-    this.setData({ receipt: r, quittance });
+    return buildQuittance(this.currentHome(), r, profile);
   },
 
   onCloseReceipt() {
@@ -206,9 +219,25 @@ Page({
     });
   },
 
+  // --- Détails du logement (caution, contrat, loyer) ----------------------------
+  onOpenDetails() {
+    setTabBarVisible(false);
+    this.setData({ detailsOpen: true });
+  },
+
+  onCloseDetails() {
+    this.setData({ detailsOpen: false });
+    setTabBarVisible(true);
+  },
+
+  onPayFromDetails() {
+    this.setData({ detailsOpen: false, mx: 'confirm' });
+  },
+
   // --- Contrat, bailleur, problème, départ --------------------------------------
   // Écran « Mon contrat » : contrat complet dynamique, articles, signatures
   onViewContrat() {
+    if (this.data.detailsOpen) this.onCloseDetails();
     wx.navigateTo({ url: `/pages/client/contrat/contrat?id=${this.data.selectedId}` });
   },
 

@@ -73,7 +73,8 @@ function Transactions() {
         <label htmlFor="tx-type" className="tx-filters__label">Type</label>
         <select id="tx-type" className="tx-filters__select" value={type} onChange={(e) => setType(e.target.value as 'all' | TxType)}>
           <option value="all">Tous les types</option>
-          <option value="Premium">Premium</option>
+          <option value="Loyer">Loyer</option>
+          <option value="Abonnement">Abonnement</option>
           <option value="Boost">Boost</option>
           <option value="Remboursement">Remboursement</option>
         </select>
