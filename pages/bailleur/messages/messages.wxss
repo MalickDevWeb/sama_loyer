@@ -8,16 +8,16 @@
 
 .bmsg__title {
   display: block;
-  font-size: 52rpx;
-  font-weight: 800;
+  font-size: var(--sl-fs-h1);
+  font-weight: var(--sl-fw-extrabold);
   letter-spacing: -0.02em;
 }
 
 .bmsg__subtitle {
   display: block;
   margin-top: 8rpx;
-  font-size: 28rpx;
-  color: #5B6475;
+  font-size: var(--sl-fs-body);
+  color: var(--sl-muted);
 }
 
 /* --- Conversations / Demandes de visite ---------------------------------- */
@@ -34,9 +34,9 @@
 .bmsg__segment {
   height: 84rpx;
   border-radius: 24rpx;
-  font-size: 28rpx;
-  font-weight: 800;
-  color: #5B6475;
+  font-size: var(--sl-fs-body);
+  font-weight: var(--sl-fw-extrabold);
+  color: var(--sl-muted);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -44,8 +44,8 @@
 }
 
 .bmsg__segment--on {
-  background: #FFFFFF;
-  color: #0F1E3D;
+  background: var(--sl-white);
+  color: var(--sl-text);
   box-shadow: 0 2rpx 8rpx rgba(15, 30, 61, 0.12);
 }
 
@@ -53,9 +53,9 @@
   min-width: 40rpx;
   height: 40rpx;
   border-radius: 20rpx;
-  background: #C8235F;
-  color: #FFFFFF;
-  font-size: 22rpx;
+  background: var(--sl-berry);
+  color: var(--sl-on-dark);
+  font-size: var(--sl-fs-caption);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -72,19 +72,19 @@
   height: 80rpx;
   padding: 0 28rpx;
   border-radius: 999rpx;
-  font-size: 26rpx;
-  font-weight: 700;
+  font-size: var(--sl-fs-body-sm);
+  font-weight: var(--sl-fw-bold);
   display: flex;
   align-items: center;
-  background: #FFFFFF;
-  color: #0F1E3D;
-  border: 2rpx solid #E4E7EE;
+  background: var(--sl-white);
+  color: var(--sl-text);
+  border: 2rpx solid var(--sl-border);
 }
 
 .bmsg__pill--on {
-  background: #0F1E3D;
-  color: #FFFFFF;
-  border-color: #0F1E3D;
+  background: var(--sl-navy);
+  color: var(--sl-on-dark);
+  border-color: var(--sl-navy);
 }
 
 /* --- Liste --------------------------------------------------------------- */
@@ -98,11 +98,11 @@
   display: flex;
   gap: 24rpx;
   padding: 24rpx 16rpx;
-  border-bottom: 2rpx solid #EEF0F4;
+  border-bottom: 2rpx solid var(--sl-divider);
 }
 
 .bmsg__conv--hover {
-  background: #F7F8FA;
+  background: var(--sl-surface-2);
 }
 
 .bmsg__avatar {
@@ -110,9 +110,9 @@
   height: 100rpx;
   flex: 0 0 100rpx;
   border-radius: 50rpx;
-  color: #FFFFFF;
-  font-size: 30rpx;
-  font-weight: 800;
+  color: var(--sl-on-dark);
+  font-size: var(--sl-fs-body-lg);
+  font-weight: var(--sl-fw-extrabold);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -135,57 +135,57 @@
 }
 
 .bmsg__name {
-  font-size: 30rpx;
-  font-weight: 700;
+  font-size: var(--sl-fs-body-lg);
+  font-weight: var(--sl-fw-bold);
 }
 
 .bmsg__name--unread {
-  font-weight: 800;
+  font-weight: var(--sl-fw-extrabold);
 }
 
 .bmsg__time {
   flex: 0 0 auto;
-  font-size: 24rpx;
-  font-weight: 500;
-  color: #5B6475;
+  font-size: var(--sl-fs-small);
+  font-weight: var(--sl-fw-medium);
+  color: var(--sl-muted);
 }
 
 .bmsg__time--unread {
-  font-weight: 800;
-  color: #C8235F;
+  font-weight: var(--sl-fw-extrabold);
+  color: var(--sl-berry);
 }
 
 .bmsg__tag {
   align-self: flex-start;
-  font-size: 22rpx;
-  font-weight: 800;
+  font-size: var(--sl-fs-caption);
+  font-weight: var(--sl-fw-extrabold);
   padding: 6rpx 16rpx;
   border-radius: 999rpx;
 }
 
 .bmsg__tag--cand {
-  background: #FDF1F5;
-  color: #9E1749;
+  background: var(--sl-berry-soft);
+  color: var(--sl-berry-dark);
 }
 
 .bmsg__tag--loc {
-  background: #E2F0EA;
-  color: #0D4F31;
+  background: var(--sl-success-bg);
+  color: var(--sl-success-text);
 }
 
 .bmsg__last {
   flex: 1;
   min-width: 0;
-  font-size: 26rpx;
-  color: #5B6475;
+  font-size: var(--sl-fs-body-sm);
+  color: var(--sl-muted);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
 .bmsg__last--unread {
-  font-weight: 700;
-  color: #0F1E3D;
+  font-weight: var(--sl-fw-bold);
+  color: var(--sl-text);
 }
 
 .bmsg__unread {
@@ -195,10 +195,10 @@
   padding: 0 12rpx;
   box-sizing: border-box;
   border-radius: 22rpx;
-  background: #C8235F;
-  color: #FFFFFF;
-  font-size: 24rpx;
-  font-weight: 800;
+  background: var(--sl-berry);
+  color: var(--sl-on-dark);
+  font-size: var(--sl-fs-small);
+  font-weight: var(--sl-fw-extrabold);
   display: flex;
   align-items: center;
   justify-content: center;

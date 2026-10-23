@@ -5,7 +5,7 @@
    ============================================================================ */
 
 page {
-  background: #F7F8FA;
+  background: var(--sl-surface-2);
   height: 100%;
 }
 
@@ -18,7 +18,7 @@ page {
 /* --- En-tête ------------------------------------------------------------- */
 .chat__head {
   flex-shrink: 0;
-  background: #FFFFFF;
+  background: var(--sl-white);
 }
 
 .chat__contact {
@@ -28,7 +28,7 @@ page {
   display: flex;
   align-items: center;
   gap: 12rpx;
-  border-bottom: 2rpx solid #E4E7EE;
+  border-bottom: 2rpx solid var(--sl-border);
 }
 
 .chat__avatar {
@@ -37,9 +37,9 @@ page {
   height: 84rpx;
   flex: 0 0 84rpx;
   border-radius: 42rpx;
-  color: #FFFFFF;
-  font-size: 28rpx;
-  font-weight: 800;
+  color: var(--sl-on-dark);
+  font-size: var(--sl-fs-body);
+  font-weight: var(--sl-fw-extrabold);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -54,7 +54,7 @@ page {
   box-sizing: border-box;
   border-radius: 12rpx;
   background: #2BA36A;
-  border: 4rpx solid #FFFFFF;
+  border: 4rpx solid var(--sl-white);
 }
 
 .chat__who {
@@ -65,17 +65,17 @@ page {
 }
 
 .chat__name {
-  font-size: 32rpx;
-  font-weight: 800;
+  font-size: var(--sl-fs-subtitle);
+  font-weight: var(--sl-fw-extrabold);
 }
 
 .chat__status {
   display: flex;
   align-items: center;
   gap: 8rpx;
-  font-size: 24rpx;
-  font-weight: 700;
-  color: #11643F;
+  font-size: var(--sl-fs-small);
+  font-weight: var(--sl-fw-bold);
+  color: var(--sl-success);
 }
 
 .chat__status-ic {
@@ -89,7 +89,7 @@ page {
 }
 
 .chat__wa {
-  background: #E2F0EA;
+  background: var(--sl-success-bg);
 }
 
 .chat__listing {
@@ -99,11 +99,11 @@ page {
   display: flex;
   align-items: center;
   gap: 24rpx;
-  border-bottom: 2rpx solid #E4E7EE;
+  border-bottom: 2rpx solid var(--sl-border);
 }
 
 .chat__listing--hover {
-  background: #F7F8FA;
+  background: var(--sl-surface-2);
 }
 
 .chat__listing-thumb {
@@ -132,21 +132,21 @@ page {
 }
 
 .chat__listing-title {
-  font-size: 28rpx;
-  font-weight: 800;
+  font-size: var(--sl-fs-body);
+  font-weight: var(--sl-fw-extrabold);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
 .chat__listing-sub {
-  font-size: 24rpx;
-  color: #5B6475;
+  font-size: var(--sl-fs-small);
+  color: var(--sl-muted);
 }
 
 .chat__listing-price {
-  font-weight: 700;
-  color: #0F1E3D;
+  font-weight: var(--sl-fw-bold);
+  color: var(--sl-text);
 }
 
 .chat__listing-chev {
@@ -168,10 +168,10 @@ page {
   gap: 16rpx;
   padding: 20rpx 24rpx;
   border-radius: 28rpx;
-  background: #FFF4E0;
-  font-size: 24rpx;
+  background: var(--sl-warning-bg);
+  font-size: var(--sl-fs-small);
   line-height: 1.45;
-  color: #6B4A00;
+  color: var(--sl-warning-text);
 }
 
 .chat__safety-ic {
@@ -181,14 +181,14 @@ page {
 }
 
 .chat__safety-strong {
-  font-weight: 800;
+  font-weight: var(--sl-fw-extrabold);
 }
 
 .chat__day {
   text-align: center;
-  font-size: 24rpx;
-  font-weight: 700;
-  color: #5B6475;
+  font-size: var(--sl-fs-small);
+  font-weight: var(--sl-fw-bold);
+  color: var(--sl-muted);
   padding: 24rpx 0 16rpx;
 }
 
@@ -208,25 +208,25 @@ page {
   flex-direction: column;
   gap: 8rpx;
   padding: 20rpx 28rpx;
-  font-size: 30rpx;
+  font-size: var(--sl-fs-body-lg);
   line-height: 1.4;
-  background: #FFFFFF;
-  color: #0F1E3D;
-  border: 2rpx solid #E4E7EE;
+  background: var(--sl-white);
+  color: var(--sl-text);
+  border: 2rpx solid var(--sl-border);
   border-radius: 36rpx 36rpx 36rpx 8rpx;
 }
 
 .chat__bubble--me {
-  background: #C8235F;
-  color: #FFFFFF;
+  background: var(--sl-berry);
+  color: var(--sl-on-dark);
   border: 0;
   border-radius: 36rpx 36rpx 8rpx 36rpx;
 }
 
 .chat__meta {
   align-self: flex-end;
-  font-size: 22rpx;
-  color: #5B6475;
+  font-size: var(--sl-fs-caption);
+  color: var(--sl-muted);
 }
 
 .chat__bubble--me .chat__meta {
@@ -242,8 +242,8 @@ page {
   gap: 20rpx;
   padding: 20rpx 28rpx;
   border-radius: 32rpx;
-  background: #FFFFFF;
-  border: 2rpx solid #E4E7EE;
+  background: var(--sl-white);
+  border: 2rpx solid var(--sl-border);
 }
 
 .chat__event-icon {
@@ -251,7 +251,7 @@ page {
   height: 68rpx;
   flex: 0 0 68rpx;
   border-radius: 34rpx;
-  background: #E3E9F5;
+  background: var(--sl-info-bg);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -268,20 +268,20 @@ page {
 }
 
 .chat__event-title {
-  font-size: 26rpx;
-  font-weight: 800;
+  font-size: var(--sl-fs-body-sm);
+  font-weight: var(--sl-fw-extrabold);
 }
 
 .chat__event-sub {
-  font-size: 24rpx;
-  color: #5B6475;
+  font-size: var(--sl-fs-small);
+  color: var(--sl-muted);
 }
 
 .chat__empty {
   text-align: center;
   padding: 60rpx 20rpx;
-  font-size: 26rpx;
-  color: #5B6475;
+  font-size: var(--sl-fs-body-sm);
+  color: var(--sl-muted);
 }
 
 .chat__end {
@@ -291,8 +291,8 @@ page {
 /* --- Pied : réponses rapides + saisie ------------------------------------ */
 .chat__footer {
   flex-shrink: 0;
-  background: #FFFFFF;
-  border-top: 2rpx solid #E4E7EE;
+  background: var(--sl-white);
+  border-top: 2rpx solid var(--sl-border);
   padding-bottom: env(safe-area-inset-bottom);
 }
 
@@ -313,11 +313,11 @@ page {
   line-height: 72rpx;
   padding: 0 28rpx;
   border-radius: 999rpx;
-  border: 2rpx solid #F3C3D5;
-  background: #FDF1F5;
-  color: #9E1749;
-  font-size: 26rpx;
-  font-weight: 700;
+  border: 2rpx solid var(--sl-berry-border);
+  background: var(--sl-berry-soft);
+  color: var(--sl-berry-dark);
+  font-size: var(--sl-fs-body-sm);
+  font-weight: var(--sl-fw-bold);
   box-sizing: border-box;
 }
 
@@ -339,7 +339,7 @@ page {
   height: 92rpx;
   padding: 0 28rpx;
   border-radius: 46rpx;
-  background: #F1F3F6;
+  background: var(--sl-surface-3);
   display: flex;
   align-items: center;
 }
@@ -347,12 +347,12 @@ page {
 .chat__input {
   flex: 1;
   height: 88rpx;
-  font-size: 30rpx;
-  color: #0F1E3D;
+  font-size: var(--sl-fs-body-lg);
+  color: var(--sl-text);
 }
 
 .chat__placeholder {
-  color: #7A8294;
+  color: var(--sl-placeholder);
 }
 
 .chat__send {
@@ -360,7 +360,7 @@ page {
   height: 92rpx;
   flex: 0 0 92rpx;
   border-radius: 46rpx;
-  background: #C8235F;
+  background: var(--sl-berry);
   display: flex;
   align-items: center;
   justify-content: center;

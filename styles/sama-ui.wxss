@@ -7,9 +7,9 @@
 @import "/styles/icons.wxss";
 
 page {
-  background: #FFFFFF;
-  color: #0F1E3D;
-  font-family: 'Plus Jakarta Sans', 'Inter', -apple-system, 'Segoe UI', Roboto, sans-serif;
+  background: var(--sl-white);
+  color: var(--sl-text);
+  font-family: var(--sl-font);
 }
 
 /* --- Barre du haut (retour + titre) -------------------------------------- */
@@ -19,8 +19,8 @@ page {
   left: 0;
   right: 0;
   z-index: 50;
-  background: #FFFFFF;
-  border-bottom: 2rpx solid #EEF0F4;
+  background: var(--sl-white);
+  border-bottom: 2rpx solid var(--sl-divider);
 }
 
 .sl-topbar__inner {
@@ -33,8 +33,8 @@ page {
 }
 
 .sl-topbar__title {
-  font-size: 34rpx;
-  font-weight: 800;
+  font-size: var(--sl-fs-title-sm);
+  font-weight: var(--sl-fw-extrabold);
 }
 
 .sl-icon-btn {
@@ -48,7 +48,7 @@ page {
 }
 
 .sl-icon-btn--soft {
-  background: #F1F3F6;
+  background: var(--sl-surface-3);
 }
 
 .sl-icon-btn--glass {
@@ -68,8 +68,8 @@ page {
   z-index: 50;
   box-sizing: border-box;
   padding: 20rpx 32rpx calc(28rpx + env(safe-area-inset-bottom));
-  border-top: 2rpx solid #E4E7EE;
-  background: #FFFFFF;
+  border-top: 2rpx solid var(--sl-border);
+  background: var(--sl-white);
   display: flex;
   gap: 20rpx;
 }
@@ -83,8 +83,8 @@ page {
   flex: 1;
   height: 112rpx;
   border-radius: 32rpx;
-  font-size: 30rpx;
-  font-weight: 800;
+  font-size: var(--sl-fs-body-lg);
+  font-weight: var(--sl-fw-extrabold);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -94,37 +94,37 @@ page {
 }
 
 .sl-btn--berry {
-  background: #C8235F;
-  color: #FFFFFF;
+  background: var(--sl-berry);
+  color: var(--sl-on-dark);
 }
 
 .sl-btn--navy {
-  background: #0F1E3D;
-  color: #FFFFFF;
+  background: var(--sl-navy);
+  color: var(--sl-on-dark);
 }
 
 .sl-btn--outline {
-  background: #FFFFFF;
-  border: 2rpx solid #E4E7EE;
-  color: #0F1E3D;
-  font-weight: 700;
+  background: var(--sl-white);
+  border: 2rpx solid var(--sl-border);
+  color: var(--sl-text);
+  font-weight: var(--sl-fw-bold);
 }
 
 .sl-btn--outline-navy {
-  background: #FFFFFF;
-  border: 4rpx solid #0F1E3D;
-  color: #0F1E3D;
+  background: var(--sl-white);
+  border: 4rpx solid var(--sl-navy);
+  color: var(--sl-text);
 }
 
 .sl-btn--soft {
-  background: #FDF1F5;
-  color: #9E1749;
+  background: var(--sl-berry-soft);
+  color: var(--sl-berry-dark);
   padding: 0 24rpx;
 }
 
 .sl-btn--success-soft {
-  background: #EEF7F2;
-  color: #0D4F31;
+  background: var(--sl-success-soft);
+  color: var(--sl-success-text);
 }
 
 /* --- Case à cocher (ligne entière cliquable) ------------------------------ */
@@ -136,21 +136,21 @@ page {
   padding: 16rpx 28rpx;
   box-sizing: border-box;
   border-radius: 32rpx;
-  border: 4rpx solid #E4E7EE;
-  background: #FFFFFF;
-  font-size: 28rpx;
-  font-weight: 700;
-  color: #0F1E3D;
+  border: 4rpx solid var(--sl-border);
+  background: var(--sl-white);
+  font-size: var(--sl-fs-body);
+  font-weight: var(--sl-fw-bold);
+  color: var(--sl-text);
 }
 
 .sl-check-row--on {
-  background: #EEF7F2;
-  border-color: #11643F;
+  background: var(--sl-success-soft);
+  border-color: var(--sl-success);
 }
 
 .sl-check-row--berry.sl-check-row--on {
-  background: #FDF1F5;
-  border-color: #C8235F;
+  background: var(--sl-berry-soft);
+  border-color: var(--sl-berry);
 }
 
 .sl-check-row--locked {
@@ -163,7 +163,7 @@ page {
   flex: 0 0 48rpx;
   box-sizing: border-box;
   border-radius: 14rpx;
-  border: 4rpx solid #C9CFDA;
+  border: 4rpx solid var(--sl-border-strong);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -171,11 +171,11 @@ page {
 
 .sl-check-row--on .sl-check-box {
   border: 0;
-  background: #11643F;
+  background: var(--sl-success);
 }
 
 .sl-check-row--berry.sl-check-row--on .sl-check-box {
-  background: #C8235F;
+  background: var(--sl-berry);
 }
 
 .sl-check-box .ic {
@@ -190,12 +190,12 @@ page {
   height: 56rpx;
   flex: 0 0 96rpx;
   border-radius: 28rpx;
-  background: #C9CFDA;
+  background: var(--sl-border-strong);
   transition: background 0.15s;
 }
 
 .sl-switch--on {
-  background: #11643F;
+  background: var(--sl-success);
 }
 
 .sl-switch__knob {
@@ -205,7 +205,7 @@ page {
   width: 44rpx;
   height: 44rpx;
   border-radius: 22rpx;
-  background: #FFFFFF;
+  background: var(--sl-white);
   transition: left 0.15s;
 }
 
@@ -223,37 +223,37 @@ page {
 .sl-key {
   padding: 24rpx;
   border-radius: 32rpx;
-  background: #F7F8FA;
+  background: var(--sl-surface-2);
   display: flex;
   flex-direction: column;
   gap: 4rpx;
 }
 
 .sl-key__label {
-  font-size: 24rpx;
-  color: #5B6475;
+  font-size: var(--sl-fs-small);
+  color: var(--sl-muted);
 }
 
 .sl-key__value {
-  font-size: 34rpx;
-  font-weight: 800;
+  font-size: var(--sl-fs-title-sm);
+  font-weight: var(--sl-fw-extrabold);
 }
 
 .sl-key__sub {
-  font-size: 22rpx;
-  color: #5B6475;
+  font-size: var(--sl-fs-caption);
+  color: var(--sl-muted);
 }
 
 /* --- Articles de contrat (accordéon) ------------------------------------- */
 .sl-articles {
   border-radius: 40rpx;
-  background: #FFFFFF;
-  border: 2rpx solid #E4E7EE;
+  background: var(--sl-white);
+  border: 2rpx solid var(--sl-border);
   overflow: hidden;
 }
 
 .sl-article {
-  border-bottom: 2rpx solid #EEF0F4;
+  border-bottom: 2rpx solid var(--sl-divider);
 }
 
 .sl-article__head {
@@ -268,18 +268,18 @@ page {
   height: 60rpx;
   flex: 0 0 60rpx;
   border-radius: 20rpx;
-  font-size: 26rpx;
-  font-weight: 800;
+  font-size: var(--sl-fs-body-sm);
+  font-weight: var(--sl-fw-extrabold);
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #F1F3F6;
-  color: #0F1E3D;
+  background: var(--sl-surface-3);
+  color: var(--sl-text);
 }
 
 .sl-article--open .sl-article__num {
-  background: #C8235F;
-  color: #FFFFFF;
+  background: var(--sl-berry);
+  color: var(--sl-on-dark);
 }
 
 .sl-article__titles {
@@ -289,13 +289,13 @@ page {
 }
 
 .sl-article__title {
-  font-size: 28rpx;
-  font-weight: 800;
+  font-size: var(--sl-fs-body);
+  font-weight: var(--sl-fw-extrabold);
 }
 
 .sl-article__hint {
-  font-size: 24rpx;
-  color: #5B6475;
+  font-size: var(--sl-fs-small);
+  color: var(--sl-muted);
 }
 
 .sl-article__chev {
@@ -311,9 +311,9 @@ page {
 .sl-article__text {
   display: block;
   padding: 0 32rpx 32rpx 116rpx;
-  font-size: 28rpx;
+  font-size: var(--sl-fs-body);
   line-height: 1.6;
-  color: #3A4458;
+  color: var(--sl-text-2);
 }
 
 /* --- Bouton audio (résumé en wolof) -------------------------------------- */
@@ -325,15 +325,15 @@ page {
   display: flex;
   align-items: center;
   gap: 24rpx;
-  font-size: 28rpx;
-  font-weight: 800;
-  background: #FDF1F5;
-  color: #9E1749;
+  font-size: var(--sl-fs-body);
+  font-weight: var(--sl-fw-extrabold);
+  background: var(--sl-berry-soft);
+  color: var(--sl-berry-dark);
 }
 
 .sl-audio--playing {
-  background: #C8235F;
-  color: #FFFFFF;
+  background: var(--sl-berry);
+  color: var(--sl-on-dark);
 }
 
 .sl-audio__label {
@@ -341,8 +341,8 @@ page {
 }
 
 .sl-audio__dur {
-  font-size: 24rpx;
-  font-weight: 700;
+  font-size: var(--sl-fs-small);
+  font-weight: var(--sl-fw-bold);
   opacity: 0.8;
 }
 
@@ -388,29 +388,29 @@ page {
   z-index: 80;
   padding: 24rpx 32rpx;
   border-radius: 32rpx;
-  background: #0F1E3D;
-  color: #FFFFFF;
-  font-size: 28rpx;
-  font-weight: 700;
+  background: var(--sl-navy);
+  color: var(--sl-on-dark);
+  font-size: var(--sl-fs-body);
+  font-weight: var(--sl-fw-bold);
 }
 
 /* --- Badges -------------------------------------------------------------- */
 .sl-badge {
   flex: 0 0 auto;
-  font-size: 24rpx;
-  font-weight: 800;
+  font-size: var(--sl-fs-small);
+  font-weight: var(--sl-fw-extrabold);
   padding: 12rpx 20rpx;
   border-radius: 999rpx;
 }
 
 .sl-badge--navy {
-  background: #0F1E3D;
-  color: #FFFFFF;
+  background: var(--sl-navy);
+  color: var(--sl-on-dark);
 }
 
 .sl-badge--green {
-  background: #11643F;
-  color: #FFFFFF;
+  background: var(--sl-success);
+  color: var(--sl-on-dark);
 }
 
 /* --- Max it (simulation) : fenêtre de paiement partagée ------------------- */
@@ -431,7 +431,7 @@ page {
 .sl-mx {
   width: 100%;
   border-radius: 48rpx;
-  background: #FFFFFF;
+  background: var(--sl-white);
   padding: 44rpx 40rpx;
   display: flex;
   flex-direction: column;
@@ -445,7 +445,7 @@ page {
   height: 120rpx;
   margin: 0 auto;
   border-radius: 60rpx;
-  background: #FDF1F5;
+  background: var(--sl-berry-soft);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -457,30 +457,30 @@ page {
 }
 
 .sl-mx-title {
-  font-size: 40rpx;
-  font-weight: 800;
+  font-size: var(--sl-fs-h3);
+  font-weight: var(--sl-fw-extrabold);
 }
 
 .sl-mx-title--sm {
-  font-size: 36rpx;
+  font-size: var(--sl-fs-title);
 }
 
 .sl-mx-amount {
   font-size: 60rpx;
-  font-weight: 800;
+  font-weight: var(--sl-fw-extrabold);
   letter-spacing: -0.02em;
 }
 
 .sl-mx-to {
-  font-size: 28rpx;
-  color: #3A4458;
+  font-size: var(--sl-fs-body);
+  color: var(--sl-text-2);
 }
 
 .sl-mx-note {
-  font-size: 26rpx;
+  font-size: var(--sl-fs-body-sm);
   line-height: 1.5;
-  color: #5B6475;
-  background: #F7F8FA;
+  color: var(--sl-muted);
+  background: var(--sl-surface-2);
   padding: 20rpx 24rpx;
   border-radius: 24rpx;
 }
@@ -493,9 +493,9 @@ page {
 .sl-mx-cancel {
   height: 92rpx;
   line-height: 92rpx;
-  color: #5B6475;
-  font-size: 28rpx;
-  font-weight: 700;
+  color: var(--sl-muted);
+  font-size: var(--sl-fs-body);
+  font-weight: var(--sl-fw-bold);
 }
 
 .sl-mx-spinner {
@@ -503,8 +503,8 @@ page {
   height: 112rpx;
   margin: 24rpx auto 8rpx;
   border-radius: 56rpx;
-  border: 10rpx solid #F3C3D5;
-  border-top-color: #C8235F;
+  border: 10rpx solid var(--sl-berry-border);
+  border-top-color: var(--sl-berry);
   box-sizing: border-box;
   animation: sl-spin 0.9s linear infinite;
 }
@@ -515,17 +515,17 @@ page {
 
 .sl-mx-sim {
   align-self: center;
-  font-size: 22rpx;
-  font-weight: 800;
+  font-size: var(--sl-fs-caption);
+  font-weight: var(--sl-fw-extrabold);
   letter-spacing: 0.12em;
-  color: #6B4A00;
-  background: #FFF4E0;
+  color: var(--sl-warning-text);
+  background: var(--sl-warning-bg);
   padding: 10rpx 20rpx;
   border-radius: 999rpx;
 }
 
 .sl-mx-box {
-  border: 4rpx dashed #C9CFDA;
+  border: 4rpx dashed var(--sl-border-strong);
   border-radius: 36rpx;
   padding: 32rpx;
   display: flex;
@@ -535,43 +535,43 @@ page {
 }
 
 .sl-mx-brand {
-  font-size: 36rpx;
-  font-weight: 800;
+  font-size: var(--sl-fs-title);
+  font-weight: var(--sl-fw-extrabold);
 }
 
 .sl-mx-row {
   display: flex;
   justify-content: space-between;
   gap: 20rpx;
-  font-size: 28rpx;
+  font-size: var(--sl-fs-body);
 }
 
 .sl-mx-row--total {
-  font-size: 32rpx;
+  font-size: var(--sl-fs-subtitle);
   padding-top: 16rpx;
-  border-top: 2rpx solid #EEF0F4;
+  border-top: 2rpx solid var(--sl-divider);
 }
 
 .sl-mx-small {
-  font-size: 24rpx;
+  font-size: var(--sl-fs-small);
   line-height: 1.5;
-  color: #5B6475;
+  color: var(--sl-muted);
 }
 
 .sl-mx-refuse {
   flex: none;
   height: 92rpx;
-  color: #A3261F;
-  font-size: 28rpx;
+  color: var(--sl-danger);
+  font-size: var(--sl-fs-body);
 }
 
 .sl-mx-muted {
-  font-size: 26rpx;
-  color: #5B6475;
+  font-size: var(--sl-fs-body-sm);
+  color: var(--sl-muted);
 }
 
 .sl-mx-strong {
-  font-weight: 800;
+  font-weight: var(--sl-fw-extrabold);
 }
 
 .sl-mx-right {

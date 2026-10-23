@@ -13,7 +13,7 @@
   margin: 32rpx 32rpx 0;
   padding: 20rpx;
   border-radius: 36rpx;
-  background: #F7F8FA;
+  background: var(--sl-surface-2);
   display: flex;
   align-items: center;
   gap: 24rpx;
@@ -35,25 +35,25 @@
 }
 
 .dv__logement-title {
-  font-size: 28rpx;
-  font-weight: 800;
+  font-size: var(--sl-fs-body);
+  font-weight: var(--sl-fw-extrabold);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
 .dv__logement-price {
-  font-size: 26rpx;
-  color: #5B6475;
+  font-size: var(--sl-fs-body-sm);
+  color: var(--sl-muted);
 }
 
 .dv__logement-owner {
   display: flex;
   align-items: center;
   gap: 8rpx;
-  font-size: 24rpx;
-  font-weight: 700;
-  color: #11643F;
+  font-size: var(--sl-fs-small);
+  font-weight: var(--sl-fw-bold);
+  color: var(--sl-success);
 }
 
 .dv__owner-ic {
@@ -78,10 +78,10 @@
   height: 52rpx;
   flex: 0 0 52rpx;
   border-radius: 26rpx;
-  background: #0F1E3D;
-  color: #FFFFFF;
-  font-size: 26rpx;
-  font-weight: 800;
+  background: var(--sl-navy);
+  color: var(--sl-on-dark);
+  font-size: var(--sl-fs-body-sm);
+  font-weight: var(--sl-fw-extrabold);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -89,8 +89,8 @@
 
 .dv__step-title {
   flex: 1;
-  font-size: 34rpx;
-  font-weight: 800;
+  font-size: var(--sl-fs-title-sm);
+  font-weight: var(--sl-fw-extrabold);
 }
 
 .dv__nav {
@@ -98,8 +98,8 @@
   height: 80rpx;
   box-sizing: border-box;
   border-radius: 40rpx;
-  border: 2rpx solid #E4E7EE;
-  background: #FFFFFF;
+  border: 2rpx solid var(--sl-border);
+  background: var(--sl-white);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -113,8 +113,8 @@
 .dv__hint {
   display: block;
   margin: 0 40rpx 20rpx 112rpx;
-  font-size: 24rpx;
-  color: #5B6475;
+  font-size: var(--sl-fs-small);
+  color: var(--sl-muted);
 }
 
 /* --- Jours --------------------------------------------------------------- */
@@ -132,31 +132,31 @@
   gap: 4rpx;
   padding: 20rpx 8rpx;
   border-radius: 32rpx;
-  border: 4rpx solid #E4E7EE;
-  background: #FFFFFF;
-  color: #0F1E3D;
+  border: 4rpx solid var(--sl-border);
+  background: var(--sl-white);
+  color: var(--sl-text);
 }
 
 .dv__day--on {
-  background: #0F1E3D;
-  border-color: #0F1E3D;
-  color: #FFFFFF;
+  background: var(--sl-navy);
+  border-color: var(--sl-navy);
+  color: var(--sl-on-dark);
 }
 
 .dv__day--off {
-  background: #F7F8FA;
-  border-color: #F7F8FA;
+  background: var(--sl-surface-2);
+  border-color: var(--sl-surface-2);
   color: #A3AAB8;
 }
 
 .dv__dow {
-  font-size: 24rpx;
-  font-weight: 700;
+  font-size: var(--sl-fs-small);
+  font-weight: var(--sl-fw-bold);
 }
 
 .dv__date {
-  font-size: 40rpx;
-  font-weight: 800;
+  font-size: var(--sl-fs-h3);
+  font-weight: var(--sl-fw-extrabold);
   line-height: 1.1;
 }
 
@@ -164,15 +164,15 @@
   margin-top: 4rpx;
   padding: 4rpx 14rpx;
   border-radius: 999rpx;
-  font-size: 22rpx;
-  font-weight: 800;
-  background: #E2F0EA;
-  color: #0D4F31;
+  font-size: var(--sl-fs-caption);
+  font-weight: var(--sl-fw-extrabold);
+  background: var(--sl-success-bg);
+  color: var(--sl-success-text);
 }
 
 .dv__day--on .dv__count {
   background: rgba(255, 255, 255, 0.16);
-  color: #FFFFFF;
+  color: var(--sl-on-dark);
 }
 
 .dv__day--off .dv__count {
@@ -192,10 +192,10 @@
   height: 112rpx;
   box-sizing: border-box;
   border-radius: 32rpx;
-  border: 4rpx solid #E4E7EE;
-  background: #FFFFFF;
-  font-size: 34rpx;
-  font-weight: 800;
+  border: 4rpx solid var(--sl-border);
+  background: var(--sl-white);
+  font-size: var(--sl-fs-title-sm);
+  font-weight: var(--sl-fw-extrabold);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -203,9 +203,9 @@
 }
 
 .dv__slot--on {
-  background: #C8235F;
-  border-color: #C8235F;
-  color: #FFFFFF;
+  background: var(--sl-berry);
+  border-color: var(--sl-berry);
+  color: var(--sl-on-dark);
 }
 
 .dv__slot-ic {
@@ -219,9 +219,9 @@
   display: inline-flex;
   align-items: center;
   gap: 12rpx;
-  font-size: 26rpx;
-  font-weight: 700;
-  color: #C8235F;
+  font-size: var(--sl-fs-body-sm);
+  font-weight: var(--sl-fw-bold);
+  color: var(--sl-berry);
 }
 
 .dv__write-ic {
@@ -237,10 +237,10 @@
 .dv__msg-add {
   height: 100rpx;
   border-radius: 28rpx;
-  border: 2rpx dashed #C9CFDA;
-  background: #FFFFFF;
-  font-size: 28rpx;
-  font-weight: 700;
+  border: 2rpx dashed var(--sl-border-strong);
+  background: var(--sl-white);
+  font-size: var(--sl-fs-body);
+  font-weight: var(--sl-fw-bold);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -249,8 +249,8 @@
 .dv__msg-label {
   display: block;
   margin: 0 8rpx 16rpx;
-  font-size: 28rpx;
-  font-weight: 800;
+  font-size: var(--sl-fs-body);
+  font-weight: var(--sl-fw-extrabold);
 }
 
 .dv__quick {
@@ -265,11 +265,11 @@
   padding: 0 24rpx;
   box-sizing: border-box;
   border-radius: 999rpx;
-  border: 2rpx solid #F3C3D5;
-  background: #FDF1F5;
-  color: #9E1749;
-  font-size: 26rpx;
-  font-weight: 700;
+  border: 2rpx solid var(--sl-berry-border);
+  background: var(--sl-berry-soft);
+  color: var(--sl-berry-dark);
+  font-size: var(--sl-fs-body-sm);
+  font-weight: var(--sl-fw-bold);
   display: flex;
   align-items: center;
 }
@@ -280,13 +280,13 @@
   box-sizing: border-box;
   padding: 24rpx;
   border-radius: 28rpx;
-  border: 2rpx solid #E4E7EE;
-  font-size: 30rpx;
-  color: #0F1E3D;
+  border: 2rpx solid var(--sl-border);
+  font-size: var(--sl-fs-body-lg);
+  color: var(--sl-text);
 }
 
 .dv__placeholder {
-  color: #7A8294;
+  color: var(--sl-placeholder);
 }
 
 /* --- Louer sans visite --------------------------------------------------- */
@@ -294,8 +294,8 @@
   margin: 36rpx 32rpx 0;
   padding: 28rpx;
   border-radius: 36rpx;
-  background: #0F1E3D;
-  color: #FFFFFF;
+  background: var(--sl-navy);
+  color: var(--sl-on-dark);
   display: flex;
   align-items: center;
   gap: 24rpx;
@@ -319,13 +319,13 @@
 }
 
 .dv__remote-title {
-  font-size: 30rpx;
-  font-weight: 800;
+  font-size: var(--sl-fs-body-lg);
+  font-weight: var(--sl-fw-extrabold);
 }
 
 .dv__remote-sub {
-  font-size: 24rpx;
-  color: #C9D0DE;
+  font-size: var(--sl-fs-small);
+  color: var(--sl-border-strong);
 }
 
 .dv__remote-chev {
@@ -349,8 +349,8 @@
   align-items: center;
   justify-content: center;
   gap: 12rpx;
-  font-size: 28rpx;
-  font-weight: 700;
+  font-size: var(--sl-fs-body);
+  font-weight: var(--sl-fw-bold);
 }
 
 .dv__choice-ic {
@@ -361,7 +361,7 @@
 .dv__send {
   flex: none;
   height: 108rpx;
-  font-size: 32rpx;
+  font-size: var(--sl-fs-subtitle);
 }
 
 /* --- Confirmation -------------------------------------------------------- */
@@ -378,7 +378,7 @@
   width: 144rpx;
   height: 144rpx;
   border-radius: 72rpx;
-  background: #E2F0EA;
+  background: var(--sl-success-bg);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -391,15 +391,15 @@
 
 .dv__done-title {
   margin: 32rpx 0 12rpx;
-  font-size: 44rpx;
-  font-weight: 800;
+  font-size: var(--sl-fs-h2);
+  font-weight: var(--sl-fw-extrabold);
   text-align: center;
 }
 
 .dv__done-text {
-  font-size: 28rpx;
+  font-size: var(--sl-fs-body);
   line-height: 1.5;
-  color: #5B6475;
+  color: var(--sl-muted);
   text-align: center;
 }
 
@@ -407,7 +407,7 @@
   margin-top: 44rpx;
   padding: 28rpx 32rpx;
   border-radius: 36rpx;
-  background: #F7F8FA;
+  background: var(--sl-surface-2);
   display: flex;
   align-items: center;
   gap: 24rpx;
@@ -418,8 +418,8 @@
   height: 96rpx;
   flex: 0 0 96rpx;
   border-radius: 28rpx;
-  background: #0F1E3D;
-  color: #FFFFFF;
+  background: var(--sl-navy);
+  color: var(--sl-on-dark);
   line-height: 1;
   display: flex;
   flex-direction: column;
@@ -428,13 +428,13 @@
 }
 
 .dv__done-dow {
-  font-size: 20rpx;
-  font-weight: 700;
+  font-size: var(--sl-fs-micro);
+  font-weight: var(--sl-fw-bold);
 }
 
 .dv__done-num {
-  font-size: 36rpx;
-  font-weight: 800;
+  font-size: var(--sl-fs-title);
+  font-weight: var(--sl-fw-extrabold);
 }
 
 .dv__done-when-text {
@@ -444,35 +444,35 @@
 }
 
 .dv__done-full {
-  font-size: 30rpx;
-  font-weight: 800;
+  font-size: var(--sl-fs-body-lg);
+  font-weight: var(--sl-fw-extrabold);
 }
 
 .dv__done-place {
-  font-size: 26rpx;
-  color: #5B6475;
+  font-size: var(--sl-fs-body-sm);
+  color: var(--sl-muted);
 }
 
 .dv__done-status {
   margin-top: 28rpx;
   padding: 28rpx 32rpx;
   border-radius: 32rpx;
-  border: 2rpx solid #E4E7EE;
+  border: 2rpx solid var(--sl-border);
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
 
 .dv__done-status-label {
-  font-size: 28rpx;
-  font-weight: 800;
+  font-size: var(--sl-fs-body);
+  font-weight: var(--sl-fw-extrabold);
 }
 
 .dv__done-badge {
-  font-size: 24rpx;
-  font-weight: 800;
-  color: #6B4A00;
-  background: #FFF4E0;
+  font-size: var(--sl-fs-small);
+  font-weight: var(--sl-fw-extrabold);
+  color: var(--sl-warning-text);
+  background: var(--sl-warning-bg);
   padding: 10rpx 20rpx;
   border-radius: 999rpx;
 }
@@ -488,12 +488,12 @@
 .dv__done-follow {
   flex: none;
   height: 112rpx;
-  font-size: 32rpx;
+  font-size: var(--sl-fs-subtitle);
 }
 
 .dv__done-edit {
   flex: none;
   height: 96rpx;
   border-radius: 28rpx;
-  font-size: 28rpx;
+  font-size: var(--sl-fs-body);
 }

@@ -1,0 +1,174 @@
+/* ==========================================================================
+   SAMA LOYER — DESIGN TOKENS (source unique de vérité)
+   Couleurs, typographie, rayons, espacements et ombres de toute l'appli.
+
+   Utilisation dans un .wxss :   color: var(--sl-text);
+                                 font-size: var(--sl-fs-body);
+   Les variables sont déclarées sur « page » : elles sont aussi visibles dans
+   les composants personnalisés. Même palette en JS : utils/constants/theme.js
+   Guide complet : docs/DESIGN_SYSTEM.md
+   ========================================================================== */
+
+page {
+  /* --- Marque ------------------------------------------------------------ */
+  --sl-navy: #0F1E3D;            /* bleu nuit : textes, boutons principaux */
+  --sl-navy-deep: #0E1B38;       /* fonds sombres (héros, cartes premium) */
+  --sl-berry: #C8235F;           /* framboise : accents, prix, actions clés */
+  --sl-berry-dark: #9E1749;      /* framboise appuyée (survol, texte sur rose) */
+  --sl-berry-tint: #FDE8EE;      /* fond rose des éléments sélectionnés */
+  --sl-berry-soft: #FDF1F5;      /* fond rose très léger */
+  --sl-berry-border: #F3C3D5;    /* bordure rose */
+  --sl-berry-bright: #E6007A;    /* rose vif du logo */
+  --sl-gradient-brand: linear-gradient(135deg, #E6007A 0%, #C8235F 100%); /* icône du logo */
+
+  /* --- Textes ------------------------------------------------------------- */
+  --sl-text: #0F1E3D;            /* texte principal */
+  --sl-text-2: #3A4458;          /* texte secondaire appuyé */
+  --sl-muted: #5B6475;           /* texte secondaire */
+  --sl-placeholder: #7A8294;     /* indications, champs vides */
+  --sl-on-dark: #FFFFFF;         /* texte sur fond sombre ou coloré */
+
+  /* --- Surfaces ----------------------------------------------------------- */
+  --sl-white: #FFFFFF;
+  --sl-bg: #F8F9FA;              /* fond d'écran gris très clair */
+  --sl-surface-2: #F7F8FA;       /* blocs secondaires */
+  --sl-surface-3: #F1F3F6;       /* champs de saisie, pastilles */
+  --sl-info-bg: #E3E9F5;         /* fond bleu pâle (info, statut neutre) */
+
+  /* --- Bordures ----------------------------------------------------------- */
+  --sl-border: #E4E7EE;
+  --sl-divider: #EEF0F4;
+  --sl-border-strong: #C9D0DE;
+
+  /* --- États -------------------------------------------------------------- */
+  --sl-success: #11643F;
+  --sl-success-text: #0D4F31;
+  --sl-success-bg: #E2F0EA;
+  --sl-success-soft: #EEF7F2;
+  --sl-green: #007C3D;           /* vert « payé / validé » */
+  --sl-green-bg: #EAF7EE;
+  --sl-danger: #A3261F;
+  --sl-danger-bg: #FDECEC;
+  --sl-warning: #8A5A00;
+  --sl-warning-text: #6B4A00;
+  --sl-warning-bg: #FFF4E0;
+
+  /* --- Typographie -------------------------------------------------------- */
+  --sl-font: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --sl-font-mono: ui-monospace, Menlo, Consolas, monospace;
+
+  --sl-fs-micro: 20rpx;          /* mentions minuscules, badges */
+  --sl-fs-caption: 22rpx;        /* légendes */
+  --sl-fs-small: 24rpx;          /* méta, dates */
+  --sl-fs-body-sm: 26rpx;        /* texte courant compact */
+  --sl-fs-body: 28rpx;           /* texte courant */
+  --sl-fs-body-lg: 30rpx;        /* texte mis en avant, boutons */
+  --sl-fs-subtitle: 32rpx;       /* sous-titres, titres de carte */
+  --sl-fs-title-sm: 34rpx;       /* titres de barre */
+  --sl-fs-title: 36rpx;          /* titres de section */
+  --sl-fs-title-lg: 38rpx;
+  --sl-fs-h3: 40rpx;
+  --sl-fs-h2: 44rpx;             /* titres d'écran */
+  --sl-fs-h1: 52rpx;             /* grands titres */
+
+  --sl-fw-regular: 400;
+  --sl-fw-medium: 500;
+  --sl-fw-semibold: 600;
+  --sl-fw-bold: 700;
+  --sl-fw-extrabold: 800;
+  --sl-fw-black: 900;
+
+  --sl-lh-tight: 1.2;
+  --sl-lh-normal: 1.45;
+
+  /* --- Rayons -------------------------------------------------------------- */
+  --sl-radius-xs: 8rpx;
+  --sl-radius-sm: 12rpx;
+  --sl-radius-md: 20rpx;
+  --sl-radius-lg: 28rpx;
+  --sl-radius-xl: 36rpx;
+  --sl-radius-pill: 999rpx;
+
+  /* --- Espacements (multiples de 8 rpx) --------------------------------- */
+  --sl-space-1: 8rpx;
+  --sl-space-2: 16rpx;
+  --sl-space-3: 24rpx;
+  --sl-space-4: 32rpx;
+  --sl-space-5: 40rpx;
+  --sl-space-6: 48rpx;
+  --sl-gutter: 32rpx;            /* marge latérale des écrans */
+
+  /* --- Ombres --------------------------------------------------------------- */
+  --sl-shadow-card: 0 4rpx 18rpx rgba(15, 30, 61, 0.05);
+  --sl-shadow-raised: 0 12rpx 32rpx rgba(15, 30, 61, 0.12);
+  --sl-shadow-berry: 0 10rpx 24rpx rgba(200, 35, 95, 0.28);
+}
+
+/* ==========================================================================
+   STYLES DE TEXTE PRÊTS À L'EMPLOI
+   <text class="sl-h2">Mes loyers</text>  ·  <text class="sl-body sl-muted">…</text>
+   ========================================================================== */
+.sl-h1 {
+  font-size: var(--sl-fs-h1);
+  font-weight: var(--sl-fw-extrabold);
+  line-height: var(--sl-lh-tight);
+  letter-spacing: -0.02em;
+  color: var(--sl-text);
+}
+
+.sl-h2 {
+  font-size: var(--sl-fs-h2);
+  font-weight: var(--sl-fw-extrabold);
+  line-height: var(--sl-lh-tight);
+  letter-spacing: -0.02em;
+  color: var(--sl-text);
+}
+
+.sl-title {
+  font-size: var(--sl-fs-title);
+  font-weight: var(--sl-fw-extrabold);
+  line-height: var(--sl-lh-tight);
+  color: var(--sl-text);
+}
+
+.sl-subtitle {
+  font-size: var(--sl-fs-subtitle);
+  font-weight: var(--sl-fw-bold);
+  color: var(--sl-text);
+}
+
+.sl-body {
+  font-size: var(--sl-fs-body);
+  line-height: var(--sl-lh-normal);
+  color: var(--sl-text);
+}
+
+.sl-body-sm {
+  font-size: var(--sl-fs-body-sm);
+  line-height: var(--sl-lh-normal);
+}
+
+.sl-caption {
+  font-size: var(--sl-fs-caption);
+  color: var(--sl-muted);
+}
+
+.sl-label {
+  font-size: var(--sl-fs-small);
+  font-weight: var(--sl-fw-extrabold);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--sl-muted);
+}
+
+.sl-amount {
+  font-weight: var(--sl-fw-extrabold);
+  color: var(--sl-berry);
+}
+
+/* Couleurs de texte */
+.sl-muted { color: var(--sl-muted); }
+.sl-berry { color: var(--sl-berry); }
+.sl-navy { color: var(--sl-navy); }
+.sl-success { color: var(--sl-success); }
+.sl-danger { color: var(--sl-danger); }

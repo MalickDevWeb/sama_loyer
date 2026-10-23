@@ -1,7 +1,7 @@
 @import "/styles/sama-ui.wxss";
 
 page {
-  background: #F7F8FA;
+  background: var(--sl-surface-2);
 }
 
 .hor__body {
@@ -13,21 +13,21 @@ page {
 .hor__intro {
   display: block;
   margin: 32rpx 8rpx 24rpx;
-  font-size: 28rpx;
+  font-size: var(--sl-fs-body);
   line-height: 1.5;
-  color: #3A4458;
+  color: var(--sl-text-2);
 }
 
 .hor__label {
   display: block;
   margin: 0 8rpx 16rpx;
-  font-size: 26rpx;
-  font-weight: 800;
+  font-size: var(--sl-fs-body-sm);
+  font-weight: var(--sl-fw-extrabold);
 }
 
 .hor__muted {
-  font-size: 24rpx;
-  color: #5B6475;
+  font-size: var(--sl-fs-small);
+  color: var(--sl-muted);
 }
 
 /* --- Choix du logement --------------------------------------------------- */
@@ -49,26 +49,26 @@ page {
   line-height: 80rpx;
   padding: 0 28rpx;
   border-radius: 999rpx;
-  font-size: 26rpx;
-  font-weight: 700;
-  background: #FFFFFF;
-  color: #0F1E3D;
-  border: 2rpx solid #E4E7EE;
+  font-size: var(--sl-fs-body-sm);
+  font-weight: var(--sl-fw-bold);
+  background: var(--sl-white);
+  color: var(--sl-text);
+  border: 2rpx solid var(--sl-border);
   box-sizing: border-box;
 }
 
 .hor__home--on {
-  background: #0F1E3D;
-  color: #FFFFFF;
-  border-color: #0F1E3D;
+  background: var(--sl-navy);
+  color: var(--sl-on-dark);
+  border-color: var(--sl-navy);
 }
 
 /* --- Cartes -------------------------------------------------------------- */
 .hor__card {
   margin-top: 28rpx;
   border-radius: 40rpx;
-  background: #FFFFFF;
-  border: 2rpx solid #E4E7EE;
+  background: var(--sl-white);
+  border: 2rpx solid var(--sl-border);
   overflow: hidden;
 }
 
@@ -88,14 +88,14 @@ page {
 }
 
 .hor__card-title {
-  font-size: 30rpx;
-  font-weight: 800;
+  font-size: var(--sl-fs-body-lg);
+  font-weight: var(--sl-fw-extrabold);
 }
 
 /* --- Semaine ------------------------------------------------------------- */
 .hor__day {
   padding: 20rpx 28rpx;
-  border-top: 2rpx solid #EEF0F4;
+  border-top: 2rpx solid var(--sl-divider);
 }
 
 .hor__day-head {
@@ -105,8 +105,8 @@ page {
 }
 
 .hor__day-name {
-  font-size: 28rpx;
-  font-weight: 800;
+  font-size: var(--sl-fs-body);
+  font-weight: var(--sl-fw-extrabold);
 }
 
 .hor__hours {
@@ -122,27 +122,27 @@ page {
   padding: 0 20rpx;
   box-sizing: border-box;
   border-radius: 20rpx;
-  font-size: 26rpx;
-  font-weight: 800;
+  font-size: var(--sl-fs-body-sm);
+  font-weight: var(--sl-fw-extrabold);
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #FFFFFF;
-  color: #3A4458;
-  border: 2rpx solid #E4E7EE;
+  background: var(--sl-white);
+  color: var(--sl-text-2);
+  border: 2rpx solid var(--sl-border);
 }
 
 .hor__hour--on {
-  background: #C8235F;
-  color: #FFFFFF;
-  border-color: #C8235F;
+  background: var(--sl-berry);
+  color: var(--sl-on-dark);
+  border-color: var(--sl-berry);
 }
 
 .hor__closed {
   display: block;
   margin-top: 4rpx;
-  font-size: 24rpx;
-  color: #7A8294;
+  font-size: var(--sl-fs-small);
+  color: var(--sl-placeholder);
 }
 
 /* --- Jours bloqués ------------------------------------------------------- */
@@ -151,10 +151,10 @@ page {
   line-height: 72rpx;
   padding: 0 24rpx;
   border-radius: 20rpx;
-  background: #0F1E3D;
-  color: #FFFFFF;
-  font-size: 24rpx;
-  font-weight: 800;
+  background: var(--sl-navy);
+  color: var(--sl-on-dark);
+  font-size: var(--sl-fs-small);
+  font-weight: var(--sl-fw-extrabold);
 }
 
 .hor__block {
@@ -164,9 +164,9 @@ page {
   padding: 16rpx 20rpx;
   margin-top: 12rpx;
   border-radius: 24rpx;
-  background: #FDF3F3;
-  font-size: 26rpx;
-  font-weight: 700;
+  background: var(--sl-berry-soft);
+  font-size: var(--sl-fs-body-sm);
+  font-weight: var(--sl-fw-bold);
   color: #8A2019;
 }
 
@@ -199,7 +199,7 @@ page {
 }
 
 .hor__remote-sub {
-  font-size: 24rpx;
+  font-size: var(--sl-fs-small);
   line-height: 1.45;
-  color: #5B6475;
+  color: var(--sl-muted);
 }

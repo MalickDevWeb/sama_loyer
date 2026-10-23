@@ -9,7 +9,7 @@
   flex-direction: column;
   height: 100vh;
   overflow: hidden;
-  background-color: #F8F9FA;
+  background-color: var(--sl-bg);
   box-sizing: border-box;
 }
 
@@ -24,29 +24,29 @@
 /* En-tête */
 .demandes-header {
   padding: 14rpx 32rpx 20rpx;
-  background-color: #FFFFFF;
-  border-bottom: 1rpx solid #ECEFF2;
+  background-color: var(--sl-white);
+  border-bottom: 1rpx solid var(--sl-divider);
 }
 
 .page-title {
   display: block;
-  font-size: 44rpx;
-  font-weight: 800;
-  color: #0F1E3D;
+  font-size: var(--sl-fs-h2);
+  font-weight: var(--sl-fw-extrabold);
+  color: var(--sl-text);
   margin-bottom: 6rpx;
 }
 
 .page-subtitle {
   display: block;
-  font-size: 26rpx;
-  color: #5B6475;
+  font-size: var(--sl-fs-body-sm);
+  color: var(--sl-muted);
   margin-bottom: 24rpx;
 }
 
 /* Tabs Pilule */
 .tabs-outer-pill {
   display: flex;
-  background-color: #EAEEF4;
+  background-color: var(--sl-divider);
   border-radius: 24rpx;
   padding: 6rpx;
 }
@@ -58,15 +58,15 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 26rpx;
-  font-weight: 700;
-  color: #5B6475;
+  font-size: var(--sl-fs-body-sm);
+  font-weight: var(--sl-fw-bold);
+  color: var(--sl-muted);
   transition: all 0.2s ease;
 }
 
 .tab-item--active {
-  background-color: #FFFFFF;
-  color: #0F1E3D;
+  background-color: var(--sl-white);
+  color: var(--sl-text);
   box-shadow: 0 4rpx 14rpx rgba(15, 30, 61, 0.08);
 }
 
@@ -79,10 +79,10 @@
 }
 
 .demande-card {
-  background-color: #FFFFFF;
+  background-color: var(--sl-white);
   border-radius: 28rpx;
   padding: 28rpx;
-  border: 1rpx solid #ECEFF2;
+  border: 1rpx solid var(--sl-divider);
   box-shadow: 0 4rpx 16rpx rgba(15, 30, 61, 0.04);
 }
 
@@ -110,9 +110,9 @@
 }
 
 .avatar-sm-text {
-  font-size: 28rpx;
-  font-weight: 800;
-  color: #FFFFFF;
+  font-size: var(--sl-fs-body);
+  font-weight: var(--sl-fw-extrabold);
+  color: var(--sl-on-dark);
 }
 
 .user-text-col {
@@ -121,33 +121,33 @@
 }
 
 .demande-name {
-  font-size: 30rpx;
-  font-weight: 800;
-  color: #0F1E3D;
+  font-size: var(--sl-fs-body-lg);
+  font-weight: var(--sl-fw-extrabold);
+  color: var(--sl-text);
   margin-bottom: 2rpx;
 }
 
 .demande-prop {
-  font-size: 24rpx;
-  color: #5B6475;
+  font-size: var(--sl-fs-small);
+  color: var(--sl-muted);
 }
 
 /* Badges */
 .status-badge-demande {
-  font-size: 22rpx;
-  font-weight: 700;
+  font-size: var(--sl-fs-caption);
+  font-weight: var(--sl-fw-bold);
   padding: 6rpx 20rpx;
   border-radius: 16rpx;
 }
 
 .badge-yellow {
-  background-color: #FFF3DC;
+  background-color: var(--sl-warning-bg);
   color: #965700;
 }
 
 .badge-green {
-  background-color: #EAF7EE;
-  color: #007C3D;
+  background-color: var(--sl-green-bg);
+  color: var(--sl-green);
 }
 
 /* Slot box */
@@ -155,20 +155,20 @@
   display: flex;
   align-items: center;
   gap: 14rpx;
-  background-color: #F4F6F9;
+  background-color: var(--sl-surface-2);
   padding: 18rpx 22rpx;
   border-radius: 18rpx;
   margin-bottom: 0;
 }
 
 .cal-emoji {
-  font-size: 28rpx;
+  font-size: var(--sl-fs-body);
 }
 
 .slot-text {
-  font-size: 26rpx;
-  font-weight: 800;
-  color: #0F1E3D;
+  font-size: var(--sl-fs-body-sm);
+  font-weight: var(--sl-fw-extrabold);
+  color: var(--sl-text);
 }
 
 /* Expansion container */
@@ -186,7 +186,7 @@
   gap: 12rpx;
   padding: 18rpx 0 4rpx;
   margin-top: 16rpx;
-  border-top: 1rpx solid #F0F2F6;
+  border-top: 1rpx solid var(--sl-surface-3);
 }
 
 .demande-toggle--hover {
@@ -194,9 +194,9 @@
 }
 
 .demande-toggle-text {
-  font-size: 26rpx;
-  font-weight: 700;
-  color: #C8235F;
+  font-size: var(--sl-fs-body-sm);
+  font-weight: var(--sl-fw-bold);
+  color: var(--sl-berry);
 }
 
 .demande-toggle-ic {
@@ -218,24 +218,24 @@
 
 .demande-quote-text {
   display: block;
-  font-size: 26rpx;
+  font-size: var(--sl-fs-body-sm);
   color: #333F53;
   line-height: 1.45;
 }
 
 /* Notice box SMS */
 .accepted-notice-box {
-  background-color: #EAF7EE;
+  background-color: var(--sl-green-bg);
   border-radius: 18rpx;
   padding: 20rpx 24rpx;
   margin-top: 6rpx;
 }
 
 .notice-sms-text {
-  font-size: 24rpx;
-  color: #007C3D;
+  font-size: var(--sl-fs-small);
+  color: var(--sl-green);
   line-height: 1.4;
-  font-weight: 500;
+  font-weight: var(--sl-fw-medium);
 }
 
 /* Action buttons */
@@ -253,11 +253,11 @@
   flex: 1;
   height: 88rpx;
   border-radius: 20rpx;
-  background-color: #FFFFFF;
-  border: 1.5rpx solid #E2E8F0;
+  background-color: var(--sl-white);
+  border: 1.5rpx solid var(--sl-border);
   color: #A82246;
-  font-size: 28rpx;
-  font-weight: 800;
+  font-size: var(--sl-fs-body);
+  font-weight: var(--sl-fw-extrabold);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -268,9 +268,9 @@
   height: 88rpx;
   border-radius: 20rpx;
   background-color: #0F6038;
-  color: #FFFFFF;
-  font-size: 28rpx;
-  font-weight: 800;
+  color: var(--sl-on-dark);
+  font-size: var(--sl-fs-body);
+  font-weight: var(--sl-fw-extrabold);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -286,19 +286,19 @@
 }
 
 .chat-bubble-icon {
-  font-size: 26rpx;
-  color: #5B6475;
+  font-size: var(--sl-fs-body-sm);
+  color: var(--sl-muted);
 }
 
 .propose-text {
   font-size: 25rpx;
-  font-weight: 600;
-  color: #5B6475;
+  font-weight: var(--sl-fw-semibold);
+  color: var(--sl-muted);
 }
 
 /* Messages & Clients Extra Styles */
 .msg-time {
-  font-size: 22rpx;
+  font-size: var(--sl-fs-caption);
   color: #8C96A6;
 }
 
@@ -311,30 +311,30 @@
 
 .msg-preview-text {
   flex: 1;
-  font-size: 24rpx;
+  font-size: var(--sl-fs-small);
   color: #333F53;
 }
 
 .msg-unread-badge {
-  background-color: #C8235F;
-  color: #FFFFFF;
-  font-size: 20rpx;
-  font-weight: 700;
+  background-color: var(--sl-berry);
+  color: var(--sl-on-dark);
+  font-size: var(--sl-fs-micro);
+  font-weight: var(--sl-fw-bold);
   padding: 4rpx 14rpx;
   border-radius: 20rpx;
 }
 
 .msg-event-pill {
   display: inline-block;
-  background-color: #F4F6F9;
+  background-color: var(--sl-surface-2);
   border-radius: 12rpx;
   padding: 8rpx 16rpx;
-  font-size: 22rpx;
-  color: #5B6475;
+  font-size: var(--sl-fs-caption);
+  color: var(--sl-muted);
 }
 
 .client-detail-notice {
-  background-color: #F0F9F4;
+  background-color: var(--sl-success-soft);
   border: 1rpx solid #CCEBD9;
   border-radius: 16rpx;
   padding: 16rpx 20rpx;
@@ -348,11 +348,11 @@
   width: 100%;
   height: 88rpx;
   border-radius: 44rpx;
-  background-color: #FFFFFF;
+  background-color: var(--sl-white);
   border: 1.5rpx solid #D5DAE1;
-  color: #0F1E3D;
-  font-size: 26rpx;
-  font-weight: 700;
+  color: var(--sl-text);
+  font-size: var(--sl-fs-body-sm);
+  font-weight: var(--sl-fw-bold);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -370,12 +370,12 @@
   gap: 20rpx;
   padding: 24rpx 28rpx;
   border-radius: 32rpx;
-  background: #FFFFFF;
-  border: 2rpx solid #E4E7EE;
+  background: var(--sl-white);
+  border: 2rpx solid var(--sl-border);
 }
 
 .horaires-link--hover {
-  background: #F7F8FA;
+  background: var(--sl-surface-2);
 }
 
 .horaires-link__icon {
@@ -390,14 +390,14 @@
 }
 
 .horaires-link__title {
-  font-size: 28rpx;
-  font-weight: 800;
-  color: #0F1E3D;
+  font-size: var(--sl-fs-body);
+  font-weight: var(--sl-fw-extrabold);
+  color: var(--sl-text);
 }
 
 .horaires-link__sub {
-  font-size: 24rpx;
-  color: #5B6475;
+  font-size: var(--sl-fs-small);
+  color: var(--sl-muted);
 }
 
 .horaires-link__chev {

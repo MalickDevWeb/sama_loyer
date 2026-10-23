@@ -29,7 +29,7 @@
 .chip {
     padding: 21.34rpx 41.66rpx;
     border-radius: 999rpx;
-    background: #ffffff;
+    background: var(--sl-white);
     border: 2rpx solid #dcded8;
     min-height: 84rpx;
     box-sizing: border-box;
@@ -41,9 +41,9 @@
 }
 
 .chip-text {
-    font-family: Inter, sans-serif;
-    font-size: 28rpx;
-    font-weight: 500;
+    font-family: var(--sl-font);
+    font-size: var(--sl-fs-body);
+    font-weight: var(--sl-fw-medium);
     line-height: 40rpx;
     letter-spacing: 0;
     text-align: center;
@@ -51,8 +51,8 @@
 }
 
 .chip-text-active {
-    color: #ffffff;
-    font-weight: 500;
+    color: var(--sl-on-dark);
+    font-weight: var(--sl-fw-medium);
 }
 
 .chip-first {

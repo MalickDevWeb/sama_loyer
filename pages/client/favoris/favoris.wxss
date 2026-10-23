@@ -17,16 +17,16 @@
 .fav__title {
   display: block;
   margin-top: 4rpx;
-  font-size: 52rpx;
-  font-weight: 800;
+  font-size: var(--sl-fs-h1);
+  font-weight: var(--sl-fw-extrabold);
   letter-spacing: -0.02em;
 }
 
 .fav__subtitle {
   display: block;
   margin-top: 8rpx;
-  font-size: 28rpx;
-  color: #5B6475;
+  font-size: var(--sl-fs-body);
+  color: var(--sl-muted);
 }
 
 /* --- Onglets ------------------------------------------------------------- */
@@ -41,19 +41,19 @@
   padding: 0 32rpx;
   box-sizing: border-box;
   border-radius: 999rpx;
-  font-size: 28rpx;
-  font-weight: 700;
+  font-size: var(--sl-fs-body);
+  font-weight: var(--sl-fw-bold);
   display: flex;
   align-items: center;
-  background: #FFFFFF;
-  color: #0F1E3D;
-  border: 2rpx solid #E4E7EE;
+  background: var(--sl-white);
+  color: var(--sl-text);
+  border: 2rpx solid var(--sl-border);
 }
 
 .fav__pill--on {
-  background: #0F1E3D;
-  color: #FFFFFF;
-  border-color: #0F1E3D;
+  background: var(--sl-navy);
+  color: var(--sl-on-dark);
+  border-color: var(--sl-navy);
 }
 
 /* --- Cartes -------------------------------------------------------------- */
@@ -70,13 +70,13 @@
   gap: 24rpx;
   padding: 20rpx;
   border-radius: 36rpx;
-  border: 2rpx solid #E4E7EE;
-  background: #FFFFFF;
+  border: 2rpx solid var(--sl-border);
+  background: var(--sl-white);
   box-shadow: 0 4rpx 16rpx rgba(15, 30, 61, 0.04);
 }
 
 .fav__card--hover {
-  background: #F7F8FA;
+  background: var(--sl-surface-2);
 }
 
 .fav__card--gone {
@@ -107,10 +107,10 @@
   bottom: 12rpx;
   padding: 6rpx 14rpx;
   border-radius: 999rpx;
-  background: #C8235F;
-  color: #FFFFFF;
-  font-size: 20rpx;
-  font-weight: 800;
+  background: var(--sl-berry);
+  color: var(--sl-on-dark);
+  font-size: var(--sl-fs-micro);
+  font-weight: var(--sl-fw-extrabold);
 }
 
 .fav__info {
@@ -123,46 +123,46 @@
 }
 
 .fav__price {
-  font-size: 34rpx;
-  font-weight: 800;
+  font-size: var(--sl-fs-title-sm);
+  font-weight: var(--sl-fw-extrabold);
 }
 
 .fav__unit {
-  font-size: 22rpx;
-  font-weight: 600;
-  color: #5B6475;
+  font-size: var(--sl-fs-caption);
+  font-weight: var(--sl-fw-semibold);
+  color: var(--sl-muted);
 }
 
 .fav__name {
-  font-size: 28rpx;
-  font-weight: 700;
+  font-size: var(--sl-fs-body);
+  font-weight: var(--sl-fw-bold);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
 .fav__place {
-  font-size: 26rpx;
-  color: #5B6475;
+  font-size: var(--sl-fs-body-sm);
+  color: var(--sl-muted);
 }
 
 .fav__status {
-  font-size: 24rpx;
-  font-weight: 800;
-  color: #11643F;
+  font-size: var(--sl-fs-small);
+  font-weight: var(--sl-fw-extrabold);
+  color: var(--sl-success);
 }
 
 .fav__status--price-drop {
-  color: #C8235F;
+  color: var(--sl-berry);
 }
 
 .fav__status--rented {
-  color: #A3261F;
+  color: var(--sl-danger);
 }
 
 .fav__saved {
-  font-size: 24rpx;
-  color: #5B6475;
+  font-size: var(--sl-fs-small);
+  color: var(--sl-muted);
 }
 
 .fav__heart {
@@ -208,14 +208,14 @@
 }
 
 .fav__empty-title {
-  font-size: 32rpx;
-  font-weight: 800;
+  font-size: var(--sl-fs-subtitle);
+  font-weight: var(--sl-fw-extrabold);
 }
 
 .fav__empty-text {
   margin: 12rpx 0 32rpx;
-  font-size: 26rpx;
-  color: #5B6475;
+  font-size: var(--sl-fs-body-sm);
+  color: var(--sl-muted);
 }
 
 .fav__empty-btn {
@@ -233,8 +233,8 @@
   z-index: 40;
   padding: 12rpx 12rpx 12rpx 32rpx;
   border-radius: 32rpx;
-  background: #0F1E3D;
-  color: #FFFFFF;
+  background: var(--sl-navy);
+  color: var(--sl-on-dark);
   box-shadow: 0 12rpx 36rpx rgba(15, 30, 61, 0.25);
   display: flex;
   align-items: center;
@@ -243,18 +243,18 @@
 }
 
 .fav__undo-text {
-  font-size: 28rpx;
-  font-weight: 600;
+  font-size: var(--sl-fs-body);
+  font-weight: var(--sl-fw-semibold);
 }
 
 .fav__undo-btn {
   height: 80rpx;
   padding: 0 28rpx;
   border-radius: 24rpx;
-  background: #FFFFFF;
-  color: #0F1E3D;
-  font-size: 28rpx;
-  font-weight: 800;
+  background: var(--sl-white);
+  color: var(--sl-text);
+  font-size: var(--sl-fs-body);
+  font-weight: var(--sl-fw-extrabold);
   display: flex;
   align-items: center;
 }

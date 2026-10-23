@@ -4,13 +4,13 @@
   padding-left: 32rpx;
   padding-right: 32rpx;
   padding-bottom: 12rpx;
-  background-color: #FFFFFF;
+  background-color: var(--sl-white);
   z-index: 950;
   flex: none;
 }
 
 .sama-top-bar--border {
-  border-bottom: 1rpx solid #ECEFF2;
+  border-bottom: 1rpx solid var(--sl-divider);
 }
 
 .sama-top-bar__inner {
@@ -31,7 +31,7 @@
   width: 72rpx;
   height: 72rpx;
   border-radius: 22rpx;
-  background-color: #C8235F;
+  background-color: var(--sl-berry);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -59,15 +59,15 @@
 }
 
 .brand-title {
-  font-size: 32rpx;
-  font-weight: 800;
+  font-size: var(--sl-fs-subtitle);
+  font-weight: var(--sl-fw-extrabold);
   letter-spacing: 0.04em;
-  color: #0F1E3D;
+  color: var(--sl-text);
 }
 
 .brand-sub {
-  font-size: 20rpx;
-  font-weight: 800;
+  font-size: var(--sl-fs-micro);
+  font-weight: var(--sl-fw-extrabold);
   letter-spacing: 0.16em;
-  color: #C8235F;
+  color: var(--sl-berry);
 }

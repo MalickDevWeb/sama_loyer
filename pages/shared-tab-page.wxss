@@ -15,24 +15,24 @@
 
 .section-card {
   padding: 32rpx;
-  border: 1rpx solid #e5e7eb;
+  border: 1rpx solid var(--sl-border);
   border-radius: 8rpx;
-  background: #ffffff;
+  background: var(--sl-white);
 }
 
 .section-title {
   display: block;
   margin-bottom: 12rpx;
   color: #111827;
-  font-size: 36rpx;
-  font-weight: 600;
+  font-size: var(--sl-fs-title);
+  font-weight: var(--sl-fw-semibold);
   line-height: 1.3;
 }
 
 .section-text {
   display: block;
   color: #4b5563;
-  font-size: 28rpx;
+  font-size: var(--sl-fs-body);
   line-height: 1.5;
 }
 

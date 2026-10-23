@@ -1,13 +1,13 @@
 @import "/styles/sama-ui.wxss";
 
 page {
-  background: #F7F8FA;
+  background: var(--sl-surface-2);
 }
 
 /* --- En-tête ------------------------------------------------------------- */
 .contrat__hero {
-  background: #0F1E3D;
-  color: #FFFFFF;
+  background: var(--sl-navy);
+  color: var(--sl-on-dark);
   padding: 0 32rpx 128rpx;
   border-radius: 0 0 56rpx 56rpx;
 }
@@ -19,9 +19,9 @@ page {
 }
 
 .contrat__num {
-  font-size: 24rpx;
-  font-weight: 700;
-  color: #C9D0DE;
+  font-size: var(--sl-fs-small);
+  font-weight: var(--sl-fw-bold);
+  color: var(--sl-border-strong);
 }
 
 .contrat__title-row {
@@ -36,7 +36,7 @@ page {
   height: 104rpx;
   flex: 0 0 104rpx;
   border-radius: 32rpx;
-  background: #C8235F;
+  background: var(--sl-berry);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -49,16 +49,16 @@ page {
 
 .contrat__title {
   display: block;
-  font-size: 44rpx;
-  font-weight: 800;
+  font-size: var(--sl-fs-h2);
+  font-weight: var(--sl-fw-extrabold);
   letter-spacing: -0.01em;
 }
 
 .contrat__subtitle {
   display: block;
   margin-top: 4rpx;
-  font-size: 26rpx;
-  color: #C9D0DE;
+  font-size: var(--sl-fs-body-sm);
+  color: var(--sl-border-strong);
 }
 
 .contrat__signed {
@@ -66,12 +66,12 @@ page {
   display: inline-flex;
   align-items: center;
   gap: 12rpx;
-  font-size: 24rpx;
-  font-weight: 800;
+  font-size: var(--sl-fs-small);
+  font-weight: var(--sl-fw-extrabold);
   padding: 12rpx 24rpx;
   border-radius: 999rpx;
-  background: #FFFFFF;
-  color: #0F1E3D;
+  background: var(--sl-white);
+  color: var(--sl-text);
 }
 
 .contrat__signed .ic {
@@ -84,15 +84,15 @@ page {
   margin: -88rpx 32rpx 0;
   padding: 32rpx;
   border-radius: 44rpx;
-  background: #FFFFFF;
+  background: var(--sl-white);
   box-shadow: 0 16rpx 48rpx rgba(15, 30, 61, 0.10);
   position: relative;
 }
 
 .contrat__h2 {
   display: block;
-  font-size: 30rpx;
-  font-weight: 800;
+  font-size: var(--sl-fs-body-lg);
+  font-weight: var(--sl-fw-extrabold);
   margin-bottom: 24rpx;
 }
 
@@ -114,41 +114,41 @@ page {
 .contrat__party {
   padding: 28rpx;
   border-radius: 36rpx;
-  background: #FFFFFF;
-  border: 2rpx solid #E4E7EE;
+  background: var(--sl-white);
+  border: 2rpx solid var(--sl-border);
   display: flex;
   flex-direction: column;
   gap: 8rpx;
 }
 
 .contrat__eyebrow {
-  font-size: 22rpx;
-  font-weight: 800;
+  font-size: var(--sl-fs-caption);
+  font-weight: var(--sl-fw-extrabold);
   letter-spacing: 0.08em;
-  color: #C8235F;
+  color: var(--sl-berry);
 }
 
 .contrat__party-name {
-  font-size: 30rpx;
-  font-weight: 800;
+  font-size: var(--sl-fs-body-lg);
+  font-weight: var(--sl-fw-extrabold);
 }
 
 .contrat__party-phone {
-  font-size: 24rpx;
-  color: #5B6475;
+  font-size: var(--sl-fs-small);
+  color: var(--sl-muted);
 }
 
 .contrat__party-status {
-  font-size: 22rpx;
-  font-weight: 800;
+  font-size: var(--sl-fs-caption);
+  font-weight: var(--sl-fw-extrabold);
 }
 
 .contrat__home {
   margin-top: 20rpx;
   padding: 28rpx;
   border-radius: 36rpx;
-  background: #FFFFFF;
-  border: 2rpx solid #E4E7EE;
+  background: var(--sl-white);
+  border: 2rpx solid var(--sl-border);
   display: flex;
   gap: 24rpx;
   align-items: center;
@@ -159,7 +159,7 @@ page {
   height: 88rpx;
   flex: 0 0 88rpx;
   border-radius: 28rpx;
-  background: #E3E9F5;
+  background: var(--sl-info-bg);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -172,8 +172,8 @@ page {
 }
 
 .contrat__home-title {
-  font-size: 28rpx;
-  font-weight: 800;
+  font-size: var(--sl-fs-body);
+  font-weight: var(--sl-fw-extrabold);
 }
 
 .contrat__articles-head {
@@ -191,16 +191,16 @@ page {
   height: 68rpx;
   line-height: 68rpx;
   padding: 0 20rpx;
-  color: #C8235F;
-  font-size: 24rpx;
-  font-weight: 800;
+  color: var(--sl-berry);
+  font-size: var(--sl-fs-small);
+  font-weight: var(--sl-fw-extrabold);
 }
 
 /* --- Signatures ---------------------------------------------------------- */
 .contrat__sig-label {
-  font-size: 22rpx;
-  font-weight: 800;
-  color: #5B6475;
+  font-size: var(--sl-fs-caption);
+  font-weight: var(--sl-fw-extrabold);
+  color: var(--sl-muted);
 }
 
 .contrat__sig {
@@ -208,22 +208,22 @@ page {
   font-family: 'Caveat', 'Brush Script MT', cursive;
   font-style: italic;
   font-size: 48rpx;
-  color: #0F1E3D;
-  border-bottom: 2rpx dashed #C9CFDA;
+  color: var(--sl-text);
+  border-bottom: 2rpx dashed var(--sl-border-strong);
   padding-bottom: 8rpx;
 }
 
 .contrat__sig-date {
-  font-size: 22rpx;
-  color: #5B6475;
+  font-size: var(--sl-fs-caption);
+  color: var(--sl-muted);
 }
 
 .contrat__legal {
   display: block;
   margin: 28rpx 8rpx 0;
-  font-size: 22rpx;
+  font-size: var(--sl-fs-caption);
   line-height: 1.5;
-  color: #7A8294;
+  color: var(--sl-placeholder);
 }
 
 /* --- Barre du bas -------------------------------------------------------- */
@@ -252,11 +252,11 @@ page {
   gap: 8rpx;
   padding: 8rpx 18rpx;
   border-radius: 20rpx;
-  background: #EAF7EE;
+  background: var(--sl-green-bg);
   border: 2rpx solid #C4EED0;
-  font-size: 22rpx;
-  font-weight: 800;
-  color: #11643F;
+  font-size: var(--sl-fs-caption);
+  font-weight: var(--sl-fw-extrabold);
+  color: var(--sl-success);
 }
 
 .contrat__seal {
@@ -265,15 +265,15 @@ page {
   gap: 16rpx;
   padding: 16rpx 24rpx;
   border-radius: 20rpx;
-  background: #F0F4FA;
+  background: var(--sl-surface-3);
   border: 2rpx solid #D5DFED;
   margin: 20rpx 40rpx 0;
 }
 
 .contrat__seal-text {
-  font-size: 22rpx;
-  font-weight: 700;
-  color: #0F1E3D;
+  font-size: var(--sl-fs-caption);
+  font-weight: var(--sl-fw-bold);
+  color: var(--sl-text);
   line-height: 1.4;
 }
 
@@ -297,7 +297,7 @@ page {
   max-width: 620rpx;
   padding: 36rpx;
   border-radius: 40rpx;
-  background: #FFFFFF;
+  background: var(--sl-white);
   box-shadow: 0 16rpx 50rpx rgba(15, 30, 61, 0.3);
 }
 
@@ -309,16 +309,16 @@ page {
 }
 
 .contrat__sign-title {
-  font-size: 32rpx;
-  font-weight: 800;
-  color: #0F1E3D;
+  font-size: var(--sl-fs-subtitle);
+  font-weight: var(--sl-fw-extrabold);
+  color: var(--sl-text);
 }
 
 .contrat__sign-close {
   width: 56rpx;
   height: 56rpx;
   border-radius: 28rpx;
-  background: #F1F4F9;
+  background: var(--sl-surface-3);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -330,48 +330,48 @@ page {
   gap: 10rpx;
   padding: 8rpx 20rpx;
   border-radius: 20rpx;
-  background: #EAF7EE;
-  font-size: 22rpx;
-  font-weight: 800;
-  color: #11643F;
+  background: var(--sl-green-bg);
+  font-size: var(--sl-fs-caption);
+  font-weight: var(--sl-fw-extrabold);
+  color: var(--sl-success);
   margin-bottom: 16rpx;
 }
 
 .contrat__sign-desc {
-  font-size: 24rpx;
+  font-size: var(--sl-fs-small);
   line-height: 1.45;
-  color: #5B6475;
+  color: var(--sl-muted);
   margin-bottom: 24rpx;
 }
 
 .contrat__sign-pad {
   padding: 36rpx 24rpx;
   border-radius: 24rpx;
-  background: #F8F9FC;
-  border: 2rpx dashed #C9D0DE;
+  background: var(--sl-bg);
+  border: 2rpx dashed var(--sl-border-strong);
   text-align: center;
   margin-bottom: 24rpx;
 }
 
 .contrat__sign-holder {
   display: block;
-  font-size: 40rpx;
-  font-weight: 800;
-  color: #0F1E3D;
+  font-size: var(--sl-fs-h3);
+  font-weight: var(--sl-fw-extrabold);
+  color: var(--sl-text);
   font-style: italic;
 }
 
 .contrat__sign-sub {
   display: block;
-  font-size: 22rpx;
-  color: #7A8294;
+  font-size: var(--sl-fs-caption);
+  color: var(--sl-placeholder);
   margin-top: 6rpx;
 }
 
 .contrat__sign-line {
   width: 60%;
   height: 2rpx;
-  background: #0F1E3D;
+  background: var(--sl-navy);
   margin: 16rpx auto 0;
 }
 
@@ -383,8 +383,8 @@ page {
 
 .contrat__sign-cancel {
   text-align: center;
-  font-size: 26rpx;
-  font-weight: 700;
-  color: #7A8294;
+  font-size: var(--sl-fs-body-sm);
+  font-weight: var(--sl-fw-bold);
+  color: var(--sl-placeholder);
   padding: 12rpx;
 }
