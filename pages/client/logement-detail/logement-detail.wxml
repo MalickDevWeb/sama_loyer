@@ -257,10 +257,10 @@
       </view>
 
       <view class="share-grid">
-        <button class="share-opt share-opt-btn" open-type="share" hover-class="share-opt--hover">
+        <view class="share-opt" hover-class="share-opt--hover" bindtap="onShareProche">
           <view class="share-opt-ic share-opt-ic--berry"><view class="dh-ic dh-ic-send"></view></view>
           <text class="share-opt-txt">À un proche</text>
-        </button>
+        </view>
         <view class="share-opt" hover-class="share-opt--hover" bindtap="onShareWhatsApp">
           <view class="share-opt-ic share-opt-ic--green"><view class="dh-ic dh-ic-whatsapp"></view></view>
           <text class="share-opt-txt">WhatsApp</text>
@@ -276,6 +276,103 @@
       </view>
 
       <view class="share-cancel" hover-class="share-opt--hover" bindtap="onCloseShare">Annuler</view>
+    </view>
+  </view>
+
+  <!-- ======================================================== -->
+  <!-- MODALE PARTAGER AVEC UN PROCHE (Aux couleurs de SAMA LOYER) -->
+  <!-- ======================================================== -->
+  <view wx:if="{{ showProcheModal }}" class="share-overlay" catchtouchmove="noop" bindtap="onCloseProcheModal">
+    <view class="proche-sheet" catchtap="noop" aria-label="Partager avec un proche">
+      <view class="share-handle"></view>
+      <view class="proche-sheet__head">
+        <view class="proche-sheet__title">
+          <view class="share-opt-ic share-opt-ic--berry share-opt-ic--sm">
+            <view class="dh-ic dh-ic-send"></view>
+          </view>
+          <text>Partager à un proche</text>
+        </view>
+        <view class="modal-close" bindtap="onCloseProcheModal">
+          <view class="ic ic-close-grey ic--sm"></view>
+        </view>
+      </view>
+
+      <text class="proche-sheet__sub">Choisis le canal pour envoyer cette annonce à ton ami(e) ou ta famille :</text>
+
+      <!-- Aperçu du message formaté -->
+      <view class="proche-msg-box">
+        <view class="proche-msg-badge">
+          <view class="dh-ic dh-ic-heart-on"></view>
+        </view>
+        <view class="proche-msg-body">
+          <text class="proche-msg-title">{{ logement.title }}</text>
+          <text class="proche-msg-place">📍 {{ logement.placeDetails }}</text>
+          <text class="proche-msg-price">{{ logement.price }} FCFA / mois</text>
+        </view>
+      </view>
+
+      <!-- Options aux couleurs de l'application -->
+      <view class="proche-actions-list">
+        <!-- 1. WhatsApp -->
+        <view class="proche-act-btn proche-act-btn--whatsapp" hover-class="sl-hover" bindtap="onShareWhatsApp">
+          <view class="proche-act-left">
+            <view class="proche-act-badge proche-act-badge--green">
+              <view class="dh-ic dh-ic-whatsapp"></view>
+            </view>
+            <view class="proche-act-info">
+              <text class="proche-act-name">Envoyer sur WhatsApp</text>
+              <text class="proche-act-desc">Colle le message direct dans ta discussion</text>
+            </view>
+          </view>
+          <view class="ic ic-chevron-grey ic--sm"></view>
+        </view>
+
+        <!-- 2. SMS -->
+        <view class="proche-act-btn proche-act-btn--sms" hover-class="sl-hover" bindtap="onShareSMS">
+          <view class="proche-act-left">
+            <view class="proche-act-badge proche-act-badge--berry">
+              <view class="dh-ic dh-ic-sms"></view>
+            </view>
+            <view class="proche-act-info">
+              <text class="proche-act-name">Envoyer par SMS</text>
+              <text class="proche-act-desc">Message court avec adresse et loyer</text>
+            </view>
+          </view>
+          <view class="ic ic-chevron-grey ic--sm"></view>
+        </view>
+
+        <!-- 3. Copier le lien -->
+        <view class="proche-act-btn proche-act-btn--copy" hover-class="sl-hover" bindtap="onCopyLink">
+          <view class="proche-act-left">
+            <view class="proche-act-badge proche-act-badge--navy">
+              <view class="dh-ic dh-ic-link"></view>
+            </view>
+            <view class="proche-act-info">
+              <text class="proche-act-name">Copier le lien direct</text>
+              <text class="proche-act-desc">À coller sur n'importe quelle messagerie</text>
+            </view>
+          </view>
+          <view class="ic ic-chevron-grey ic--sm"></view>
+        </view>
+
+        <!-- 4. WeChat Mini-Programme -->
+        <button class="proche-act-btn proche-act-btn--wechat" open-type="share" hover-class="sl-hover">
+          <view class="proche-act-left">
+            <view class="proche-act-badge proche-act-badge--wechat">
+              <view class="dh-ic dh-ic-wechat"></view>
+            </view>
+            <view class="proche-act-info">
+              <text class="proche-act-name">Transférer dans WeChat</text>
+              <text class="proche-act-desc">Envoyer la fiche interactive de l'annonce</text>
+            </view>
+          </view>
+          <view class="ic ic-chevron-grey ic--sm"></view>
+        </button>
+      </view>
+
+      <view class="proche-sheet__cancel" hover-class="sl-hover" bindtap="onCloseProcheModal">
+        Fermer
+      </view>
     </view>
   </view>
 
