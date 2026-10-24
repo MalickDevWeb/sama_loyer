@@ -11,8 +11,14 @@
           <text class="page-title">Mes annonces</text>
           <text class="page-subtitle">{{ counts.en_ligne }} en ligne · {{ counts.validation }} en validation · {{ counts.loue }} loué(s)</text>
         </view>
-        <view class="btn-top-add" hover-class="btn-top-add--hover" bindtap="onGoAjouter" aria-label="Ajouter un logement">
-          <text class="btn-top-plus">+</text>
+        <view class="header-actions-row">
+          <view class="btn-top-batch-qr" hover-class="btn-top-add--hover" bindtap="onOpenBatchQr" aria-label="Télécharger les affiches QR">
+            <view class="qr-mini-ic"><view></view><view></view><view></view><view></view></view>
+            <text class="btn-batch-txt">Affiches QR</text>
+          </view>
+          <view class="btn-top-add" hover-class="btn-top-add--hover" bindtap="onGoAjouter" aria-label="Ajouter un logement">
+            <text class="btn-top-plus">+</text>
+          </view>
         </view>
       </view>
 
@@ -121,6 +127,12 @@
                 <text class="subaction-label">C'est loué</text>
               </view>
             </view>
+
+            <!-- Affiche QR à coller à l'entrée : visites si libre, paiement du loyer si loué -->
+            <view wx:if="{{ item.type === 'en_ligne' || item.type === 'loue' }}" class="btn-subaction btn-qr" hover-class="annonce-toggle--hover" data-id="{{ item.id }}" bindtap="onOpenQrAffiche">
+              <view class="qr-mini-ic"><view></view><view></view><view></view><view></view></view>
+              <text class="subaction-label">Affiche QR à imprimer</text>
+            </view>
           </view>
 
           <!-- Bouton Voir plus / Voir moins -->
@@ -135,6 +147,59 @@
     <view class="scroll-spacer"></view>
   </scroll-view>
 
+  <!-- Modale Téléchargement Groupé des Affiches QR -->
+  <view wx:if="{{ batchModalOpen }}" class="batch-overlay" catchtouchmove="noop" bindtap="onCloseBatchModal">
+    <view class="batch-sheet" catchtap="noop">
+      <view class="batch-sheet-handle"></view>
+      <view class="batch-header">
+        <view class="batch-header-titles">
+          <text class="batch-title">Télécharger les affiches QR</text>
+          <text class="batch-sub">Sélectionnez par catégorie ou cochez vos logements</text>
+        </view>
+        <view class="batch-close" hover-class="sl-hover" bindtap="onCloseBatchModal">
+          <view class="ic ic-close-navy ic--sm"></view>
+        </view>
+      </view>
+      <view class="batch-filters-row">
+        <view class="batch-pill {{ batchFilter === 'all' ? 'batch-pill--active' : '' }}" data-filter="all" bindtap="onBatchFilterSelect">Tous ({{ annonces.length }})</view>
+        <view class="batch-pill {{ batchFilter === 'en_ligne' ? 'batch-pill--active' : '' }}" data-filter="en_ligne" bindtap="onBatchFilterSelect">En ligne ({{ counts.en_ligne }})</view>
+        <view class="batch-pill {{ batchFilter === 'loue' ? 'batch-pill--active' : '' }}" data-filter="loue" bindtap="onBatchFilterSelect">Loués ({{ counts.loue }})</view>
+      </view>
+      <view class="batch-toolbar-row">
+        <view class="batch-select-all" hover-class="sl-hover" bindtap="onToggleSelectAll">
+          <view class="batch-checkbox {{ isAllSelected ? 'batch-checkbox--checked' : '' }}">
+            <view wx:if="{{ isAllSelected }}" class="ic ic-check-white ic--xs"></view>
+          </view>
+          <text class="batch-select-all-txt">Tout sélectionner ({{ visibleBatchAnnonces.length }})</text>
+        </view>
+        <text class="batch-selected-count">{{ selectedIds.length }} sélectionné(s)</text>
+      </view>
+      <scroll-view class="batch-list-scroll" scroll-y="{{true}}" enhanced="{{true}}">
+        <block wx:for="{{ visibleBatchAnnonces }}" wx:key="id">
+          <view class="batch-item-card {{ selectedMap[item.id] ? 'batch-item-card--checked' : '' }}" data-id="{{ item.id }}" bindtap="onToggleItemSelect">
+            <view class="batch-checkbox {{ selectedMap[item.id] ? 'batch-checkbox--checked' : '' }}">
+              <view wx:if="{{ selectedMap[item.id] }}" class="ic ic-check-white ic--xs"></view>
+            </view>
+            <image class="batch-thumb" src="{{ item.coverImage }}" mode="aspectFill" />
+            <view class="batch-item-info">
+              <text class="batch-item-title">{{ item.title }}</text>
+              <text class="batch-item-place">{{ item.placeName }} · {{ item.price }}</text>
+              <view class="batch-item-tag {{ item.type === 'loue' ? 'batch-tag-loue' : 'batch-tag-ligne' }}">
+                {{ item.type === 'loue' ? 'Loué · QR paiement' : 'En ligne · QR visite' }}
+              </view>
+            </view>
+          </view>
+        </block>
+      </scroll-view>
+      <view class="batch-footer">
+        <button class="batch-download-btn {{ selectedIds.length === 0 ? 'batch-download-btn--disabled' : '' }}" hover-class="sl-hover" bindtap="onDownloadSelectedPosters">
+          <text wx:if="{{ isBatchSaving }}">{{ batchSaveProgressText }}</text>
+          <text wx:else>Enregistrer {{ selectedIds.length }} affiche(s) en A6</text>
+        </button>
+      </view>
+    </view>
+  </view>
+  <canvas wx:if="{{ batchCanvasActive }}" id="batch-qa-canvas" type="2d" class="batch-canvas-offscreen" style="width: 620px; height: 877px;"></canvas>
   <!-- Bailleur Tab Bar -->
   <app-custom-tab-bar activeTab="b-annonces" />
 </view>
