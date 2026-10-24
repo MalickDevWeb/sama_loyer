@@ -4,6 +4,8 @@
 
 import assert from 'assert';
 import { extractApiResponse, unwrapApiResponse } from '../utils/apis/index.js';
+import { extractApiResponse as extractFromResponseModule } from '../utils/apis/response.js';
+import { extractApiResponse as extractFromHttpModule } from '../utils/apis/http.js';
 
 export async function runApiResponseTests() {
   console.log('\n--- Test Suite 7: API Response Extraction & Error Handling ---');
@@ -88,6 +90,14 @@ export async function runApiResponseTests() {
   assert.strictEqual(unwrapped[0].id, 'l-1');
   passed++;
   console.log('  ✓ unwrapApiResponse alias works identically');
+
+  // 6. Exports modulaires depuis utils/apis/response.js et utils/apis/http.js
+  assert.strictEqual(typeof extractFromResponseModule, 'function');
+  assert.strictEqual(typeof extractFromHttpModule, 'function');
+  assert.strictEqual(extractFromResponseModule, extractApiResponse);
+  assert.strictEqual(extractFromHttpModule, extractApiResponse);
+  passed++;
+  console.log('  ✓ Clean modular exports across response.js, http.js and index.js');
 
   return passed;
 }
