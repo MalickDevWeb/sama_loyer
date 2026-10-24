@@ -4,7 +4,7 @@
 
   <!-- En-tête -->
   <view class="cmsg__header">
-    <text class="cmsg__title">Messages</text>
+    <text class="cmsg__title">{{ i18n.tabs.messages || 'Messages' }}</text>
     <text class="cmsg__subtitle">Tes échanges avec les bailleurs</text>
   </view>
 

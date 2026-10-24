@@ -142,3 +142,4 @@ export function redirectToSMS({ text, phone, onComplete } = {}) {
     }
   });
 }
+
