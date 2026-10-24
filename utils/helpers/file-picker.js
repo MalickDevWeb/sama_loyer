@@ -20,7 +20,7 @@ export function canPickPdf() {
   return typeof wx.chooseMessageFile === 'function';
 }
 
-function pickImages(count) {
+export function pickImages(count) {
   return new Promise((resolve, reject) => {
     wx.chooseMedia({
       count,
@@ -38,7 +38,7 @@ function pickImages(count) {
   });
 }
 
-function pickPdfs(count) {
+export function pickPdfs(count) {
   if (!canPickPdf()) {
     return Promise.reject(new Error('PDF_UNSUPPORTED'));
   }

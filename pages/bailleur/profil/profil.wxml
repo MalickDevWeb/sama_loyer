@@ -426,6 +426,54 @@
     </view>
   </view>
 
+  <!-- Modal 5 : Choix de la source du document (Couleurs SAMA LOYER) -->
+  <view wx:if="{{ activeModal === 'fileSource' }}" class="bprof__sheet-overlay" catchtouchmove="noop" bindtap="onCloseModal">
+    <view class="bprof__sheet" catchtap="noop">
+      <view class="bprof__sheet-handle"></view>
+      <view class="bprof__sheet-header">
+        <view class="bprof__sheet-heading">
+          <text class="bprof__sheet-title">Ajouter un document</text>
+          <text class="bprof__sheet-sub">Choisissez la source de votre pièce justificative</text>
+        </view>
+        <view class="bprof__sheet-close" hover-class="sl-hover" bindtap="onCloseModal">
+          <view class="ic ic-close-navy bprof__sheet-close-ic"></view>
+        </view>
+      </view>
+
+      <view class="bprof__sheet-body">
+        <!-- Option 1 : Prendre une photo / Galerie (Couleur Orange Max it) -->
+        <view class="bprof__src-card" hover-class="bprof__src-card--hover" bindtap="onSelectSourceImage">
+          <view class="bprof__src-icon bprof__src-icon--orange">
+            <view class="ic ic-camera-white"></view>
+          </view>
+          <view class="bprof__src-info">
+            <text class="bprof__src-title">Prendre une photo</text>
+            <text class="bprof__src-desc">Appareil photo direct ou galerie d’images</text>
+          </view>
+          <view class="bprof__src-arrow ic ic-chevron-right-navy"></view>
+        </view>
+
+        <!-- Option 2 : Choisir un document PDF (Couleur Bleu Nuit SAMA LOYER) -->
+        <view class="bprof__src-card" hover-class="bprof__src-card--hover" bindtap="onSelectSourcePdf">
+          <view class="bprof__src-icon bprof__src-icon--navy">
+            <view class="ic ic-doc-white"></view>
+          </view>
+          <view class="bprof__src-info">
+            <text class="bprof__src-title">Choisir un document PDF</text>
+            <text class="bprof__src-desc">Depuis vos discussions WeChat ou vos fichiers</text>
+          </view>
+          <view class="bprof__src-arrow ic ic-chevron-right-navy"></view>
+        </view>
+      </view>
+
+      <view class="bprof__sheet-footer">
+        <button class="bprof__btn-secondary" hover-class="sl-hover" bindtap="onCloseModal">
+          Annuler
+        </button>
+      </view>
+    </view>
+  </view>
+
   <!-- Bottom Navigation Tab Bar (activeTab = b-profil, tout à droite) -->
   <app-custom-tab-bar activeTab="b-profil" />
 </view>
