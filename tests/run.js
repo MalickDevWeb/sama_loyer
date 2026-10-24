@@ -27,11 +27,13 @@ async function main() {
     const { runSculptTests } = await import('./sculpt.test.js');
     const { runI18nTests } = await import('./i18n.test.js');
     const { runZipTests } = await import('./zip.test.js');
+    const { runShareRedirectTests } = await import('./share-redirect.test.js');
 
     totalPassed += await runEventBusTests();
     totalPassed += await runSculptTests();
     totalPassed += await runI18nTests();
     totalPassed += await runZipTests();
+    totalPassed += await runShareRedirectTests();
 
     const duration = ((Date.now() - start) / 1000).toFixed(2);
     console.log('\n====================================================');

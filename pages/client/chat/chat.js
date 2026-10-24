@@ -1,3 +1,4 @@
+import { redirectToWhatsApp } from '../../../utils/helpers/share-redirect.js';
 import { findConversation, enrichConversation } from '../../../utils/mocks/conversations';
 import { getStoredConversations, addStoredMessage, markConversationRead } from '../../../utils/helpers/store';
 import { takeNavData } from '../../../utils/helpers/nav-data';
@@ -98,9 +99,9 @@ Page({
 
   onWhatsApp() {
     const c = this.data.conversation;
-    wx.setClipboardData({
-      data: `Bonjour ${c.name}, je vous écris concernant « ${c.logementTitle} » à ${c.logementPlace}.`,
-      success: () => wx.showToast({ title: 'Copié pour WhatsApp', icon: 'success' })
+    redirectToWhatsApp({
+      text: `Bonjour ${c.name}, je vous écris concernant « ${c.logementTitle} » à ${c.logementPlace}.`,
+      phone: c.phone
     });
   },
 

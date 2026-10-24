@@ -257,10 +257,10 @@
       </view>
 
       <view class="share-grid">
-        <view class="share-opt" hover-class="share-opt--hover" bindtap="onShareProche">
+        <button class="share-opt share-opt-btn" open-type="share" hover-class="share-opt--hover">
           <view class="share-opt-ic share-opt-ic--berry"><view class="dh-ic dh-ic-send"></view></view>
           <text class="share-opt-txt">À un proche</text>
-        </view>
+        </button>
         <view class="share-opt" hover-class="share-opt--hover" bindtap="onShareWhatsApp">
           <view class="share-opt-ic share-opt-ic--green"><view class="dh-ic dh-ic-whatsapp"></view></view>
           <text class="share-opt-txt">WhatsApp</text>
