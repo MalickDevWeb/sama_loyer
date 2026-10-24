@@ -163,7 +163,7 @@
 
       <!-- Bouton principal validation -->
       <view class="btn-modal-confirm" hover-class="sl-hover" bindtap="onConfirmAllSeenFromModal">
-        <view class="ic-row"><text>J'ai tout regardé, déverrouiller</text><view class="ic ic-check-white ic--sm"></view></view>
+        <view class="ic-row"><text>Tout est vu, déverrouiller</text><view class="ic ic-check-white ic--sm"></view></view>
       </view>
 
       <view class="modal-close-link" bindtap="onCloseMediaModal">Plus tard</view>

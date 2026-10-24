@@ -115,7 +115,9 @@ Page({
     userProfile: {},
     stats: { favoris: 0, visites: 0, conversations: 0 },
     notifs: [],
-    lang: 'fr', // 'fr' | 'en'
+    i18n: getMessages(),
+    currentLocale: getLocale(),
+    lang: getLocale(), // 'fr' | 'en'
     langs: [
       { id: 'fr', label: 'Français' },
       { id: 'en', label: 'English' }
@@ -156,6 +158,8 @@ Page({
   onShow() {
     setCustomTabBarActive(this, 'profile');
     setTabBarVisible(this, true);
+    if (typeof this._syncI18n === 'function') this._syncI18n();
+    this.renderPrefs();
     this.refreshUserProfile();
     this.setData({
       stats: {
@@ -375,8 +379,8 @@ Page({
     const lang = e.currentTarget.dataset.lang;
     if (lang === this.prefs.lang) return;
     this.prefs.lang = lang;
-    this.savePrefs();
     setLocale(lang);
+    this.savePrefs();
     this.setData({
       lang,
       i18n: getMessages(lang),

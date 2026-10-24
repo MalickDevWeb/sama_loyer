@@ -4,11 +4,12 @@
    ========================================================================== */
 
 .not-found-page {
-  min-height: 100vh;
+  height: 100vh;
   background-color: var(--sl-bg);
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 }
 
 /* Header Section avec vraie respiration sous la barre d'état / encoche */
@@ -87,6 +88,7 @@
 /* Scrollable Body */
 .scroll-content {
   flex: 1;
+  height: 0;
   box-sizing: border-box;
 }
 
@@ -238,18 +240,18 @@
 /* Floating Key Badge */
 .floating-key-pill {
   position: absolute;
-  top: -8rpx;
-  left: 32rpx;
-  width: 62rpx;
-  height: 62rpx;
+  top: 10rpx;
+  right: 16rpx;
+  width: 72rpx;
+  height: 72rpx;
   border-radius: 50%;
   background-color: var(--sl-white);
-  border: 2rpx solid var(--sl-surface-3);
-  box-shadow: 0 6rpx 18rpx rgba(200, 35, 95, 0.16);
+  box-shadow: 0 8rpx 20rpx rgba(200, 35, 95, 0.22);
   display: flex;
   align-items: center;
   justify-content: center;
   animation: keyBob 3.2s ease-in-out infinite;
+  will-change: transform;
 }
 
 .key-emoji {
@@ -479,6 +481,9 @@
   font-weight: var(--sl-fw-bold);
   color: var(--sl-text);
   text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .zone-arrow {
@@ -495,8 +500,12 @@
   gap: 18rpx;
 }
 
-.btn-primary {
-  width: 100%;
+.btn-primary,
+button.btn-primary {
+  width: 100% !important;
+  margin: 0 !important;
+  padding: 0 32rpx !important;
+  box-sizing: border-box !important;
   height: 98rpx;
   border-radius: 49rpx;
   background-color: var(--sl-navy);
@@ -527,8 +536,12 @@
   font-weight: var(--sl-fw-bold);
 }
 
-.btn-secondary {
-  width: 100%;
+.btn-secondary,
+button.btn-secondary {
+  width: 100% !important;
+  margin: 0 !important;
+  padding: 0 32rpx !important;
+  box-sizing: border-box !important;
   height: 98rpx;
   border-radius: 49rpx;
   background-color: var(--sl-white);
@@ -537,6 +550,12 @@
   align-items: center;
   justify-content: center;
   transition: transform 0.15s ease;
+}
+
+.btn-primary::after,
+.btn-secondary::after {
+  display: none !important;
+  border: none !important;
 }
 
 .btn-secondary-text {

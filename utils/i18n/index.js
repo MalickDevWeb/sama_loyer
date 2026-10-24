@@ -76,6 +76,28 @@ export function setLocale(locale) {
 export const i18nBehavior = Behavior({
   behaviors: [busBehavior],
 
+  definitionFilter(defFields) {
+    const origOnLoad = defFields.onLoad;
+    defFields.onLoad = function(options) {
+      if (typeof this._initI18n === 'function') {
+        this._initI18n();
+      }
+      if (typeof origOnLoad === 'function') {
+        return origOnLoad.call(this, options);
+      }
+    };
+
+    const origOnShow = defFields.onShow;
+    defFields.onShow = function() {
+      if (typeof this._syncI18n === 'function') {
+        this._syncI18n();
+      }
+      if (typeof origOnShow === 'function') {
+        return origOnShow.call(this);
+      }
+    };
+  },
+
   data: {
     i18n: getMessages(),
     currentLocale: getLocale(),
