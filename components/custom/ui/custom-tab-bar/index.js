@@ -23,7 +23,7 @@ Component({
       value: 'home',
       observer(val) {
         if (val) {
-          this.syncTabs();
+          this.syncTabs(val);
         }
       }
     },
@@ -42,35 +42,43 @@ Component({
         statusBar = wx.getSystemInfoSync().statusBarHeight || 20;
       } catch (e) {}
       this.setData({ offlineTop: statusBar, offline: Bus.getState(STATE_KEYS.NETWORK_CONNECTED, true) === false });
-      this.syncTabs();
+      this.syncTabs(this.properties.activeTab);
 
       // EventBus : badge des messages non lus et bandeau hors connexion, en direct
-      this.watchState(STATE_KEYS.UNREAD_CLIENT, () => this.syncTabs());
-      this.watchState(STATE_KEYS.UNREAD_BAILLEUR, () => this.syncTabs());
+      this.watchState(STATE_KEYS.UNREAD_CLIENT, () => this.syncTabs(this.properties.activeTab));
+      this.watchState(STATE_KEYS.UNREAD_BAILLEUR, () => this.syncTabs(this.properties.activeTab));
       this.watchState(STATE_KEYS.NETWORK_CONNECTED, (connected) => this.setData({ offline: connected === false }));
     },
   },
 
   pageLifetimes: {
     show() {
-      this.syncTabs();
+      this.syncTabs(this.properties.activeTab);
     },
   },
 
   methods: {
-    syncTabs() {
+    syncTabs(overrideActiveTab) {
+      const targetTab = overrideActiveTab || this.properties.activeTab || '';
       const pages = getCurrentPages();
       const currentPage = pages && pages.length > 0 ? pages[pages.length - 1] : null;
       const route = currentPage ? (currentPage.route || '') : '';
       
-      // Détection stricte selon la page courante ou le storage
+      // Détection stricte et prioritaire du rôle :
       let isBailleur = false;
-      if (route) {
-        isBailleur = route.indexOf('pages/bailleur') !== -1;
-        storage.set(STORAGE_KEYS.USER_ROLE, isBailleur ? 'bailleur' : 'client');
+      if (targetTab && targetTab.startsWith('b-')) {
+        isBailleur = true;
+      } else if (targetTab && CLIENT_TABS.some((t) => t.id === targetTab)) {
+        isBailleur = false;
+      } else if (route && route.indexOf('pages/bailleur') !== -1) {
+        isBailleur = true;
+      } else if (route && route.indexOf('pages/client') !== -1) {
+        isBailleur = false;
       } else {
         isBailleur = storage.get(STORAGE_KEYS.USER_ROLE, 'client') === 'bailleur';
       }
+
+      storage.set(STORAGE_KEYS.USER_ROLE, isBailleur ? 'bailleur' : 'client');
 
       const side = isBailleur ? 'bailleur' : 'client';
       const unread = Bus.getState(isBailleur ? STATE_KEYS.UNREAD_BAILLEUR : STATE_KEYS.UNREAD_CLIENT, 0);
@@ -82,8 +90,8 @@ Component({
       const match = currentTabs.find(t => t.url.replace(/^\//, '') === cleanRoute);
       const defaultTab = isBailleur ? 'b-home' : 'home';
       // Si la valeur actuelle appartient à l'autre profil (ex: 'b-annonces' en mode client), on réinitialise
-      const isValidForRole = currentTabs.some(t => t.id === this.properties.activeTab);
-      const activeTab = match ? match.id : (isValidForRole ? this.properties.activeTab : defaultTab);
+      const isValidForRole = currentTabs.some(t => t.id === targetTab);
+      const activeTab = match ? match.id : (isValidForRole ? targetTab : defaultTab);
 
       this.setData({
         tabs: currentTabs,

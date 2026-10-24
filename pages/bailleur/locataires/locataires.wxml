@@ -132,7 +132,7 @@
 
       <!-- Invité : contrat pas encore signé -->
       <view wx:elif="{{ detail.status === 'invite' }}" class="action-buttons-pair-row">
-        <view class="btn-action-outline-navy" hover-class="btn-hover-opacity" bindtap="onRenvoyerInvitation">Renvoyer l'invitation</view>
+        <view class="btn-action-dark-navy" hover-class="btn-hover-opacity" bindtap="onRenvoyerInvitation">QR code et lien d'invitation</view>
       </view>
 
       <view class="loc-sheet-rows">
@@ -149,6 +149,44 @@
       <view class="btn-ecrire-pill loc-sheet-write" hover-class="btn-hover-opacity" data-locataire="{{ detail }}" bindtap="onEcrireLocataire">
         <view class="ecrire-chat-bubble-icon"></view>
         <text class="ecrire-label-txt">Écrire à {{ detail.name }}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- ================= INVITATION PRÊTE : QR + LIEN ================= -->
+  <view wx:if="{{ invite }}" class="loc-sheet-overlay" catchtouchmove="noop" bindtap="onCloseInvite">
+    <view class="loc-sheet inv-sheet" catchtap="noop" aria-label="Invitation de {{ invite.name }}">
+      <view class="loc-sheet-handle"></view>
+
+      <view class="card-head-row">
+        <view class="locataire-meta-col">
+          <text class="locataire-name-title">Invitation prête pour {{ invite.firstName }}</text>
+          <text class="locataire-prop-info">SMS envoyé au +221 {{ invite.phoneText }}</text>
+        </view>
+        <view class="loc-sheet-close" hover-class="btn-hover-opacity" bindtap="onCloseInvite"><view class="ic ic-close-navy ic--sm"></view></view>
+      </view>
+
+      <text wx:if="{{ invite.isNewAccount }}" class="inv-note">{{ invite.firstName }} n'a pas encore de compte : il lui suffit de scanner ce QR avec Max it ou d'ouvrir le lien. Il signe le contrat et paie son entrée, sans rien télécharger.</text>
+      <text wx:else class="inv-note">{{ invite.firstName }} peut scanner ce QR avec Max it, ou ouvrir le lien reçu par SMS, pour signer le contrat et payer son entrée.</text>
+
+      <!-- Carte QR : à faire scanner sur place (visite, remise des clés) -->
+      <view class="inv-card">
+        <view class="inv-card-brand">
+          <view class="inv-card-logo"><view class="inv-card-house"></view></view>
+          <text class="inv-card-brand-text">SAMA LOYER</text>
+        </view>
+        <sama-qr id="invite-qr" text="{{ invite.link }}" size="200" />
+        <text class="inv-card-caption">Scanne avec Max it</text>
+      </view>
+
+      <view class="inv-link" bindtap="onCopyInviteLink">
+        <text class="inv-link-text">{{ invite.link }}</text>
+        <text class="inv-link-copy">Copier</text>
+      </view>
+
+      <view class="action-buttons-pair-row">
+        <view class="btn-action-outline-navy" hover-class="btn-hover-opacity" bindtap="onSaveInviteQr">Enregistrer le QR</view>
+        <view class="btn-action-dark-navy" hover-class="btn-hover-opacity" bindtap="onShareInvite">Envoyer par WhatsApp</view>
       </view>
     </view>
   </view>

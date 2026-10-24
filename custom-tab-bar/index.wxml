@@ -1,5 +1,6 @@
 <view wx:if="{{ !hidden }}">
   <app-custom-tab-bar
+    id="app-tab-bar"
     activeTab="{{ activeTab }}"
     bind:change="handleChange"
   />

@@ -9,6 +9,25 @@
       <text class="bprof__title">Profil</text>
     </view>
 
+    <!-- Sélecteur de profil (Locataire / Bailleur) -->
+    <view class="bprof__role-switch-wrap">
+      <view class="role-switch-bar">
+        <view 
+          class="role-segment" 
+          hover-class="role-segment--hover" 
+          bindtap="onSwitchToClient"
+          aria-label="Basculer vers l'espace Locataire"
+        >
+          <view class="ic ic-home-navy ic--sm"></view>
+          <text class="role-label">Locataire</text>
+        </view>
+        <view class="role-segment role-segment--active">
+          <view class="ic ic-users-white ic--sm"></view>
+          <text class="role-label">Bailleur</text>
+        </view>
+      </view>
+    </view>
+
     <!-- Identité Bailleur -->
     <view class="bprof__section">
       <view class="bprof__card bprof__identity">

@@ -8,6 +8,7 @@ import { bailleurGuardBehavior } from '../../../utils/behaviors/index';
 import { backendAPI } from '../../../utils/apis/index.js';
 import { logementLink, shortCode } from '../../../utils/helpers/sama-links';
 import { getCanvas, drawPoster, exportCanvas, saveToAlbum } from '../../../utils/helpers/qr-canvas';
+import { createZipArchive } from '../../../utils/helpers/zip';
 
 Page({
   // Bloque la page si l'essai ou l'abonnement se termine pendant qu'elle est affichée
@@ -277,7 +278,8 @@ Page({
     try {
       // Préparation du canvas haute définition (620px × scale 2 = 1240px de large A6)
       const { canvas, ctx } = await getCanvas(this, '#batch-qa-canvas', 2);
-      let successCount = 0;
+      const isMulti = targets.length > 1;
+      const filesToZip = [];
 
       for (let i = 0; i < targets.length; i++) {
         const a = targets[i];
@@ -300,9 +302,25 @@ Page({
         // Export PNG
         const filePath = await exportCanvas(canvas, 4000);
 
-        // Sauvegarde dans l'album
-        await saveToAlbum(filePath);
-        successCount++;
+        if (isMulti) {
+          // Lecture du binaire pour l'archive ZIP
+          const fsm = wx.getFileSystemManager();
+          const fileData = fsm.readFileSync(filePath);
+          // Nom de fichier propre sans accents
+          const cleanName = String(a.title || 'affiche')
+            .toLowerCase()
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '')
+            .replace(/[^a-z0-9_-]/g, '_')
+            .slice(0, 30);
+          filesToZip.push({
+            name: `affiche_${cleanName}_${a.id}.png`,
+            data: fileData
+          });
+        } else {
+          // Sauvegarde directe de l'unique affiche dans la galerie
+          await saveToAlbum(filePath);
+        }
       }
 
       this.setData({
@@ -311,13 +329,58 @@ Page({
         batchCanvasActive: false
       });
 
-      wx.showModal({
-        title: `${successCount} affiches enregistrées !`,
-        content: `Vos affiches QR ont été enregistrées dans votre galerie. Vous pouvez les imprimer directement en format A6 ou A5 pour chaque logement.`,
-        showCancel: false,
-        confirmText: 'Parfait',
-        confirmColor: '#C8235F'
-      });
+      if (isMulti) {
+        // Génération de l'archive ZIP
+        this.setData({ batchSaveProgressText: 'Création du fichier ZIP...' });
+        const zipBuffer = createZipArchive(filesToZip);
+        const fsm = wx.getFileSystemManager();
+        const zipPath = `${wx.env.USER_DATA_PATH}/affiches-qr-sama-loyer.zip`;
+        fsm.writeFileSync(zipPath, zipBuffer);
+
+        const openOrShare = () => {
+          if (typeof wx.shareFileMessage === 'function') {
+            wx.shareFileMessage({
+              filePath: zipPath,
+              fileName: 'affiches-qr-sama-loyer.zip',
+              success: () => wx.showToast({ title: 'ZIP partagé avec succès', icon: 'success' }),
+              fail: () => {
+                wx.openDocument({
+                  filePath: zipPath,
+                  fileType: 'zip',
+                  showMenu: true
+                });
+              }
+            });
+          } else if (typeof wx.openDocument === 'function') {
+            wx.openDocument({
+              filePath: zipPath,
+              fileType: 'zip',
+              showMenu: true
+            });
+          }
+        };
+
+        wx.showModal({
+          title: `${targets.length} affiches groupées en ZIP !`,
+          content: `Toutes vos affiches A6 sont réunies dans le fichier "affiches-qr-sama-loyer.zip". Vous pouvez le partager par WhatsApp, l'envoyer ou l'enregistrer dans vos fichiers.`,
+          confirmText: 'Exporter / Partager',
+          cancelText: 'Fermer',
+          confirmColor: '#C8235F',
+          success: (res) => {
+            if (res.confirm) {
+              openOrShare();
+            }
+          }
+        });
+      } else {
+        wx.showModal({
+          title: 'Affiche enregistrée !',
+          content: 'Votre affiche A6 a été enregistrée dans votre galerie. Vous pouvez l\'imprimer directement.',
+          showCancel: false,
+          confirmText: 'Parfait',
+          confirmColor: '#C8235F'
+        });
+      }
     } catch (err) {
       this.setData({ isBatchSaving: false, batchCanvasActive: false });
       const authDenied = err && (err.errMsg || '').includes('auth deny');
@@ -325,7 +388,7 @@ Page({
         title: authDenied ? 'Accès galerie requis' : 'Enregistrement interrompu',
         content: authDenied
           ? 'Autorisez l\'accès à la galerie dans les paramètres pour enregistrer les affiches.'
-          : 'Impossible de terminer la sauvegarde de toutes les affiches. Vérifiez votre espace disponible.',
+          : 'Impossible de terminer la sauvegarde des affiches. Vérifiez votre espace disponible.',
         showCancel: false,
         confirmText: 'Compris',
         confirmColor: '#C8235F'
@@ -333,7 +396,7 @@ Page({
     }
   },
 
-  onOpenQrAffiche(e) {
+    onOpenQrAffiche(e) {
     const id = e.currentTarget.dataset.id;
     wx.navigateTo({ url: `/pages/bailleur/qr-affiche/qr-affiche?id=${encodeURIComponent(id)}` });
   },

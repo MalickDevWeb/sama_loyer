@@ -15,6 +15,7 @@ import { CONVERSATIONS as DEFAULT_CONVERSATIONS } from '../mocks/conversations.j
 import { BAILLEUR_CONVERSATIONS as DEFAULT_BAILLEUR_CONVERSATIONS } from '../mocks/bailleur-conversations.js';
 import { COMPLIANCE_DEFAULTS } from '../mocks/compliance.js';
 import { MAXIT_USERS } from '../mocks/users.js';
+import { newInviteToken, inviteLink } from './sama-links.js';
 import { Bus } from '../event/index.js';
 import { EVENTS, STATE_KEYS } from '../event/keys.js';
 
@@ -540,6 +541,9 @@ export function addStoredLocataire(data) {
     annonceId: data.annonceId,
     startDate: data.startDate
   };
+  // Lien personnel : scanné ou ouvert, il mène au contrat et au paiement de l'entrée
+  locataire.inviteToken = newInviteToken();
+  locataire.inviteLink = inviteLink(locataire.inviteToken, data.annonceId);
   storage.set(STORAGE_KEYS.LOCATAIRES, [locataire, ...getStoredLocataires()]);
 
   // L'annonce n'est plus proposée aux locataires

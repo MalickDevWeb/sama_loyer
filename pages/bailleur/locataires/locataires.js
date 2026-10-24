@@ -6,6 +6,7 @@ import {
 } from '../../../utils/helpers/store';
 import { requireBailleurAccess } from '../../../utils/helpers/store';
 import { COLORS } from '../../../utils/constants/theme';
+import { saveToAlbum } from '../../../utils/helpers/qr-canvas';
 import { bailleurGuardBehavior } from '../../../utils/behaviors/index';
 import { backendAPI } from '../../../utils/apis/index.js';
 
@@ -143,6 +144,9 @@ Page({
     newLoc: { annonceId: '', name: '', phone: '', rent: '', cautionMonths: 1, startDate: '' },
     newLocCautionText: '',
     ...EMPTY_TENANT_SEARCH,
+
+    // Invitation prête : QR code + lien à partager ({ name, firstName, phoneText, link, isNewAccount })
+    invite: null,
 
     problemes: [
       {
@@ -373,18 +377,68 @@ Page({
       wx.showToast({ title: error, icon: 'none' });
       return;
     }
-    wx.showLoading({ title: 'Envoi de l’invitation...' });
+    // Numéro sans compte Max it : le lien et le QR sont le moyen principal de le faire entrer
+    const isNewAccount = !this.data.tenant;
+    wx.showLoading({ title: 'Création de l’invitation...' });
     setTimeout(() => {
       wx.hideLoading();
       const created = addStoredLocataire(l);
       this.setData({ newLocOpen: false, activeFilter: 'all' });
       this.loadLocataires();
-      wx.showToast({ title: `Invitation envoyée à ${created.name.split(/\s+/)[0]}`, icon: 'success' });
+      this.openInvite(created, isNewAccount);
     }, 600);
   },
 
+  // Fenêtre « Invitation prête » : QR à scanner sur place, lien à envoyer
+  openInvite(loc, isNewAccount) {
+    if (!loc || !loc.inviteLink) {
+      wx.showToast({ title: 'Invitation renvoyée par SMS', icon: 'success' });
+      return;
+    }
+    this.setData({
+      detail: null,
+      invite: {
+        name: loc.name,
+        firstName: String(loc.name).split(/\s+/)[0],
+        phoneText: loc.phone,
+        link: loc.inviteLink,
+        isNewAccount: !!isNewAccount
+      }
+    });
+  },
+
+  onCloseInvite() {
+    this.setData({ invite: null });
+  },
+
+  onCopyInviteLink() {
+    wx.setClipboardData({
+      data: this.data.invite.link,
+      success: () => wx.showToast({ title: 'Lien copié', icon: 'success' })
+    });
+  },
+
+  // Message prêt à coller dans WhatsApp ou un SMS
+  onShareInvite() {
+    const inv = this.data.invite;
+    wx.setClipboardData({
+      data: `Bonjour ${inv.firstName}, voici ton invitation SAMA LOYER pour ta location : signe le contrat et paie ton entrée avec Max it ici ${inv.link}`,
+      success: () => wx.showToast({ title: 'Message copié pour WhatsApp', icon: 'none' })
+    });
+  },
+
+  onSaveInviteQr() {
+    const qr = this.selectComponent('#invite-qr');
+    if (!qr) return;
+    qr.toTempFile()
+      .then(saveToAlbum)
+      .then(() => wx.showToast({ title: 'QR enregistré dans la galerie', icon: 'success' }))
+      .catch(() => wx.showToast({ title: 'Enregistrement impossible', icon: 'none' }));
+  },
+
   onRenvoyerInvitation() {
-    wx.showToast({ title: 'Invitation renvoyée par SMS', icon: 'success' });
+    const loc = this.data.detail;
+    this.openInvite(loc, false);
   },
 
   // Actions Cheikh Fall (À confirmer)

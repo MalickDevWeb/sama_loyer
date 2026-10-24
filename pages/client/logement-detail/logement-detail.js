@@ -3,6 +3,10 @@ import { isFavorite, toggleFavoriteId } from '../../../utils/helpers/favorites';
 import { COLORS } from '../../../utils/constants/theme';
 import { takeNavData } from '../../../utils/helpers/nav-data';
 import { backendAPI } from '../../../utils/apis/index.js';
+import { parseSamaLink } from '../../../utils/helpers/sama-links';
+import { getStoredRentedHomes } from '../../../utils/helpers/store';
+import { storage } from '../../../utils/storage.js';
+import { STORAGE_KEYS } from '../../../utils/constants/index';
 
 // Fiche affichée si l'id est absent ou inconnu
 const DEFAULT_LOGEMENT = toLogementDetail(getLogementById('icotaf-01') || LOGEMENTS[0]);
@@ -31,6 +35,25 @@ Page({
   },
 
   onLoad(options) {
+    // QR SAMA LOYER scanné avec Max it : le lien arrive dans options.q
+    const scanned = options && options.q ? parseSamaLink(options.q) : null;
+    if (scanned) {
+      storage.set(STORAGE_KEYS.USER_ROLE, 'client');
+      // Invitation du bailleur → contrat à signer et entrée à payer
+      if (scanned.type === 'invite' && scanned.logementId) {
+        wx.redirectTo({ url: `/pages/client/entree/entree?id=${encodeURIComponent(scanned.logementId)}` });
+        return;
+      }
+      // Affiche de la chambre scannée par son locataire → paiement du loyer
+      const home = getStoredRentedHomes().find((h) => h.id === `rented-${scanned.logementId}`);
+      if (home) {
+        wx.reLaunch({ url: `/pages/client/loyers/loyers?id=${encodeURIComponent(home.id)}` });
+        return;
+      }
+      // Sinon : fiche du logement (visite, location)
+      options = Object.assign({}, options, { id: scanned.logementId });
+    }
+
     let top = 54;
     try {
       const menuBtn = wx.getMenuButtonBoundingClientRect ? wx.getMenuButtonBoundingClientRect() : null;
