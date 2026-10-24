@@ -1,3 +1,4 @@
+import { redirectToWhatsApp, redirectToSMS } from '../../../utils/helpers/share-redirect.js';
 import { LOGEMENTS, getLogementById, toLogementDetail } from '../../../utils/mocks/logements';
 import { isFavorite, toggleFavoriteId } from '../../../utils/helpers/favorites';
 import { COLORS } from '../../../utils/constants/theme';
@@ -154,24 +155,18 @@ Page({
   },
 
   onShareSMS() {
+    this.setData({ showShare: false, showProcheModal: false });
     const l = this.data.logement;
     const msg = `Salam ! Regarde ce logement sur SAMA LOYER : ${l.title} (${l.price} FCFA/mois à ${l.place}). Lien : ${this.shareLink()}`;
-    wx.setClipboardData({
-      data: msg,
-      success: () => {
-        this.setData({ showProcheModal: false });
-        wx.showToast({ title: 'Texte copié pour SMS !', icon: 'success' });
-      }
+    redirectToSMS({
+      text: msg
     });
   },
 
   onShareWhatsApp() {
-    wx.setClipboardData({
-      data: this.shareText(),
-      success: () => {
-        this.setData({ showShare: false, showProcheModal: false });
-        wx.showToast({ title: 'Message copié pour WhatsApp', icon: 'none', duration: 2500 });
-      }
+    this.setData({ showShare: false, showProcheModal: false });
+    redirectToWhatsApp({
+      text: this.shareText()
     });
   },
 
@@ -355,16 +350,9 @@ Page({
           wx.makePhoneCall({ phoneNumber: bailleur.phone });
         } else if (res.tapIndex === 1) {
           const msg = `Bonjour ${bailleur.name}, je suis intéressé par votre annonce "${this.data.logement.title}" à ${this.data.logement.place}.`;
-          wx.setClipboardData({
-            data: msg,
-            success: () => {
-              wx.showModal({
-                title: 'WhatsApp 💬',
-                content: `Le message pré-rempli pour ${bailleur.name} a été copié. Vous pouvez le coller dans WhatsApp.`,
-                showCancel: false,
-                confirmText: 'WhatsApp'
-              });
-            }
+          redirectToWhatsApp({
+            text: msg,
+            phone: bailleur.phone
           });
         } else if (res.tapIndex === 2) {
           wx.navigateTo({ url: `/pages/client/chat/chat?logementId=${encodeURIComponent(this.data.logement.id)}` });

@@ -1,3 +1,4 @@
+import { redirectToWhatsApp } from '../../../utils/helpers/share-redirect.js';
 // pages/bailleur/demandes/demandes.js
 import { getStoredRawVisites, updateStoredVisiteStatus, getStoredLogements, getStoredConversations, getStoredLocataires } from '../../../utils/helpers/store';
 import { formatMoney } from '../../../utils/mocks/logements';
@@ -179,18 +180,9 @@ Page({
 
   onWhatsAppClient(e) {
     const { name, phone } = e.currentTarget.dataset || {};
-    const cleanPhone = String(phone || '77 123 45 67').replace(/\s+/g, '');
-    wx.setClipboardData({
-      data: cleanPhone,
-      success: () => {
-        wx.showModal({
-          title: 'WhatsApp · ' + (name || 'Locataire'),
-          content: 'Le numéro ' + cleanPhone + ' a été copié. Vous pouvez lui écrire directement sur WhatsApp.',
-          showCancel: false,
-          confirmText: 'Compris',
-          confirmColor: COLORS.navy
-        });
-      }
+    redirectToWhatsApp({
+      text: `Bonjour ${name || 'cher locataire'}, je fais suite à votre demande de visite sur SAMA LOYER.`,
+      phone: phone
     });
   },
 

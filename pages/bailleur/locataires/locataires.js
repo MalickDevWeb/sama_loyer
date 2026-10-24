@@ -1,3 +1,4 @@
+import { redirectToWhatsApp } from '../../../utils/helpers/share-redirect.js';
 import {
   getStoredLocataires,
   confirmLocataireCashPayment,
@@ -421,9 +422,9 @@ Page({
   // Message prêt à coller dans WhatsApp ou un SMS
   onShareInvite() {
     const inv = this.data.invite;
-    wx.setClipboardData({
-      data: `Bonjour ${inv.firstName}, voici ton invitation SAMA LOYER pour ta location : signe le contrat et paie ton entrée avec Max it ici ${inv.link}`,
-      success: () => wx.showToast({ title: 'Message copié pour WhatsApp', icon: 'none' })
+    redirectToWhatsApp({
+      text: `Bonjour ${inv.firstName}, voici ton invitation SAMA LOYER pour ta location : signe le contrat et paie ton entrée avec Max it ici ${inv.link}`,
+      phone: inv.phone
     });
   },
 
