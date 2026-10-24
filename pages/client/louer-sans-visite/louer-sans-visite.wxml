@@ -171,7 +171,7 @@
   </view>
 
   <!-- Lecteur de la vidéo de visite -->
-  <view wx:if="{{ video }}" class="lsv__player-overlay" catchtouchmove="noop">
+  <view wx:if="{{ video }}" class="lsv__player-overlay">
     <view class="lsv__player">
       <view class="lsv__player-head">
         <view class="lsv__player-back" hover-class="sl-hover" bindtap="onCloseVideo" aria-label="Retour">
@@ -187,8 +187,17 @@
         src="{{ video.src }}"
         poster="{{ video.poster }}"
         autoplay="{{ true }}"
-        object-fit="cover"
+        controls="{{ true }}"
+        show-progress="{{ true }}"
+        enable-progress-gesture="{{ true }}"
+        vslide-gesture="{{ true }}"
+        vslide-gesture-in-fullscreen="{{ true }}"
+        show-center-play-btn="{{ true }}"
+        show-play-btn="{{ true }}"
         show-fullscreen-btn="{{ true }}"
+        show-mute-btn="{{ true }}"
+        enable-play-gesture="{{ true }}"
+        object-fit="cover"
         bindended="onCloseVideo"
       ></video>
       <view class="sl-btn sl-btn--berry lsv__player-btn" hover-class="sl-hover" bindtap="onCloseVideo">J'ai regardé la vidéo</view>

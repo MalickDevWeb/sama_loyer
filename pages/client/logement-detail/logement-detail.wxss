@@ -1654,3 +1654,69 @@ button.share-opt-btn::after,
   flex-shrink: 0;
   transition: opacity 0.15s ease;
 }
+
+/* --- Barre de progression et contrôles vidéo SAMA LOYER --- */
+.ic-rewind-white {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23FFFFFF' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolygon points='11 19 2 12 11 5 11 19'/%3E%3Cpolygon points='22 19 13 12 22 5 22 19'/%3E%3C/svg%3E");
+}
+
+.ic-forward-white {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23FFFFFF' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolygon points='13 19 22 12 13 5 13 19'/%3E%3Cpolygon points='2 19 11 12 2 5 2 19'/%3E%3C/svg%3E");
+}
+
+.vplayer-quick-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16rpx;
+  padding: 16rpx 32rpx;
+  background: #0B1429;
+  border-top: 1rpx solid rgba(255, 255, 255, 0.1);
+}
+
+.vplayer-quick-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8rpx;
+  height: 60rpx;
+  padding: 0 20rpx;
+  border-radius: 30rpx;
+  background: rgba(255, 255, 255, 0.15);
+  color: #FFFFFF;
+  font-size: 22rpx;
+  font-weight: var(--sl-fw-extrabold);
+  flex-shrink: 0;
+  transition: transform 0.15s ease;
+}
+
+.vplayer-quick-btn .ic {
+  width: 28rpx;
+  height: 28rpx;
+}
+
+.vplayer-slider-wrap {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4rpx;
+}
+
+.vplayer-slider {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.vplayer-time-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 6rpx;
+}
+
+.vplayer-time-txt {
+  font-size: 20rpx;
+  font-weight: var(--sl-fw-bold);
+  color: rgba(255, 255, 255, 0.7);
+  font-family: monospace;
+}

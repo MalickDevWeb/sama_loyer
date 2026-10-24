@@ -11,6 +11,15 @@ import { STORAGE_KEYS } from '../../../utils/constants/index';
 // Fiche affichée si l'id est absent ou inconnu
 const DEFAULT_LOGEMENT = toLogementDetail(getLogementById('icotaf-01') || LOGEMENTS[0]);
 
+function formatVideoTime(seconds) {
+  const s = Math.floor(seconds || 0);
+  const m = Math.floor(s / 60);
+  const remS = s % 60;
+  const mm = m < 10 ? '0' + m : '' + m;
+  const ss = remS < 10 ? '0' + remS : '' + remS;
+  return `${mm}:${ss}`;
+}
+
 Page({
   data: {
     uiState: 'content', // 'loading' | 'content' | 'error'
@@ -25,6 +34,10 @@ Page({
     showShare: false,
     showProcheModal: false,
     playingVideo: false,
+    videoCurrentTime: 0,
+    videoDuration: 0,
+    videoCurrentTimeFmt: '00:00',
+    videoDurationFmt: '00:00',
     showVisitModal: false,
     selectedVisitDate: 'Demain à 16h',
     visitSlots: [
@@ -212,11 +225,80 @@ Page({
 
   // --- Vidéo de visite -----------------------------------------------------------
   onPlayVideo() {
-    this.setData({ playingVideo: true });
+    this.setData({
+      playingVideo: true,
+      videoCurrentTime: 0,
+      videoDuration: 0,
+      videoCurrentTimeFmt: '00:00',
+      videoDurationFmt: '00:00'
+    });
+    this.videoCtx = wx.createVideoContext('vplayer-video', this);
+    if (this.videoCtx) {
+      this.videoCtx.play();
+    }
   },
 
   onCloseVideo() {
+    if (this.videoCtx) {
+      this.videoCtx.stop();
+    }
     this.setData({ playingVideo: false });
+  },
+
+  onVideoTimeUpdate(e) {
+    if (this._isSeeking) return;
+    const currentTime = Math.floor(e.detail.currentTime || 0);
+    const duration = Math.floor(e.detail.duration || 0);
+    this.setData({
+      videoCurrentTime: currentTime,
+      videoDuration: duration,
+      videoCurrentTimeFmt: formatVideoTime(currentTime),
+      videoDurationFmt: formatVideoTime(duration)
+    });
+  },
+
+  onVideoSliderChanging(e) {
+    this._isSeeking = true;
+    const val = Number(e.detail.value || 0);
+    this.setData({
+      videoCurrentTime: val,
+      videoCurrentTimeFmt: formatVideoTime(val)
+    });
+  },
+
+  onVideoSliderChange(e) {
+    const val = Number(e.detail.value || 0);
+    this._isSeeking = false;
+    this.setData({
+      videoCurrentTime: val,
+      videoCurrentTimeFmt: formatVideoTime(val)
+    });
+    if (this.videoCtx) {
+      this.videoCtx.seek(val);
+    }
+  },
+
+  onVideoRewind10() {
+    const target = Math.max(0, (this.data.videoCurrentTime || 0) - 10);
+    this.setData({
+      videoCurrentTime: target,
+      videoCurrentTimeFmt: formatVideoTime(target)
+    });
+    if (this.videoCtx) {
+      this.videoCtx.seek(target);
+    }
+  },
+
+  onVideoForward10() {
+    const maxDur = this.data.videoDuration || 100;
+    const target = Math.min(maxDur, (this.data.videoCurrentTime || 0) + 10);
+    this.setData({
+      videoCurrentTime: target,
+      videoCurrentTimeFmt: formatVideoTime(target)
+    });
+    if (this.videoCtx) {
+      this.videoCtx.seek(target);
+    }
   },
 
   onPrevSlide() {
