@@ -7,8 +7,15 @@
 import { storage } from '../../../utils/storage.js';
 import { STORAGE_KEYS } from '../../../utils/constants/index';
 import { setCustomTabBarActive } from '../../../utils/helpers/tab-bar';
-import { getBailleurAccount, BAILLEUR_PLANS, formatLongDate } from '../../../utils/helpers/store';
-import { requireBailleurAccess } from '../../../utils/helpers/store';
+import {
+  getBailleurAccount,
+  BAILLEUR_PLANS,
+  formatLongDate,
+  requireBailleurAccess,
+  getBailleurKyc,
+  submitBailleurKyc,
+  setBailleurKycStatus
+} from '../../../utils/helpers/store';
 import { bailleurGuardBehavior } from '../../../utils/behaviors/index';
 
 function initialsOf(name) {
@@ -43,6 +50,10 @@ Page({
       active: true,
       until: '15 novembre 2026',
       highlights: '2 annonces sur 3 mises en avant'
+    },
+    kyc: {
+      status: 'verified', // 'verified' | 'pending' | 'unverified'
+      photos: []
     }
   },
 
@@ -62,11 +73,16 @@ Page({
 
   // Récupère les informations du compte bailleur depuis le store local
   loadAccount() {
+    const kyc = getBailleurKyc();
     const account = getBailleurAccount();
-    if (!account) return;
+    if (!account) {
+      this.setData({ kyc });
+      return;
+    }
     const plan = BAILLEUR_PLANS[account.plan] || BAILLEUR_PLANS.trial;
     const active = account.expiresAt > Date.now();
     this.setData({
+      kyc,
       'profile.fullName': account.fullName || 'Moussa Diop',
       'profile.initials': initialsOf(account.fullName || 'Moussa Diop'),
       'profile.phone': formatPhone(account.phone || '771234567'),
@@ -79,6 +95,53 @@ Page({
           : '3 annonces mises en avant · Paiement récurrent Max it'
       }
     });
+  },
+
+  // Soumission de la CNI CEDEAO (Recto / Verso) pour modération Super Admin
+  onUploadCni() {
+    wx.chooseMedia({
+      count: 2,
+      mediaType: ['image'],
+      sourceType: ['camera', 'album'],
+      camera: 'back',
+      success: (res) => {
+        const tempFiles = res.tempFiles || [];
+        if (!tempFiles.length) return;
+        wx.showLoading({ title: 'Téléversement CNI...' });
+        setTimeout(() => {
+          wx.hideLoading();
+          const photos = tempFiles.map((f) => f.tempFilePath);
+          submitBailleurKyc(photos);
+          this.loadAccount();
+          wx.showModal({
+            title: 'Dossier CNI transmis !',
+            content: 'Votre pièce d’identité a été envoyée au Super Admin pour vérification. Vos annonces seront activées dès validation.',
+            showCancel: false,
+            confirmText: 'Compris',
+            confirmColor: '#F16E00'
+          });
+        }, 700);
+      },
+      fail: (err) => {
+        if (err && err.errMsg && !err.errMsg.includes('cancel')) {
+          wx.showToast({ title: 'Erreur d’accès appareil photo', icon: 'none' });
+        }
+      }
+    });
+  },
+
+  // Raccourci de démonstration pour basculer facilement entre les 3 statuts KYC
+  onToggleKycForDemo() {
+    const current = this.data.kyc.status;
+    const nextStatus = current === 'verified' ? 'unverified' : current === 'unverified' ? 'pending' : 'verified';
+    setBailleurKycStatus(nextStatus);
+    this.loadAccount();
+    const labels = {
+      unverified: 'Statut : Non vérifié (envoi CNI requis)',
+      pending: 'Statut : En cours de validation Admin',
+      verified: 'Statut : Vérifié (Bailleur certifié)'
+    };
+    wx.showToast({ title: labels[nextStatus], icon: 'none', duration: 2500 });
   },
 
   onGoAnnonces() {

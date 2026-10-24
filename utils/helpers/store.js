@@ -744,3 +744,43 @@ export function addBailleurBoost(option) {
   notify(EVENTS.BAILLEUR_ACCOUNT_CHANGED, { account: getBailleurAccount() });
   return boost;
 }
+
+// ============================================================================
+// 7. VÉRIFICATION D'IDENTITÉ BAILLEUR (KYC CNI CEDEAO)
+// ============================================================================
+
+export function getBailleurKyc() {
+  const saved = storage.get('sama_bailleur_kyc', null);
+  if (saved) return saved;
+  // Par défaut en mode démo : vérifié
+  return {
+    status: 'verified', // 'verified' | 'pending' | 'unverified'
+    photos: [],
+    submittedAt: null,
+    verifiedAt: Date.now() - 30 * 24 * 3600 * 1000
+  };
+}
+
+export function submitBailleurKyc(photos = []) {
+  const kyc = {
+    status: 'pending',
+    photos,
+    submittedAt: Date.now(),
+    verifiedAt: null
+  };
+  storage.set('sama_bailleur_kyc', kyc);
+  notify(EVENTS.BAILLEUR_ACCOUNT_CHANGED, { kyc });
+  return kyc;
+}
+
+export function setBailleurKycStatus(status) {
+  const current = getBailleurKyc();
+  const next = Object.assign({}, current, {
+    status,
+    verifiedAt: status === 'verified' ? Date.now() : null
+  });
+  storage.set('sama_bailleur_kyc', next);
+  notify(EVENTS.BAILLEUR_ACCOUNT_CHANGED, { kyc: next });
+  return next;
+}
+
