@@ -311,7 +311,7 @@ Page({
         drawPoster(ctx, 620, posterData);
 
         // Export PNG natif haute rapidité
-        const filePath = await exportCanvas(canvas, 2000);
+        const filePath = await exportCanvas(canvas, 4000);
         generatedPaths.push(filePath);
 
         // Sauvegarde directe de chaque affiche dans la galerie photo
