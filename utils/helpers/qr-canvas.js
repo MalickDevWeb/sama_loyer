@@ -280,7 +280,7 @@ function writeDataUrl(dataUrl) {
  * l'image avec canvas.toDataURL(), et un délai maximal évite l'attente infinie.
  * @returns {Promise<string>} chemin du fichier (ou data URL si l'écriture est impossible)
  */
-export function exportCanvas(canvas, timeout = 5000) {
+export function exportCanvas(canvas, timeout = 3000) {
   return new Promise((resolve, reject) => {
     let done = false;
     const finish = (fn, value) => {
@@ -291,27 +291,37 @@ export function exportCanvas(canvas, timeout = 5000) {
     };
     const timer = setTimeout(() => finish(reject, new Error('EXPORT_TIMEOUT')), timeout);
 
-    // 1) Lecture directe du canvas
-    let dataUrl = '';
-    try {
-      if (typeof canvas.toDataURL === 'function') dataUrl = canvas.toDataURL('image/png');
-    } catch (e) {}
-    if (dataUrl && dataUrl.indexOf('data:image') === 0) {
-      writeDataUrl(dataUrl)
-        .then((path) => finish(resolve, path))
-        .catch(() => finish(resolve, dataUrl)); // affichable quand même
-      return;
+    // Priorité absolue à wx.canvasToTempFilePath (instantané en natif C++, sans base64 lourd en mémoire)
+    if (typeof wx !== 'undefined' && typeof wx.canvasToTempFilePath === 'function') {
+      try {
+        wx.canvasToTempFilePath({
+          canvas,
+          fileType: 'png',
+          success: (res) => finish(resolve, res.tempFilePath),
+          fail: () => fallbackDataUrl()
+        });
+        return;
+      } catch (e) {
+        fallbackDataUrl();
+        return;
+      }
     }
 
-    // 2) API classique, après un court délai pour laisser le dessin se terminer
-    setTimeout(() => {
-      wx.canvasToTempFilePath({
-        canvas,
-        fileType: 'png',
-        success: (res) => finish(resolve, res.tempFilePath),
-        fail: (err) => finish(reject, err)
-      });
-    }, 80);
+    fallbackDataUrl();
+
+    function fallbackDataUrl() {
+      let dataUrl = '';
+      try {
+        if (typeof canvas.toDataURL === 'function') dataUrl = canvas.toDataURL('image/png');
+      } catch (e) {}
+      if (dataUrl && dataUrl.indexOf('data:image') === 0) {
+        writeDataUrl(dataUrl)
+          .then((path) => finish(resolve, path))
+          .catch(() => finish(resolve, dataUrl));
+        return;
+      }
+      finish(reject, new Error('EXPORT_FAILED'));
+    }
   });
 }
 
