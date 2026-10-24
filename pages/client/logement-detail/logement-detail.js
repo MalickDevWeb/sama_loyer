@@ -23,6 +23,7 @@ Page({
     heartPop: false, // petite animation du cœur au clic
     solidHeader: false, // barre du haut blanche une fois la photo dépassée
     showShare: false,
+    showProcheModal: false,
     playingVideo: false,
     showVisitModal: false,
     selectedVisitDate: 'Demain à 16h',
@@ -128,12 +129,35 @@ Page({
     this.setData({ showShare: false });
   },
 
+  onShareProche() {
+    this.setData({
+      showShare: false,
+      showProcheModal: true
+    });
+  },
+
+  onCloseProcheModal() {
+    this.setData({ showProcheModal: false });
+  },
+
+  onShareSMS() {
+    const l = this.data.logement;
+    const msg = `Salam ! Regarde ce logement sur SAMA LOYER : ${l.title} (${l.price} FCFA/mois à ${l.place}). Lien : ${this.shareLink()}`;
+    wx.setClipboardData({
+      data: msg,
+      success: () => {
+        this.setData({ showProcheModal: false });
+        wx.showToast({ title: 'Texte copié pour SMS !', icon: 'success' });
+      }
+    });
+  },
+
   onShareWhatsApp() {
     wx.setClipboardData({
       data: this.shareText(),
       success: () => {
-        this.setData({ showShare: false });
-        wx.showToast({ title: 'Message copié, colle-le dans WhatsApp', icon: 'none', duration: 2500 });
+        this.setData({ showShare: false, showProcheModal: false });
+        wx.showToast({ title: 'Message copié pour WhatsApp', icon: 'none', duration: 2500 });
       }
     });
   },
@@ -142,22 +166,23 @@ Page({
     wx.setClipboardData({
       data: this.shareLink(),
       success: () => {
-        this.setData({ showShare: false });
+        this.setData({ showShare: false, showProcheModal: false });
         wx.showToast({ title: 'Lien copié', icon: 'success' });
       }
     });
   },
 
   onShareMore() {
-    wx.showShareMenu({ withShareTicket: true, menus: ['shareAppMessage', 'shareTimeline'] });
-    this.setData({ showShare: false });
-    wx.showToast({ title: 'Touche ••• en haut pour plus d’options', icon: 'none', duration: 2500 });
+    this.setData({
+      showShare: false,
+      showProcheModal: true
+    });
   },
 
-  // Carte envoyée par « À un proche » (bouton open-type="share") et le menu •••
+  // Carte envoyée par WeChat (bouton open-type="share" ou menu •••)
   onShareAppMessage() {
     const l = this.data.logement;
-    this.setData({ showShare: false });
+    this.setData({ showShare: false, showProcheModal: false });
     return {
       title: `${l.title} · ${l.price} FCFA / mois`,
       path: `/pages/client/logement-detail/logement-detail?id=${l.id}`,
@@ -237,6 +262,7 @@ Page({
   onContactTap() {
     const bailleur = this.data.logement.bailleur;
     wx.showActionSheet({
+      itemColor: '#0F1E3D',
       itemList: [
         `Appeler ${bailleur.name} (${bailleur.phone})`,
         `Contacter via WhatsApp`,
@@ -315,6 +341,7 @@ Page({
 
   onReportListing() {
     wx.showActionSheet({
+      itemColor: '#C8235F',
       itemList: [
         'Annonce déjà louée / indisponible',
         'Prix différent de l’annonce',
