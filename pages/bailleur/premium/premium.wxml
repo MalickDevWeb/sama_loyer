@@ -91,7 +91,7 @@
 
         <!-- Action Button Rose -->
         <view class="btn-continue-pay" hover-class="btn-renew-subs--hover" bindtap="onBoost">
-          <text>Payer {{ selectedPriceLabel }} avec Max it</text>
+          <text>Payer {{ selectedPriceLabel }}</text>
         </view>
       </view>
 
@@ -189,7 +189,7 @@
     <view class="sl-mx" aria-label="Paiement avec Max it">
       <block wx:if="{{ mx === 'confirm' }}">
         <view class="sl-mx-icon"><view class="ic ic-maxit-berry"></view></view>
-        <text class="sl-mx-title">Payer avec Max it</text>
+        <text class="sl-mx-title">Payer</text>
         <text class="sl-mx-amount">{{ pay.amountText }}</text>
         <text class="sl-mx-to">{{ pay.label }}</text>
         <text class="sl-mx-note">Tu vas être redirigé·e vers l'application Max it pour valider le paiement avec ton code secret.</text>
