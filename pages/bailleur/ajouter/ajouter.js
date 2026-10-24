@@ -2,7 +2,9 @@
 import { addStoredLogement } from '../../../utils/helpers/store';
 import { formatMoney } from '../../../utils/mocks/logements';
 import { getMedia } from '../../../utils/mocks/media';
-import { requireBailleurAccess } from '../../../utils/helpers/store';
+import { requireBailleurAccess, getComplianceConfig } from '../../../utils/helpers/store';
+import { backendAPI } from '../../../utils/apis/index';
+import { pickDocumentFiles, openPickedFile } from '../../../utils/helpers/file-picker';
 import { bailleurGuardBehavior } from '../../../utils/behaviors/index';
 
 const MAX_PHOTOS = 8;
@@ -65,11 +67,26 @@ Page({
     video: DEMO_MEDIA.video, // { src, poster } | null
     videoPoster: DEMO_MEDIA.video.poster,
     hasVideo: true,
+
+    // Étape 2 : Contrat de location (option ouverte ou non par le Super Admin)
+    allowCustomContract: true,
+    contractMode: 'standard', // 'standard' | 'custom'
+    customContract: null, // { path, name, type: 'pdf' }
   },
 
   onShow() {
     // Sans abonnement actif, aucun accès : retour à l'accueil verrouillé
     if (!requireBailleurAccess()) return;
+    this.applyComplianceConfig(getComplianceConfig());
+    backendAPI.getComplianceConfig().then((config) => this.applyComplianceConfig(config)).catch(() => {});
+  },
+
+  // Sans autorisation du Super Admin, seul le modèle SAMA LOYER est proposé
+  applyComplianceConfig(config) {
+    const allowCustomContract = !!(config && config.allowCustomContract);
+    this.setData(allowCustomContract
+      ? { allowCustomContract }
+      : { allowCustomContract, contractMode: 'standard', customContract: null });
   },
 
   onLoad(options) {
@@ -227,6 +244,29 @@ Page({
     this.setData(videoState(null));
   },
 
+  // --- Étape 2 : contrat de location ------------------------------------------
+  onSelectContractMode(e) {
+    this.setData({ contractMode: e.currentTarget.dataset.mode });
+  },
+
+  onPickCustomContract() {
+    pickDocumentFiles({ formats: ['pdf'], count: 1 })
+      .then((files) => {
+        if (files[0]) this.setData({ customContract: files[0], contractMode: 'custom' });
+      })
+      .catch(() => {
+        wx.showToast({ title: 'Envoi de PDF indisponible sur cette version de Max it', icon: 'none' });
+      });
+  },
+
+  onViewCustomContract() {
+    openPickedFile(this.data.customContract);
+  },
+
+  onRemoveCustomContract() {
+    this.setData({ customContract: null });
+  },
+
   onNextStep() {
     if (!this.data.selectedType) {
       wx.showToast({ title: 'Choisis un type de logement', icon: 'none' });
@@ -243,6 +283,11 @@ Page({
   onPublishListing() {
     if (this.data.photos.length === 0) {
       wx.showToast({ title: 'Ajoute au moins une photo', icon: 'none' });
+      return;
+    }
+    const customContract = this.data.contractMode === 'custom';
+    if (customContract && !this.data.customContract) {
+      wx.showToast({ title: 'Ajoute ton contrat en PDF', icon: 'none' });
       return;
     }
     wx.showLoading({ title: 'Publication...' });
@@ -271,6 +316,8 @@ Page({
       equipements: selectedEquips.length ? selectedEquips : ['Toilettes privées', 'Compteur Woyofal'],
       description: this.data.description || `${this.data.selectedType} situé à ${placeStr}.`,
       tint: '#FDE8EE',
+      contractMode: customContract ? 'custom' : 'standard',
+      customContract: customContract ? this.data.customContract : null,
       bailleurName: 'Moussa Diop',
       phone: '771234567'
     });
@@ -288,6 +335,8 @@ Page({
       step: 1,
       adresseDetail: '',
       description: '',
+      contractMode: 'standard',
+      customContract: null,
       ...photoState([]),
       ...videoState(null)
     });

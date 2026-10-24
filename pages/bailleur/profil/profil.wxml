@@ -58,20 +58,49 @@
       </view>
 
       <view class="bprof__card bprof__kyc">
-        <!-- État 1 : Non vérifié -->
-        <block wx:if="{{ kyc.status === 'unverified' }}">
+        <!-- État 1 : Non vérifié, ou dossier rouvert pour mise à jour -->
+        <block wx:if="{{ kyc.status === 'unverified' || kycEditing }}">
           <view class="bprof__kyc-top">
             <view class="bprof__kyc-icon bprof__kyc-icon--warn">
               <view class="ic ic-shield-line-berry ic--sm"></view>
             </view>
             <view class="bprof__kyc-info">
-              <text class="bprof__kyc-title">Pièce d'identité requise</text>
-              <text class="bprof__kyc-desc">Photographiez votre CNI CEDEAO (Recto / Verso) pour faire certifier votre profil et activer vos annonces auprès du Super Admin.</text>
+              <text class="bprof__kyc-title">{{ kycEditing ? 'Mettre à jour mes pièces' : 'Pièces à fournir' }}</text>
+              <text class="bprof__kyc-desc">Ajoutez les pièces ci-dessous pour faire certifier votre profil et activer vos annonces. Le Super Admin les vérifie sous 24 h.</text>
             </view>
           </view>
-          <view class="bprof__kyc-action-btn" hover-class="sl-hover" bindtap="onUploadCni">
-            <text>Photographier ma CNI (Recto / Verso)</text>
+
+          <!-- Une ligne par pièce exigée (liste pilotée depuis le back office) -->
+          <view class="bprof__docs">
+            <view wx:if="{{ kycDocs.length === 0 }}" class="bprof__doc-empty">
+              <text>Aucune pièce n'est demandée pour le moment.</text>
+            </view>
+            <view wx:for="{{ kycDocs }}" wx:key="id" class="bprof__doc {{ item.done ? 'bprof__doc--done' : '' }}">
+              <view class="bprof__doc-state">
+                <view wx:if="{{ item.done }}" class="ic ic-check-green ic--xs"></view>
+              </view>
+              <view class="bprof__doc-text">
+                <view class="bprof__doc-title-row">
+                  <text class="bprof__doc-title">{{ item.label }}</text>
+                  <text class="bprof__doc-tag {{ item.required ? 'bprof__doc-tag--req' : '' }}">{{ item.required ? 'Obligatoire' : 'Facultatif' }}</text>
+                </view>
+                <text wx:if="{{ item.done }}" class="bprof__doc-file" data-id="{{ item.id }}" bindtap="onViewKycDocument">{{ item.filesText }}</text>
+                <text wx:else class="bprof__doc-hint">{{ item.hint }} · {{ item.formatsText }}</text>
+              </view>
+              <view wx:if="{{ item.done }}" class="bprof__doc-btn bprof__doc-btn--ghost" hover-class="sl-hover" data-id="{{ item.id }}" bindtap="onRemoveKycDocument" aria-label="Retirer {{ item.label }}">
+                <text>Retirer</text>
+              </view>
+              <view wx:else class="bprof__doc-btn" hover-class="sl-hover" data-id="{{ item.id }}" bindtap="onAddKycDocument" aria-label="Ajouter {{ item.label }}">
+                <text>Ajouter</text>
+              </view>
+            </view>
           </view>
+
+          <text wx:if="{{ kycMissingCount > 0 }}" class="bprof__kyc-missing">{{ kycMissingCount }} pièce{{ kycMissingCount > 1 ? 's' : '' }} obligatoire{{ kycMissingCount > 1 ? 's' : '' }} à ajouter</text>
+          <view class="bprof__kyc-action-btn {{ kycMissingCount > 0 ? 'bprof__kyc-action-btn--off' : '' }}" hover-class="sl-hover" bindtap="onSubmitKyc">
+            <text>Envoyer mon dossier</text>
+          </view>
+          <text wx:if="{{ kycEditing }}" class="bprof__kyc-cancel" bindtap="onCancelEditKyc">Annuler</text>
         </block>
 
         <!-- État 2 : En attente Super Admin -->
@@ -82,7 +111,7 @@
             </view>
             <view class="bprof__kyc-info">
               <text class="bprof__kyc-title">Vérification en cours par le Super Admin</text>
-              <text class="bprof__kyc-desc">Vos pièces ont été transmises avec succès. Le Super Admin examine votre CNI CEDEAO dans le Back-Office. Validation sous 24h.</text>
+              <text class="bprof__kyc-desc">{{ kycSentCount }} pièce{{ kycSentCount > 1 ? 's' : '' }} transmise{{ kycSentCount > 1 ? 's' : '' }}. Le Super Admin examine votre dossier dans le back office. Validation sous 24 h.</text>
             </view>
           </view>
           <view class="bprof__kyc-status-bar">
@@ -99,12 +128,12 @@
             </view>
             <view class="bprof__kyc-info">
               <text class="bprof__kyc-title">Identité certifiée conforme</text>
-              <text class="bprof__kyc-desc">Votre CNI CEDEAO a été validée par le Super Admin. Vos annonces portent le badge officiel de confiance.</text>
+              <text class="bprof__kyc-desc">Vos pièces ont été validées par le Super Admin. Vos annonces portent le badge officiel de confiance.</text>
             </view>
           </view>
           <view class="bprof__kyc-verified-row">
             <text class="bprof__kyc-verified-label">Réf. : SAMA-KYC-2026-SN</text>
-            <text class="bprof__kyc-reupload" bindtap="onUploadCni">Mettre à jour la CNI</text>
+            <text class="bprof__kyc-reupload" bindtap="onEditKyc">Mettre à jour mes pièces</text>
           </view>
         </block>
       </view>
@@ -183,6 +212,13 @@
           <view class="bprof__row-col">
             <text class="bprof__row-label">Horaires de visite</text>
             <text class="bprof__row-sub">Samedi & Dimanche (10h - 18h)</text>
+          </view>
+          <view class="ic ic-chevron-grey bprof__chevron"></view>
+        </view>
+        <view class="bprof__row" hover-class="bprof__row--hover" bindtap="onOpenContratInfo">
+          <view class="bprof__row-col">
+            <text class="bprof__row-label">Modèle de contrat & Baux</text>
+            <text class="bprof__row-sub">Standard légal automatique · Adaptable par bien</text>
           </view>
           <view class="ic ic-chevron-grey bprof__chevron"></view>
         </view>
@@ -346,6 +382,45 @@
       <view class="bprof__sheet-footer">
         <button class="bprof__btn-secondary" hover-class="sl-hover" bindtap="onCloseModal">
           Fermer
+        </button>
+      </view>
+    </view>
+  </view>
+
+  <!-- Modal 4 : Contrat & Baux adaptables -->
+  <view wx:if="{{ activeModal === 'contrat' }}" class="bprof__sheet-overlay" catchtouchmove="noop" bindtap="onCloseModal">
+    <view class="bprof__sheet" catchtap="noop">
+      <view class="bprof__sheet-handle"></view>
+      <view class="bprof__sheet-header">
+        <view class="bprof__sheet-heading">
+          <text class="bprof__sheet-title">Contrats & Baux de location</text>
+          <text class="bprof__sheet-sub">Règles juridiques et options par logement</text>
+        </view>
+        <view class="bprof__sheet-close" hover-class="sl-hover" bindtap="onCloseModal">
+          <view class="ic ic-close-navy bprof__sheet-close-ic"></view>
+        </view>
+      </view>
+
+      <view class="bprof__sheet-body">
+        <view class="bprof__sec-card">
+          <view class="ic ic-shield-check-green bprof__sec-ic"></view>
+          <view class="bprof__sec-text">
+            <text class="bprof__sec-title">1. Modèle Standard Certifié (Automatique)</text>
+            <text class="bprof__sec-desc">Par défaut, chaque logement bénéficie du bail officiel SAMA LOYER conforme au droit sénégalais, avec caution plafonnée à 2 mois et quittance Max it.</text>
+          </view>
+        </view>
+        <view class="bprof__sec-card">
+          <view class="ic ic-check-green bprof__sec-ic"></view>
+          <view class="bprof__sec-text">
+            <text class="bprof__sec-title">2. Contrat adapté par bien (Option libre)</text>
+            <text class="bprof__sec-desc">Pour un logement spécifique (ex: meublé avec inventaire, colocation ou clauses particulières), vous pouvez importer votre propre bail PDF lors de la publication.</text>
+          </view>
+        </view>
+      </view>
+
+      <view class="bprof__sheet-footer">
+        <button class="bprof__btn-primary" hover-class="sl-hover" bindtap="onCloseModal">
+          Compris, merci
         </button>
       </view>
     </view>

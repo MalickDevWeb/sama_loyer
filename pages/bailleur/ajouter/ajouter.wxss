@@ -593,3 +593,96 @@
   0% { opacity: 0; transform: scale(0.5); }
   100% { opacity: 1; transform: scale(1); }
 }
+
+/* --- Contrat de location (modèle SAMA LOYER ou PDF du bailleur) ----------- */
+.ct-opt {
+  display: flex;
+  align-items: flex-start;
+  gap: 20rpx;
+  padding: 22rpx 24rpx;
+  margin-bottom: 16rpx;
+  border: 2rpx solid var(--sl-border-strong);
+  border-radius: 22rpx;
+  background-color: var(--sl-white);
+}
+
+.ct-opt--on {
+  border-color: var(--sl-berry);
+  background-color: var(--sl-berry-soft);
+}
+
+.ct-radio {
+  flex: 0 0 36rpx;
+  width: 36rpx;
+  height: 36rpx;
+  margin-top: 4rpx;
+  border-radius: 50%;
+  border: 4rpx solid var(--sl-border-strong);
+  box-sizing: border-box;
+}
+
+.ct-radio--on {
+  border: 11rpx solid var(--sl-berry);
+}
+
+.ct-opt-text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6rpx;
+}
+
+.ct-opt-title-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12rpx;
+}
+
+.ct-opt-title {
+  font-size: var(--sl-fs-body-sm);
+  font-weight: var(--sl-fw-extrabold);
+  color: var(--sl-text);
+}
+
+.ct-opt-tag {
+  font-size: 20rpx;
+  font-weight: var(--sl-fw-bold);
+  color: var(--sl-berry-dark);
+  background-color: var(--sl-white);
+  padding: 2rpx 12rpx;
+  border-radius: 999rpx;
+}
+
+.ct-opt-sub {
+  font-size: var(--sl-fs-caption);
+  color: var(--sl-muted);
+  line-height: 1.45;
+}
+
+.ct-file {
+  display: flex;
+  align-items: center;
+  gap: 18rpx;
+  padding: 20rpx 24rpx;
+  border-radius: 22rpx;
+  background-color: var(--sl-white);
+  border: 2rpx solid var(--sl-border-strong);
+}
+
+.ct-file-name {
+  flex: 1;
+  min-width: 0;
+  font-size: var(--sl-fs-body-sm);
+  font-weight: var(--sl-fw-bold);
+  color: var(--sl-text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.aj-recap-contract {
+  font-size: var(--sl-fs-caption);
+  color: var(--sl-muted);
+}

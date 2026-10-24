@@ -23,6 +23,8 @@ export const STORAGE_KEYS = {
   PROFILE_PREFS: 'sama_profile_prefs', // { notifs: { msg, visit, new, price }, lang }
   BAILLEUR_PAYMENTS: 'sama_bailleur_payments', // paiements Max it du bailleur (abonnement, boosts)
   BAILLEUR_ACCOUNT: 'sama_bailleur_account', // { fullName, phone, city, plan: 'trial'|'pro', activatedAt, expiresAt } — nom et numéro repris du compte Max it
+  BAILLEUR_KYC: 'sama_bailleur_kyc', // { status, documents: { [documentId]: [{ path, name, type }] }, submittedAt, verifiedAt }
+  COMPLIANCE_CONFIG: 'sama_compliance_config', // dernière config reçue : { documents: [...], allowCustomContract }
   IMAGE_CACHE: 'tc-image-cache',
 };
 

@@ -14,7 +14,9 @@
 }
 
 .bprof__scroll {
-  height: 100%;
+  flex: 1;
+  height: 0;
+  min-height: 0;
 }
 
 .bprof__header {
@@ -267,6 +269,139 @@
 
 .bprof__badge-check {
   font-weight: var(--sl-fw-black);
+}
+
+.bprof__kyc-action-btn--off {
+  opacity: 0.5;
+  box-shadow: none;
+}
+
+.bprof__kyc-missing {
+  display: block;
+  margin-top: 20rpx;
+  font-size: var(--sl-fs-caption);
+  font-weight: var(--sl-fw-semibold);
+  color: #B45309;
+  text-align: center;
+}
+
+.bprof__kyc-cancel {
+  display: block;
+  margin-top: 18rpx;
+  font-size: var(--sl-fs-caption);
+  font-weight: var(--sl-fw-bold);
+  color: var(--sl-muted);
+  text-align: center;
+}
+
+/* --- Pièces exigées (liste pilotée par le back office) -------------------- */
+.bprof__docs {
+  margin-top: 24rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 14rpx;
+}
+
+.bprof__doc-empty {
+  font-size: var(--sl-fs-caption);
+  color: var(--sl-muted);
+}
+
+.bprof__doc {
+  display: flex;
+  align-items: center;
+  gap: 18rpx;
+  padding: 18rpx 20rpx;
+  border: 1rpx solid var(--sl-divider);
+  border-radius: 18rpx;
+}
+
+.bprof__doc--done {
+  border-color: #A7F3D0;
+  background: #F0FDF4;
+}
+
+.bprof__doc-state {
+  width: 40rpx;
+  height: 40rpx;
+  flex: 0 0 40rpx;
+  border-radius: 50%;
+  border: 2rpx dashed var(--sl-divider);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bprof__doc--done .bprof__doc-state {
+  border: none;
+  background: #DCFCE7;
+}
+
+.bprof__doc-text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4rpx;
+}
+
+.bprof__doc-title-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10rpx;
+}
+
+.bprof__doc-title {
+  font-size: var(--sl-fs-body-sm);
+  font-weight: var(--sl-fw-bold);
+  color: var(--sl-text);
+}
+
+.bprof__doc-tag {
+  font-size: 20rpx;
+  font-weight: var(--sl-fw-bold);
+  color: var(--sl-muted);
+  background: #F3F4F6;
+  padding: 2rpx 12rpx;
+  border-radius: 999rpx;
+}
+
+.bprof__doc-tag--req {
+  color: #B91C1C;
+  background: #FEF2F2;
+}
+
+.bprof__doc-hint {
+  font-size: var(--sl-fs-caption);
+  color: var(--sl-muted);
+  line-height: 1.4;
+}
+
+.bprof__doc-file {
+  font-size: var(--sl-fs-caption);
+  color: #047857;
+  font-weight: var(--sl-fw-semibold);
+  text-decoration: underline;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.bprof__doc-btn {
+  flex: 0 0 auto;
+  padding: 12rpx 24rpx;
+  border-radius: 14rpx;
+  background: var(--sl-primary);
+  color: #FFFFFF;
+  font-size: var(--sl-fs-caption);
+  font-weight: var(--sl-fw-bold);
+}
+
+.bprof__doc-btn--ghost {
+  background: transparent;
+  color: var(--sl-muted);
+  border: 1rpx solid var(--sl-divider);
 }
 
 /* --- Résumé stats bailleur ------------------------------------------------ */
@@ -567,7 +702,8 @@
 }
 
 .bprof__tab-spacer {
-  height: calc(180rpx + env(safe-area-inset-bottom));
+  height: calc(220rpx + env(safe-area-inset-bottom));
+  padding-bottom: 40rpx;
 }
 
 /* ==========================================================================

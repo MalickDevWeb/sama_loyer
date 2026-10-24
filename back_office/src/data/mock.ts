@@ -270,6 +270,32 @@ export const RULES = [
   { id: 'r-susp', label: 'Signalements avant suspension automatique', value: 3 },
 ]
 
+/* --- Pièces exigées des bailleurs ----------------------------------------- */
+/** Formats qu'un bailleur peut envoyer pour une pièce */
+export type DocFormat = 'image' | 'pdf'
+
+export interface DocumentRequirement {
+  id: string
+  label: string
+  hint: string
+  required: boolean
+  formats: DocFormat[]
+  maxFiles: number
+}
+
+/**
+ * Pièces demandées aux bailleurs. L'écran du bailleur se construit à partir de
+ * cette liste (mêmes valeurs par défaut que utils/mocks/compliance.js côté mini-app).
+ */
+export const DOCUMENT_REQUIREMENTS: DocumentRequirement[] = [
+  { id: 'id_card', label: 'CNI CEDEAO ou passeport', hint: 'Recto et verso, bien lisibles', required: true, formats: ['image', 'pdf'], maxFiles: 2 },
+  { id: 'property_title', label: 'Titre de propriété ou attestation', hint: 'Ou mandat de gestion si le bailleur loue pour quelqu’un', required: true, formats: ['pdf'], maxFiles: 1 },
+  { id: 'utility_bill', label: 'Facture Senelec ou SDE récente', hint: 'Moins de 3 mois · renforce la confiance des locataires', required: false, formats: ['image'], maxFiles: 1 },
+]
+
+/** Le bailleur peut joindre son propre contrat (PDF) à un logement */
+export const ALLOW_CUSTOM_CONTRACT = true
+
 /* --- Annonces en ligne ---------------------------------------------------- */
 export type AnnonceStatus = 'online' | 'stale' | 'rented' | 'hidden'
 
