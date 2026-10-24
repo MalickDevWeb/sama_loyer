@@ -14,8 +14,9 @@
 }
 
 .premium-scroll {
-  height: 100%;
   flex: 1;
+  height: 0;
+  min-height: 0;
   box-sizing: border-box;
   scrollbar-width: none;
   -webkit-overflow-scrolling: touch;
@@ -540,7 +541,7 @@
 }
 
 .scroll-spacer {
-  height: 180rpx;
+  height: calc(240rpx + env(safe-area-inset-bottom));
 }
 
 /* Retour vers l'onglet Profil */

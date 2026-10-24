@@ -359,7 +359,7 @@
 }
 
 .scroll-spacer {
-  height: 180rpx;
+  height: calc(240rpx + env(safe-area-inset-bottom));
 }
 
 /* Lien vers « Mes horaires de visite » (maquette) */
