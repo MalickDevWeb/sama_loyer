@@ -195,7 +195,7 @@
         <!-- Message explicatif clair sur le mode de téléchargement -->
         <view wx:if="{{ selectedIds.length > 1 }}" class="batch-hint">
           <view class="ic ic-check-green ic--xs"></view>
-          <text class="batch-hint-txt">Les {{ selectedIds.length }} affiches A6 seront réunies dans 1 seul fichier ZIP, prêtes à imprimer ou partager.</text>
+          <text class="batch-hint-txt">Les {{ selectedIds.length }} affiches A6 seront réunies dans 1 seul fichier ZIP (aucun enregistrement photo par photo dans la galerie).</text>
         </view>
         <view wx:elif="{{ selectedIds.length === 1 }}" class="batch-hint">
           <view class="ic ic-check-green ic--xs"></view>

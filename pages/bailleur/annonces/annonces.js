@@ -314,15 +314,15 @@ Page({
         const filePath = await exportCanvas(canvas, 4000);
         generatedPaths.push(filePath);
 
-        // Sauvegarde directe de chaque affiche dans la galerie photo
-        try {
-          await saveToAlbum(filePath);
-        } catch (saveErr) {
-          console.warn('saveToAlbum warn:', saveErr);
-        }
-
-        if (isMulti) {
-          // Lecture du binaire pour l'archive ZIP
+        if (!isMulti) {
+          // Exactement 1 affiche sélectionnée : enregistrement unique dans la galerie
+          try {
+            await saveToAlbum(filePath);
+          } catch (saveErr) {
+            console.warn('saveToAlbum warn:', saveErr);
+          }
+        } else {
+          // Plus d'une affiche : PAS d'enregistrement une par une dans la galerie, UNIQUEMENT dans l'archive ZIP
           const fsm = wx.getFileSystemManager();
           const fileData = fsm.readFileSync(filePath);
           const cleanName = String(a.title || 'affiche')
@@ -365,25 +365,40 @@ Page({
 
       if (isMulti) {
         wx.showModal({
-          title: `${targets.length} affiches prêtes !`,
-          content: `Vos ${targets.length} affiches sont enregistrées dans votre galerie photo et prêtes dans l'archive ZIP.\n\nTouchez "Voir affiches" pour les feuilleter en plein écran ou "Partager" pour envoyer l'archive.`,
-          confirmText: 'Voir affiches',
-          cancelText: 'Partager',
+          title: `Archive ZIP prête (${targets.length} affiches)`,
+          content: `Toutes vos ${targets.length} affiches A6 sont réunies dans 1 seul fichier ZIP : "affiches-qr-sama-loyer.zip".\n\nAucune photo n'a été ajoutée individuellement dans votre galerie.\n\nAppuyez sur "Partager ZIP" pour exporter ou envoyer le fichier.`,
+          confirmText: 'Partager ZIP',
+          cancelText: 'Fermer',
           confirmColor: '#C8235F',
           success: (res) => {
             if (res.confirm) {
-              openPreview();
-            } else if (res.cancel) {
               const zipPath = `${wx.env.USER_DATA_PATH}/affiches-qr-sama-loyer.zip`;
               if (typeof wx.shareFileMessage === 'function') {
                 wx.shareFileMessage({
                   filePath: zipPath,
                   fileName: 'affiches-qr-sama-loyer.zip',
                   success: () => wx.showToast({ title: 'ZIP partagé !', icon: 'success' }),
-                  fail: () => openPreview()
+                  fail: (err) => {
+                    console.warn('shareFileMessage fallback:', err);
+                    if (typeof wx.saveFileToDisk === 'function') {
+                      wx.saveFileToDisk({
+                        filePath: zipPath,
+                        fileName: 'affiches-qr-sama-loyer.zip',
+                        success: () => wx.showToast({ title: 'ZIP enregistré !', icon: 'success' })
+                      });
+                    } else {
+                      wx.showToast({ title: 'ZIP prêt', icon: 'success' });
+                    }
+                  }
+                });
+              } else if (typeof wx.saveFileToDisk === 'function') {
+                wx.saveFileToDisk({
+                  filePath: zipPath,
+                  fileName: 'affiches-qr-sama-loyer.zip',
+                  success: () => wx.showToast({ title: 'ZIP enregistré !', icon: 'success' })
                 });
               } else {
-                openPreview();
+                wx.showToast({ title: 'ZIP prêt', icon: 'success' });
               }
             }
           }
@@ -391,15 +406,10 @@ Page({
       } else {
         wx.showModal({
           title: 'Affiche enregistrée !',
-          content: 'Votre affiche A6 a été enregistrée dans votre galerie photo. Touchez "Voir" pour l\'afficher en plein écran.',
-          confirmText: 'Voir affiche',
-          cancelText: 'Fermer',
-          confirmColor: '#C8235F',
-          success: (res) => {
-            if (res.confirm) {
-              openPreview();
-            }
-          }
+          content: 'Votre affiche A6 a été enregistrée dans votre galerie photo.',
+          showCancel: false,
+          confirmText: 'Parfait',
+          confirmColor: '#C8235F'
         });
       }
     } catch (err) {
