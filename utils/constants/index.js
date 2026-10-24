@@ -110,15 +110,16 @@ export const BAILLEUR_TABS = [
     url: '/pages/bailleur/home/home',
   },
   {
-    id: 'b-annonces',
-    label: 'Annonces',
-    url: '/pages/bailleur/annonces/annonces',
-  },
-  {
     id: 'b-locataires',
     label: 'Locataires',
     badge: '2',
     url: '/pages/bailleur/locataires/locataires',
+  },
+  {
+    id: 'b-annonces',
+    label: 'Annonces',
+    isSpecial: true,
+    url: '/pages/bailleur/annonces/annonces',
   },
   {
     id: 'b-messages',

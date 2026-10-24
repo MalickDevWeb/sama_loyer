@@ -2,18 +2,18 @@
   <view class="osn-tab-bar__tabs">
     <block wx:for="{{ tabs }}" wx:key="id">
       
-      <!-- Bouton central spécial (Ajouter + pour Bailleur) -->
+      <!-- Bouton central surélevé magnifique (Annonces pour Bailleur) -->
       <view
         wx:if="{{ item.isSpecial }}"
-        class="osn-tab-bar__tab tab-special"
+        class="osn-tab-bar__tab tab-special {{ activeTab === item.id ? 'tab-special--active' : '' }}"
         data-tab="{{ item.id }}"
         data-url="{{ item.url }}"
         bindtap="handleTap"
       >
-        <view class="special-plus-circle">
-          <text class="plus-char">+</text>
+        <view class="special-circle {{ activeTab === item.id ? 'special-circle--active' : '' }}">
+          <view class="tab-svg-icon tab-icon-{{ item.id }} special-circle__ic {{ activeTab === item.id ? 'special-circle__ic--active' : '' }}"></view>
         </view>
-        <text class="osn-tab-bar__label">{{ item.label }}</text>
+        <text class="osn-tab-bar__label {{ activeTab === item.id ? 'active' : '' }}">{{ item.label }}</text>
       </view>
 
       <!-- Onglet normal -->
