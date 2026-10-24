@@ -12,8 +12,17 @@ import {
   bailleurAPI,
   BailleurAPI,
   backendAPI,
-  BackendAPI
+  BackendAPI,
+  TTL,
+  LOCATAIRE_TTL,
+  BAILLEUR_TTL
 } from '../utils/apis/index.js';
+
+import {
+  TTL as CACHE_TTL,
+  LOCATAIRE_TTL as CACHE_LOCATAIRE_TTL,
+  BAILLEUR_TTL as CACHE_BAILLEUR_TTL
+} from '../utils/apis/cache.js';
 
 export async function runApiSeparationTests() {
   console.log('\n--- Test Suite 8: Séparation APIs Bailleur & Locataire ---');
@@ -94,6 +103,15 @@ export async function runApiSeparationTests() {
   console.log('  ✓ backendAPI fédère locataire et bailleur avec sous-domaines typés');
   passed++;
 
+  // Test 7 : Centralisation unique des TTL dans utils/apis/cache.js
+  assert.strictEqual(TTL, CACHE_TTL);
+  assert.strictEqual(LOCATAIRE_TTL, CACHE_LOCATAIRE_TTL);
+  assert.strictEqual(BAILLEUR_TTL, CACHE_BAILLEUR_TTL);
+  assert.equal(BAILLEUR_TTL.PERSONAL, 60 * 1000);
+  assert.equal(BAILLEUR_TTL.SETTINGS, 5 * 60 * 1000);
+  assert.equal(LOCATAIRE_TTL.LOGEMENT_DETAIL, 10 * 60 * 1000);
+  console.log('  ✓ Centralisation unique des TTL dans utils/apis/cache.js validée');
+  passed++;
+
   return passed;
 }
-

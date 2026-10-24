@@ -11,7 +11,34 @@
 import { Bus } from '../event/index.js';
 
 const PREFIX = 'cache.';
-const DEFAULT_TTL = 5 * 60 * 1000; // 5 minutes
+
+/**
+ * Durées de vie en cache centralisées (en millisecondes)
+ */
+export const TTL = {
+  DEFAULT: 5 * 60 * 1000,          // 5 minutes (défaut)
+  PERSONAL: 60 * 1000,             // 1 minute (données personnelles : loyers, visites, favoris, locataires)
+  LOGEMENTS: 5 * 60 * 1000,        // 5 minutes (catalogue logements)
+  LOGEMENT_DETAIL: 10 * 60 * 1000, // 10 minutes (fiche détaillée d'un bien)
+  SETTINGS: 5 * 60 * 1000          // 5 minutes (règles de conformité / configuration)
+};
+
+/**
+ * Durées de vie spécifiques à l'espace Locataire
+ */
+export const LOCATAIRE_TTL = {
+  LOGEMENTS: TTL.LOGEMENTS,
+  LOGEMENT_DETAIL: TTL.LOGEMENT_DETAIL,
+  PERSONAL: TTL.PERSONAL
+};
+
+/**
+ * Durées de vie spécifiques à l'espace Bailleur
+ */
+export const BAILLEUR_TTL = {
+  PERSONAL: TTL.PERSONAL,
+  SETTINGS: TTL.SETTINGS
+};
 
 const inFlight = new Map(); // clé -> promesse en cours
 const keys = new Set(); // clés présentes (pour invalider par préfixe)
@@ -26,7 +53,7 @@ const keys = new Set(); // clés présentes (pour invalider par préfixe)
  * @returns {Promise<*>}
  */
 export function cached(key, fetcher, options = {}) {
-  const { ttl = DEFAULT_TTL, force = false } = options;
+  const { ttl = TTL.DEFAULT, force = false } = options;
   const entry = Bus.getState(PREFIX + key, null);
   if (!force && entry && Date.now() - entry.at < ttl) {
     return Promise.resolve(entry.value);

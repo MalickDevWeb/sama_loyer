@@ -10,7 +10,7 @@
 import { httpClient } from './http.js';
 import { authenticate } from './auth.js';
 import { extractApiResponse } from './response.js';
-import { cached, invalidateCache } from './cache.js';
+import { cached, invalidateCache, BAILLEUR_TTL } from './cache.js';
 import { Bus } from '../event/index.js';
 import { EVENTS } from '../event/keys.js';
 import {
@@ -21,11 +21,8 @@ import {
   searchTenantCandidates
 } from '../helpers/store.js';
 
-// Durée de vie en cache (ms)
-export const BAILLEUR_TTL = {
-  PERSONAL: 60 * 1000,
-  SETTINGS: 5 * 60 * 1000
-};
+// Ré-export de la configuration TTL centralisée dans utils/apis/cache.js
+export { BAILLEUR_TTL };
 
 /**
  * Endpoints REST réservés à l'espace Bailleur / Propriétaire

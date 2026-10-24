@@ -5,8 +5,9 @@
 // Architecture modulaire WeChat PMT :
 //   1. Endpoints & Services Locataire (utils/apis/locataire.js)
 //   2. Endpoints & Services Bailleur (utils/apis/bailleur.js)
-//   3. Façade unifiée BackendAPI & délégation dynamique sans duplication
-//   4. Déballage sécurisé des réponses (utils/apis/response.js)
+//   3. Configuration Cache & TTL centralisée (utils/apis/cache.js)
+//   4. Façade unifiée BackendAPI & délégation dynamique sans duplication
+//   5. Déballage sécurisé des réponses (utils/apis/response.js)
 // ============================================================================
 
 import { httpClient } from './http.js';
@@ -24,9 +25,10 @@ import {
   bailleurAPI
 } from './bailleur.js';
 
-// Re-exports modulaires par domaine
+// Re-exports modulaires par domaine et cache centralisé
 export { LOCATAIRE_ENDPOINTS, LocataireAPI, locataireAPI };
 export { BAILLEUR_ENDPOINTS, BailleurAPI, bailleurAPI };
+export { TTL, LOCATAIRE_TTL, BAILLEUR_TTL, cached, invalidateCache, setCache } from './cache.js';
 export { extractApiResponse, unwrapApiResponse } from './response.js';
 
 /**

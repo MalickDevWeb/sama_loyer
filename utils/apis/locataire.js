@@ -23,18 +23,14 @@ import {
 import { getAllLogements, getLogementById as getMockLogementById } from '../mocks/logements.js';
 import { getStoredRawVisites, recordRentPayment } from '../helpers/store.js';
 import { RENTED_HOMES } from '../mocks/loyers.js';
-import { cached, invalidateCache } from './cache.js';
+import { cached, invalidateCache, LOCATAIRE_TTL } from './cache.js';
 import { storage } from '../storage.js';
 import { STORAGE_KEYS } from '../constants/index.js';
 import { Bus } from '../event/index.js';
 import { EVENTS } from '../event/keys.js';
 
-// Durée de vie en cache (ms)
-export const LOCATAIRE_TTL = {
-  LOGEMENTS: 5 * 60 * 1000,
-  LOGEMENT_DETAIL: 10 * 60 * 1000,
-  PERSONAL: 60 * 1000
-};
+// Ré-export de la configuration TTL centralisée dans utils/apis/cache.js
+export { LOCATAIRE_TTL };
 
 /**
  * Endpoints REST réservés à l'espace Locataire / Client
