@@ -4,7 +4,7 @@ import { setCustomTabBarActive } from '../../../utils/helpers/tab-bar';
 import { getFavoriteIds } from '../../../utils/helpers/favorites';
 import { getVisites } from '../../../utils/helpers/visites';
 import { getConversations } from '../../../utils/mocks/conversations';
-import { setLocale, getLocale } from '../../../utils/i18n/index';
+import { setLocale, getLocale, i18nBehavior } from '../../../utils/i18n/index';
 import { COLORS } from '../../../utils/constants/theme';
 
 const NOTIFS = [
@@ -88,6 +88,7 @@ function getInitials(name) {
 }
 
 Page({
+  behaviors: [i18nBehavior],
   data: {
     statusBarHeight: 44,
     userName: 'Awa Diop',
@@ -96,10 +97,10 @@ Page({
     userProfile: {},
     stats: { favoris: 0, visites: 0, conversations: 0 },
     notifs: [],
-    lang: 'fr', // 'fr' | 'wo'
+    lang: 'fr', // 'fr' | 'en'
     langs: [
       { id: 'fr', label: 'Français' },
-      { id: 'wo', label: 'Wolof' }
+      { id: 'en', label: 'English' }
     ],
     prefs: {
       zones: 'Pikine, Ouakam',
@@ -357,8 +358,9 @@ Page({
     this.prefs.lang = lang;
     this.savePrefs();
     setLocale(lang);
+    this.setData({ lang });
     wx.showToast({
-      title: lang === 'wo' ? 'Kàllaama : Wolof' : 'Langue : Français',
+      title: lang === 'en' ? 'Language: English' : 'Langue : Français',
       icon: 'none'
     });
   },

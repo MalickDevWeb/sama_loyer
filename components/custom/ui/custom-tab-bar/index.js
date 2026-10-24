@@ -1,8 +1,9 @@
 import { storage } from '../../../../utils/storage.js';
 import { CLIENT_TABS, BAILLEUR_TABS, STORAGE_KEYS } from '../../../../utils/constants/index.js';
 import { Bus } from '../../../../utils/event/index';
-import { STATE_KEYS } from '../../../../utils/event/keys';
+import { EVENTS, STATE_KEYS } from '../../../../utils/event/keys';
 import { busBehavior } from '../../../../utils/behaviors/index';
+import { t } from '../../../../utils/i18n/index.js';
 
 // Onglet qui porte le badge « messages non lus » selon l'espace
 const MESSAGES_TAB = { client: 'messages', bailleur: 'b-messages' };
@@ -14,7 +15,7 @@ function badgeText(n) {
 }
 
 Component({
-  // watchState() : abonnements EventBus coupés automatiquement au retrait du composant
+  // watchState() & listen() : abonnements EventBus coupés automatiquement au retrait du composant
   behaviors: [busBehavior],
 
   properties: {
@@ -44,10 +45,11 @@ Component({
       this.setData({ offlineTop: statusBar, offline: Bus.getState(STATE_KEYS.NETWORK_CONNECTED, true) === false });
       this.syncTabs(this.properties.activeTab);
 
-      // EventBus : badge des messages non lus et bandeau hors connexion, en direct
+      // EventBus : badge des messages non lus, langue dynamique et bandeau hors connexion, en direct
       this.watchState(STATE_KEYS.UNREAD_CLIENT, () => this.syncTabs(this.properties.activeTab));
       this.watchState(STATE_KEYS.UNREAD_BAILLEUR, () => this.syncTabs(this.properties.activeTab));
       this.watchState(STATE_KEYS.NETWORK_CONNECTED, (connected) => this.setData({ offline: connected === false }));
+      this.listen(EVENTS.LOCALE_CHANGED, () => this.syncTabs(this.properties.activeTab));
     },
   },
 
@@ -82,9 +84,30 @@ Component({
 
       const side = isBailleur ? 'bailleur' : 'client';
       const unread = Bus.getState(isBailleur ? STATE_KEYS.UNREAD_BAILLEUR : STATE_KEYS.UNREAD_CLIENT, 0);
-      const currentTabs = (isBailleur ? BAILLEUR_TABS : CLIENT_TABS).map((t) =>
-        t.id === MESSAGES_TAB[side] ? Object.assign({}, t, { badge: badgeText(unread) }) : t
-      );
+
+      const tabLabelKeys = {
+        'home': 'tabs.search',
+        'loyers': 'tabs.myRent',
+        'visites': 'tabs.visits',
+        'messages': 'tabs.messages',
+        'profile': 'tabs.profile',
+        'b-home': 'tabs.bHome',
+        'b-locataires': 'tabs.bTenants',
+        'b-annonces': 'tabs.bListings',
+        'b-messages': 'tabs.bMessages',
+        'b-profil': 'tabs.bProfile',
+      };
+
+      const currentTabs = (isBailleur ? BAILLEUR_TABS : CLIENT_TABS).map((tab) => {
+        const item = Object.assign({}, tab);
+        if (tabLabelKeys[tab.id]) {
+          item.label = t(tabLabelKeys[tab.id]);
+        }
+        if (tab.id === MESSAGES_TAB[side]) {
+          item.badge = badgeText(unread);
+        }
+        return item;
+      });
       
       const cleanRoute = route.replace(/^\//, '');
       const match = currentTabs.find(t => t.url.replace(/^\//, '') === cleanRoute);

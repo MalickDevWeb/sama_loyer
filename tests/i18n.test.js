@@ -1,12 +1,12 @@
 // ============================================================================
-// TESTS — I18N DICTIONNAIRES & TRADUCTION
+// TESTS — I18N DICTIONNAIRES & TRADUCTION (FR & EN)
 // ============================================================================
 
 import assert from 'assert';
 import { t, setLocale, getLocale } from '../utils/i18n/index.js';
 
 export async function runI18nTests() {
-  console.log('\n--- Test Suite 3: i18n & Wolof Translation ---');
+  console.log('\n--- Test Suite 3: i18n & Translation (FR / EN) ---');
   let passed = 0;
 
   // Test 1: French default
@@ -23,18 +23,18 @@ export async function runI18nTests() {
   passed++;
   console.log('  ✓ Parameter replacement {count}');
 
-  // Test 3: Wolof locale switch
-  setLocale('wo');
-  assert.strictEqual(getLocale(), 'wo');
-  assert.strictEqual(t('tabs.myRent'), 'Sama loyer');
-  assert.strictEqual(t('tabs.search'), 'Wut kër');
-  assert.strictEqual(t('tabs.visits'), 'Nemmeku');
+  // Test 3: English locale switch
+  setLocale('en');
+  assert.strictEqual(getLocale(), 'en');
+  assert.strictEqual(t('tabs.myRent'), 'My Rent');
+  assert.strictEqual(t('tabs.search'), 'Search');
+  assert.strictEqual(t('tabs.visits'), 'Visits');
+  assert.strictEqual(t('common.confirm'), 'Confirm');
   passed++;
-  console.log('  ✓ Wolof translations switch & lookup');
+  console.log('  ✓ English translations switch & lookup');
 
   // Reset to French
   setLocale('fr');
 
   return passed;
 }
-
