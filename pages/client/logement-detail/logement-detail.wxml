@@ -284,10 +284,10 @@
   <!-- ======================================================== -->
   <view wx:if="{{ playingVideo }}" class="vplayer-overlay" catchtouchmove="noop">
     <view class="vplayer-head" style="padding-top: {{ headerTop }}px;">
-      <text class="vplayer-title">Visite vidéo</text>
-      <view class="vplayer-close" hover-class="dh-btn--hover" bindtap="onCloseVideo" aria-label="Fermer la vidéo">
-        <view class="dh-ic dh-ic-close"></view>
+      <view class="vplayer-back" hover-class="dh-btn--hover" bindtap="onCloseVideo" aria-label="Retour">
+        <view class="ic ic-back-white ic--md"></view>
       </view>
+      <text class="vplayer-title">Visite vidéo</text>
     </view>
     <video
       class="vplayer-video"
@@ -297,7 +297,13 @@
       object-fit="contain"
       show-fullscreen-btn="{{ true }}"
     ></video>
-    <text class="vplayer-note">{{ logement.title }} · filmée par le bailleur</text>
+    <view class="vplayer-foot">
+      <text class="vplayer-note">{{ logement.title }} · filmée par le bailleur</text>
+      <view class="vplayer-btn-close" hover-class="sl-hover" bindtap="onCloseVideo">
+        <view class="ic ic-close-white ic--xs"></view>
+        <text>Fermer la vidéo</text>
+      </view>
+    </view>
   </view>
 
   <!-- ======================================================== -->
