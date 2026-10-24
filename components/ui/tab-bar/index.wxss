@@ -129,39 +129,39 @@
 }
 
 .special-circle {
-  width: 98rpx;
-  height: 98rpx;
-  border-radius: 49rpx;
+  width: 100rpx;
+  height: 100rpx;
+  border-radius: 50rpx;
   background: linear-gradient(145deg, #FF6B98 0%, #C8235F 45%, #9E1749 100%);
   display: flex;
   align-items: center;
   justify-content: center;
-  /* Effet 3D multi-couches : reflet supérieur, volume et ombre portée profonde */
+  /* Effet 3D volumétrique : relief supérieur, ombre externe profonde et ombre portée au sol */
   border: 6rpx solid #FFFFFF;
-  box-shadow: 
-    0 12rpx 26rpx rgba(200, 35, 95, 0.42),
-    0 4rpx 8rpx rgba(15, 30, 61, 0.16),
-    inset 0 4rpx 6rpx rgba(255, 255, 255, 0.45),
-    inset 0 -4rpx 8rpx rgba(0, 0, 0, 0.22);
+  box-shadow:
+    0 14rpx 28rpx rgba(200, 35, 95, 0.44),
+    0 6rpx 12rpx rgba(15, 30, 61, 0.18),
+    inset 0 5rpx 8rpx rgba(255, 255, 255, 0.55),
+    inset 0 -5rpx 10rpx rgba(0, 0, 0, 0.28);
   box-sizing: border-box;
-  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease;
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.22s ease;
 }
 
 .special-circle--active {
   background: linear-gradient(145deg, #FF8C33 0%, #FF6600 50%, #C8235F 100%);
-  box-shadow: 
-    0 14rpx 32rpx rgba(255, 102, 0, 0.52),
-    0 6rpx 12rpx rgba(15, 30, 61, 0.2),
-    inset 0 4rpx 6rpx rgba(255, 255, 255, 0.55),
-    inset 0 -4rpx 8rpx rgba(0, 0, 0, 0.24);
+  box-shadow:
+    0 16rpx 36rpx rgba(255, 102, 0, 0.55),
+    0 8rpx 16rpx rgba(15, 30, 61, 0.22),
+    inset 0 5rpx 8rpx rgba(255, 255, 255, 0.65),
+    inset 0 -5rpx 10rpx rgba(0, 0, 0, 0.3);
   transform: translateY(-6rpx) scale(1.06);
 }
 
 .special-circle__ic {
-  width: 48rpx;
-  height: 48rpx;
-  /* Rendu 3D net de l icone en blanc */
-  filter: brightness(0) invert(1) drop-shadow(0 2rpx 3rpx rgba(0, 0, 0, 0.25));
+  width: 50rpx;
+  height: 50rpx;
+  /* Rendu 3D net de l icone en blanc pur avec micro-relief */
+  filter: brightness(0) invert(1) drop-shadow(0 2rpx 4rpx rgba(0, 0, 0, 0.3));
 }
 
 .tab-special .osn-tab-bar__label {
