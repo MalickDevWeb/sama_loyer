@@ -13,6 +13,7 @@ import { DEFAULT_VISITES } from '../mocks/visites.js';
 import { RENTED_HOMES as DEFAULT_RENTED_HOMES, RENT_MONTH } from '../mocks/loyers.js';
 import { CONVERSATIONS as DEFAULT_CONVERSATIONS } from '../mocks/conversations.js';
 import { BAILLEUR_CONVERSATIONS as DEFAULT_BAILLEUR_CONVERSATIONS } from '../mocks/bailleur-conversations.js';
+import { COMPLIANCE_DEFAULTS } from '../mocks/compliance.js';
 import { Bus } from '../event/index.js';
 import { EVENTS, STATE_KEYS } from '../event/keys.js';
 
@@ -213,6 +214,9 @@ export function addStoredLogement(data) {
     // 1re photo choisie par le bailleur (sinon photo de démo, voir utils/mocks/media.js)
     cover: data.cover || '',
     isPremium: !!data.isPremium,
+    // Contrat : modèle SAMA LOYER, ou PDF propre à ce logement (si le Super Admin l'autorise)
+    contractMode: data.contractMode === 'custom' ? 'custom' : 'standard',
+    customContract: data.contractMode === 'custom' ? data.customContract || null : null,
     status: 'validation' // 'en_ligne' | 'validation' | 'loue'
   };
 
@@ -746,31 +750,81 @@ export function addBailleurBoost(option) {
 }
 
 // ============================================================================
-// 7. VÉRIFICATION D'IDENTITÉ BAILLEUR (KYC CNI CEDEAO)
+// 7. VÉRIFICATION D'IDENTITÉ BAILLEUR (KYC) — pièces pilotées par le Super Admin
+// La liste des pièces exigées vient de getComplianceConfig() (back office).
+// kyc.documents = { [documentId]: [{ path, name, type: 'image' | 'pdf' }] }
 // ============================================================================
 
+/** Pièces exigées et options de contrat (dernière config reçue, sinon valeurs par défaut) */
+export function getComplianceConfig() {
+  const saved = storage.get(STORAGE_KEYS.COMPLIANCE_CONFIG, null);
+  if (saved && Array.isArray(saved.documents)) return saved;
+  return COMPLIANCE_DEFAULTS;
+}
+
+/** Garde la config reçue de l'API pour la relire hors ligne */
+export function setComplianceConfig(config) {
+  if (!config || !Array.isArray(config.documents)) return;
+  storage.set(STORAGE_KEYS.COMPLIANCE_CONFIG, config);
+}
+
 export function getBailleurKyc() {
-  const saved = storage.get('sama_bailleur_kyc', null);
-  if (saved) return saved;
+  const saved = storage.get(STORAGE_KEYS.BAILLEUR_KYC, null);
+  if (saved) {
+    // Ancien format (photos de la CNI seules) : rangées sous la pièce d'identité
+    if (!saved.documents) {
+      const photos = (saved.photos || []).map((p, i) => ({ path: p, name: `Photo ${i + 1}`, type: 'image' }));
+      return Object.assign({}, saved, { documents: photos.length ? { id_card: photos } : {} });
+    }
+    return saved;
+  }
   // Par défaut en mode démo : vérifié
   return {
     status: 'verified', // 'verified' | 'pending' | 'unverified'
-    photos: [],
+    documents: {},
     submittedAt: null,
     verifiedAt: Date.now() - 30 * 24 * 3600 * 1000
   };
 }
 
-export function submitBailleurKyc(photos = []) {
-  const kyc = {
+/** Pièces obligatoires encore absentes du dossier */
+export function getMissingKycDocuments(kyc = getBailleurKyc(), config = getComplianceConfig()) {
+  const docs = kyc.documents || {};
+  return config.documents.filter((d) => d.required && !(docs[d.id] && docs[d.id].length));
+}
+
+/**
+ * Ajoute, remplace ou retire les fichiers d'une pièce (avant l'envoi du dossier).
+ * @param {string} documentId
+ * @param {Array<{ path: string, name: string, type: 'image'|'pdf' }>} files - [] pour retirer
+ */
+export function setBailleurKycDocument(documentId, files) {
+  const current = getBailleurKyc();
+  const documents = Object.assign({}, current.documents);
+  if (files && files.length) documents[documentId] = files;
+  else delete documents[documentId];
+  const next = Object.assign({}, current, { documents });
+  storage.set(STORAGE_KEYS.BAILLEUR_KYC, next);
+  notify(EVENTS.BAILLEUR_ACCOUNT_CHANGED, { kyc: next });
+  return next;
+}
+
+/**
+ * Envoie le dossier au Super Admin. Refusé tant qu'une pièce obligatoire manque.
+ * @returns {{ ok: boolean, missing: Array<Object>, kyc: Object }}
+ */
+export function submitBailleurKyc() {
+  const current = getBailleurKyc();
+  const missing = getMissingKycDocuments(current);
+  if (missing.length) return { ok: false, missing, kyc: current };
+  const kyc = Object.assign({}, current, {
     status: 'pending',
-    photos,
     submittedAt: Date.now(),
     verifiedAt: null
-  };
-  storage.set('sama_bailleur_kyc', kyc);
+  });
+  storage.set(STORAGE_KEYS.BAILLEUR_KYC, kyc);
   notify(EVENTS.BAILLEUR_ACCOUNT_CHANGED, { kyc });
-  return kyc;
+  return { ok: true, missing: [], kyc };
 }
 
 export function setBailleurKycStatus(status) {
@@ -779,7 +833,7 @@ export function setBailleurKycStatus(status) {
     status,
     verifiedAt: status === 'verified' ? Date.now() : null
   });
-  storage.set('sama_bailleur_kyc', next);
+  storage.set(STORAGE_KEYS.BAILLEUR_KYC, next);
   notify(EVENTS.BAILLEUR_ACCOUNT_CHANGED, { kyc: next });
   return next;
 }

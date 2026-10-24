@@ -1,6 +1,7 @@
 import { getLogementById } from '../../../utils/mocks/logements';
 import { buildContratEntree, buildQuittance } from '../../../utils/mocks/contrats';
 import { addStoredRentedHome } from '../../../utils/helpers/store';
+import { openPickedFile } from '../../../utils/helpers/file-picker';
 import { storage } from '../../../utils/storage.js';
 import { STORAGE_KEYS } from '../../../utils/constants/index';
 
@@ -184,6 +185,11 @@ Page({
   },
 
   onOpenContract() {
+    // Contrat spécifique : on ouvre le PDF du bailleur au lieu du modèle SAMA LOYER
+    if (this.data.contrat.customFile) {
+      openPickedFile(this.data.contrat.customFile);
+      return;
+    }
     this.setData({ contractOpen: true });
   },
 

@@ -13,9 +13,14 @@ import {
   formatLongDate,
   requireBailleurAccess,
   getBailleurKyc,
+  getComplianceConfig,
+  getMissingKycDocuments,
+  setBailleurKycDocument,
   submitBailleurKyc,
   setBailleurKycStatus
 } from '../../../utils/helpers/store';
+import { backendAPI } from '../../../utils/apis/index';
+import { pickDocumentFiles, openPickedFile, formatsLabel } from '../../../utils/helpers/file-picker';
 import { bailleurGuardBehavior } from '../../../utils/behaviors/index';
 
 function initialsOf(name) {
@@ -25,6 +30,25 @@ function initialsOf(name) {
 function formatPhone(phone) {
   const d = String(phone || '').replace(/\D/g, '');
   return d.length === 9 ? `+221 ${d.replace(/(\d{2})(\d{3})(\d{2})(\d{2})/, '$1 $2 $3 $4')}` : phone;
+}
+
+// Une ligne par pièce exigée par le Super Admin, avec les fichiers déjà ajoutés
+function kycDocRows(kyc, config) {
+  const docs = kyc.documents || {};
+  return config.documents.map((d) => {
+    const files = docs[d.id] || [];
+    return {
+      id: d.id,
+      label: d.label,
+      hint: d.hint,
+      required: d.required,
+      formatsText: formatsLabel(d.formats),
+      maxFiles: d.maxFiles,
+      files,
+      done: files.length > 0,
+      filesText: files.length > 1 ? `${files.length} fichiers` : (files[0] ? files[0].name : '')
+    };
+  });
 }
 
 Page({
@@ -53,8 +77,13 @@ Page({
     },
     kyc: {
       status: 'verified', // 'verified' | 'pending' | 'unverified'
-      photos: []
-    }
+      documents: {}
+    },
+    // Pièces exigées (config Super Admin) et état du dossier
+    kycDocs: [],
+    kycMissingCount: 0,
+    kycSentCount: 0,
+    kycEditing: false // dossier vérifié rouvert pour mettre à jour une pièce
   },
 
   onLoad() {
@@ -69,20 +98,31 @@ Page({
     if (!requireBailleurAccess()) return;
     setCustomTabBarActive(this, 'b-profil');
     this.loadAccount();
+    // Les pièces exigées peuvent avoir changé côté back office : on rafraîchit la liste
+    backendAPI.getComplianceConfig().then(() => this.loadKyc()).catch(() => {});
+  },
+
+  // Dossier KYC construit à partir des pièces exigées par le Super Admin
+  loadKyc() {
+    const kyc = getBailleurKyc();
+    const config = getComplianceConfig();
+    const kycDocs = kycDocRows(kyc, config);
+    this.setData({
+      kyc,
+      kycDocs,
+      kycMissingCount: getMissingKycDocuments(kyc, config).length,
+      kycSentCount: kycDocs.filter((d) => d.done).length
+    });
   },
 
   // Récupère les informations du compte bailleur depuis le store local
   loadAccount() {
-    const kyc = getBailleurKyc();
+    this.loadKyc();
     const account = getBailleurAccount();
-    if (!account) {
-      this.setData({ kyc });
-      return;
-    }
+    if (!account) return;
     const plan = BAILLEUR_PLANS[account.plan] || BAILLEUR_PLANS.trial;
     const active = account.expiresAt > Date.now();
     this.setData({
-      kyc,
       'profile.fullName': account.fullName || 'Moussa Diop',
       'profile.initials': initialsOf(account.fullName || 'Moussa Diop'),
       'profile.phone': formatPhone(account.phone || '771234567'),
@@ -97,37 +137,65 @@ Page({
     });
   },
 
-  // Soumission de la CNI CEDEAO (Recto / Verso) pour modération Super Admin
-  onUploadCni() {
-    wx.chooseMedia({
-      count: 2,
-      mediaType: ['image'],
-      sourceType: ['camera', 'album'],
-      camera: 'back',
-      success: (res) => {
-        const tempFiles = res.tempFiles || [];
-        if (!tempFiles.length) return;
-        wx.showLoading({ title: 'Téléversement CNI...' });
-        setTimeout(() => {
-          wx.hideLoading();
-          const photos = tempFiles.map((f) => f.tempFilePath);
-          submitBailleurKyc(photos);
-          this.loadAccount();
-          wx.showModal({
-            title: 'Dossier CNI transmis !',
-            content: 'Votre pièce d’identité a été envoyée au Super Admin pour vérification. Vos annonces seront activées dès validation.',
-            showCancel: false,
-            confirmText: 'Compris',
-            confirmColor: '#F16E00'
-          });
-        }, 700);
-      },
-      fail: (err) => {
-        if (err && err.errMsg && !err.errMsg.includes('cancel')) {
-          wx.showToast({ title: 'Erreur d’accès appareil photo', icon: 'none' });
-        }
-      }
-    });
+  // Ajoute une pièce : photo, PDF ou les deux selon ce qu'exige le Super Admin
+  onAddKycDocument(e) {
+    const id = e.currentTarget.dataset.id;
+    const doc = getComplianceConfig().documents.find((d) => d.id === id);
+    if (!doc) return;
+    pickDocumentFiles({ formats: doc.formats, count: doc.maxFiles || 1 })
+      .then((files) => {
+        if (!files.length) return;
+        setBailleurKycDocument(id, files.slice(0, doc.maxFiles || 1));
+        this.loadKyc();
+      })
+      .catch((err) => {
+        const pdfOnly = err && err.message === 'PDF_UNSUPPORTED';
+        wx.showToast({
+          title: pdfOnly ? 'Envoi de PDF indisponible sur cette version de Max it' : 'Impossible d’ouvrir le fichier',
+          icon: 'none'
+        });
+      });
+  },
+
+  onViewKycDocument(e) {
+    const row = this.data.kycDocs.find((d) => d.id === e.currentTarget.dataset.id);
+    if (row && row.files[0]) openPickedFile(row.files[0]);
+  },
+
+  onRemoveKycDocument(e) {
+    setBailleurKycDocument(e.currentTarget.dataset.id, []);
+    this.loadKyc();
+  },
+
+  // Envoie le dossier complet au Super Admin pour vérification
+  onSubmitKyc() {
+    const result = submitBailleurKyc();
+    if (!result.ok) {
+      wx.showToast({ title: `Il manque : ${result.missing[0].label}`, icon: 'none', duration: 2500 });
+      return;
+    }
+    wx.showLoading({ title: 'Envoi du dossier...' });
+    setTimeout(() => {
+      wx.hideLoading();
+      this.setData({ kycEditing: false });
+      this.loadKyc();
+      wx.showModal({
+        title: 'Dossier transmis !',
+        content: 'Vos pièces ont été envoyées au Super Admin pour vérification. Vos annonces seront activées dès validation.',
+        showCancel: false,
+        confirmText: 'Compris',
+        confirmColor: '#F16E00'
+      });
+    }, 700);
+  },
+
+  // Dossier déjà vérifié : rouvrir la liste pour remplacer une pièce
+  onEditKyc() {
+    this.setData({ kycEditing: true });
+  },
+
+  onCancelEditKyc() {
+    this.setData({ kycEditing: false });
   },
 
   // Raccourci de démonstration pour basculer facilement entre les 3 statuts KYC
@@ -176,7 +244,11 @@ Page({
     }, 400);
   },
 
-  // Modals Aide & Support
+  // Modals Aide & Support & Contrat
+  onOpenContratInfo() {
+    this.setData({ activeModal: 'contrat' });
+  },
+
   onOpenHelp() {
     this.setData({ activeModal: 'help' });
   },

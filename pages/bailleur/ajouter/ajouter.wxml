@@ -162,9 +162,47 @@
         ></textarea>
       </view>
 
+      <view class="aj-card">
+        <text class="aj-label">Contrat de location</text>
+
+        <view class="ct-opt {{ contractMode === 'standard' ? 'ct-opt--on' : '' }}" bindtap="onSelectContractMode" data-mode="standard">
+          <view class="ct-radio {{ contractMode === 'standard' ? 'ct-radio--on' : '' }}"></view>
+          <view class="ct-opt-text">
+            <view class="ct-opt-title-row">
+              <text class="ct-opt-title">Modèle SAMA LOYER</text>
+              <text class="ct-opt-tag">Recommandé</text>
+            </view>
+            <text class="ct-opt-sub">Déjà rédigé, rempli avec ton loyer et ta caution. Le locataire le signe dans l'appli, les quittances Max it sont automatiques.</text>
+          </view>
+        </view>
+
+        <block wx:if="{{ allowCustomContract }}">
+          <view class="ct-opt {{ contractMode === 'custom' ? 'ct-opt--on' : '' }}" bindtap="onSelectContractMode" data-mode="custom">
+            <view class="ct-radio {{ contractMode === 'custom' ? 'ct-radio--on' : '' }}"></view>
+            <view class="ct-opt-text">
+              <text class="ct-opt-title">Mon contrat pour ce logement</text>
+              <text class="ct-opt-sub">Meublé avec inventaire, colocation, règles de copropriété… Ton PDF est proposé à la signature du locataire.</text>
+            </view>
+          </view>
+
+          <block wx:if="{{ contractMode === 'custom' }}">
+            <view wx:if="{{ customContract }}" class="ct-file">
+              <view class="ic ic-doc-navy ic--sm"></view>
+              <text class="ct-file-name" bindtap="onViewCustomContract">{{ customContract.name }}</text>
+              <text class="video-link" bindtap="onPickCustomContract">Remplacer</text>
+              <text class="video-link video-link--danger" bindtap="onRemoveCustomContract">Retirer</text>
+            </view>
+            <view wx:else class="video-empty" hover-class="aj-hover" bindtap="onPickCustomContract">
+              <view class="ic ic-doc-navy photo-add-ic"></view>
+              <text class="photo-add-txt">Ajouter mon contrat (PDF)</text>
+            </view>
+          </block>
+        </block>
+      </view>
+
       <view class="aj-note">
         <view class="ic ic-bulb-amber ic--sm"></view>
-        <text>Notre équipe vérifie l'annonce et les photos sous 24 h ouvrées.</text>
+        <text>Notre équipe vérifie l'annonce, les photos{{ contractMode === 'custom' ? ' et ton contrat' : '' }} sous 24 h ouvrées.</text>
       </view>
     </view>
 
@@ -181,6 +219,7 @@
         <view class="aj-recap-body">
           <text class="aj-recap-title">{{ selectedType }} à {{ selectedQuartier }}</text>
           <text class="aj-recap-price">{{ loyerFormatted }} F / mois</text>
+          <text class="aj-recap-contract">Contrat : {{ contractMode === 'custom' ? 'ton PDF pour ce logement' : 'modèle SAMA LOYER' }}</text>
           <view class="aj-recap-pill"><view class="ic ic-clock-amber ic--xs"></view><text>En validation · sous 24 h</text></view>
         </view>
       </view>

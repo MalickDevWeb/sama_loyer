@@ -198,3 +198,76 @@
   flex-direction: column;
   gap: 14px;
 }
+
+/* --- Pièces exigées des bailleurs --------------------------------------- */
+.docs-req {
+  margin-bottom: 18px;
+}
+
+.docs-req__head {
+  padding: 16px 20px 0;
+}
+
+.docs-req__center {
+  text-align: center;
+}
+
+.table th.docs-req__center {
+  text-align: center;
+}
+
+.docs-req__doc {
+  display: flex;
+  flex-direction: column;
+  white-space: normal;
+  min-width: 220px;
+}
+
+.docs-req__empty {
+  color: var(--muted);
+  text-align: center;
+}
+
+.docs-req__max {
+  width: 56px;
+  height: 34px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  text-align: center;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.docs-req__contract {
+  padding: 14px 20px;
+}
+
+.docs-req__foot {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 14px;
+  padding: 0 20px 16px;
+}
+
+.docs-req__formats {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px;
+  font-size: 14px;
+}
+
+.docs-req__formats > span {
+  font-size: 13px;
+  font-weight: 700;
+  width: 100%;
+}
+
+.docs-req__formats label,
+.docs-req__check {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+}

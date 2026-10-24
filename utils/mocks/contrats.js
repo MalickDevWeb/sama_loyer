@@ -24,6 +24,8 @@ export function buildContratEntree(l) {
     numero: 'N° SL-2026-10-0412',
     subtitle: `${l.typeLabel || l.title} · ${l.place}`,
     bailleur: l.bailleurName || 'Bailleur certifié',
+    // Contrat spécifique au logement (PDF du bailleur) : remplace les articles du modèle
+    customFile: l.contractMode === 'custom' && l.customContract ? l.customContract : null,
     keys: [
       { label: 'Loyer', value: `${loyer} F`, sub: 'avant le 5 de chaque mois' },
       { label: 'Caution', value: `${caution} F`, sub: `${moisCaution} mois · rendue au départ` },

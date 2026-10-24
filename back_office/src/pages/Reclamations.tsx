@@ -2,6 +2,8 @@ import { useCallback, useState, type FormEvent } from 'react'
 import { Link } from 'react-router-dom'
 import { Badge, CheckMark, Modal, Switch, Toast } from '../components/ui'
 import {
+  ALLOW_CUSTOM_CONTRACT,
+  DOCUMENT_REQUIREMENTS,
   FEATURES,
   PERMISSIONS,
   PRIORITY_TONE,
@@ -10,6 +12,8 @@ import {
   RULES,
   TICKETS,
   TICKET_TONE,
+  type DocFormat,
+  type DocumentRequirement,
 } from '../data/mock'
 import { logAction } from '../lib/audit'
 import './Reclamations.css'
@@ -23,11 +27,65 @@ function Reclamations() {
   const [perms, setPerms] = useState(() => ROLES.map((r) => [...r.perms]))
   const [features, setFeatures] = useState(() => Object.fromEntries(FEATURES.map((f) => [f.id, f.on])))
   const [saved, setSaved] = useState(false)
+  // Pièces exigées des bailleurs et contrat spécifique (en attendant l'API)
+  const [docs, setDocs] = useState<DocumentRequirement[]>(() => DOCUMENT_REQUIREMENTS.map((d) => ({ ...d, formats: [...d.formats] })))
+  const [allowCustomContract, setAllowCustomContract] = useState(ALLOW_CUSTOM_CONTRACT)
+  const [docsSaved, setDocsSaved] = useState(true)
+  const [addingDoc, setAddingDoc] = useState(false)
   // Nombre de membres par rôle (augmente à chaque invitation)
   const [members, setMembers] = useState(() => ROLES.map((r) => parseInt(r.members, 10) || 0))
   const [inviting, setInviting] = useState(false)
   const [toast, setToast] = useState('')
   const closeInvite = useCallback(() => setInviting(false), [])
+  const closeAddDoc = useCallback(() => setAddingDoc(false), [])
+
+  const updateDoc = (id: string, patch: Partial<DocumentRequirement>) => {
+    setDocs((list) => list.map((d) => (d.id === id ? { ...d, ...patch } : d)))
+    setDocsSaved(false)
+  }
+
+  // Une pièce doit accepter au moins un format (photo ou PDF)
+  const toggleFormat = (doc: DocumentRequirement, format: DocFormat) => {
+    const has = doc.formats.includes(format)
+    if (has && doc.formats.length === 1) {
+      setToast('Garde au moins un format : photo ou PDF.')
+      return
+    }
+    updateDoc(doc.id, { formats: has ? doc.formats.filter((f) => f !== format) : [...doc.formats, format] })
+  }
+
+  const removeDoc = (doc: DocumentRequirement) => {
+    setDocs((list) => list.filter((d) => d.id !== doc.id))
+    setDocsSaved(false)
+  }
+
+  const addDoc = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    const data = new FormData(e.currentTarget)
+    const label = String(data.get('label')).trim()
+    const formats = (['image', 'pdf'] as DocFormat[]).filter((f) => data.get(f))
+    if (!formats.length) {
+      setToast('Choisis au moins un format : photo ou PDF.')
+      return
+    }
+    const doc: DocumentRequirement = {
+      id: `doc_${Date.now()}`,
+      label,
+      hint: String(data.get('hint') || '').trim(),
+      required: data.get('required') === 'on',
+      formats,
+      maxFiles: Number(data.get('maxFiles')) || 1,
+    }
+    setDocs((list) => [...list, doc])
+    setDocsSaved(false)
+    setAddingDoc(false)
+  }
+
+  const saveDocs = () => {
+    setDocsSaved(true)
+    logAction('Bailleurs', 'Pièces exigées modifiées', `${docs.length} pièce(s) · contrat spécifique ${allowCustomContract ? 'autorisé' : 'désactivé'}`)
+    setToast('Pièces exigées enregistrées. Les bailleurs voient la nouvelle liste à leur prochaine ouverture.')
+  }
   const clearToast = useCallback(() => setToast(''), [])
 
   const sendInvite = (e: FormEvent<HTMLFormElement>) => {
@@ -195,6 +253,95 @@ function Reclamations() {
       )}
 
       {tab === 'settings' && (
+        <section className="card card--flush docs-req">
+          <div className="card-head docs-req__head">
+            <div>
+              <h2 className="card-title">Pièces exigées des bailleurs</h2>
+              <p className="card-subtitle">L'écran du bailleur se construit à partir de cette liste : une pièce ajoutée ici s'affiche sans mise à jour de l'appli.</p>
+            </div>
+            <button type="button" className="btn btn--md" onClick={() => setAddingDoc(true)}>Ajouter une pièce</button>
+          </div>
+          <div className="table-scroll">
+            <table className="table table--head-bg">
+              <thead>
+                <tr>
+                  <th>Pièce</th>
+                  <th className="docs-req__center">Obligatoire</th>
+                  <th className="docs-req__center">Photo</th>
+                  <th className="docs-req__center">PDF</th>
+                  <th className="docs-req__center">Fichiers max</th>
+                  <th aria-label="Actions" />
+                </tr>
+              </thead>
+              <tbody>
+                {docs.length === 0 && (
+                  <tr>
+                    <td colSpan={6} className="docs-req__empty">Aucune pièce demandée : les bailleurs publient sans vérification d'identité.</td>
+                  </tr>
+                )}
+                {docs.map((d) => (
+                  <tr key={d.id}>
+                    <td className="docs-req__doc">
+                      <span className="feature__label">{d.label}</span>
+                      {d.hint && <span className="feature__sub">{d.hint}</span>}
+                    </td>
+                    <td className="docs-req__center">
+                      <Switch checked={d.required} label={`${d.label} obligatoire`} onChange={() => updateDoc(d.id, { required: !d.required })} />
+                    </td>
+                    {(['image', 'pdf'] as DocFormat[]).map((f) => (
+                      <td key={f} className="docs-req__center">
+                        <button
+                          type="button"
+                          className="roles__check"
+                          aria-pressed={d.formats.includes(f)}
+                          aria-label={`${d.label} : ${f === 'image' ? 'photo' : 'PDF'} accepté`}
+                          onClick={() => toggleFormat(d, f)}
+                        >
+                          <CheckMark on={d.formats.includes(f)} />
+                        </button>
+                      </td>
+                    ))}
+                    <td className="docs-req__center">
+                      <input
+                        className="docs-req__max"
+                        type="number"
+                        min={1}
+                        max={5}
+                        value={d.maxFiles}
+                        aria-label={`${d.label} : nombre de fichiers maximum`}
+                        onChange={(e) => updateDoc(d.id, { maxFiles: Math.min(5, Math.max(1, Number(e.target.value) || 1)) })}
+                      />
+                    </td>
+                    <td className="num">
+                      <button type="button" className="btn btn--sm" onClick={() => removeDoc(d)}>Retirer</button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <div className="feature docs-req__contract">
+            <span className="feature__text">
+              <span className="feature__label">Contrat spécifique par logement</span>
+              <span className="feature__sub">Le bailleur peut remplacer le modèle SAMA LOYER par son propre contrat PDF (meublé, colocation…). Le contrat est vérifié avec l'annonce.</span>
+            </span>
+            <Switch
+              checked={allowCustomContract}
+              label="Autoriser un contrat spécifique par logement"
+              onChange={() => {
+                setAllowCustomContract((v) => !v)
+                setDocsSaved(false)
+              }}
+            />
+          </div>
+          <div className="docs-req__foot">
+            {!docsSaved && <span className="feature__sub">Modifications non enregistrées</span>}
+            <button type="button" className="btn btn--berry" disabled={docsSaved} onClick={saveDocs}>Enregistrer</button>
+          </div>
+        </section>
+      )}
+
+      {tab === 'settings' && (
         <div className="row">
           <section className="card settings__features">
             <h2 className="card-title settings__title">Fonctionnalités</h2>
@@ -258,6 +405,37 @@ function Reclamations() {
             <div className="dialog__actions">
               <button type="button" className="btn btn--lg" onClick={closeInvite}>Annuler</button>
               <button type="submit" className="btn btn--lg btn--berry">Envoyer l'invitation</button>
+            </div>
+          </form>
+        </Modal>
+      )}
+
+      {addingDoc && (
+        <Modal title="Ajouter une pièce" onClose={closeAddDoc}>
+          <form className="invite-form" onSubmit={addDoc}>
+            <label className="form-field">
+              <span>Nom de la pièce</span>
+              <input name="label" required placeholder="Ex. Extrait du registre de commerce" />
+            </label>
+            <label className="form-field">
+              <span>Aide affichée au bailleur</span>
+              <input name="hint" placeholder="Ex. Pour les agences immobilières" />
+            </label>
+            <div className="docs-req__formats">
+              <span>Formats acceptés</span>
+              <label><input type="checkbox" name="image" defaultChecked /> Photo</label>
+              <label><input type="checkbox" name="pdf" defaultChecked /> PDF</label>
+            </div>
+            <label className="form-field">
+              <span>Nombre de fichiers maximum</span>
+              <input name="maxFiles" type="number" min={1} max={5} defaultValue={1} />
+            </label>
+            <label className="docs-req__check">
+              <input type="checkbox" name="required" defaultChecked /> Obligatoire pour envoyer le dossier
+            </label>
+            <div className="dialog__actions">
+              <button type="button" className="btn btn--lg" onClick={closeAddDoc}>Annuler</button>
+              <button type="submit" className="btn btn--lg btn--berry">Ajouter</button>
             </div>
           </form>
         </Modal>

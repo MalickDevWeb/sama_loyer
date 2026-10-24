@@ -80,7 +80,11 @@
         <view class="entree__read-icon">
           <view class="ic ic-doc-white"></view>
         </view>
-        <view class="entree__read-text">
+        <view wx:if="{{ contrat.customFile }}" class="entree__read-text">
+          <text class="entree__read-title">Lire le contrat du bailleur</text>
+          <text class="entree__read-sub">Contrat propre à ce logement · PDF</text>
+        </view>
+        <view wx:else class="entree__read-text">
           <text class="entree__read-title">Lire le contrat complet</text>
           <text class="entree__read-sub">8 articles · résumé audio en wolof</text>
         </view>

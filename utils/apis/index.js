@@ -25,7 +25,9 @@ import {
   getStoredRawVisites,
   getStoredBailleurAnnonces,
   getStoredLocataires,
-  recordRentPayment
+  recordRentPayment,
+  getComplianceConfig,
+  setComplianceConfig
 } from '../helpers/store.js';
 import { RENTED_HOMES } from '../mocks/loyers.js';
 import { cached, invalidateCache } from './cache.js';
@@ -49,6 +51,7 @@ export const ENDPOINTS = {
   BAILLEUR_ANNONCES: '/api/v1/bailleur/annonces',
   BAILLEUR_LOCATAIRES: '/api/v1/bailleur/locataires',
   AUTH_MAXIT: '/api/v1/auth/maxit',
+  SETTINGS_COMPLIANCE: '/api/v1/settings/compliance',
 };
 
 function extractApiResponse(res, fallbackMessage) {
@@ -255,6 +258,28 @@ class BackendAPI {
   }
 
   // ==========================================================================
+  // 5. CONFORMITÉ (pièces exigées, contrat spécifique) — pilotée par le Super Admin
+  // ==========================================================================
+
+  /**
+   * Récupère les pièces exigées des bailleurs et les options de contrat.
+   * @returns {Promise<{ documents: Array, allowCustomContract: boolean }>}
+   */
+  async #fetchComplianceConfig() {
+    try {
+      await authenticate();
+      const res = await this.#client.get(ENDPOINTS.SETTINGS_COMPLIANCE);
+      const body = extractApiResponse(res, 'Impossible de charger les pièces exigées');
+      const config = body.data || body;
+      setComplianceConfig(config);
+      return getComplianceConfig();
+    } catch (err) {
+      // Dernière configuration connue, sinon valeurs par défaut (utils/mocks/compliance.js)
+      return getComplianceConfig();
+    }
+  }
+
+  // ==========================================================================
   // LECTURES AVEC CACHE (utils/apis/cache.js)
   // Les pages appellent ces méthodes. Option { force: true } pour ignorer le cache
   // (ex. « tirer pour rafraîchir »).
@@ -274,6 +299,10 @@ class BackendAPI {
 
   getVisites(options = {}) {
     return cached('visites', () => this.#fetchVisites(), { ttl: TTL.PERSONAL, ...options });
+  }
+
+  getComplianceConfig(options = {}) {
+    return cached('settings:compliance', () => this.#fetchComplianceConfig(), { ttl: TTL.LOGEMENTS, ...options });
   }
 
   getBailleurAnnonces(options = {}) {
