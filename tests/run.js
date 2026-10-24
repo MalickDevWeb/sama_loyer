@@ -37,6 +37,7 @@ async function main() {
     const { runZipTests } = await import('./zip.test.js');
     const { runShareRedirectTests } = await import('./share-redirect.test.js');
     const { runFavoritesResilienceTests } = await import('./favorites-resilience.test.js');
+    const { runApiResponseTests } = await import('./api-response.test.js');
 
     totalPassed += await runEventBusTests();
     totalPassed += await runSculptTests();
@@ -44,6 +45,7 @@ async function main() {
     totalPassed += await runZipTests();
     totalPassed += await runShareRedirectTests();
     totalPassed += await runFavoritesResilienceTests();
+    totalPassed += await runApiResponseTests();
 
     const duration = ((Date.now() - start) / 1000).toFixed(2);
     console.log('\n====================================================');

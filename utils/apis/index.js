@@ -62,32 +62,84 @@ export const ENDPOINTS = {
   BAILLEUR_TENANT_SEARCH: '/api/v1/bailleur/tenant-search',
 };
 
-function extractApiResponse(res, fallbackMessage) {
+/**
+ * Extrait et valide la charge utile d'une réponse API SAMA LOYER.
+ *
+ * Déballe automatiquement l'enveloppe standard { success: true, data: ..., meta: ... },
+ * vérifie l'intégrité de la réponse et intercepte les échecs applicatifs (ex: 200 OK avec { success: false }).
+ *
+ * @template T
+ * @param {Object} res - Réponse renvoyée par HttpClient ou wx.request
+ * @param {string} [fallbackMessage] - Message d'erreur lisible par l'utilisateur
+ * @returns {T} La charge utile métier déballée (data)
+ * @throws {ApiError} Erreur normalisée avec statut, code et message
+ */
+export function extractApiResponse(res, fallbackMessage) {
+  // 1. Échec transport HTTP ou réponse absente
   if (!res || res.success !== true) {
+    const status = Number(res?.status) >= 400 ? Number(res.status) : undefined;
     throw normalizeApiError({
-      status: Number(res?.status) >= 400 ? res.status : undefined,
-      body: res?.error || res,
+      status,
+      body: res?.error || res?.data || res,
       metadata: { response: res },
     }, fallbackMessage);
   }
 
-  const body = res.data;
-  if (body === null || body === undefined) {
-    throw normalizeApiError({ status: 502, code: 'INVALID_API_RESPONSE', metadata: { response: res } }, fallbackMessage);
-  }
+  const payload = res.data;
 
-  if (body && typeof body === 'object' && (
-    body.success === false || Number(body.data && body.data.status) >= 400
-  )) {
+  // 2. Corps vide ou corrompu -> 502 Bad Gateway
+  if (payload === null || payload === undefined) {
     throw normalizeApiError({
-      status: Number(body.data && body.data.status) >= 400 ? body.data.status : res.status,
-      body,
-      metadata: { response: res },
+      status: 502,
+      code: 'INVALID_API_RESPONSE',
+      metadata: { response: res }
     }, fallbackMessage);
   }
 
-  return body;
+  // 3. Détection d'échec applicatif (ex: 200 OK avec corps { success: false, ... })
+  if (typeof payload === 'object') {
+    const isAppFailure = payload.success === false;
+    const embeddedStatus = Number(payload.data?.status || payload.status);
+    const hasErrorStatus = embeddedStatus >= 400;
+
+    if (isAppFailure || hasErrorStatus) {
+      const status = hasErrorStatus ? embeddedStatus : (Number(res.status) >= 400 ? Number(res.status) : 400);
+      const code = payload.code || payload.error?.code || 'API_BUSINESS_ERROR';
+      const message = payload.message || payload.error?.message;
+      const details = payload.details || payload.error?.details;
+
+      throw normalizeApiError({
+        status,
+        code,
+        message,
+        details,
+        body: payload,
+        metadata: { response: res },
+      }, fallbackMessage);
+    }
+  }
+
+  // 4. Déballage transparent de l'enveloppe standard { success: true, data: ... }
+  if (payload && typeof payload === 'object' && payload.success === true && payload.data !== undefined) {
+    const extractedData = payload.data;
+    if (payload.meta && typeof extractedData === 'object' && extractedData !== null) {
+      try {
+        Object.defineProperty(extractedData, 'meta', {
+          value: payload.meta,
+          writable: true,
+          enumerable: false,
+          configurable: true
+        });
+      } catch (e) {}
+    }
+    return extractedData;
+  }
+
+  // 5. Réponse directe (tableau ou objet brut sans enveloppe)
+  return payload;
 }
+
+export const unwrapApiResponse = extractApiResponse;
 
 /**
  * Service singleton pour toutes les opérations API Sama Loyer.

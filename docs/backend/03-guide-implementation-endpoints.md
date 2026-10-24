@@ -988,3 +988,4 @@ Toute réponse HTTP de l'API doit impérativement respecter l'enveloppe suivante
 * `POST /api/v1/admin/bailleurs/{id}/verify` : Validation de la pièce d'identité (badge KYC Vérifié).
 * `POST /api/v1/admin/transactions/{id}/refund` : Déclenchement d'un remboursement via Orange Money.
 * `GET /api/v1/admin/audit-logs` : Traçabilité immuable de chaque action opérateur.
+

@@ -81,6 +81,8 @@ export function normalizeApiError(source, fallbackMessage = 'Une erreur inattend
   error.status = status;
   error.statusCode = status;
   if (code) error.code = code;
+  const details = input.details || body?.details || body?.error?.details;
+  if (details) error.details = details;
   return error;
 }
 
