@@ -707,13 +707,39 @@
   color: var(--sl-navy);
 }
 
-/* Bouton télécharger */
+/* Bouton télécharger et message explicatif */
 .batch-footer {
-  padding-top: 8rpx;
+  padding-top: 16rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.batch-hint {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  padding: 14rpx 20rpx;
+  border-radius: 16rpx;
+  background: var(--sl-surface-2);
+  border: 1.5rpx solid var(--sl-border);
+  box-sizing: border-box;
+}
+
+.batch-hint--muted {
+  background: var(--sl-surface-3);
+  border-color: transparent;
+}
+
+.batch-hint-txt {
+  font-size: var(--sl-fs-caption);
+  color: #4A5B78;
+  line-height: 1.4;
+  flex: 1;
 }
 
 .batch-download-btn {
-  width: 100%;
+  width: 100% !important;
   height: 96rpx;
   border-radius: 28rpx;
   background: var(--sl-berry);
@@ -727,13 +753,17 @@
   box-shadow: 0 8rpx 24rpx rgba(200, 35, 95, 0.35);
   box-sizing: border-box;
   padding: 0 24rpx;
+  margin: 0 !important;
   white-space: nowrap;
+  transition: all 0.2s ease;
 }
 
 .batch-download-btn--disabled {
   background: var(--sl-surface-3);
   color: var(--sl-placeholder);
   box-shadow: none;
+  pointer-events: none;
+  opacity: 0.6;
 }
 
 /* Canvas hors-écran */
