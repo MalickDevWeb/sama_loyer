@@ -1,0 +1,2386 @@
+openapi: 3.1.0
+info:
+  title: SAMA LOYER API
+  version: 1.0.0
+  summary: Location simplifiée au Sénégal, dans Max it.
+  description: |
+    Contrat d'API du mini-programme SAMA LOYER (locataire + bailleur) et du back office.
+    Conventions, flux et règles métier : docs/backend/02-contrat-api.md.
+    Modèle de données : docs/backend/01-modele-de-donnees.md et schema.sql.
+
+    Toutes les réponses utilisent l'enveloppe `{ success, data, meta? }` en succès
+    et `{ success: false, code, message, details?, requestId }` en erreur.
+    Montants en entiers XOF. Dates ISO 8601 UTC.
+servers:
+  - url: https://api.samaloyer.sn/api/v1
+    description: Production
+  - url: https://api-staging.samaloyer.sn/api/v1
+    description: Staging
+
+security:
+  - bearerAuth: []
+
+tags:
+  - name: Auth
+  - name: Référentiels
+  - name: Logements
+  - name: Recherche
+  - name: Favoris
+  - name: Visites
+  - name: Messagerie
+  - name: Location
+  - name: Loyers
+  - name: Paiements
+  - name: Quittances
+  - name: Bailleur
+  - name: Bailleur · Annonces
+  - name: Bailleur · Visites
+  - name: Bailleur · Locataires
+  - name: Transverse
+  - name: Admin
+
+paths:
+  # ==========================================================================
+  # AUTH
+  # ==========================================================================
+  /auth/maxit:
+    post:
+      operationId: postAuthMaxit
+      tags: [Auth]
+      summary: Échanger le code d'autorisation Max it contre une session
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [authCode]
+              properties:
+                authCode: { type: string, description: Code à usage unique fourni par Max it (valide 5 min) }
+      responses:
+        '200':
+          description: Session ouverte
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SessionEnvelope' }
+        '401': { $ref: '#/components/responses/Unauthenticated' }
+        '502': { $ref: '#/components/responses/ProviderError' }
+
+  /auth/refresh:
+    post:
+      operationId: postAuthRefresh
+      tags: [Auth]
+      summary: Renouveler les jetons (rotation du refresh token)
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [refreshToken]
+              properties:
+                refreshToken: { type: string }
+      responses:
+        '200':
+          description: Nouveaux jetons
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SessionEnvelope' }
+        '401': { $ref: '#/components/responses/Unauthenticated' }
+
+  /auth/logout:
+    post:
+      operationId: postAuthLogout
+      tags: [Auth]
+      summary: Révoquer le refresh token
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                refreshToken: { type: string }
+      responses:
+        '204': { description: Déconnecté }
+
+  /me:
+    get:
+      operationId: getMe
+      tags: [Auth]
+      summary: Profil de l'utilisateur connecté
+      responses:
+        '200':
+          description: Profil
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - properties:
+                      data: { $ref: '#/components/schemas/Me' }
+        '401': { $ref: '#/components/responses/Unauthenticated' }
+    patch:
+      operationId: patchMe
+      tags: [Auth]
+      summary: Modifier les préférences (le nom et le numéro viennent de Max it)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                city: { type: string, maxLength: 60 }
+                locale: { $ref: '#/components/schemas/Locale' }
+                avatarUrl: { type: string, format: uri }
+      responses:
+        '200':
+          description: Profil mis à jour
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - properties:
+                      data: { $ref: '#/components/schemas/Me' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+
+  /me/unread-counts:
+    get:
+      operationId: getMeUnreadCounts
+      tags: [Messagerie]
+      summary: Messages non lus (badges des onglets)
+      responses:
+        '200':
+          description: Compteurs
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - properties:
+                      data:
+                        type: object
+                        properties:
+                          locataire: { type: integer, minimum: 0 }
+                          bailleur: { type: integer, minimum: 0 }
+
+  # ==========================================================================
+  # RÉFÉRENTIELS
+  # ==========================================================================
+  /zones:
+    get:
+      operationId: getZones
+      tags: [Référentiels]
+      summary: Quartiers actifs et leurs voisins
+      security: []
+      responses:
+        '200':
+          description: Zones
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - properties:
+                      data:
+                        type: array
+                        items: { $ref: '#/components/schemas/Zone' }
+
+  /amenities:
+    get:
+      operationId: getAmenities
+      tags: [Référentiels]
+      summary: Équipements (libellés dans la langue demandée)
+      security: []
+      parameters:
+        - $ref: '#/components/parameters/AcceptLanguage'
+      responses:
+        '200':
+          description: Équipements
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - properties:
+                      data:
+                        type: array
+                        items: { $ref: '#/components/schemas/Amenity' }
+
+  # ==========================================================================
+  # LOGEMENTS & RECHERCHE
+  # ==========================================================================
+  /logements:
+    get:
+      operationId: getLogements
+      tags: [Logements]
+      summary: Rechercher des logements visibles
+      security: [{}, { bearerAuth: [] }]
+      parameters:
+        - { name: zone, in: query, schema: { type: string }, description: Slug de zone (ex. ouakam) }
+        - { name: q, in: query, schema: { type: string, maxLength: 100 }, description: 'Texte libre (titre, quartier)' }
+        - { name: type, in: query, schema: { $ref: '#/components/schemas/LogementType' } }
+        - { name: minPrice, in: query, schema: { type: integer, minimum: 0 } }
+        - { name: maxPrice, in: query, schema: { type: integer, minimum: 0 } }
+        - { name: verifiedOnly, in: query, schema: { type: boolean, default: false } }
+        - { name: sort, in: query, schema: { type: string, enum: [relevance, price_asc, price_desc, recent], default: relevance } }
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PageSize'
+      responses:
+        '200':
+          description: Résultats (les logements boostés du quartier sont en tête)
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - properties:
+                      data:
+                        type: array
+                        items: { $ref: '#/components/schemas/LogementCard' }
+                      meta:
+                        allOf:
+                          - $ref: '#/components/schemas/PageMeta'
+                          - properties:
+                              suggestedZones:
+                                type: array
+                                items: { type: string }
+                                description: Quartiers voisins, rempli si moins de 3 résultats
+
+  /logements/{logementId}:
+    get:
+      operationId: getLogementsByLogement
+      tags: [Logements]
+      summary: Fiche détaillée d'un logement
+      security: [{}, { bearerAuth: [] }]
+      parameters:
+        - $ref: '#/components/parameters/LogementId'
+        - $ref: '#/components/parameters/AcceptLanguage'
+      responses:
+        '200':
+          description: Fiche (adresse précise et numéro complet seulement si visite acceptée ou contrat)
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - properties:
+                      data: { $ref: '#/components/schemas/LogementDetail' }
+        '404': { $ref: '#/components/responses/NotFound' }
+
+  /logements/{logementId}/visit-slots:
+    get:
+      operationId: getLogementsByLogementVisitSlots
+      tags: [Visites]
+      summary: Créneaux de visite libres
+      security: []
+      parameters:
+        - $ref: '#/components/parameters/LogementId'
+        - { name: from, in: query, schema: { type: string, format: date }, description: Défaut aujourd'hui }
+        - { name: days, in: query, schema: { type: integer, minimum: 1, maximum: 31, default: 16 } }
+      responses:
+        '200':
+          description: Créneaux par jour (un jour sans créneau est fermé)
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - properties:
+                      data:
+                        type: object
+                        properties:
+                          remoteVisitEnabled: { type: boolean }
+                          days:
+                            type: array
+                            items:
+                              type: object
+                              required: [date, slots]
+                              properties:
+                                date: { type: string, format: date }
+                                slots:
+                                  type: array
+                                  items: { type: string, pattern: '^\d{2}:\d{2}$', examples: ['16:00'] }
+        '404': { $ref: '#/components/responses/NotFound' }
+
+  /logements/{logementId}/locations:
+    post:
+      operationId: postLogementsByLogementLocations
+      tags: [Location]
+      summary: Démarrer une location (crée le contrat à signer et l'échéance d'entrée)
+      parameters:
+        - $ref: '#/components/parameters/LogementId'
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [startDate]
+              properties:
+                startDate: { type: string, format: date }
+                durationMonths: { type: integer, minimum: 6, maximum: 36, default: 12 }
+                viaVisitId: { type: string, description: Absent = parcours « Louer sans visite » }
+      responses:
+        '201':
+          description: Contrat en attente de signature
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - properties:
+                      data:
+                        type: object
+                        properties:
+                          contrat: { $ref: '#/components/schemas/ContratSummary' }
+                          entry: { $ref: '#/components/schemas/EntrySummary' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+
+  /search/assistant:
+    post:
+      operationId: postSearchAssistant
+      tags: [Recherche]
+      summary: Recherche IA en langage naturel
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [query]
+              properties:
+                query: { type: string, maxLength: 500, examples: ['Une chambre salon à Ouakam, 60 000 maximum, avec toilettes privées'] }
+                zone: { type: string }
+                maxPrice: { type: integer }
+      responses:
+        '200':
+          description: 3 à 4 logements classés
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - properties:
+                      data: { $ref: '#/components/schemas/AssistantResult' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+
+  /search/voice:
+    post:
+      operationId: postSearchVoice
+      tags: [Recherche]
+      summary: Recherche vocale (wolof ou français)
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required: [audio]
+              properties:
+                audio: { type: string, format: binary, description: 'mp3/aac/m4a, 60 s et 2 Mo max' }
+                locale: { $ref: '#/components/schemas/Locale' }
+      responses:
+        '200':
+          description: Transcription et résultats
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - properties:
+                      data:
+                        allOf:
+                          - $ref: '#/components/schemas/AssistantResult'
+                          - properties:
+                              transcript: { type: string }
+                              detectedLocale: { $ref: '#/components/schemas/Locale' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+
+  /me/favoris:
+    get:
+      operationId: getMeFavoris
+      tags: [Favoris]
+      summary: Mes logements favoris
+      responses:
+        '200':
+          description: Favoris
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - properties:
+                      data:
+                        type: array
+                        items: { $ref: '#/components/schemas/LogementCard' }
+
+  /me/favoris/{logementId}:
+    parameters:
+      - $ref: '#/components/parameters/LogementId'
+    put:
+      operationId: putMeFavorisByLogement
+      tags: [Favoris]
+      summary: Ajouter aux favoris (idempotent)
+      responses:
+        '204': { description: Ajouté }
+        '404': { $ref: '#/components/responses/NotFound' }
+    delete:
+      operationId: deleteMeFavorisByLogement
+      tags: [Favoris]
+      summary: Retirer des favoris (idempotent)
+      responses:
+        '204': { description: Retiré }
+
+  # ==========================================================================
+  # VISITES (LOCATAIRE)
+  # ==========================================================================
+  /visites:
+    get:
+      operationId: getVisites
+      tags: [Visites]
+      summary: Mes demandes de visite
+      parameters:
+        - { name: status, in: query, schema: { $ref: '#/components/schemas/VisiteStatus' } }
+      responses:
+        '200':
+          description: Visites (plus récentes d'abord)
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - properties:
+                      data:
+                        type: array
+                        items: { $ref: '#/components/schemas/Visite' }
+    post:
+      operationId: postVisites
+      tags: [Visites]
+      summary: Demander une visite
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [logementId, scheduledAt]
+              properties:
+                logementId: { type: string }
+                scheduledAt: { type: string, format: date-time }
+                message: { type: string, maxLength: 500 }
+                isRemote: { type: boolean, default: false }
+      responses:
+        '201':
+          description: Demande envoyée (pending)
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - properties:
+                      data: { $ref: '#/components/schemas/Visite' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '409': { $ref: '#/components/responses/Conflict' }
+
+  /visites/{visiteId}/cancel:
+    post:
+      operationId: postVisitesByVisiteCancel
+      tags: [Visites]
+      summary: Annuler ma demande
+      parameters:
+        - $ref: '#/components/parameters/VisiteId'
+      responses:
+        '200':
+          description: Visite annulée
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - properties:
+                      data: { $ref: '#/components/schemas/Visite' }
+        '409': { $ref: '#/components/responses/Conflict' }
+
+  # ==========================================================================
+  # MESSAGERIE
+  # ==========================================================================
+  /conversations:
+    get:
+      operationId: getConversations
+      tags: [Messagerie]
+      summary: Mes conversations
+      parameters:
+        - { name: as, in: query, required: true, schema: { type: string, enum: [locataire, bailleur] } }
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PageSize'
+      responses:
+        '200':
+          description: Conversations (dernier message en premier)
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - properties:
+                      data:
+                        type: array
+                        items: { $ref: '#/components/schemas/Conversation' }
+                      meta: { $ref: '#/components/schemas/PageMeta' }
+    post:
+      operationId: postConversations
+      tags: [Messagerie]
+      summary: Ouvrir (ou retrouver) la conversation d'un logement et envoyer un 1er message
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [logementId, text]
+              properties:
+                logementId: { type: string }
+                text: { type: string, minLength: 1, maxLength: 2000 }
+      responses:
+        '201':
+          description: Conversation
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - properties:
+                      data: { $ref: '#/components/schemas/Conversation' }
+
+  /conversations/{conversationId}/messages:
+    parameters:
+      - $ref: '#/components/parameters/ConversationId'
+    get:
+      operationId: getConversationsByConversationMessages
+      tags: [Messagerie]
+      summary: Historique (curseur)
+      parameters:
+        - { name: before, in: query, schema: { type: string }, description: Messages plus anciens que cet id }
+        - { name: after, in: query, schema: { type: string }, description: Messages plus récents que cet id (polling) }
+        - { name: limit, in: query, schema: { type: integer, minimum: 1, maximum: 100, default: 30 } }
+      responses:
+        '200':
+          description: Messages, du plus ancien au plus récent
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - properties:
+                      data:
+                        type: array
+                        items: { $ref: '#/components/schemas/Message' }
+                      meta:
+                        type: object
+                        properties:
+                          nextCursor: { type: [string, 'null'] }
+        '404': { $ref: '#/components/responses/NotFound' }
+    post:
+      operationId: postConversationsByConversationMessages
+      tags: [Messagerie]
+      summary: Envoyer un message (texte ou vocal)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                text: { type: string, minLength: 1, maxLength: 2000 }
+                audioUrl: { type: string, format: uri }
+              oneOf:
+                - required: [text]
+                - required: [audioUrl]
+      responses:
+        '201':
+          description: Message envoyé
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - properties:
+                      data: { $ref: '#/components/schemas/Message' }
+
+  /conversations/{conversationId}/read:
+    post:
+      operationId: postConversationsByConversationRead
+      tags: [Messagerie]
+      summary: Marquer la conversation comme lue
+      parameters:
+        - $ref: '#/components/parameters/ConversationId'
+      responses:
+        '204': { description: Lu }
+
+  # ==========================================================================
+  # CONTRATS
+  # ==========================================================================
+  /contrats:
+    get:
+      operationId: getContrats
+      tags: [Location]
+      summary: Mes contrats (locataire)
+      parameters:
+        - { name: status, in: query, schema: { $ref: '#/components/schemas/ContratStatus' } }
+      responses:
+        '200':
+          description: Contrats
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - properties:
+                      data:
+                        type: array
+                        items: { $ref: '#/components/schemas/ContratSummary' }
+
+  /contrats/{contratId}:
+    get:
+      operationId: getContratsByContrat
+      tags: [Location]
+      summary: Contrat complet (texte figé)
+      parameters:
+        - $ref: '#/components/parameters/ContratId'
+      responses:
+        '200':
+          description: Contrat
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - properties:
+                      data: { $ref: '#/components/schemas/Contrat' }
+        '404': { $ref: '#/components/responses/NotFound' }
+
+  /contrats/{contratId}/sign:
+    post:
+      operationId: postContratsByContratSign
+      tags: [Location]
+      summary: Signature du locataire
+      parameters:
+        - $ref: '#/components/parameters/ContratId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [acceptTerms, signatureName, contentHash]
+              properties:
+                acceptTerms: { type: boolean, const: true }
+                signatureName: { type: string, minLength: 2, maxLength: 80 }
+                contentHash: { type: string, description: Doit égaler Contrat.contentHash }
+      responses:
+        '200':
+          description: Contrat signé par le locataire
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - properties:
+                      data: { $ref: '#/components/schemas/Contrat' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+
+  /contrats/{contratId}/pdf:
+    get:
+      operationId: getContratsByContratPdf
+      tags: [Location]
+      summary: URL signée du PDF du contrat
+      parameters:
+        - $ref: '#/components/parameters/ContratId'
+      responses:
+        '200': { $ref: '#/components/responses/SignedUrl' }
+
+  /contrats/{contratId}/notice:
+    post:
+      operationId: postContratsByContratNotice
+      tags: [Location]
+      summary: Donner le préavis (locataire)
+      parameters:
+        - $ref: '#/components/parameters/ContratId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/NoticeRequest' }
+      responses:
+        '200':
+          description: Contrat en préavis
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - properties:
+                      data: { $ref: '#/components/schemas/Contrat' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+
+  /contrats/{contratId}/incidents:
+    parameters:
+      - $ref: '#/components/parameters/ContratId'
+    get:
+      operationId: getContratsByContratIncidents
+      tags: [Location]
+      summary: Problèmes signalés sur ce logement
+      responses:
+        '200':
+          description: Incidents
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - properties:
+                      data:
+                        type: array
+                        items: { $ref: '#/components/schemas/Incident' }
+    post:
+      operationId: postContratsByContratIncidents
+      tags: [Location]
+      summary: Signaler un problème dans le logement
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [category, description]
+              properties:
+                category: { $ref: '#/components/schemas/IncidentCategory' }
+                description: { type: string, maxLength: 1000 }
+                photoUrls:
+                  type: array
+                  maxItems: 5
+                  items: { type: string, format: uri }
+      responses:
+        '201':
+          description: Incident créé (le bailleur est notifié)
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - properties:
+                      data: { $ref: '#/components/schemas/Incident' }
+
+  # ==========================================================================
+  # LOYERS & PAIEMENTS
+  # ==========================================================================
+  /loyers:
+    get:
+      operationId: getLoyers
+      tags: [Loyers]
+      summary: Mes échéances (entrée + loyers)
+      parameters:
+        - { name: contratId, in: query, schema: { type: string } }
+        - { name: status, in: query, schema: { $ref: '#/components/schemas/EcheanceStatus' } }
+      responses:
+        '200':
+          description: Échéances (la plus récente d'abord)
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - properties:
+                      data:
+                        type: array
+                        items: { $ref: '#/components/schemas/Loyer' }
+
+  /loyers/{loyerId}:
+    get:
+      operationId: getLoyersByLoyer
+      tags: [Loyers]
+      summary: Une échéance et ses tranches
+      parameters:
+        - $ref: '#/components/parameters/LoyerId'
+      responses:
+        '200':
+          description: Échéance
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - properties:
+                      data: { $ref: '#/components/schemas/Loyer' }
+        '404': { $ref: '#/components/responses/NotFound' }
+
+  /loyers/{loyerId}/pay:
+    post:
+      operationId: postLoyersByLoyerPay
+      tags: [Paiements]
+      summary: Payer une échéance (totalité ou tranche) avec Max it
+      description: |
+        Entrée : le 1er paiement doit être ≥ minFirstPayment (l'avance).
+        Toute tranche doit être ≤ reste dû. Le statut final arrive par webhook ;
+        le front interroge GET /payments/{paymentId}.
+      parameters:
+        - $ref: '#/components/parameters/LoyerId'
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [amount]
+              properties:
+                amount: { type: integer, minimum: 1 }
+                method: { type: string, enum: [maxit], default: maxit }
+      responses:
+        '202': { $ref: '#/components/responses/PaymentInitiated' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '502': { $ref: '#/components/responses/ProviderError' }
+
+  /payments/{paymentId}:
+    get:
+      operationId: getPaymentsByPayment
+      tags: [Paiements]
+      summary: État d'un paiement (polling)
+      parameters:
+        - { name: paymentId, in: path, required: true, schema: { type: string } }
+      responses:
+        '200':
+          description: Paiement
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - properties:
+                      data: { $ref: '#/components/schemas/Payment' }
+        '404': { $ref: '#/components/responses/NotFound' }
+
+  # ==========================================================================
+  # QUITTANCES
+  # ==========================================================================
+  /quittances:
+    get:
+      operationId: getQuittances
+      tags: [Quittances]
+      summary: Mes reçus et quittances
+      parameters:
+        - { name: contratId, in: query, schema: { type: string } }
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PageSize'
+      responses:
+        '200':
+          description: Quittances
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - properties:
+                      data:
+                        type: array
+                        items: { $ref: '#/components/schemas/Quittance' }
+                      meta: { $ref: '#/components/schemas/PageMeta' }
+
+  /quittances/{quittanceId}:
+    get:
+      operationId: getQuittancesByQuittance
+      tags: [Quittances]
+      summary: Une quittance
+      parameters:
+        - { name: quittanceId, in: path, required: true, schema: { type: string } }
+      responses:
+        '200':
+          description: Quittance
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - properties:
+                      data: { $ref: '#/components/schemas/Quittance' }
+        '404': { $ref: '#/components/responses/NotFound' }
+
+  /quittances/{quittanceId}/pdf:
+    get:
+      operationId: getQuittancesByQuittancePdf
+      tags: [Quittances]
+      summary: URL signée du PDF
+      parameters:
+        - { name: quittanceId, in: path, required: true, schema: { type: string } }
+      responses:
+        '200': { $ref: '#/components/responses/SignedUrl' }
+
+  /quittances/verify/{verifyCode}:
+    get:
+      operationId: getQuittancesVerifyByVerifyCode
+      tags: [Quittances]
+      summary: Vérifier l'authenticité d'une quittance partagée
+      security: []
+      parameters:
+        - { name: verifyCode, in: path, required: true, schema: { type: string } }
+      responses:
+        '200':
+          description: Quittance authentique (données minimales, sans numéros de téléphone)
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - properties:
+                      data:
+                        type: object
+                        properties:
+                          numero: { type: string }
+                          amount: { type: integer }
+                          period: { type: [string, 'null'] }
+                          issuedAt: { type: string, format: date-time }
+                          logementTitle: { type: string }
+                          locataireInitials: { type: string }
+        '404': { $ref: '#/components/responses/NotFound' }
+
+  # ==========================================================================
+  # BAILLEUR · COMPTE
+  # ==========================================================================
+  /bailleur/compte:
+    get:
+      operationId: getBailleurCompte
+      tags: [Bailleur]
+      summary: État du compte bailleur
+      responses:
+        '200':
+          description: Compte
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - properties:
+                      data: { $ref: '#/components/schemas/BailleurAccount' }
+
+  /bailleur/compte/activation:
+    post:
+      operationId: postBailleurCompteActivation
+      tags: [Bailleur]
+      summary: Activer l'espace bailleur (essai gratuit ou Pro)
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [plan]
+              properties:
+                plan: { $ref: '#/components/schemas/SubscriptionPlan' }
+      responses:
+        '201':
+          description: Essai activé immédiatement
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - properties:
+                      data: { $ref: '#/components/schemas/BailleurAccount' }
+        '202': { $ref: '#/components/responses/PaymentInitiated' }
+        '409': { $ref: '#/components/responses/Conflict' }
+
+  /bailleur/abonnement/renouvellement:
+    post:
+      operationId: postBailleurAbonnementRenouvellement
+      tags: [Bailleur]
+      summary: Payer 30 jours de Pro (à partir de la fin actuelle, ou d'aujourd'hui si expiré)
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      responses:
+        '202': { $ref: '#/components/responses/PaymentInitiated' }
+
+  /bailleur/paiements:
+    get:
+      operationId: getBailleurPaiements
+      tags: [Bailleur]
+      summary: Historique des paiements du bailleur (abonnement, boosts)
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PageSize'
+      responses:
+        '200':
+          description: Paiements
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - properties:
+                      data:
+                        type: array
+                        items: { $ref: '#/components/schemas/Payment' }
+                      meta: { $ref: '#/components/schemas/PageMeta' }
+
+  /bailleur/verification:
+    post:
+      operationId: postBailleurVerification
+      tags: [Bailleur]
+      summary: Envoyer la pièce d'identité
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [idDocumentUrl]
+              properties:
+                idDocumentUrl: { type: string, format: uri }
+      responses:
+        '202': { description: 'Pièce reçue, vérification sous 24 h' }
+
+  /bailleur/dashboard:
+    get:
+      operationId: getBailleurDashboard
+      tags: [Bailleur]
+      summary: Chiffres de l'accueil bailleur
+      responses:
+        '200':
+          description: Tableau de bord
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - properties:
+                      data:
+                        type: object
+                        properties:
+                          month: { type: string, examples: ['2026-11'] }
+                          rentExpected: { type: integer }
+                          rentCollected: { type: integer }
+                          lateCount: { type: integer }
+                          pendingVisitRequests: { type: integer }
+                          onlineListings: { type: integer }
+                          listingsToConfirm: { type: integer }
+                          viewsLast7Days: { type: integer }
+        '403': { $ref: '#/components/responses/Forbidden' }
+
+  # ==========================================================================
+  # BAILLEUR · ANNONCES
+  # ==========================================================================
+  /bailleur/annonces:
+    get:
+      operationId: getBailleurAnnonces
+      tags: [Bailleur · Annonces]
+      summary: Mes annonces (tous statuts)
+      parameters:
+        - { name: status, in: query, schema: { $ref: '#/components/schemas/LogementStatus' } }
+      responses:
+        '200':
+          description: Annonces
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - properties:
+                      data:
+                        type: array
+                        items: { $ref: '#/components/schemas/BailleurAnnonce' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+    post:
+      operationId: postBailleurAnnonces
+      tags: [Bailleur · Annonces]
+      summary: Publier une annonce (passe en validation)
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/AnnonceInput' }
+      responses:
+        '201':
+          description: Annonce créée
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - properties:
+                      data: { $ref: '#/components/schemas/BailleurAnnonce' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+
+  /bailleur/annonces/{logementId}:
+    parameters:
+      - $ref: '#/components/parameters/LogementId'
+    get:
+      operationId: getBailleurAnnoncesByLogement
+      tags: [Bailleur · Annonces]
+      summary: Une de mes annonces
+      responses:
+        '200':
+          description: Annonce
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - properties:
+                      data: { $ref: '#/components/schemas/BailleurAnnonce' }
+        '404': { $ref: '#/components/responses/NotFound' }
+    patch:
+      operationId: patchBailleurAnnoncesByLogement
+      tags: [Bailleur · Annonces]
+      summary: Modifier (prix, photos ou description ⇒ retour en validation)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/AnnoncePatch' }
+      responses:
+        '200':
+          description: Annonce modifiée
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - properties:
+                      data: { $ref: '#/components/schemas/BailleurAnnonce' }
+        '409': { $ref: '#/components/responses/Conflict' }
+    delete:
+      operationId: deleteBailleurAnnoncesByLogement
+      tags: [Bailleur · Annonces]
+      summary: Supprimer (interdit si un contrat est en cours)
+      responses:
+        '204': { description: Supprimée }
+        '409': { $ref: '#/components/responses/Conflict' }
+
+  /bailleur/annonces/{logementId}/confirm-availability:
+    post:
+      operationId: postBailleurAnnoncesByLogementConfirmAvailability
+      tags: [Bailleur · Annonces]
+      summary: Confirmer que le logement est toujours disponible
+      parameters:
+        - $ref: '#/components/parameters/LogementId'
+      responses:
+        '200':
+          description: Disponibilité confirmée
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - properties:
+                      data: { $ref: '#/components/schemas/BailleurAnnonce' }
+
+  /bailleur/annonces/{logementId}/hide:
+    post:
+      operationId: postBailleurAnnoncesByLogementHide
+      tags: [Bailleur · Annonces]
+      summary: Masquer l'annonce
+      parameters:
+        - $ref: '#/components/parameters/LogementId'
+      responses:
+        '200': { description: Annonce masquée }
+
+  /bailleur/annonces/{logementId}/unhide:
+    post:
+      operationId: postBailleurAnnoncesByLogementUnhide
+      tags: [Bailleur · Annonces]
+      summary: Remettre l'annonce en ligne (vaut confirmation de disponibilité)
+      parameters:
+        - $ref: '#/components/parameters/LogementId'
+      responses:
+        '200': { description: Annonce en ligne }
+        '409': { $ref: '#/components/responses/Conflict' }
+
+  /bailleur/annonces/{logementId}/boosts:
+    post:
+      operationId: postBailleurAnnoncesByLogementBoosts
+      tags: [Bailleur · Annonces]
+      summary: Booster une annonce en ligne
+      parameters:
+        - $ref: '#/components/parameters/LogementId'
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [plan]
+              properties:
+                plan: { type: string, enum: [boost7, boost30] }
+      responses:
+        '202': { $ref: '#/components/responses/PaymentInitiated' }
+        '409': { $ref: '#/components/responses/Conflict' }
+
+  /bailleur/annonces/{logementId}/horaires:
+    parameters:
+      - $ref: '#/components/parameters/LogementId'
+    get:
+      operationId: getBailleurAnnoncesByLogementHoraires
+      tags: [Bailleur · Annonces]
+      summary: Horaires de visite
+      responses:
+        '200':
+          description: Horaires
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - properties:
+                      data: { $ref: '#/components/schemas/VisitSchedule' }
+    put:
+      operationId: putBailleurAnnoncesByLogementHoraires
+      tags: [Bailleur · Annonces]
+      summary: Remplacer les horaires de visite
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/VisitSchedule' }
+      responses:
+        '200':
+          description: Horaires enregistrés (les visites déjà acceptées sont conservées)
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - properties:
+                      data: { $ref: '#/components/schemas/VisitSchedule' }
+
+  # ==========================================================================
+  # BAILLEUR · VISITES
+  # ==========================================================================
+  /bailleur/visites:
+    get:
+      operationId: getBailleurVisites
+      tags: [Bailleur · Visites]
+      summary: Demandes de visite reçues
+      parameters:
+        - { name: status, in: query, schema: { $ref: '#/components/schemas/VisiteStatus' } }
+        - { name: logementId, in: query, schema: { type: string } }
+      responses:
+        '200':
+          description: Demandes
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - properties:
+                      data:
+                        type: array
+                        items: { $ref: '#/components/schemas/Visite' }
+
+  /bailleur/visites/{visiteId}/accept:
+    post:
+      operationId: postBailleurVisitesByVisiteAccept
+      tags: [Bailleur · Visites]
+      summary: Accepter une demande
+      parameters:
+        - $ref: '#/components/parameters/VisiteId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                note: { type: string, maxLength: 300, examples: ["Je t'attends devant le portail bleu."] }
+      responses:
+        '200':
+          description: Visite acceptée (SMS envoyé au locataire avec l'adresse)
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - properties:
+                      data: { $ref: '#/components/schemas/Visite' }
+        '409': { $ref: '#/components/responses/Conflict' }
+
+  /bailleur/visites/{visiteId}/reject:
+    post:
+      operationId: postBailleurVisitesByVisiteReject
+      tags: [Bailleur · Visites]
+      summary: Refuser une demande
+      parameters:
+        - $ref: '#/components/parameters/VisiteId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [reason]
+              properties:
+                reason: { type: string, maxLength: 300 }
+      responses:
+        '200':
+          description: Visite refusée
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - properties:
+                      data: { $ref: '#/components/schemas/Visite' }
+        '409': { $ref: '#/components/responses/Conflict' }
+
+  # ==========================================================================
+  # BAILLEUR · LOCATAIRES
+  # ==========================================================================
+  /bailleur/locataires:
+    get:
+      operationId: getBailleurLocataires
+      tags: [Bailleur · Locataires]
+      summary: Locataires en place et statut du loyer du mois
+      parameters:
+        - { name: status, in: query, schema: { type: string, enum: [paid, pending, late] } }
+      responses:
+        '200':
+          description: Locataires
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - properties:
+                      data:
+                        type: array
+                        items: { $ref: '#/components/schemas/BailleurLocataire' }
+
+  /bailleur/echeances/{loyerId}/cash-payments:
+    post:
+      operationId: postBailleurEcheancesByLoyerCashPayments
+      tags: [Bailleur · Locataires]
+      summary: Déclarer un paiement reçu en espèces
+      parameters:
+        - $ref: '#/components/parameters/LoyerId'
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [amount, paidOn]
+              properties:
+                amount: { type: integer, minimum: 1 }
+                paidOn: { type: string, format: date }
+      responses:
+        '201':
+          description: Paiement enregistré, quittance émise
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - properties:
+                      data: { $ref: '#/components/schemas/Payment' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+
+  /bailleur/contrats/{contratId}/notice:
+    post:
+      operationId: postBailleurContratsByContratNotice
+      tags: [Bailleur · Locataires]
+      summary: Donner le préavis (bailleur)
+      parameters:
+        - $ref: '#/components/parameters/ContratId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/NoticeRequest' }
+      responses:
+        '200': { description: Contrat en préavis }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+
+  /bailleur/contrats/{contratId}/deposit-refund:
+    post:
+      operationId: postBailleurContratsByContratDepositRefund
+      tags: [Bailleur · Locataires]
+      summary: Restituer la caution après l'état des lieux
+      parameters:
+        - $ref: '#/components/parameters/ContratId'
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [amount]
+              properties:
+                amount: { type: integer, minimum: 0, description: Montant rendu (≤ caution) }
+                deductions:
+                  type: array
+                  items:
+                    type: object
+                    required: [label, amount]
+                    properties:
+                      label: { type: string }
+                      amount: { type: integer, minimum: 1 }
+      responses:
+        '202': { $ref: '#/components/responses/PaymentInitiated' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+
+  # ==========================================================================
+  # TRANSVERSE
+  # ==========================================================================
+  /uploads:
+    post:
+      operationId: postUploads
+      tags: [Transverse]
+      summary: Obtenir une URL d'envoi pré-signée (Tencent COS)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [kind, contentType, size]
+              properties:
+                kind: { type: string, enum: [logement_photo, logement_video, video_poster, message_audio, incident_photo, id_document, avatar] }
+                contentType: { type: string, examples: ['image/jpeg'] }
+                size: { type: integer, minimum: 1, description: Octets }
+      responses:
+        '200':
+          description: URL d'envoi
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - properties:
+                      data:
+                        type: object
+                        required: [uploadUrl, fileUrl, expiresAt]
+                        properties:
+                          uploadUrl: { type: string, format: uri }
+                          method: { type: string, const: PUT }
+                          headers: { type: object, additionalProperties: { type: string } }
+                          fileUrl: { type: string, format: uri, description: À renvoyer dans l'annonce / le message }
+                          expiresAt: { type: string, format: date-time }
+        '400': { $ref: '#/components/responses/ValidationError' }
+
+  /reports:
+    post:
+      operationId: postReports
+      tags: [Transverse]
+      summary: Signaler une annonce ou un utilisateur
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [targetType, targetId, reason]
+              properties:
+                targetType: { type: string, enum: [logement, user] }
+                targetId: { type: string }
+                reason: { type: string, enum: [money_before_visit, fake_listing, already_rented, photos_mismatch, harassment, other] }
+                detail: { type: string, maxLength: 1000 }
+      responses:
+        '201': { description: Signalement enregistré }
+
+  /webhooks/maxit:
+    post:
+      operationId: postWebhooksMaxit
+      tags: [Paiements]
+      summary: Notification de paiement Max it / Orange Money (serveur à serveur)
+      security:
+        - maxitSignature: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [providerRef, merchantReference, status, amount]
+              properties:
+                providerRef: { type: string }
+                merchantReference: { type: string, description: Payment.reference (TX-…) }
+                status: { type: string, enum: [SUCCESS, FAILED, CANCELLED] }
+                amount: { type: integer }
+                currency: { type: string, const: XOF }
+                payerMsisdn: { type: string }
+                occurredAt: { type: string, format: date-time }
+      responses:
+        '200': { description: Pris en compte (idempotent sur providerRef) }
+        '401': { description: Signature invalide }
+
+  /health:
+    get:
+      operationId: getHealth
+      tags: [Transverse]
+      summary: Supervision
+      security: []
+      responses:
+        '200': { description: OK }
+
+  # ==========================================================================
+  # ADMIN (BACK OFFICE) — détail des corps dans 02-contrat-api.md §3.7
+  # ==========================================================================
+  /admin/auth/login:
+    post:
+      operationId: postAdminAuthLogin
+      tags: [Admin]
+      summary: Connexion admin (étape 1)
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password]
+              properties:
+                email: { type: string, format: email }
+                password: { type: string, format: password }
+      responses:
+        '200': { description: 'Défi 2FA : { challengeId }' }
+        '401': { $ref: '#/components/responses/Unauthenticated' }
+
+  /admin/auth/2fa:
+    post:
+      operationId: postAdminAuth2fa
+      tags: [Admin]
+      summary: Connexion admin (étape 2, code TOTP)
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [challengeId, code]
+              properties:
+                challengeId: { type: string }
+                code: { type: string, pattern: '^\d{6}$' }
+      responses:
+        '200': { description: 'Jeton admin { accessToken, expiresIn, admin { id, name, role, permissions } }' }
+        '401': { $ref: '#/components/responses/Unauthenticated' }
+
+  /admin/dashboard:
+    get:
+      operationId: getAdminDashboard
+      tags: [Admin]
+      security: [{ adminAuth: [] }]
+      summary: Indicateurs (inscriptions, zones, revenus, files d'attente)
+      parameters:
+        - { name: range, in: query, schema: { type: string, enum: [w, m, y], default: w } }
+      responses:
+        '200': { description: Indicateurs }
+
+  /admin/annonces/validation:
+    get:
+      operationId: getAdminAnnoncesValidation
+      tags: [Admin]
+      security: [{ adminAuth: [] }]
+      summary: File des annonces à valider (avec drapeaux anti-fraude)
+      responses:
+        '200': { description: Annonces en validation }
+
+  /admin/annonces/{logementId}/approve:
+    post:
+      operationId: postAdminAnnoncesByLogementApprove
+      tags: [Admin]
+      security: [{ adminAuth: [] }]
+      summary: Approuver et mettre en ligne
+      parameters: [{ $ref: '#/components/parameters/LogementId' }]
+      responses:
+        '200': { description: Annonce en ligne }
+
+  /admin/annonces/{logementId}/reject:
+    post:
+      operationId: postAdminAnnoncesByLogementReject
+      tags: [Admin]
+      security: [{ adminAuth: [] }]
+      summary: Refuser avec un motif
+      parameters: [{ $ref: '#/components/parameters/LogementId' }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [reason]
+              properties:
+                reason: { type: string }
+      responses:
+        '200': { description: 'Annonce refusée, bailleur notifié' }
+
+  /admin/bailleurs/{userId}/{action}:
+    post:
+      operationId: postAdminBailleursByUserByAction
+      tags: [Admin]
+      security: [{ adminAuth: [] }]
+      summary: Vérifier, refuser la pièce, suspendre ou rétablir un bailleur
+      parameters:
+        - { name: userId, in: path, required: true, schema: { type: string } }
+        - { name: action, in: path, required: true, schema: { type: string, enum: [verify, reject-document, suspend, reinstate] } }
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                reason: { type: string }
+      responses:
+        '200': { description: Bailleur mis à jour }
+
+  /admin/transactions:
+    get:
+      operationId: getAdminTransactions
+      tags: [Admin]
+      security: [{ adminAuth: [] }]
+      summary: Transactions (filtres type, statut, période, recherche)
+      parameters:
+        - { name: purpose, in: query, schema: { $ref: '#/components/schemas/PaymentPurpose' } }
+        - { name: status, in: query, schema: { $ref: '#/components/schemas/PaymentStatus' } }
+        - { name: q, in: query, schema: { type: string } }
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PageSize'
+      responses:
+        '200': { description: Transactions paginées }
+
+  /admin/transactions/{paymentId}/refund:
+    post:
+      operationId: postAdminTransactionsByPaymentRefund
+      tags: [Admin]
+      security: [{ adminAuth: [] }]
+      summary: Rembourser (permission refunds)
+      parameters:
+        - { name: paymentId, in: path, required: true, schema: { type: string } }
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [reason]
+              properties:
+                amount: { type: integer, description: Défaut = montant total }
+                reason: { type: string }
+      responses:
+        '202': { description: Remboursement initié }
+
+  /admin/reports/{reportId}/resolve:
+    post:
+      operationId: postAdminReportsByReportResolve
+      tags: [Admin]
+      security: [{ adminAuth: [] }]
+      summary: Traiter un signalement
+      parameters:
+        - { name: reportId, in: path, required: true, schema: { type: string } }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [action]
+              properties:
+                action: { type: string, enum: [suspend_listing_and_account, suspend_account, hide_listing, request_correction, dismiss] }
+                note: { type: string }
+      responses:
+        '200': { description: Signalement résolu }
+
+  /admin/settings/{section}:
+    parameters:
+      - { name: section, in: path, required: true, schema: { type: string, enum: [prices, rules, features] } }
+    get:
+      operationId: getAdminSettingsBySection
+      tags: [Admin]
+      security: [{ adminAuth: [] }]
+      summary: Lire un groupe de paramètres
+      responses:
+        '200': { description: Paramètres }
+    put:
+      operationId: putAdminSettingsBySection
+      tags: [Admin]
+      security: [{ adminAuth: [] }]
+      summary: Modifier un groupe de paramètres (permission settings)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { type: object }
+      responses:
+        '200': { description: Paramètres enregistrés }
+
+  /admin/audit-logs:
+    get:
+      operationId: getAdminAuditLogs
+      tags: [Admin]
+      security: [{ adminAuth: [] }]
+      summary: Journal d'audit
+      parameters:
+        - { name: module, in: query, schema: { type: string } }
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PageSize'
+      responses:
+        '200': { description: Entrées paginées }
+
+# ============================================================================
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    adminAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Jeton émis par /admin/auth/2fa (audience distincte)
+    maxitSignature:
+      type: apiKey
+      in: header
+      name: X-Maxit-Signature
+      description: HMAC-SHA256 du corps brut, avec X-Maxit-Timestamp
+
+  parameters:
+    Page: { name: page, in: query, schema: { type: integer, minimum: 1, default: 1 } }
+    PageSize: { name: pageSize, in: query, schema: { type: integer, minimum: 1, maximum: 50, default: 20 } }
+    AcceptLanguage: { name: Accept-Language, in: header, schema: { $ref: '#/components/schemas/Locale' } }
+    IdempotencyKey:
+      name: Idempotency-Key
+      in: header
+      required: true
+      description: UUID généré par le front, conservé 24 h côté serveur
+      schema: { type: string, format: uuid }
+    LogementId: { name: logementId, in: path, required: true, schema: { type: string } }
+    VisiteId: { name: visiteId, in: path, required: true, schema: { type: string } }
+    ConversationId: { name: conversationId, in: path, required: true, schema: { type: string } }
+    ContratId: { name: contratId, in: path, required: true, schema: { type: string } }
+    LoyerId: { name: loyerId, in: path, required: true, schema: { type: string }, description: Identifiant d'échéance }
+
+  responses:
+    ValidationError:
+      description: Requête invalide (VALIDATION_ERROR)
+      content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } }
+    Unauthenticated:
+      description: Non authentifié (UNAUTHENTICATED, TOKEN_EXPIRED)
+      content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } }
+    Forbidden:
+      description: Interdit (FORBIDDEN, SUBSCRIPTION_REQUIRED, BAILLEUR_SUSPENDED)
+      content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } }
+    NotFound:
+      description: Introuvable (NOT_FOUND)
+      content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } }
+    Conflict:
+      description: Conflit d'état (SLOT_UNAVAILABLE, VISIT_ALREADY_OPEN, LOGEMENT_UNAVAILABLE, TRIAL_ALREADY_USED, IDEMPOTENCY_CONFLICT, INVALID_STATE)
+      content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } }
+    Unprocessable:
+      description: Règle métier non respectée (AMOUNT_BELOW_MINIMUM, AMOUNT_ABOVE_REMAINING, CONTRACT_TERMS_NOT_ACCEPTED…)
+      content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } }
+    RateLimited:
+      description: Trop de requêtes (RATE_LIMITED)
+      headers:
+        Retry-After: { schema: { type: integer } }
+      content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } }
+    ProviderError:
+      description: Max it indisponible (PAYMENT_PROVIDER_ERROR)
+      content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } }
+    SignedUrl:
+      description: URL temporaire (15 min)
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '#/components/schemas/Envelope'
+              - properties:
+                  data:
+                    type: object
+                    properties:
+                      url: { type: string, format: uri }
+                      expiresAt: { type: string, format: date-time }
+    PaymentInitiated:
+      description: Paiement créé, à confirmer dans Max it
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '#/components/schemas/Envelope'
+              - properties:
+                  data:
+                    type: object
+                    required: [payment, checkout]
+                    properties:
+                      payment: { $ref: '#/components/schemas/Payment' }
+                      checkout: { $ref: '#/components/schemas/Checkout' }
+
+  schemas:
+    # --- Enveloppes -----------------------------------------------------------
+    Envelope:
+      type: object
+      required: [success, data]
+      properties:
+        success: { type: boolean, const: true }
+        data: {}
+        meta: { type: object }
+    Error:
+      type: object
+      required: [success, code, message]
+      properties:
+        success: { type: boolean, const: false }
+        code: { type: string, examples: [AMOUNT_BELOW_MINIMUM] }
+        message: { type: string, description: 'Prêt à afficher, dans la langue demandée' }
+        details: { type: object }
+        requestId: { type: string }
+    PageMeta:
+      type: object
+      properties:
+        page: { type: integer }
+        pageSize: { type: integer }
+        total: { type: integer }
+        hasMore: { type: boolean }
+
+    # --- Énumérations -------------------------------------------------------
+    Locale: { type: string, enum: [fr, wo] }
+    LogementType: { type: string, enum: [chambre, chambre_salon, studio, appartement, maison] }
+    LogementStatus: { type: string, enum: [draft, validation, online, reserved, rented, hidden, rejected] }
+    VerificationLevel: { type: string, enum: [declared, phone_verified, identity_verified, identity_and_visit_verified, certified_agency] }
+    VisiteStatus: { type: string, enum: [pending, accepted, rejected, cancelled, done, no_show] }
+    ContratStatus: { type: string, enum: [draft, pending_signature, active, notice, terminated, cancelled] }
+    EcheanceStatus: { type: string, enum: [pending, partial, paid, late, cancelled] }
+    PaymentPurpose: { type: string, enum: [entry, rent, subscription, boost, refund] }
+    PaymentStatus: { type: string, enum: [pending, succeeded, failed, refunded, expired] }
+    SubscriptionPlan: { type: string, enum: [trial, pro] }
+    IncidentCategory: { type: string, enum: [plumbing, electricity, lock, humidity, other] }
+
+    # --- Auth ---------------------------------------------------------------
+    SessionEnvelope:
+      allOf:
+        - $ref: '#/components/schemas/Envelope'
+        - properties:
+            data:
+              type: object
+              required: [accessToken, refreshToken, expiresIn, user]
+              properties:
+                accessToken: { type: string }
+                refreshToken: { type: string }
+                expiresIn: { type: integer, description: Secondes (3600) }
+                user: { $ref: '#/components/schemas/Me' }
+    Me:
+      type: object
+      required: [id, fullName, phone, locale, roles]
+      properties:
+        id: { type: string }
+        fullName: { type: string }
+        phone: { type: string, examples: ['+221771234567'] }
+        city: { type: [string, 'null'] }
+        locale: { $ref: '#/components/schemas/Locale' }
+        avatarUrl: { type: [string, 'null'] }
+        roles:
+          type: array
+          items: { type: string, enum: [locataire, bailleur] }
+        bailleur:
+          oneOf:
+            - $ref: '#/components/schemas/BailleurAccount'
+            - type: 'null'
+
+    # --- Référentiels -------------------------------------------------------
+    Zone:
+      type: object
+      properties:
+        id: { type: string, examples: [ouakam] }
+        name: { type: string }
+        commune: { type: string }
+        neighbours:
+          type: array
+          items: { type: string }
+    Amenity:
+      type: object
+      properties:
+        id: { type: string, examples: [private_toilet] }
+        label: { type: string }
+        icon: { type: [string, 'null'] }
+
+    # --- Logements ----------------------------------------------------------
+    LogementCard:
+      type: object
+      required: [id, title, type, place, zone, price, caution, avance, frais, cover, verified, status]
+      properties:
+        id: { type: string }
+        title: { type: string }
+        type: { $ref: '#/components/schemas/LogementType' }
+        typeLabel: { type: string, description: Libellé localisé du type }
+        place: { type: string, examples: ['Ouakam, Cité Avion'] }
+        zone: { type: string }
+        price: { type: integer, description: Loyer mensuel }
+        caution: { type: integer }
+        avance: { type: integer }
+        frais: { type: integer }
+        cover: { type: string, format: uri }
+        images:
+          type: array
+          items: { type: string, format: uri }
+        verified: { type: boolean, description: Bailleur vérifié }
+        verificationLevel: { $ref: '#/components/schemas/VerificationLevel' }
+        availabilityConfirmedAt: { type: [string, 'null'], format: date-time }
+        status: { $ref: '#/components/schemas/LogementStatus' }
+        isBoosted: { type: boolean }
+        isFavorite: { type: boolean, description: false si non connecté }
+        surface: { type: [integer, 'null'] }
+        rooms: { type: [integer, 'null'] }
+    LogementDetail:
+      allOf:
+        - $ref: '#/components/schemas/LogementCard'
+        - type: object
+          properties:
+            description: { type: string }
+            address: { type: [string, 'null'], description: 'Adresse précise, null si non autorisée' }
+            cautionMonths: { type: integer }
+            amenities:
+              type: array
+              items: { $ref: '#/components/schemas/Amenity' }
+            media:
+              type: array
+              items: { $ref: '#/components/schemas/Media' }
+            video:
+              oneOf:
+                - $ref: '#/components/schemas/Media'
+                - type: 'null'
+            availableFrom: { type: [string, 'null'], format: date }
+            remoteVisitEnabled: { type: boolean }
+            rentWithoutVisitEnabled: { type: boolean }
+            bailleur:
+              type: object
+              properties:
+                id: { type: string }
+                name: { type: string }
+                phone: { type: string, description: Masqué (+221 77 ••• •• 30) sauf visite acceptée ou contrat }
+                verified: { type: boolean }
+                memberSince: { type: string, format: date }
+            myVisite:
+              oneOf:
+                - $ref: '#/components/schemas/Visite'
+                - type: 'null'
+            conversationId: { type: [string, 'null'] }
+    Media:
+      type: object
+      properties:
+        kind: { type: string, enum: [photo, video] }
+        url: { type: string, format: uri }
+        posterUrl: { type: [string, 'null'], format: uri }
+        label: { type: [string, 'null'] }
+    AssistantResult:
+      type: object
+      properties:
+        understood:
+          type: object
+          description: Critères extraits de la demande
+          properties:
+            zone: { type: [string, 'null'] }
+            type: { type: [string, 'null'] }
+            maxPrice: { type: [integer, 'null'] }
+            amenities: { type: array, items: { type: string } }
+        results:
+          type: array
+          maxItems: 4
+          items:
+            allOf:
+              - $ref: '#/components/schemas/LogementCard'
+              - properties:
+                  matchScore: { type: number, minimum: 0, maximum: 1 }
+                  reason: { type: string, description: Pourquoi ce logement correspond }
+
+    # --- Visites ------------------------------------------------------------
+    Visite:
+      type: object
+      required: [id, logementId, scheduledAt, status]
+      properties:
+        id: { type: string }
+        logementId: { type: string }
+        logementTitle: { type: string }
+        logementPlace: { type: string }
+        price: { type: integer }
+        cover: { type: string, format: uri }
+        scheduledAt: { type: string, format: date-time }
+        date: { type: string, format: date, description: Compatibilité VisiteSchema }
+        time: { type: string, examples: ['16:00'] }
+        isRemote: { type: boolean }
+        status: { $ref: '#/components/schemas/VisiteStatus' }
+        message: { type: [string, 'null'], description: Message du locataire }
+        note: { type: [string, 'null'], description: Réponse du bailleur (consignes ou motif de refus) }
+        address: { type: [string, 'null'], description: Rempli si accepted }
+        landlordName: { type: string }
+        landlordPhone: { type: string }
+        tenantName: { type: string }
+        tenantPhone: { type: string }
+        conversationId: { type: [string, 'null'] }
+        createdAt: { type: string, format: date-time }
+    VisitSchedule:
+      type: object
+      required: [weekly, blockedDays]
+      properties:
+        weekly:
+          type: array
+          description: Créneaux d'1 h par jour ISO (1 = lundi)
+          items:
+            type: object
+            required: [weekday, slots]
+            properties:
+              weekday: { type: integer, minimum: 1, maximum: 7 }
+              slots:
+                type: array
+                items: { type: string, pattern: '^\d{2}:\d{2}$' }
+        blockedDays:
+          type: array
+          items: { type: string, format: date }
+        remoteVisitEnabled: { type: boolean }
+
+    # --- Messagerie ---------------------------------------------------------
+    Conversation:
+      type: object
+      properties:
+        id: { type: string }
+        logement:
+          type: object
+          properties:
+            id: { type: string }
+            title: { type: string }
+            place: { type: string }
+            price: { type: integer }
+            cover: { type: string, format: uri }
+            status: { $ref: '#/components/schemas/LogementStatus' }
+        counterpart:
+          type: object
+          properties:
+            id: { type: string }
+            name: { type: string }
+            initials: { type: string }
+            kind: { type: string, enum: [bailleur, candidat, locataire], description: candidat = pas encore de contrat }
+        lastMessage: { type: [string, 'null'] }
+        lastMessageAt: { type: string, format: date-time }
+        unread: { type: integer }
+        visite:
+          oneOf:
+            - $ref: '#/components/schemas/Visite'
+            - type: 'null'
+    Message:
+      type: object
+      required: [id, kind, createdAt]
+      properties:
+        id: { type: string }
+        kind: { type: string, enum: [text, voice, event] }
+        fromMe: { type: boolean }
+        text: { type: [string, 'null'] }
+        audioUrl: { type: [string, 'null'], format: uri }
+        eventType: { type: [string, 'null'], enum: [visit_requested, visit_accepted, visit_rejected, visit_cancelled, contract_signed, entry_paid, rent_paid, notice_given, null] }
+        eventPayload: { type: [object, 'null'] }
+        createdAt: { type: string, format: date-time }
+        readAt: { type: [string, 'null'], format: date-time }
+
+    # --- Contrats -----------------------------------------------------------
+    ContratSummary:
+      type: object
+      properties:
+        id: { type: string }
+        numero: { type: string, examples: [SL-2026-10-0412] }
+        status: { $ref: '#/components/schemas/ContratStatus' }
+        logementId: { type: string }
+        logementTitle: { type: string }
+        logementPlace: { type: string }
+        startDate: { type: string, format: date }
+        endDate: { type: string, format: date }
+        rent: { type: integer }
+    Contrat:
+      allOf:
+        - $ref: '#/components/schemas/ContratSummary'
+        - type: object
+          properties:
+            caution: { type: integer }
+            cautionMonths: { type: integer }
+            avance: { type: integer }
+            frais: { type: integer }
+            dueDay: { type: integer, examples: [5] }
+            durationMonths: { type: integer }
+            minDurationMonths: { type: integer }
+            noticeMonths: { type: integer }
+            autoRenew: { type: boolean }
+            utilitiesNote: { type: [string, 'null'] }
+            bailleur: { $ref: '#/components/schemas/ContratParty' }
+            locataire: { $ref: '#/components/schemas/ContratParty' }
+            articles:
+              type: array
+              description: Texte figé, rendu avec les montants réels
+              items:
+                type: object
+                required: [title, text]
+                properties:
+                  key: { type: string }
+                  title: { type: string }
+                  hint: { type: string }
+                  text: { type: string }
+            contentHash: { type: string, description: SHA-256 du contenu à signer }
+            depositStatus: { type: string, enum: [not_paid, held, refunded, partially_refunded] }
+            entryEcheanceId: { type: string }
+            keysHandedOverAt: { type: [string, 'null'], format: date-time }
+            issueWindowEndsAt: { type: [string, 'null'], format: date-time }
+            noticeGivenAt: { type: [string, 'null'], format: date-time }
+            departureDate: { type: [string, 'null'], format: date }
+            conversationId: { type: [string, 'null'] }
+    ContratParty:
+      type: object
+      properties:
+        name: { type: string }
+        phone: { type: string }
+        verification: { type: string, examples: ['Identité vérifiée'] }
+        signatureName: { type: [string, 'null'] }
+        signedAt: { type: [string, 'null'], format: date-time }
+    EntrySummary:
+      type: object
+      properties:
+        echeanceId: { type: string }
+        avance: { type: integer }
+        caution: { type: integer }
+        frais: { type: integer }
+        total: { type: integer }
+        minFirstPayment: { type: integer }
+        dueDate: { type: string, format: date }
+    NoticeRequest:
+      type: object
+      required: [departureDate]
+      properties:
+        departureDate: { type: string, format: date, description: '≥ aujourd''hui + préavis' }
+        reason: { type: string, maxLength: 500 }
+    Incident:
+      type: object
+      properties:
+        id: { type: string }
+        category: { $ref: '#/components/schemas/IncidentCategory' }
+        description: { type: string }
+        photoUrls: { type: array, items: { type: string, format: uri } }
+        isMoveInIssue: { type: boolean }
+        status: { type: string, enum: [open, in_progress, resolved] }
+        createdAt: { type: string, format: date-time }
+
+    # --- Loyers, paiements, quittances --------------------------------------
+    Loyer:
+      type: object
+      description: Échéance (compatible LoyerSchema du front)
+      required: [id, kind, contratId, homeId, amount, paidAmount, status, dueDate]
+      properties:
+        id: { type: string }
+        kind: { type: string, enum: [entry, rent] }
+        contratId: { type: string }
+        homeId: { type: string }
+        homeName: { type: string }
+        homeAddress: { type: string }
+        owner: { type: string }
+        ownerPhone: { type: string }
+        conversationId: { type: [string, 'null'] }
+        month: { type: [string, 'null'], examples: ['2026-11'], description: null pour l'entrée }
+        dueDate: { type: string, format: date }
+        amount: { type: integer, description: Montant dû }
+        paidAmount: { type: integer }
+        minFirstPayment: { type: [integer, 'null'], description: Entrée uniquement }
+        status: { $ref: '#/components/schemas/EcheanceStatus' }
+        paidAt: { type: [string, 'null'], format: date-time }
+        tranches:
+          type: array
+          items:
+            type: object
+            properties:
+              paymentId: { type: string }
+              amount: { type: integer }
+              method: { type: string, enum: [maxit, cash] }
+              paidAt: { type: string, format: date-time }
+              receiptNumber: { type: string }
+        receiptNumber: { type: [string, 'null'], description: Quittance finale }
+        pdfUrl: { type: [string, 'null'], format: uri }
+    Payment:
+      type: object
+      required: [id, reference, purpose, amount, method, status]
+      properties:
+        id: { type: string }
+        reference: { type: string, examples: [TX-26-10-4821] }
+        purpose: { $ref: '#/components/schemas/PaymentPurpose' }
+        label: { type: string, examples: ['Loyer de novembre · Mon studio'] }
+        amount: { type: integer }
+        method: { type: string, enum: [maxit, cash] }
+        status: { $ref: '#/components/schemas/PaymentStatus' }
+        failureReason: { type: [string, 'null'] }
+        initiatedAt: { type: string, format: date-time }
+        completedAt: { type: [string, 'null'], format: date-time }
+        expiresAt: { type: [string, 'null'], format: date-time }
+        echeance:
+          type: [object, 'null']
+          properties:
+            id: { type: string }
+            amountDue: { type: integer }
+            amountPaid: { type: integer }
+            status: { $ref: '#/components/schemas/EcheanceStatus' }
+        quittance:
+          type: [object, 'null']
+          properties:
+            id: { type: string }
+            numero: { type: string }
+            isFinal: { type: boolean }
+    Checkout:
+      type: object
+      required: [provider, payToken]
+      properties:
+        provider: { type: string, const: maxit }
+        payToken: { type: string, description: À transmettre à l'API de paiement Max it }
+        deeplink: { type: [string, 'null'] }
+    Quittance:
+      type: object
+      properties:
+        id: { type: string }
+        numero: { type: string, examples: [REC-NOV-2026-008812] }
+        contratId: { type: string }
+        contratNumero: { type: string }
+        echeanceId: { type: string }
+        period: { type: [string, 'null'], examples: ['2026-11'] }
+        amount: { type: integer }
+        breakdown:
+          type: array
+          items:
+            type: object
+            properties:
+              label: { type: string }
+              amount: { type: integer }
+        isFinal: { type: boolean }
+        method: { type: string, enum: [maxit, cash] }
+        paymentReference: { type: string }
+        logementTitle: { type: string }
+        logementAddress: { type: string }
+        bailleurName: { type: string }
+        locataireName: { type: string }
+        issuedAt: { type: string, format: date-time }
+        verifyCode: { type: string }
+        verifyUrl: { type: string, format: uri }
+
+    # --- Bailleur -----------------------------------------------------------
+    BailleurAccount:
+      type: object
+      properties:
+        status: { type: string, enum: [not_activated, active, expired, suspended] }
+        plan: { oneOf: [{ $ref: '#/components/schemas/SubscriptionPlan' }, { type: 'null' }] }
+        endsAt: { type: [string, 'null'], format: date-time }
+        canStartTrial: { type: boolean }
+        verificationStatus: { type: string, enum: [pending, active, suspended, rejected] }
+        boosts:
+          type: array
+          items:
+            type: object
+            properties:
+              logementId: { type: string }
+              plan: { type: string, enum: [boost7, boost30] }
+              endsAt: { type: string, format: date-time }
+        prices:
+          type: object
+          description: Tarifs en vigueur (app_settings.prices)
+          properties:
+            pro: { type: integer, examples: [15000] }
+            boost7: { type: integer, examples: [1500] }
+            boost30: { type: integer, examples: [6000] }
+    AnnonceInput:
+      type: object
+      required: [title, type, zone, price, caution, avance, photos]
+      properties:
+        title: { type: string, minLength: 3, maxLength: 80 }
+        type: { $ref: '#/components/schemas/LogementType' }
+        zone: { type: string }
+        placeLabel: { type: string, description: Défaut = nom de la zone + addressDetail résumé }
+        addressDetail: { type: string, maxLength: 200 }
+        price: { type: integer, minimum: 1 }
+        caution: { type: integer, minimum: 0 }
+        avance: { type: integer, minimum: 1 }
+        frais: { type: integer, minimum: 0, default: 0 }
+        surface: { type: integer, minimum: 1 }
+        rooms: { type: integer, minimum: 1 }
+        amenities: { type: array, items: { type: string } }
+        description: { type: string, maxLength: 1500 }
+        photos:
+          type: array
+          minItems: 1
+          maxItems: 10
+          items: { type: string, format: uri }
+        video:
+          type: [object, 'null']
+          properties:
+            url: { type: string, format: uri }
+            posterUrl: { type: string, format: uri }
+        availableFrom: { type: string, format: date }
+        remoteVisitEnabled: { type: boolean }
+        rentWithoutVisitEnabled: { type: boolean }
+    AnnoncePatch:
+      type: object
+      description: Tous les champs de AnnonceInput, optionnels
+      properties:
+        title: { type: string }
+        price: { type: integer }
+        caution: { type: integer }
+        avance: { type: integer }
+        frais: { type: integer }
+        amenities: { type: array, items: { type: string } }
+        description: { type: string }
+        photos: { type: array, items: { type: string, format: uri } }
+        availableFrom: { type: string, format: date }
+    BailleurAnnonce:
+      allOf:
+        - $ref: '#/components/schemas/LogementCard'
+        - type: object
+          properties:
+            views: { type: integer }
+            pendingVisitRequests: { type: integer }
+            needsAvailabilityConfirmation: { type: boolean }
+            rejectionReason: { type: [string, 'null'] }
+            moderationFlags:
+              type: array
+              items: { type: string, examples: [phone_in_description, price_far_below_median, few_photos] }
+            boostEndsAt: { type: [string, 'null'], format: date-time }
+            currentContratId: { type: [string, 'null'] }
+    BailleurLocataire:
+      type: object
+      properties:
+        contratId: { type: string }
+        locataire:
+          type: object
+          properties:
+            id: { type: string }
+            name: { type: string }
+            initials: { type: string }
+            phone: { type: string }
+        logement:
+          type: object
+          properties:
+            id: { type: string }
+            title: { type: string }
+            place: { type: string }
+            price: { type: integer }
+        since: { type: string, format: date }
+        cautionHeld: { type: integer }
+        currentEcheance:
+          oneOf:
+            - $ref: '#/components/schemas/Loyer'
+            - type: 'null'
+        rentStatus: { type: string, enum: [paid, pending, late] }
+        contratStatus: { $ref: '#/components/schemas/ContratStatus' }
+        conversationId: { type: [string, 'null'] }

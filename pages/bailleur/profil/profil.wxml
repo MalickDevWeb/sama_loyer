@@ -16,9 +16,17 @@
         <view class="bprof__identity-text">
           <text class="bprof__name">{{ profile.fullName }}</text>
           <text class="bprof__phone">{{ profile.phone }}</text>
-          <view class="bprof__badge">
+          <view wx:if="{{ kyc.status === 'verified' }}" class="bprof__badge bprof__badge--verified">
             <view class="ic ic-check-green ic--xs"></view>
             <text>Bailleur certifié · Max it</text>
+          </view>
+          <view wx:elif="{{ kyc.status === 'pending' }}" class="bprof__badge bprof__badge--pending">
+            <view class="ic ic-clock-amber ic--xs"></view>
+            <text>Vérification en cours · Admin</text>
+          </view>
+          <view wx:else class="bprof__badge bprof__badge--unverified">
+            <view class="ic ic-shield-line-berry ic--xs"></view>
+            <text>Identité non vérifiée</text>
           </view>
         </view>
       </view>
@@ -37,6 +45,68 @@
           <text class="bprof__stat-num">{{ stats.locataires }}</text>
           <text class="bprof__stat-label">Locataires</text>
         </view>
+      </view>
+    </view>
+
+    <!-- Rubrique : Vérification KYC & CNI CEDEAO (Validation Super Admin) -->
+    <view class="bprof__section">
+      <view class="bprof__section-head-row">
+        <text class="bprof__section-title">CONFORMITÉ & VÉRIFICATION KYC</text>
+        <view class="bprof__demo-tag" hover-class="sl-hover" bindtap="onToggleKycForDemo">
+          <text>Démo : Tester statuts</text>
+        </view>
+      </view>
+
+      <view class="bprof__card bprof__kyc">
+        <!-- État 1 : Non vérifié -->
+        <block wx:if="{{ kyc.status === 'unverified' }}">
+          <view class="bprof__kyc-top">
+            <view class="bprof__kyc-icon bprof__kyc-icon--warn">
+              <view class="ic ic-shield-line-berry ic--sm"></view>
+            </view>
+            <view class="bprof__kyc-info">
+              <text class="bprof__kyc-title">Pièce d'identité requise</text>
+              <text class="bprof__kyc-desc">Photographiez votre CNI CEDEAO (Recto / Verso) pour faire certifier votre profil et activer vos annonces auprès du Super Admin.</text>
+            </view>
+          </view>
+          <view class="bprof__kyc-action-btn" hover-class="sl-hover" bindtap="onUploadCni">
+            <text>Photographier ma CNI (Recto / Verso)</text>
+          </view>
+        </block>
+
+        <!-- État 2 : En attente Super Admin -->
+        <block wx:elif="{{ kyc.status === 'pending' }}">
+          <view class="bprof__kyc-top">
+            <view class="bprof__kyc-icon bprof__kyc-icon--pending">
+              <view class="ic ic-clock-amber ic--sm"></view>
+            </view>
+            <view class="bprof__kyc-info">
+              <text class="bprof__kyc-title">Vérification en cours par le Super Admin</text>
+              <text class="bprof__kyc-desc">Vos pièces ont été transmises avec succès. Le Super Admin examine votre CNI CEDEAO dans le Back-Office. Validation sous 24h.</text>
+            </view>
+          </view>
+          <view class="bprof__kyc-status-bar">
+            <view class="bprof__kyc-status-dot ui-dot"></view>
+            <text class="bprof__kyc-status-text">Dossier en file d'attente de modération</text>
+          </view>
+        </block>
+
+        <!-- État 3 : Vérifié (Bailleur certifié) -->
+        <block wx:else>
+          <view class="bprof__kyc-top">
+            <view class="bprof__kyc-icon bprof__kyc-icon--success">
+              <view class="ic ic-check-green ic--sm"></view>
+            </view>
+            <view class="bprof__kyc-info">
+              <text class="bprof__kyc-title">Identité certifiée conforme</text>
+              <text class="bprof__kyc-desc">Votre CNI CEDEAO a été validée par le Super Admin. Vos annonces portent le badge officiel de confiance.</text>
+            </view>
+          </view>
+          <view class="bprof__kyc-verified-row">
+            <text class="bprof__kyc-verified-label">Réf. : SAMA-KYC-2026-SN</text>
+            <text class="bprof__kyc-reupload" bindtap="onUploadCni">Mettre à jour la CNI</text>
+          </view>
+        </block>
       </view>
     </view>
 
