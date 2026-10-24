@@ -7,7 +7,7 @@
     <view class="role-switch-bar">
       <view class="role-segment role-segment--active">
         <view class="ic ic-home-white ic--sm"></view>
-        <text class="role-label">Locataire</text>
+        <text class="role-label">{{ i18n.profile.roleTenant || 'Locataire' }}</text>
       </view>
       <view 
         class="role-segment" 
@@ -16,14 +16,14 @@
         aria-label="Basculer vers l'espace Bailleur"
       >
         <view class="ic ic-users-navy ic--sm"></view>
-        <text class="role-label">Bailleur</text>
+        <text class="role-label">{{ i18n.profile.roleLandlord || 'Bailleur' }}</text>
       </view>
     </view>
   </view>
 
   <!-- Carte profil -->
   <view class="prof__header">
-    <text class="prof__title">Profil</text>
+    <text class="prof__title">{{ i18n.tabs.profile || 'Profil' }}</text>
     <view class="prof__card">
       <view class="prof__avatar">{{ userInitials }}</view>
       <view class="prof__who">
@@ -31,7 +31,7 @@
         <text class="prof__phone">{{ userPhone }}</text>
         <view class="prof__verified">
           <view class="ic ic-check-green prof__verified-ic"></view>
-          <text>Numéro vérifié · Max it</text>
+          <text>{{ i18n.profile.verifiedNumber || 'Numéro vérifié · Max it' }}</text>
         </view>
       </view>
     </view>
@@ -39,15 +39,15 @@
     <view class="prof__stats">
       <view class="prof__stat" hover-class="sl-hover" bindtap="onNavFavoris">
         <text class="prof__stat-num">{{ stats.favoris }}</text>
-        <text class="prof__stat-label">Favoris</text>
+        <text class="prof__stat-label">{{ i18n.favoris.title || 'Favoris' }}</text>
       </view>
       <view class="prof__stat" hover-class="sl-hover" bindtap="onNavVisites">
         <text class="prof__stat-num">{{ stats.visites }}</text>
-        <text class="prof__stat-label">Visites</text>
+        <text class="prof__stat-label">{{ i18n.tabs.visits || 'Visites' }}</text>
       </view>
       <view class="prof__stat" hover-class="sl-hover" bindtap="onNavMessages">
         <text class="prof__stat-num">{{ stats.conversations }}</text>
-        <text class="prof__stat-label">Conversations</text>
+        <text class="prof__stat-label">{{ i18n.profile.conversations || 'Conversations' }}</text>
       </view>
     </view>
   </view>
@@ -117,7 +117,7 @@
         <text class="prof__switch-profile-sub">{{ i18n.profile.roleLandlord || 'Basculer vers le profil Bailleur' }}</text>
       </view>
       <view class="prof__switch-profile-badge">
-        <text>Bailleur</text>
+        <text>{{ i18n.profile.roleLandlord || 'Bailleur' }}</text>
         <view class="ic ic-chevron-white ic--sm"></view>
       </view>
     </view>
@@ -134,12 +134,12 @@
       </view>
       <view class="prof__row prof__row--short" hover-class="prof__row--hover" bindtap="onOpenSecurity">
         <view class="ic ic-shield-line-berry prof__row-ic"></view>
-        <text class="prof__row-label">Conseils de sécurité</text>
+        <text class="prof__row-label">{{ i18n.profile.securityTips || 'Conseils de sécurité' }}</text>
         <view class="ic ic-chevron-grey prof__chev"></view>
       </view>
       <view class="prof__row prof__row--short" hover-class="prof__row--hover" bindtap="onOpenSupport">
         <view class="ic ic-chat-berry prof__row-ic"></view>
-        <text class="prof__row-label">Contacter le support</text>
+        <text class="prof__row-label">{{ i18n.profile.contactSupport || 'Contacter le support' }}</text>
         <view class="ic ic-chevron-grey prof__chev"></view>
       </view>
     </view>
@@ -162,8 +162,8 @@
       <view class="prof__sheet-handle"></view>
       <view class="prof__sheet-header">
         <view class="prof__sheet-heading">
-          <text class="prof__sheet-title">Informations personnelles</text>
-          <text class="prof__sheet-sub">Identité certifiée via Orange Max it</text>
+          <text class="prof__sheet-title">{{ i18n.profile.personalInfo || 'Informations personnelles' }}</text>
+          <text class="prof__sheet-sub">{{ i18n.profile.certifiedIdentity || 'Identité certifiée via Orange Max it' }}</text>
         </view>
         <view class="prof__sheet-close" hover-class="sl-hover" bindtap="onCloseModal">
           <view class="ic ic-close-navy prof__sheet-close-ic"></view>
@@ -178,7 +178,7 @@
             <text class="prof__id-name">{{ userName }}</text>
             <view class="prof__id-badge">
               <view class="ic ic-shield-check-green prof__id-badge-ic"></view>
-              <text>Identité certifiée Max it</text>
+              <text>{{ i18n.profile.certifiedMaxit || 'Identité certifiée Max it' }}</text>
             </view>
           </view>
         </view>
@@ -186,22 +186,22 @@
         <!-- Liste des détails du compte vérifié -->
         <view class="prof__id-rows">
           <view class="prof__id-row">
-            <text class="prof__id-label">Numéro titulaire</text>
+            <text class="prof__id-label">{{ i18n.profile.ownerNumber || 'Numéro titulaire' }}</text>
             <text class="prof__id-val">{{ userPhone }}</text>
           </view>
           <view class="prof__id-row">
-            <text class="prof__id-label">Statut du compte</text>
-            <text class="prof__id-val prof__id-val--green">KYC Vérifié · Niveau 2</text>
+            <text class="prof__id-label">{{ i18n.profile.accountStatus || 'Statut du compte' }}</text>
+            <text class="prof__id-val prof__id-val--green">{{ i18n.profile.kycLevel || 'KYC Vérifié · Niveau 2' }}</text>
           </view>
           <view class="prof__id-row">
-            <text class="prof__id-label">Rôle sur Sama Loyer</text>
-            <text class="prof__id-val">Locataire certifié·e</text>
+            <text class="prof__id-label">{{ i18n.profile.samaRole || 'Rôle sur Sama Loyer' }}</text>
+            <text class="prof__id-val">{{ i18n.profile.certifiedTenant || 'Locataire certifié·e' }}</text>
           </view>
         </view>
 
         <!-- Champ d'ajustement du nom d'affichage -->
         <view class="prof__field" style="margin-top: 10rpx;">
-          <text class="prof__field-label">Nom d'affichage (visible par les bailleurs)</text>
+          <text class="prof__field-label">{{ i18n.profile.displayNameLabel || 'Nom d’affichage (visible par les bailleurs)' }}</text>
           <input
             class="prof__field-input"
             value="{{ editForm.fullName }}"
@@ -213,7 +213,7 @@
         <!-- Message de réassurance sécurité -->
         <view class="prof__sec-note">
           <view class="ic ic-shield-check-green prof__sec-note-ic"></view>
-          <text class="prof__sec-note-text">Votre compte est protégé par l'authentification forte Orange Max it. Vos données sont sécurisées.</text>
+          <text class="prof__sec-note-text">{{ i18n.profile.secNote || 'Votre compte est protégé par l’authentification forte Orange Max it. Vos données sont sécurisées.' }}</text>
         </view>
       </view>
 
@@ -231,8 +231,8 @@
       <view class="prof__sheet-handle"></view>
       <view class="prof__sheet-header">
         <view class="prof__sheet-heading">
-          <text class="prof__sheet-title">Numéro de téléphone</text>
-          <text class="prof__sheet-sub">Ligne certifiée Orange Sénégal</text>
+          <text class="prof__sheet-title">{{ i18n.profile.phoneNumberTitle || 'Numéro de téléphone' }}</text>
+          <text class="prof__sheet-sub">{{ i18n.profile.phoneCertifiedLine || 'Ligne certifiée Orange Sénégal' }}</text>
         </view>
         <view class="prof__sheet-close" hover-class="sl-hover" bindtap="onCloseModal">
           <view class="ic ic-close-navy prof__sheet-close-ic"></view>
@@ -245,11 +245,11 @@
           <view class="prof__phone-card-top">
             <view class="prof__phone-sim-badge">
               <view class="ic ic-check-green prof__badge-ic"></view>
-              <text>Compte & Solde Max it</text>
+              <text>{{ i18n.profile.maxitBalance || 'Compte & Solde Max it' }}</text>
             </view>
           </view>
           <text class="prof__phone-number">{{ userPhone }}</text>
-          <text class="prof__phone-status">● Numéro actif et vérifié</text>
+          <text class="prof__phone-status">{{ i18n.profile.phoneActiveVerified || '● Numéro actif et vérifié' }}</text>
         </view>
 
         <!-- Explication de sécurité Max it -->
@@ -257,21 +257,21 @@
           <view class="prof__sec-box-item">
             <view class="prof__sec-bullet"></view>
             <view class="prof__sec-box-text">
-              <text class="prof__sec-box-title">Authentification automatique</text>
-              <text class="prof__sec-box-sub">Ce numéro est relié à votre session Max it. Aucun mot de passe requis.</text>
+              <text class="prof__sec-box-title">{{ i18n.profile.autoAuthTitle || 'Authentification automatique' }}</text>
+              <text class="prof__sec-box-sub">{{ i18n.profile.autoAuthSub || 'Ce numéro est relié à votre session Max it. Aucun mot de passe requis.' }}</text>
             </view>
           </view>
           <view class="prof__sec-box-item">
             <view class="prof__sec-bullet"></view>
             <view class="prof__sec-box-text">
-              <text class="prof__sec-box-title">Paiements de loyers sécurisés</text>
-              <text class="prof__sec-box-sub">Toutes vos quittances et débits Max it sont envoyés vers ce numéro.</text>
+              <text class="prof__sec-box-title">{{ i18n.profile.secPaymentsTitle || 'Paiements de loyers sécurisés' }}</text>
+              <text class="prof__sec-box-sub">{{ i18n.profile.secPaymentsSub || 'Toutes vos quittances et débits Max it sont envoyés vers ce numéro.' }}</text>
             </view>
           </view>
         </view>
 
         <view class="prof__sec-info">
-          <text>ℹ️ Pour changer de numéro principal, modifiez directement votre compte dans l'application Orange Max it.</text>
+          <text>{{ i18n.profile.phoneChangeNote || 'ℹ️ Pour changer de numéro principal, modifiez directement votre compte dans l’application Orange Max it.' }}</text>
         </view>
       </view>
 
@@ -289,8 +289,8 @@
       <view class="prof__sheet-handle"></view>
       <view class="prof__sheet-header">
         <view class="prof__sheet-heading">
-          <text class="prof__sheet-title">Quartiers préférés</text>
-          <text class="prof__sheet-sub">Sélectionnez vos zones prioritaires à Dakar</text>
+          <text class="prof__sheet-title">{{ i18n.profile.preferredZonesTitle || 'Quartiers préférés' }}</text>
+          <text class="prof__sheet-sub">{{ i18n.profile.preferredZonesSub || 'Sélectionnez vos zones prioritaires à Dakar' }}</text>
         </view>
         <view class="prof__sheet-close" hover-class="sl-hover" bindtap="onCloseModal">
           <view class="ic ic-close-navy prof__sheet-close-ic"></view>
@@ -327,8 +327,8 @@
       <view class="prof__sheet-handle"></view>
       <view class="prof__sheet-header">
         <view class="prof__sheet-heading">
-          <text class="prof__sheet-title">Budget habituel</text>
-          <text class="prof__sheet-sub">Votre tranche mensuelle de loyer</text>
+          <text class="prof__sheet-title">{{ i18n.profile.budgetTitle || 'Budget habituel' }}</text>
+          <text class="prof__sheet-sub">{{ i18n.profile.budgetSub || 'Votre tranche mensuelle de loyer' }}</text>
         </view>
         <view class="prof__sheet-close" hover-class="sl-hover" bindtap="onCloseModal">
           <view class="ic ic-close-navy prof__sheet-close-ic"></view>
@@ -355,7 +355,7 @@
 
       <view class="prof__sheet-footer">
         <button class="prof__btn-primary" hover-class="sl-hover" bindtap="onSaveBudget">
-          Confirmer ce budget
+          {{ i18n.profile.confirmBudget || 'Confirmer ce budget' }}
         </button>
       </view>
     </view>
@@ -367,8 +367,8 @@
       <view class="prof__sheet-handle"></view>
       <view class="prof__sheet-header">
         <view class="prof__sheet-heading">
-          <text class="prof__sheet-title">Centre d'aide</text>
-          <text class="prof__sheet-sub">Questions fréquentes des locataires</text>
+          <text class="prof__sheet-title">{{ i18n.profile.helpTitle || 'Centre d’aide' }}</text>
+          <text class="prof__sheet-sub">{{ i18n.profile.helpSub || 'Questions fréquentes des locataires' }}</text>
         </view>
         <view class="prof__sheet-close" hover-class="sl-hover" bindtap="onCloseModal">
           <view class="ic ic-close-navy prof__sheet-close-ic"></view>
@@ -394,7 +394,7 @@
 
       <view class="prof__sheet-footer">
         <button class="prof__btn-primary" hover-class="sl-hover" bindtap="onCloseModal">
-          J'ai compris
+          {{ i18n.profile.understood || 'J’ai compris' }}
         </button>
       </view>
     </view>
@@ -406,8 +406,8 @@
       <view class="prof__sheet-handle"></view>
       <view class="prof__sheet-header">
         <view class="prof__sheet-heading">
-          <text class="prof__sheet-title">Conseils de sécurité</text>
-          <text class="prof__sheet-sub">Protégez-vous contre les arnaques</text>
+          <text class="prof__sheet-title">{{ i18n.profile.securityTipsTitle || 'Conseils de sécurité' }}</text>
+          <text class="prof__sheet-sub">{{ i18n.profile.securityTipsSub || 'Protégez-vous contre les arnaques' }}</text>
         </view>
         <view class="prof__sheet-close" hover-class="sl-hover" bindtap="onCloseModal">
           <view class="ic ic-close-navy prof__sheet-close-ic"></view>
@@ -418,31 +418,31 @@
         <view class="prof__security-card prof__security-card--warn">
           <view class="ic ic-warn-amber prof__sec-ic"></view>
           <view class="prof__sec-text">
-            <text class="prof__sec-title">Ne payez jamais avant la visite</text>
-            <text class="prof__sec-desc">N'acceptez aucun transfert d'avance sous prétexte de « réserver la clé » ou bloquer le logement.</text>
+            <text class="prof__sec-title">{{ i18n.profile.securityRule1Title || 'Ne payez jamais avant la visite' }}</text>
+            <text class="prof__sec-desc">{{ i18n.profile.securityRule1Sub || 'N’acceptez aucun transfert d’avance sous prétexte de « réserver la clé » ou bloquer le logement.' }}</text>
           </view>
         </view>
 
         <view class="prof__security-card">
           <view class="ic ic-shield-check-green prof__sec-ic"></view>
           <view class="prof__sec-text">
-            <text class="prof__sec-title">Exigez le contrat numérique Sama Loyer</text>
-            <text class="prof__sec-desc">Chaque bail dispose d'un QR code infalsifiable et protège juridiquement le bailleur et le locataire.</text>
+            <text class="prof__sec-title">{{ i18n.profile.securityRule2Title || 'Exigez le contrat numérique Sama Loyer' }}</text>
+            <text class="prof__sec-desc">{{ i18n.profile.securityRule2Sub || 'Chaque bail dispose d’un QR code infalsifiable et protège juridiquement le bailleur et le locataire.' }}</text>
           </view>
         </view>
 
         <view class="prof__security-card">
           <view class="ic ic-check-green prof__sec-ic"></view>
           <view class="prof__sec-text">
-            <text class="prof__sec-title">Payez toujours via Orange Max it</text>
-            <text class="prof__sec-desc">Les paiements intégrés constituent une preuve légale irréfutable en cas de litige.</text>
+            <text class="prof__sec-title">{{ i18n.profile.securityRule3Title || 'Payez toujours via Orange Max it' }}</text>
+            <text class="prof__sec-desc">{{ i18n.profile.securityRule3Sub || 'Les paiements intégrés constituent une preuve légale irréfutable en cas de litige.' }}</text>
           </view>
         </view>
       </view>
 
       <view class="prof__sheet-footer">
         <button class="prof__btn-primary" hover-class="sl-hover" bindtap="onCloseModal">
-          Compris, merci
+          {{ i18n.profile.understoodThanks || 'Compris, merci' }}
         </button>
       </view>
     </view>
@@ -454,8 +454,8 @@
       <view class="prof__sheet-handle"></view>
       <view class="prof__sheet-header">
         <view class="prof__sheet-heading">
-          <text class="prof__sheet-title">Assistance Sama Loyer</text>
-          <text class="prof__sheet-sub">Notre équipe est là pour vous accompagner</text>
+          <text class="prof__sheet-title">{{ i18n.profile.supportTitle || 'Assistance Sama Loyer' }}</text>
+          <text class="prof__sheet-sub">{{ i18n.profile.supportSub || 'Notre équipe est là pour vous accompagner' }}</text>
         </view>
         <view class="prof__sheet-close" hover-class="sl-hover" bindtap="onCloseModal">
           <view class="ic ic-close-navy prof__sheet-close-ic"></view>
@@ -468,8 +468,8 @@
             <view class="ic ic-phone-call-berry" style="width: 44rpx; height: 44rpx;"></view>
           </view>
           <view class="prof__support-opt-text">
-            <text class="prof__support-opt-title">Appeler le service client (1444)</text>
-            <text class="prof__support-opt-sub">Appel gratuit depuis votre ligne Orange · 7j/7</text>
+            <text class="prof__support-opt-title">{{ i18n.profile.supportCallTitle || 'Appeler le service client (1444)' }}</text>
+            <text class="prof__support-opt-sub">{{ i18n.profile.supportCallSub || 'Appel gratuit depuis votre ligne Orange · 7j/7' }}</text>
           </view>
           <view class="ic ic-chevron-grey prof__chev"></view>
         </view>
@@ -479,8 +479,8 @@
             <view class="ic ic-whatsapp-green" style="width: 44rpx; height: 44rpx;"></view>
           </view>
           <view class="prof__support-opt-text">
-            <text class="prof__support-opt-title">Assistance WhatsApp</text>
-            <text class="prof__support-opt-sub">Réponse rapide de 8h à 20h · +221 77 000 00 00</text>
+            <text class="prof__support-opt-title">{{ i18n.profile.supportWhatsAppTitle || 'Assistance WhatsApp' }}</text>
+            <text class="prof__support-opt-sub">{{ i18n.profile.supportWhatsAppSub || 'Réponse rapide de 8h à 20h · +221 77 000 00 00' }}</text>
           </view>
           <view class="ic ic-chevron-grey prof__chev"></view>
         </view>
@@ -488,7 +488,7 @@
 
       <view class="prof__sheet-footer">
         <button class="prof__btn-secondary" hover-class="sl-hover" bindtap="onCloseModal">
-          Fermer
+          {{ i18n.common.close || 'Fermer' }}
         </button>
       </view>
     </view>

@@ -74,7 +74,6 @@ export function setLocale(locale) {
 
 /** Injecte le dictionnaire et la langue dans data.i18n et data.currentLocale */
 export const i18nBehavior = Behavior({
-  // listen() : abonnement coupé automatiquement à la fermeture de la page
   behaviors: [busBehavior],
 
   data: {
@@ -82,21 +81,23 @@ export const i18nBehavior = Behavior({
     currentLocale: getLocale(),
   },
 
-  lifetimes: {
-    attached() {
-      this.setData({ i18n: getMessages(), currentLocale: getLocale() });
-      this.listen(EVENTS.LOCALE_CHANGED, ({ locale }) => {
-        this.setData({ i18n: getMessages(locale), currentLocale: locale });
-        if (typeof this.onLocaleChange === 'function') {
-          this.onLocaleChange(locale);
-        }
-      });
+  methods: {
+    _initI18n() {
+      const loc = getLocale();
+      this.setData({ i18n: getMessages(loc), currentLocale: loc });
+      if (this._i18nSubscribed) return;
+      this._i18nSubscribed = true;
+      if (typeof this.listen === 'function') {
+        this.listen(EVENTS.LOCALE_CHANGED, ({ locale }) => {
+          this.setData({ i18n: getMessages(locale), currentLocale: locale });
+          if (typeof this.onLocaleChange === 'function') {
+            this.onLocaleChange(locale);
+          }
+        });
+      }
     },
-  },
 
-  pageLifetimes: {
-    // Filet de sécurité si l'événement a été manqué
-    show() {
+    _syncI18n() {
       const stored = storage.get(STORAGE_LOCALE_KEY, DEFAULT_LOCALE);
       if (stored !== this.data.currentLocale) {
         currentLocale = stored;
@@ -109,5 +110,31 @@ export const i18nBehavior = Behavior({
         }
       }
     },
+  },
+
+  // Pour les composants (Component)
+  lifetimes: {
+    attached() {
+      this._initI18n();
+    },
+  },
+
+  pageLifetimes: {
+    show() {
+      this._syncI18n();
+    },
+  },
+
+  // Pour les pages (Page WeChat)
+  attached() {
+    this._initI18n();
+  },
+
+  onLoad() {
+    this._initI18n();
+  },
+
+  onShow() {
+    this._syncI18n();
   },
 });

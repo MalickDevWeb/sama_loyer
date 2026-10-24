@@ -4,8 +4,8 @@
 
   <!-- En-tête -->
   <view class="vis__header">
-    <text class="vis__title">Mes visites</text>
-    <text class="vis__subtitle">Suis tes demandes de visite</text>
+    <text class="vis__title">{{ i18n.visites.title || 'Mes visites' }}</text>
+    <text class="vis__subtitle">{{ i18n.visites.subtitle || 'Suis tes demandes de visite' }}</text>
   </view>
 
   <!-- Filtres par statut -->

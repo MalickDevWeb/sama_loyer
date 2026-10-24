@@ -4,15 +4,33 @@ import { setCustomTabBarActive } from '../../../utils/helpers/tab-bar';
 import { getFavoriteIds } from '../../../utils/helpers/favorites';
 import { getVisites } from '../../../utils/helpers/visites';
 import { getConversations } from '../../../utils/mocks/conversations';
-import { setLocale, getLocale, i18nBehavior } from '../../../utils/i18n/index';
+import { setLocale, getLocale, i18nBehavior, t, getMessages } from '../../../utils/i18n/index';
 import { COLORS } from '../../../utils/constants/theme';
 
-const NOTIFS = [
-  { id: 'msg', label: 'Nouveaux messages', sub: 'Quand un bailleur te répond' },
-  { id: 'visit', label: 'Réponses aux visites', sub: 'Acceptée, refusée ou modifiée' },
-  { id: 'new', label: 'Nouvelles annonces', sub: 'Dans tes quartiers préférés' },
-  { id: 'price', label: 'Baisses de prix', sub: 'Sur tes favoris' }
-];
+function getNotificationItems() {
+  return [
+    {
+      id: 'msg',
+      label: t('profile.notifMsgLabel'),
+      sub: t('profile.notifMsgSub')
+    },
+    {
+      id: 'visit',
+      label: t('profile.notifVisitLabel'),
+      sub: t('profile.notifVisitSub')
+    },
+    {
+      id: 'new',
+      label: t('profile.notifNewLabel'),
+      sub: t('profile.notifNewSub')
+    },
+    {
+      id: 'price',
+      label: t('profile.notifPriceLabel'),
+      sub: t('profile.notifPriceSub')
+    }
+  ];
+}
 
 const DEFAULT_PREFS = {
   notifs: { msg: true, visit: true, new: true, price: false },
@@ -170,13 +188,14 @@ Page({
   },
 
   renderPrefs() {
+    const notifDefs = getNotificationItems();
     this.setData({
-      lang: this.prefs.lang,
+      lang: this.prefs.lang || getLocale(),
       prefs: {
         zones: this.prefs.zones || DEFAULT_PREFS.zones,
         budget: this.prefs.budget || DEFAULT_PREFS.budget
       },
-      notifs: NOTIFS.map((n) => ({ ...n, on: !!this.prefs.notifs[n.id] }))
+      notifs: notifDefs.map((n) => ({ ...n, on: !!this.prefs.notifs[n.id] }))
     });
   },
 
@@ -358,11 +377,25 @@ Page({
     this.prefs.lang = lang;
     this.savePrefs();
     setLocale(lang);
-    this.setData({ lang });
+    this.setData({
+      lang,
+      i18n: getMessages(lang),
+      currentLocale: lang
+    });
+    this.renderPrefs();
     wx.showToast({
       title: lang === 'en' ? 'Language: English' : 'Langue : Français',
       icon: 'none'
     });
+  },
+
+  onLocaleChange(locale) {
+    this.setData({
+      lang: locale,
+      i18n: getMessages(locale),
+      currentLocale: locale
+    });
+    this.renderPrefs();
   },
 
   onSoon() {

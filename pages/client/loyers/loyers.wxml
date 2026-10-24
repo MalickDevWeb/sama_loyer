@@ -4,7 +4,7 @@
 
   <!-- En-tête -->
   <view class="loy__header">
-    <text class="loy__title">Mes loyers</text>
+    <text class="loy__title">{{ i18n.loyers.title || 'Mes loyers' }}</text>
     <text class="loy__subtitle">{{ subtitle }}</text>
   </view>
 
@@ -32,7 +32,7 @@
 
   <!-- Mes logements -->
   <view class="loy__homes-wrap">
-    <text class="loy__h2 loy__h2--homes">Mes logements</text>
+    <text class="loy__h2 loy__h2--homes">{{ i18n.loyers.myHomes || 'Mes logements' }}</text>
     <scroll-view class="loy__homes" scroll-x="{{ true }}" enhanced="{{ true }}" show-scrollbar="{{ false }}">
       <view class="loy__homes-row">
         <view

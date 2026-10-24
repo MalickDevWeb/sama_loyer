@@ -47,3 +47,4 @@ export async function runShareRedirectTests() {
 
   return passed;
 }
+

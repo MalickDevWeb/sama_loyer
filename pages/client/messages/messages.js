@@ -3,6 +3,7 @@ import { enrichConversation } from '../../../utils/mocks/conversations';
 import { getStoredConversations } from '../../../utils/helpers/store';
 import { EVENTS } from '../../../utils/event/keys';
 import { busBehavior } from '../../../utils/behaviors/index';
+import { i18nBehavior } from '../../../utils/i18n/index';
 import { navigateWithData } from '../../../utils/helpers/nav-data';
 
 // Conversations enregistrées (dernier message et non-lus à jour)
@@ -23,7 +24,7 @@ const withAria = (c) => ({
 
 Page({
   // listen() : abonnement EventBus coupé automatiquement à la fermeture
-  behaviors: [busBehavior],
+  behaviors: [busBehavior, i18nBehavior],
 
   data: {
     statusBarHeight: 24,
