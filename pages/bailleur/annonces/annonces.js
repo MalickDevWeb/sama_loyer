@@ -6,6 +6,8 @@ import { requireBailleurAccess } from '../../../utils/helpers/store';
 import { COLORS } from '../../../utils/constants/theme';
 import { bailleurGuardBehavior } from '../../../utils/behaviors/index';
 import { backendAPI } from '../../../utils/apis/index.js';
+import { logementLink, shortCode } from '../../../utils/helpers/sama-links';
+import { getCanvas, drawPoster, exportCanvas, saveToAlbum } from '../../../utils/helpers/qr-canvas';
 
 Page({
   // Bloque la page si l'essai ou l'abonnement se termine pendant qu'elle est affichée
@@ -19,7 +21,17 @@ Page({
     annonces: [],
     filteredAnnonces: [],
     counts: { all: 0, en_ligne: 0, validation: 0, loue: 0 },
-    expandedMap: {} // { [id]: boolean } pour déplier/replier avec "Voir plus"
+    expandedMap: {}, // { [id]: boolean } pour déplier/replier avec "Voir plus"
+    // Téléchargement groupé QR
+    batchModalOpen: false,
+    batchFilter: 'all', // all | en_ligne | loue
+    selectedIds: [],
+    selectedMap: {},
+    visibleBatchAnnonces: [],
+    isAllSelected: false,
+    batchCanvasActive: false,
+    isBatchSaving: false,
+    batchSaveProgressText: ''
   },
 
   onLoad() {
@@ -175,6 +187,155 @@ Page({
     wx.navigateTo({
       url: '/pages/bailleur/ajouter/ajouter'
     });
+  },
+
+  // --- Téléchargement Groupé des affiches QR -------------------
+  onOpenBatchQr() {
+    const list = this.data.annonces.map(withCover);
+    // Par défaut, on présélectionne les logements en ligne et loués (ceux qui ont un QR utile)
+    const validIds = list.filter((a) => a.type === 'en_ligne' || a.type === 'loue').map((a) => a.id);
+    const selectedMap = {};
+    validIds.forEach((id) => { selectedMap[id] = true; });
+
+    this.setData({
+      batchModalOpen: true,
+      batchFilter: 'all',
+      selectedIds: validIds,
+      selectedMap,
+      visibleBatchAnnonces: list,
+      isAllSelected: validIds.length > 0 && validIds.length === list.length,
+      isBatchSaving: false
+    });
+  },
+
+  onCloseBatchModal() {
+    if (this.data.isBatchSaving) return;
+    this.setData({ batchModalOpen: false, batchCanvasActive: false });
+  },
+
+  onBatchFilterSelect(e) {
+    const filter = e.currentTarget.dataset.filter || 'all';
+    let visible = this.data.annonces.map(withCover);
+    if (filter !== 'all') {
+      visible = visible.filter((a) => a.type === filter);
+    }
+    const allChecked = visible.length > 0 && visible.every((a) => !!this.data.selectedMap[a.id]);
+    this.setData({
+      batchFilter: filter,
+      visibleBatchAnnonces: visible,
+      isAllSelected: allChecked
+    });
+  },
+
+  onToggleItemSelect(e) {
+    const id = e.currentTarget.dataset.id;
+    if (!id || this.data.isBatchSaving) return;
+    const selectedMap = { ...this.data.selectedMap };
+    selectedMap[id] = !selectedMap[id];
+    const selectedIds = Object.keys(selectedMap).filter((k) => !!selectedMap[k]);
+    const visible = this.data.visibleBatchAnnonces;
+    const allChecked = visible.length > 0 && visible.every((a) => !!selectedMap[a.id]);
+
+    this.setData({
+      selectedMap,
+      selectedIds,
+      isAllSelected: allChecked
+    });
+  },
+
+  onToggleSelectAll() {
+    if (this.data.isBatchSaving) return;
+    const visible = this.data.visibleBatchAnnonces;
+    const currentlyAll = this.data.isAllSelected;
+    const selectedMap = { ...this.data.selectedMap };
+
+    visible.forEach((a) => {
+      selectedMap[a.id] = !currentlyAll;
+    });
+
+    const selectedIds = Object.keys(selectedMap).filter((k) => !!selectedMap[k]);
+    this.setData({
+      selectedMap,
+      selectedIds,
+      isAllSelected: !currentlyAll
+    });
+  },
+
+  async onDownloadSelectedPosters() {
+    const { selectedIds, annonces, isBatchSaving } = this.data;
+    if (!selectedIds.length || isBatchSaving) return;
+
+    const targets = annonces.filter((a) => selectedIds.includes(a.id));
+    if (!targets.length) return;
+
+    this.setData({
+      isBatchSaving: true,
+      batchCanvasActive: true,
+      batchSaveProgressText: `Préparation (0/${targets.length})...`
+    });
+
+    try {
+      // Préparation du canvas haute définition (620px × scale 2 = 1240px de large A6)
+      const { canvas, ctx } = await getCanvas(this, '#batch-qa-canvas', 2);
+      let successCount = 0;
+
+      for (let i = 0; i < targets.length; i++) {
+        const a = targets[i];
+        this.setData({
+          batchSaveProgressText: `Création ${i + 1}/${targets.length} : ${a.title.slice(0, 16)}...`
+        });
+
+        const posterData = {
+          title: a.title,
+          place: String(a.placeName || '').replace(/\s*·\s*$/, ''),
+          priceText: `${a.price} / mois`,
+          rented: a.type === 'loue',
+          link: logementLink(a.id),
+          code: shortCode(a.id)
+        };
+
+        // Dessin de l'affiche
+        drawPoster(ctx, 620, posterData);
+
+        // Export PNG
+        const filePath = await exportCanvas(canvas, 4000);
+
+        // Sauvegarde dans l'album
+        await saveToAlbum(filePath);
+        successCount++;
+      }
+
+      this.setData({
+        isBatchSaving: false,
+        batchModalOpen: false,
+        batchCanvasActive: false
+      });
+
+      wx.showModal({
+        title: `${successCount} affiches enregistrées !`,
+        content: `Vos affiches QR ont été enregistrées dans votre galerie. Vous pouvez les imprimer directement en format A6 ou A5 pour chaque logement.`,
+        showCancel: false,
+        confirmText: 'Parfait',
+        confirmColor: '#C8235F'
+      });
+    } catch (err) {
+      this.setData({ isBatchSaving: false, batchCanvasActive: false });
+      const authDenied = err && (err.errMsg || '').includes('auth deny');
+      wx.showModal({
+        title: authDenied ? 'Accès galerie requis' : 'Enregistrement interrompu',
+        content: authDenied
+          ? 'Autorisez l\'accès à la galerie dans les paramètres pour enregistrer les affiches.'
+          : 'Impossible de terminer la sauvegarde de toutes les affiches. Vérifiez votre espace disponible.',
+        showCancel: false,
+        confirmText: 'Compris',
+        confirmColor: '#C8235F'
+      });
+    }
+  },
+
+  onOpenQrAffiche(e) {
+    const id = e.currentTarget.dataset.id;
+    wx.navigateTo({ url: `/pages/bailleur/qr-affiche/qr-affiche?id=${encodeURIComponent(id)}` });
   },
 
   onCardTap(e) {
