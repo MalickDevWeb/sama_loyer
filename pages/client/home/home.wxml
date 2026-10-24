@@ -190,7 +190,8 @@
         </view>
         <view class="fav-meta">
           <text class="fav-title">{{ i18n.favoris.title || 'Mes favoris' }}</text>
-          <text class="fav-sub">{{ favoritesCount }} logement{{ favoritesCount > 1 ? 's' : '' }} enregistré{{ favoritesCount > 1 ? 's' : '' }}</text>
+          <text class="fav-sub" wx:if="{{ currentLocale === 'en' }}">{{ favoritesCount }} saved propert{{ favoritesCount > 1 ? 'ies' : 'y' }}</text>
+          <text class="fav-sub" wx:else>{{ favoritesCount }} logement{{ favoritesCount > 1 ? 's' : '' }} enregistré{{ favoritesCount > 1 ? 's' : '' }}</text>
         </view>
         <view class="ic ic-chevron-berry ic--md"></view>
       </view>
@@ -205,15 +206,16 @@
         <!-- En-tête des résultats trouvés -->
         <view class="inline-results-header">
           <view class="results-count-row">
-            <text class="results-count-title">{{ resultsCount }} logement{{ resultsCount > 1 ? 's' : '' }} disponible{{ resultsCount > 1 ? 's' : '' }}</text>
+            <text class="results-count-title" wx:if="{{ currentLocale === 'en' }}">{{ resultsCount }} available propert{{ resultsCount > 1 ? 'ies' : 'y' }}</text>
+            <text class="results-count-title" wx:else>{{ resultsCount }} logement{{ resultsCount > 1 ? 's' : '' }} disponible{{ resultsCount > 1 ? 's' : '' }}</text>
             <view class="results-live-dot">
               <view class="live-dot-pulse ui-dot"></view>
-              <text class="live-dot-text">Disponibles</text>
+              <text class="live-dot-text">{{ i18n.home.availableBadge || i18n.common.available || 'Disponibles' }}</text>
             </view>
           </view>
           <view class="results-pills-row">
-            <view class="res-pill ic-row"><view class="ic ic-pin-navy ic--xs"></view><text>{{ searchedPlace || 'Tout Dakar' }}</text></view>
-            <view wx:if="{{ searchedBudget }}" class="res-pill ic-row"><view class="ic ic-wallet-navy ic--xs"></view><text>Max {{ searchedBudget }} F</text></view>
+            <view class="res-pill ic-row"><view class="ic ic-pin-navy ic--xs"></view><text>{{ searchedPlace || (i18n.home.allDakar || 'Tout Dakar') }}</text></view>
+            <view wx:if="{{ searchedBudget }}" class="res-pill ic-row"><view class="ic ic-wallet-navy ic--xs"></view><text>{{ i18n.home.maxBudgetPrefix || 'Max' }} {{ searchedBudget }} {{ currentLocale === 'en' ? 'FCFA' : 'F' }}</text></view>
           </view>
         </view>
 
@@ -231,8 +233,8 @@
               <view class="rec-card__hero sl-photo" style="background-color: {{ item.tintBg }}; background-image: url('{{ item.cover }}');">
                 <view class="rec-card__rank-row">
                   <view class="rec-card__rank">{{ item.rank }}</view>
-                  <view wx:if="{{ index === 0 }}" class="rec-card__badge-best">Meilleur choix</view>
-                  <view wx:if="{{ item.verified }}" class="rec-card__badge-verified ic-row"><view class="ic ic-check-white ic--xs"></view><text>Vérifié</text></view>
+                  <view wx:if="{{ index === 0 }}" class="rec-card__badge-best">{{ i18n.home.bestChoice || 'Meilleur choix' }}</view>
+                  <view wx:if="{{ item.verified }}" class="rec-card__badge-verified ic-row"><view class="ic ic-check-white ic--xs"></view><text>{{ i18n.common.verified || 'Vérifié' }}</text></view>
                 </view>
 
                 <!-- Bouton favori en haut à droite -->
@@ -250,14 +252,14 @@
               <!-- Corps de la carte -->
               <view class="rec-card__body">
                 <view class="rec-card__meta-top">
-                  <text class="rec-card__type">{{ item.typeLabel }}</text>
+                  <text class="rec-card__type">{{ item.displayType || item.typeLabel }}</text>
                 </view>
                 <text class="rec-card__title">{{ item.title }}</text>
                 <view class="rec-card__place ic-row"><view class="ic ic-pin-berry ic--xs"></view><text>{{ item.place }}</text></view>
                 
                 <view class="rec-card__price-row">
                   <text class="rec-card__price">{{ item.formattedPrice }}</text>
-                  <text class="rec-card__unit">F CFA / mois</text>
+                  <text class="rec-card__unit">{{ i18n.home.currencyPerMonth || 'F CFA / mois' }}</text>
                 </view>
 
                 <!-- Équipements phares -->
@@ -277,7 +279,7 @@
             <view class="empty-home-icon"><view class="ic ic-home-navy ic--xl"></view></view>
           </view>
 
-          <text class="empty-title">Aucun logement trouvé</text>
+          <text class="empty-title">{{ i18n.home.emptyTitle || 'Aucun logement trouvé' }}</text>
 
           <view class="empty-message-card">
             <text class="empty-desc">
@@ -290,7 +292,7 @@
 
           <!-- Suggestions de quartiers proches cliquables -->
           <view class="empty-suggestions-block">
-            <view class="suggestions-label ic-row"><view class="ic ic-pin-berry ic--sm"></view><text>Quartiers disponibles à proximité :</text></view>
+            <view class="suggestions-label ic-row"><view class="ic ic-pin-berry ic--sm"></view><text>{{ i18n.home.emptyNearby || 'Quartiers disponibles à proximité :' }}</text></view>
             <view class="suggestions-chips-row">
               <block wx:for="{{ fallbackZones }}" wx:key="*this">
                 <view 
@@ -307,7 +309,7 @@
 
           <!-- Suggestions d'ajustement du budget -->
           <view class="empty-suggestions-block">
-            <view class="suggestions-label ic-row"><view class="ic ic-wallet-berry ic--sm"></view><text>Ajuster le budget :</text></view>
+            <view class="suggestions-label ic-row"><view class="ic ic-wallet-berry ic--sm"></view><text>{{ i18n.home.emptyAdjustBudget || 'Ajuster le budget :' }}</text></view>
             <view class="suggestions-chips-row">
               <view class="suggest-chip suggest-chip--budget" data-add="15000" hover-class="sl-hover" bindtap="onApplyBudgetBump">
                 <text>+15 000 F</text>
@@ -316,14 +318,14 @@
                 <text>+30 000 F</text>
               </view>
               <view class="suggest-chip suggest-chip--budget" data-add="0" hover-class="sl-hover" bindtap="onApplyBudgetBump">
-                <text>Sans limite de budget</text>
+                <text>{{ i18n.home.emptyNoLimit || 'Sans limite de budget' }}</text>
               </view>
             </view>
           </view>
 
           <!-- Bouton réinitialiser -->
           <button class="empty-reset-btn" hover-class="sl-hover" bindtap="onResetSearch">
-            Voir tous les logements disponibles
+            {{ i18n.home.emptyReset || 'Voir tous les logements disponibles' }}
           </button>
         </view>
       </block>

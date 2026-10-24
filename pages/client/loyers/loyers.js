@@ -7,7 +7,7 @@ import { setCustomTabBarActive } from '../../../utils/helpers/tab-bar';
 import { getCover } from '../../../utils/mocks/media';
 import { COLORS } from '../../../utils/constants/theme';
 import { backendAPI } from '../../../utils/apis/index.js';
-import { i18nBehavior } from '../../../utils/i18n/index.js';
+import { i18nBehavior, getLocale } from '../../../utils/i18n/index.js';
 
 const MX_REDIRECT_MS = 1600;
 
@@ -117,11 +117,14 @@ Page({
       });
     }
 
+    const isEn = getLocale() === 'en';
     this.setData({
-      subtitle: `${rentedHomes.length} logement${rentedHomes.length > 1 ? 's' : ''} · paiements via Max it`,
-      totalLeft: left ? `${fmt(left)} F` : 'Tout est payé',
-      totalLeftLabel: left ? `restent à payer sur ${fmt(total)} F` : `pour ${RENT_MONTH}`,
-      paidCount: `${paidN} / ${rentedHomes.length} payé(s)`,
+      subtitle: isEn
+        ? `${rentedHomes.length} propert${rentedHomes.length > 1 ? 'ies' : 'y'} · Max it payments`
+        : `${rentedHomes.length} logement${rentedHomes.length > 1 ? 's' : ''} · paiements via Max it`,
+      totalLeft: left ? `${fmt(left)} ${isEn ? 'FCFA' : 'F'}` : (isEn ? 'All paid' : 'Tout est payé'),
+      totalLeftLabel: left ? (isEn ? `remaining of ${fmt(total)} FCFA` : `restent à payer sur ${fmt(total)} F`) : (isEn ? `for ${RENT_MONTH}` : `pour ${RENT_MONTH}`),
+      paidCount: isEn ? `${paidN} / ${rentedHomes.length} paid` : `${paidN} / ${rentedHomes.length} payé(s)`,
       segments: rentedHomes.map((x) => ({ id: x.id, weight: x.rent, paid: !!paid[x.id] })),
       homes: rentedHomes.map((x) => ({
         id: x.id,
