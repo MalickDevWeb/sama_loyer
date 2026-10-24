@@ -1,17 +1,9 @@
 // ============================================================================
 // SAMA LOYER — ENDPOINTS LOCATAIRE (CLIENT)
-// Définition centralisée des routes API pour l'espace candidat et locataire :
-//   - Authentification Max it & profil
-//   - Catalogue logements & recherche (assistant IA, recherche vocale)
-//   - Gestion des favoris
-//   - Visites & réservations de créneaux
-//   - Loyers, tranches & paiements Orange Money
-//   - Quittances de loyer certifiées & vérification QR
-//   - Contrats de bail & signature électronique
-//   - Messagerie temps réel
+// Single Responsibility : Définition immuable des routes REST du domaine Locataire
 // ============================================================================
 
-export const LOCATAIRE_ENDPOINTS = {
+export const LOCATAIRE_ENDPOINTS = Object.freeze({
   // Authentification & Session Max it
   AUTH_MAXIT: '/api/v1/auth/maxit',
   AUTH_REFRESH: '/api/v1/auth/refresh',
@@ -61,5 +53,4 @@ export const LOCATAIRE_ENDPOINTS = {
   CONVERSATIONS: '/api/v1/conversations',
   CONVERSATION_MESSAGES: (id) => `/api/v1/conversations/${id}/messages`,
   CONVERSATION_READ: (id) => `/api/v1/conversations/${id}/read`,
-};
-
+});

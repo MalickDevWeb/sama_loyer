@@ -14,7 +14,7 @@ import { extractApiResponse } from './response.js';
 import { cached, invalidateCache, BAILLEUR_TTL } from './cache.js';
 import { Bus } from '../event/index.js';
 import { EVENTS } from '../event/keys.js';
-import { BAILLEUR_ENDPOINTS } from './endpionts/bailleur.js';
+import { BAILLEUR_ENDPOINTS } from './endpoints/bailleur.js';
 
 // Fallbacks locaux résilients en mode démo / hors ligne
 import {

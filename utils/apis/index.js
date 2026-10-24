@@ -22,7 +22,7 @@ export {
   BAILLEUR_ENDPOINTS,
   COMMON_ENDPOINTS,
   ENDPOINTS
-} from './endpionts/index.js';
+} from './endpoints/index.js';
 
 // Re-exports modulaires par domaine et cache centralisé
 export { LocataireAPI, locataireAPI };

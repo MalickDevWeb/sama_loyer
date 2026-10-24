@@ -30,11 +30,7 @@ import {
   BAILLEUR_ENDPOINTS as FOLDER_BAILLEUR_ENDPOINTS,
   COMMON_ENDPOINTS as FOLDER_COMMON_ENDPOINTS,
   ENDPOINTS as FOLDER_ENDPOINTS
-} from '../utils/apis/endpionts/index.js';
-
-import {
-  ENDPOINTS as ALIAS_ENDPOINTS
-} from '../utils/apis/endpoints.js';
+} from '../utils/apis/endpoints/index.js';
 
 export async function runApiSeparationTests() {
   console.log('\n--- Test Suite 8: Séparation APIs Bailleur & Locataire ---');
@@ -155,13 +151,12 @@ export async function runApiSeparationTests() {
   console.log('  ✓ Centralisation unique des TTL dans utils/apis/cache.js validée');
   passed++;
 
-  // Test 8 : Dossier centralisé utils/apis/endpionts/ et alias endpoints.js
+  // Test 8 : Dossier centralisé utils/apis/endpoints/
   assert.strictEqual(LOCATAIRE_ENDPOINTS, FOLDER_LOCATAIRE_ENDPOINTS);
   assert.strictEqual(BAILLEUR_ENDPOINTS, FOLDER_BAILLEUR_ENDPOINTS);
   assert.strictEqual(COMMON_ENDPOINTS, FOLDER_COMMON_ENDPOINTS);
   assert.strictEqual(ENDPOINTS, FOLDER_ENDPOINTS);
-  assert.strictEqual(ENDPOINTS, ALIAS_ENDPOINTS);
-  console.log('  ✓ Dossier utils/apis/endpionts/ et alias endpoints.js validés à 100%');
+  console.log('  ✓ Architecture SOLID : utils/apis/endpoints/ validée à 100%');
   passed++;
 
   return passed;

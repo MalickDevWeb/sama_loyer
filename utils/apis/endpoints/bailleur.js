@@ -1,16 +1,9 @@
 // ============================================================================
 // SAMA LOYER — ENDPOINTS BAILLEUR (PROPRIÉTAIRE)
-// Définition centralisée des routes API pour l'espace gestion locative propriétaire :
-//   - Compte bailleur, abonnement et vérification d'identité
-//   - Tableau de bord bailleur
-//   - Gestion des annonces immobilières (création, visibilité, boost, créneaux)
-//   - Suivi et validation des demandes de visites
-//   - Gestion des locataires, contrats et quittances
-//   - Déclaration d'encaissements en espèces
-//   - Configuration des règles de conformité (pièces exigées)
+// Single Responsibility : Définition immuable des routes REST du domaine Bailleur
 // ============================================================================
 
-export const BAILLEUR_ENDPOINTS = {
+export const BAILLEUR_ENDPOINTS = Object.freeze({
   // Compte, Abonnement & KYC
   COMPTE: '/api/v1/bailleur/compte',
   COMPTE_ACTIVATION: '/api/v1/bailleur/compte/activation',
@@ -46,5 +39,4 @@ export const BAILLEUR_ENDPOINTS = {
   // Conformité & Pièces réglementaires
   SETTINGS_COMPLIANCE: '/api/v1/settings/compliance',
   COMPLIANCE: '/api/v1/settings/compliance', // alias court
-};
-
+});

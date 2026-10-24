@@ -28,7 +28,7 @@ import { storage } from '../storage.js';
 import { STORAGE_KEYS } from '../constants/index.js';
 import { Bus } from '../event/index.js';
 import { EVENTS } from '../event/keys.js';
-import { LOCATAIRE_ENDPOINTS } from './endpionts/locataire.js';
+import { LOCATAIRE_ENDPOINTS } from './endpoints/locataire.js';
 
 // Ré-exports centralisés
 export { LOCATAIRE_TTL };

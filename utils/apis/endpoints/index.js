@@ -1,10 +1,7 @@
 // ============================================================================
 // REGISTRE CENTRAL DES ENDPOINTS SAMA LOYER
-// Regroupe et ré-exporte l'ensemble des routes API du backend :
-//   - LOCATAIRE_ENDPOINTS (utils/apis/endpionts/locataire.js)
-//   - BAILLEUR_ENDPOINTS  (utils/apis/endpionts/bailleur.js)
-//   - COMMON_ENDPOINTS    (utils/apis/endpionts/common.js)
-//   - ENDPOINTS           (dictionnaire complet unifié)
+// Single Responsibility : Assemblage et exposition des contrats d'endpoints
+// Interface Segregation : Chaque domaine expose son contrat indépendant
 // ============================================================================
 
 import { LOCATAIRE_ENDPOINTS } from './locataire.js';
@@ -18,11 +15,10 @@ export { COMMON_ENDPOINTS } from './common.js';
 /**
  * Dictionnaire complet unifié de tous les endpoints de l'application
  */
-export const ENDPOINTS = {
+export const ENDPOINTS = Object.freeze({
   ...COMMON_ENDPOINTS,
   ...LOCATAIRE_ENDPOINTS,
   ...BAILLEUR_ENDPOINTS,
-};
+});
 
 export default ENDPOINTS;
-
