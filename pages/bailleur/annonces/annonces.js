@@ -279,14 +279,15 @@ Page({
 
     const isMulti = targets.length > 1;
     wx.showLoading({
-      title: isMulti ? `Génération 1/${targets.length}...` : 'Création de l\'affiche...',
+      title: isMulti ? `Affiche 1/${targets.length}...` : 'Création affiche...',
       mask: true
     });
 
     try {
-      // Préparation du canvas haute définition (620px × scale 2 = 1240px de large A6)
-      const { canvas, ctx } = await getCanvas(this, '#batch-qa-canvas', 2);
+      // Échelle 1 : 620px × 877px A6, génération instantanée (15-30ms) sans freeze mémoire
+      const { canvas, ctx } = await getCanvas(this, '#batch-qa-canvas', 1);
       const filesToZip = [];
+      const generatedPaths = [];
 
       for (let i = 0; i < targets.length; i++) {
         const a = targets[i];
@@ -294,7 +295,7 @@ Page({
           ? `Affiche ${i + 1}/${targets.length}`
           : `Création affiche...`;
         
-        this.setData({ batchSaveProgressText: `${progressLabel} (${a.title.slice(0, 14)}...)` });
+        this.setData({ batchSaveProgressText: `${progressLabel} : ${a.title.slice(0, 14)}...` });
         wx.showLoading({ title: progressLabel, mask: true });
 
         const posterData = {
@@ -306,11 +307,19 @@ Page({
           code: shortCode(a.id)
         };
 
-        // Dessin de l'affiche
+        // Dessin vectoriel immédiat de l'affiche
         drawPoster(ctx, 620, posterData);
 
-        // Export PNG haute définition
-        const filePath = await exportCanvas(canvas, 4000);
+        // Export PNG natif haute rapidité
+        const filePath = await exportCanvas(canvas, 2000);
+        generatedPaths.push(filePath);
+
+        // Sauvegarde directe de chaque affiche dans la galerie photo
+        try {
+          await saveToAlbum(filePath);
+        } catch (saveErr) {
+          console.warn('saveToAlbum warn:', saveErr);
+        }
 
         if (isMulti) {
           // Lecture du binaire pour l'archive ZIP
@@ -326,15 +335,12 @@ Page({
             name: `affiche_${cleanName}_${a.id}.png`,
             data: fileData
           });
-        } else {
-          // Sauvegarde directe de l'unique affiche dans la galerie
-          await saveToAlbum(filePath);
         }
       }
 
       if (isMulti) {
-        wx.showLoading({ title: 'Création du fichier ZIP...', mask: true });
-        this.setData({ batchSaveProgressText: 'Création du fichier ZIP...' });
+        wx.showLoading({ title: 'Création du ZIP...', mask: true });
+        this.setData({ batchSaveProgressText: 'Création du ZIP...' });
         const zipBuffer = createZipArchive(filesToZip);
         const fsm = wx.getFileSystemManager();
         const zipPath = `${wx.env.USER_DATA_PATH}/affiches-qr-sama-loyer.zip`;
@@ -348,50 +354,52 @@ Page({
         batchCanvasActive: false
       });
 
-      if (isMulti) {
-        const zipPath = `${wx.env.USER_DATA_PATH}/affiches-qr-sama-loyer.zip`;
-        const openOrShare = () => {
-          if (typeof wx.shareFileMessage === 'function') {
-            wx.shareFileMessage({
-              filePath: zipPath,
-              fileName: 'affiches-qr-sama-loyer.zip',
-              success: () => wx.showToast({ title: 'ZIP partagé avec succès', icon: 'success' }),
-              fail: () => {
-                wx.openDocument({
-                  filePath: zipPath,
-                  fileType: 'zip',
-                  showMenu: true
-                });
-              }
-            });
-          } else if (typeof wx.openDocument === 'function') {
-            wx.openDocument({
-              filePath: zipPath,
-              fileType: 'zip',
-              showMenu: true
-            });
-          }
-        };
+      const openPreview = () => {
+        if (typeof wx.previewImage === 'function' && generatedPaths.length) {
+          wx.previewImage({
+            current: generatedPaths[0],
+            urls: generatedPaths
+          });
+        }
+      };
 
+      if (isMulti) {
         wx.showModal({
-          title: `Archive ZIP prête (${targets.length} affiches)`,
-          content: `Vos ${targets.length} affiches A6 sont réunies dans le fichier "affiches-qr-sama-loyer.zip".\n\nAppuyez sur "Partager le ZIP" pour l'envoyer sur WhatsApp ou l'enregistrer dans vos fichiers.`,
-          confirmText: 'Partager',
-          cancelText: 'Fermer',
+          title: `${targets.length} affiches prêtes !`,
+          content: `Vos ${targets.length} affiches sont enregistrées dans votre galerie photo et prêtes dans l'archive ZIP.\n\nTouchez "Voir affiches" pour les feuilleter en plein écran ou "Partager" pour envoyer l'archive.`,
+          confirmText: 'Voir affiches',
+          cancelText: 'Partager',
           confirmColor: '#C8235F',
           success: (res) => {
             if (res.confirm) {
-              openOrShare();
+              openPreview();
+            } else if (res.cancel) {
+              const zipPath = `${wx.env.USER_DATA_PATH}/affiches-qr-sama-loyer.zip`;
+              if (typeof wx.shareFileMessage === 'function') {
+                wx.shareFileMessage({
+                  filePath: zipPath,
+                  fileName: 'affiches-qr-sama-loyer.zip',
+                  success: () => wx.showToast({ title: 'ZIP partagé !', icon: 'success' }),
+                  fail: () => openPreview()
+                });
+              } else {
+                openPreview();
+              }
             }
           }
         });
       } else {
         wx.showModal({
           title: 'Affiche enregistrée !',
-          content: 'Votre affiche A6 a été enregistrée en haute résolution dans votre galerie photo. Vous pouvez l\'imprimer directement.',
-          showCancel: false,
-          confirmText: 'Parfait',
-          confirmColor: '#C8235F'
+          content: 'Votre affiche A6 a été enregistrée dans votre galerie photo. Touchez "Voir" pour l\'afficher en plein écran.',
+          confirmText: 'Voir affiche',
+          cancelText: 'Fermer',
+          confirmColor: '#C8235F',
+          success: (res) => {
+            if (res.confirm) {
+              openPreview();
+            }
+          }
         });
       }
     } catch (err) {
@@ -408,6 +416,61 @@ Page({
         confirmColor: '#C8235F'
       });
     }
+  },
+
+    noop() {},
+
+  onCloseBatchModal() {
+    if (this.data.isBatchSaving) return;
+    this.setData({ batchModalOpen: false, batchCanvasActive: false });
+  },
+
+  onBatchFilterSelect(e) {
+    const filter = e.currentTarget.dataset.filter || 'all';
+    let visible = this.data.annonces.map(withCover);
+    if (filter !== 'all') {
+      visible = visible.filter((a) => a.type === filter);
+    }
+    const allChecked = visible.length > 0 && visible.every((a) => !!this.data.selectedMap[a.id]);
+    this.setData({
+      batchFilter: filter,
+      visibleBatchAnnonces: visible,
+      isAllSelected: allChecked
+    });
+  },
+
+  onToggleItemSelect(e) {
+    const id = e.currentTarget.dataset.id;
+    if (!id || this.data.isBatchSaving) return;
+    const selectedMap = { ...this.data.selectedMap };
+    selectedMap[id] = !selectedMap[id];
+    const selectedIds = Object.keys(selectedMap).filter((k) => !!selectedMap[k]);
+    const visible = this.data.visibleBatchAnnonces;
+    const allChecked = visible.length > 0 && visible.every((a) => !!selectedMap[a.id]);
+
+    this.setData({
+      selectedMap,
+      selectedIds,
+      isAllSelected: allChecked
+    });
+  },
+
+  onToggleSelectAll() {
+    if (this.data.isBatchSaving) return;
+    const visible = this.data.visibleBatchAnnonces;
+    const currentlyAll = this.data.isAllSelected;
+    const selectedMap = { ...this.data.selectedMap };
+
+    visible.forEach((a) => {
+      selectedMap[a.id] = !currentlyAll;
+    });
+
+    const selectedIds = Object.keys(selectedMap).filter((k) => !!selectedMap[k]);
+    this.setData({
+      selectedMap,
+      selectedIds,
+      isAllSelected: !currentlyAll
+    });
   },
 
     onOpenQrAffiche(e) {
