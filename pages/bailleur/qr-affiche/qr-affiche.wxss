@@ -1,0 +1,166 @@
+/* Page en colonne sur toute la hauteur : en-tête fixe, contenu défilant, actions en bas
+   (même structure que « Mes annonces ») */
+.qa-page {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background-color: var(--sl-surface-2);
+  color: var(--sl-text);
+  box-sizing: border-box;
+}
+
+.qa-hover {
+  opacity: 0.75;
+}
+
+.qa-head {
+  flex: none;
+  background-color: var(--sl-white);
+  border-bottom: 1rpx solid var(--sl-divider);
+}
+
+.qa-nav {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  height: 80rpx;
+  padding: 0 32rpx 0 16rpx;
+}
+
+.qa-back {
+  width: 72rpx;
+  height: 72rpx;
+  border-radius: 36rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.qa-nav-title {
+  font-size: var(--sl-fs-subtitle);
+  font-weight: var(--sl-fw-extrabold);
+}
+
+/* Zone centrale : prend toute la hauteur restante, jamais de défilement */
+.qa-body {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 20rpx 32rpx 16rpx;
+  box-sizing: border-box;
+}
+
+.qa-lead {
+  flex: none;
+  display: block;
+  font-size: var(--sl-fs-caption);
+  line-height: 1.4;
+  color: var(--sl-muted);
+  margin-bottom: 16rpx;
+  text-align: center;
+}
+
+/* L'affiche s'y ajuste (taille calculée dans fitPoster) */
+.qa-preview {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.qa-poster-img {
+  display: block;
+  border-radius: 20rpx;
+  box-shadow: 0 12rpx 40rpx rgba(15, 30, 61, 0.14);
+}
+
+/* Pendant la préparation ou en cas d'échec : occupe la zone de l'affiche */
+.qa-loading,
+.qa-fallback {
+  width: 100%;
+  height: 100%;
+  border-radius: 20rpx;
+  background: var(--sl-white);
+  padding: 32rpx;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-size: var(--sl-fs-body-sm);
+  color: var(--sl-muted);
+}
+
+.qa-fallback {
+  flex-direction: column;
+  gap: 24rpx;
+}
+
+.qa-retry {
+  padding: 16rpx 36rpx;
+  border-radius: 40rpx;
+  background: var(--sl-navy);
+  color: var(--sl-on-dark);
+  font-weight: var(--sl-fw-bold);
+}
+
+/* Conseils d'impression en une ligne compacte sous l'affiche */
+.qa-tips {
+  flex: none;
+  display: block;
+  margin-top: 16rpx;
+  font-size: 22rpx;
+  line-height: 1.4;
+  color: var(--sl-muted);
+  text-align: center;
+}
+
+.qa-bottom {
+  flex: none;
+  padding: 24rpx 32rpx;
+  padding-bottom: calc(24rpx + env(safe-area-inset-bottom));
+  background-color: var(--sl-white);
+  border-top: 1rpx solid var(--sl-divider);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16rpx;
+}
+
+.qa-btn {
+  width: 100%;
+  height: 96rpx;
+  border-radius: 48rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--sl-fs-body);
+  font-weight: var(--sl-fw-extrabold);
+  color: var(--sl-on-dark);
+}
+
+.qa-btn--berry {
+  background: var(--sl-gradient-brand);
+  box-shadow: 0 8rpx 24rpx rgba(200, 35, 95, 0.3);
+}
+
+.qa-btn--off {
+  opacity: 0.5;
+}
+
+.qa-link {
+  font-size: var(--sl-fs-body-sm);
+  font-weight: var(--sl-fw-bold);
+  color: var(--sl-text);
+  text-decoration: underline;
+}
+
+/* Canvas de dessin caché hors écran (seule l'image exportée est montrée) */
+.qa-canvas-offscreen {
+  position: fixed;
+  left: -10000px;
+  top: 0;
+}

@@ -2,6 +2,25 @@
   <!-- Barre de marque SAMA LOYER fixe sur tous les écrans -->
   <sama-top-bar />
 
+  <!-- Sélecteur de profil (Locataire / Bailleur) -->
+  <view class="prof__role-switch-wrap">
+    <view class="role-switch-bar">
+      <view class="role-segment role-segment--active">
+        <view class="ic ic-home-white ic--sm"></view>
+        <text class="role-label">Locataire</text>
+      </view>
+      <view 
+        class="role-segment" 
+        hover-class="role-segment--hover" 
+        bindtap="onSwitchToBailleur"
+        aria-label="Basculer vers l'espace Bailleur"
+      >
+        <view class="ic ic-users-navy ic--sm"></view>
+        <text class="role-label">Bailleur</text>
+      </view>
+    </view>
+  </view>
+
   <!-- Carte profil -->
   <view class="prof__header">
     <text class="prof__title">Profil</text>

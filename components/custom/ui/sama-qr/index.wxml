@@ -1,0 +1,10 @@
+<view class="sama-qr" style="width: {{ size }}px; height: {{ size }}px;">
+  <image wx:if="{{ image }}" class="sama-qr__img" src="{{ image }}" mode="aspectFit" />
+  <!-- Hôte sans canvas 2D : le lien reste utilisable (copier / partager) -->
+  <view wx:elif="{{ failed }}" class="sama-qr__fallback">
+    <text>QR code indisponible sur cet appareil. Utilise le lien.</text>
+  </view>
+
+  <!-- Canvas de dessin caché hors écran, retiré une fois l'image prête -->
+  <canvas wx:if="{{ !image && !failed }}" id="sama-qr-canvas" type="2d" class="sama-qr__canvas" style="width: {{ size }}px; height: {{ size }}px;"></canvas>
+</view>

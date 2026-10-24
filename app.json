@@ -23,10 +23,12 @@
     "pages/bailleur/messages/messages",
     "pages/bailleur/conversation/conversation",
     "pages/bailleur/horaires/horaires",
+    "pages/bailleur/qr-affiche/qr-affiche",
      "pages/common/404/404"
   ],
   "usingComponents": {
     "sama-top-bar": "/components/custom/ui/sama-top-bar/index",
+    "sama-qr": "/components/custom/ui/sama-qr/index",
     "app-nav-bar": "/components/ui/nav-bar/index",
     "osn-image": "/components/ui/image/index",
     "app-icon": "/components/ui/icons/base/index",

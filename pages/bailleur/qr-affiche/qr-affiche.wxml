@@ -1,0 +1,46 @@
+<view class="qa-page">
+  <!-- En-tête fixe : barre SAMA LOYER (comme les autres écrans) + retour -->
+  <view class="qa-head">
+    <sama-top-bar />
+    <view class="qa-nav">
+      <view class="qa-back" hover-class="qa-hover" bindtap="onBack" aria-label="Retour">
+        <view class="ic ic-back-navy ic--md"></view>
+      </view>
+      <text class="qa-nav-title">Affiche QR à imprimer</text>
+    </view>
+  </view>
+
+  <!-- Tout tient sur un écran : l'affiche prend la place restante, sans défilement -->
+  <view wx:if="{{ poster }}" class="qa-body">
+    <text class="qa-lead">{{ poster.rented ? 'Ton locataire la scanne avec Max it pour payer son loyer.' : 'Les passants la scannent avec Max it pour voir le logement et demander une visite.' }}</text>
+
+    <!-- Aperçu = l'image exacte qui sera enregistrée et imprimée -->
+    <view class="qa-preview">
+      <image wx:if="{{ posterImage }}" class="qa-poster-img" style="{{ posterStyle }}" src="{{ posterImage }}" mode="aspectFit" bindtap="onPreviewPoster" />
+      <view wx:elif="{{ canvasFailed }}" class="qa-fallback">
+        <text>L'affiche n'a pas pu être préparée sur cet appareil. Copie le lien pour la créer ailleurs.</text>
+        <view class="qa-retry" hover-class="qa-hover" bindtap="onRetryPoster">Réessayer</view>
+      </view>
+      <view wx:else class="qa-loading">
+        <text>Préparation de l'affiche…</text>
+      </view>
+    </view>
+
+    <text class="qa-tips">Imprime en A6 · plastifie · colle à l'entrée. Le même QR sert toujours. Touche l'affiche pour l'agrandir.</text>
+  </view>
+
+  <view wx:else class="qa-body">
+    <text class="qa-lead">Ce logement est introuvable.</text>
+  </view>
+
+  <!-- Actions -->
+  <view wx:if="{{ poster }}" class="qa-bottom">
+    <view class="qa-btn qa-btn--berry {{ saving || !posterImage ? 'qa-btn--off' : '' }}" hover-class="qa-hover" bindtap="onSavePoster">
+      <text>{{ saving ? 'Enregistrement…' : 'Enregistrer pour imprimer' }}</text>
+    </view>
+    <view class="qa-link" hover-class="qa-hover" bindtap="onCopyLink">Copier le lien · {{ poster.code }}</view>
+  </view>
+
+  <!-- Canvas de dessin, hors écran : jamais affiché (calque natif qui ne suit pas le défilement) -->
+  <canvas wx:if="{{ poster && !posterImage && !canvasFailed }}" id="qa-canvas" type="2d" class="qa-canvas-offscreen" style="width: {{ canvasWidth }}px; height: {{ canvasHeight }}px;"></canvas>
+</view>

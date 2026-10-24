@@ -1,0 +1,32 @@
+.sama-qr {
+  position: relative;
+  background: #FFFFFF;
+}
+
+.sama-qr__img {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* Hors écran : seule l'image exportée est affichée */
+.sama-qr__canvas {
+  position: fixed;
+  left: -10000px;
+  top: 0;
+}
+
+.sama-qr__fallback {
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  padding: 24rpx;
+  border: 2rpx dashed #E4E7EE;
+  border-radius: 20rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-size: 24rpx;
+  color: #5B6475;
+}

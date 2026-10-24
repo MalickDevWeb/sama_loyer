@@ -26,10 +26,12 @@ async function main() {
     const { runEventBusTests } = await import('./eventbus.test.js');
     const { runSculptTests } = await import('./sculpt.test.js');
     const { runI18nTests } = await import('./i18n.test.js');
+    const { runZipTests } = await import('./zip.test.js');
 
     totalPassed += await runEventBusTests();
     totalPassed += await runSculptTests();
     totalPassed += await runI18nTests();
+    totalPassed += await runZipTests();
 
     const duration = ((Date.now() - start) / 1000).toFixed(2);
     console.log('\n====================================================');
@@ -43,4 +45,3 @@ async function main() {
 }
 
 main();
-

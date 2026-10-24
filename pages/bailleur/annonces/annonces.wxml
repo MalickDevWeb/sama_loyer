@@ -180,7 +180,7 @@
             <view class="batch-checkbox {{ selectedMap[item.id] ? 'batch-checkbox--checked' : '' }}">
               <view wx:if="{{ selectedMap[item.id] }}" class="ic ic-check-white ic--xs"></view>
             </view>
-            <image class="batch-thumb" src="{{ item.coverImage }}" mode="aspectFill" />
+            <image class="batch-thumb" src="{{ item.cover || item.coverImage }}" mode="aspectFill" />
             <view class="batch-item-info">
               <text class="batch-item-title">{{ item.title }}</text>
               <text class="batch-item-place">{{ item.placeName }} · {{ item.price }}</text>
@@ -194,7 +194,8 @@
       <view class="batch-footer">
         <button class="batch-download-btn {{ selectedIds.length === 0 ? 'batch-download-btn--disabled' : '' }}" hover-class="sl-hover" bindtap="onDownloadSelectedPosters">
           <text wx:if="{{ isBatchSaving }}">{{ batchSaveProgressText }}</text>
-          <text wx:else>Enregistrer {{ selectedIds.length }} affiche(s) en A6</text>
+          <text wx:elif="{{ selectedIds.length <= 1 }}">Enregistrer 1 affiche A6</text>
+          <text wx:else>Télécharger {{ selectedIds.length }} affiches (ZIP)</text>
         </button>
       </view>
     </view>

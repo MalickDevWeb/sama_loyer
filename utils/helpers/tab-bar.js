@@ -3,9 +3,14 @@ export const setCustomTabBarActive = (page, activeTab) => {
     ? page.getTabBar()
     : null;
 
-  if (tabBar && typeof tabBar.setActiveTab === 'function') {
-    tabBar.setActiveTab(activeTab);
-  } else if (tabBar && typeof tabBar.setData === 'function') {
-    tabBar.setData({ activeTab });
+  if (tabBar) {
+    if (typeof tabBar.setActiveTab === 'function') {
+      tabBar.setActiveTab(activeTab);
+    } else if (typeof tabBar.setData === 'function') {
+      tabBar.setData({ activeTab });
+    }
+    if (typeof tabBar.syncTabs === 'function') {
+      tabBar.syncTabs(activeTab);
+    }
   }
 };
