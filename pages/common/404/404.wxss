@@ -12,78 +12,7 @@
   overflow: hidden;
 }
 
-/* Header Section avec vraie respiration sous la barre d'état / encoche */
-.not-found-header {
-  background-color: var(--sl-bg);
-  padding-left: 36rpx;
-  padding-right: 36rpx;
-  padding-bottom: 16rpx;
-  box-sizing: border-box;
-}
 
-.header-brand-row {
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  min-height: 72rpx;
-}
-
-/* Logo officiel SAMA LOYER */
-.sama-brand {
-  display: flex;
-  align-items: center;
-  gap: 18rpx;
-  transition: transform 0.2s ease;
-}
-
-.sama-brand:active {
-  transform: scale(0.96);
-}
-
-.sama-brand__icon {
-  width: 76rpx;
-  height: 76rpx;
-  border-radius: 22rpx;
-  background-color: var(--sl-berry);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 4rpx 14rpx rgba(200, 35, 95, 0.28);
-  flex-shrink: 0;
-}
-
-.icon-svg {
-  display: inline-block;
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: contain;
-}
-
-.icon-house-white {
-  width: 42rpx;
-  height: 42rpx;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23FFFFFF' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 10.5 12 3l9 7.5'/%3E%3Cpath d='M5 9.5V20h14V9.5'/%3E%3Cpath d='M10 20v-5h4v5'/%3E%3C/svg%3E");
-}
-
-.sama-brand__text {
-  display: flex;
-  flex-direction: column;
-  line-height: 1.05;
-}
-
-.brand-title {
-  font-size: var(--sl-fs-subtitle);
-  font-weight: var(--sl-fw-extrabold);
-  letter-spacing: 0.04em;
-  color: var(--sl-text);
-}
-
-.brand-sub {
-  font-size: var(--sl-fs-micro);
-  font-weight: var(--sl-fw-extrabold);
-  letter-spacing: 0.16em;
-  color: var(--sl-berry);
-}
 
 /* Scrollable Body */
 .scroll-content {
@@ -285,7 +214,7 @@
 .sparkle-right {
   top: 10rpx;
   right: 80rpx;
-  color: #F5A623;
+  color: var(--sl-warning);
   font-size: var(--sl-fs-micro);
   animation-delay: 1.2s;
 }
@@ -362,7 +291,7 @@
 /* Clean Typography */
 .main-title {
   display: block;
-  font-size: 42rpx;
+  font-size: var(--sl-fs-h2);
   font-weight: var(--sl-fw-extrabold);
   color: var(--sl-text);
   line-height: 1.3;
@@ -467,7 +396,7 @@
 .zone-card-hover {
   transform: scale(0.97);
   background-color: var(--sl-berry-tint);
-  border-color: #F8B4C8;
+  border-color: var(--sl-berry-border);
 }
 
 .zone-pin-circle {
@@ -488,7 +417,7 @@
 
 .zone-arrow {
   font-size: var(--sl-fs-small);
-  color: #A0A8B8;
+  color: var(--sl-placeholder);
   font-weight: var(--sl-fw-bold);
 }
 
