@@ -263,7 +263,7 @@ function writeDataUrl(dataUrl) {
       reject(new Error('FS_UNAVAILABLE'));
       return;
     }
-    const filePath = `${dir}/sama-${Date.now()}.png`;
+    const filePath = `${dir}/sama-${Date.now()}-${Math.random().toString(36).slice(2, 7)}.png`;
     fs.writeFile({
       filePath,
       data: dataUrl.replace(/^data:image\/\w+;base64,/, ''),
@@ -291,37 +291,38 @@ export function exportCanvas(canvas, timeout = 3000) {
     };
     const timer = setTimeout(() => finish(reject, new Error('EXPORT_TIMEOUT')), timeout);
 
-    // Priorité absolue à wx.canvasToTempFilePath (instantané en natif C++, sans base64 lourd en mémoire)
+    // 1) Lecture directe Canvas 2D via toDataURL
+    let dataUrl = '';
+    try {
+      if (typeof canvas.toDataURL === 'function') {
+        dataUrl = canvas.toDataURL('image/png');
+      }
+    } catch (e) {}
+
+    if (dataUrl && dataUrl.indexOf('data:image') === 0) {
+      writeDataUrl(dataUrl)
+        .then((path) => finish(resolve, path))
+        .catch(() => finish(resolve, dataUrl));
+      return;
+    }
+
+    // 2) Fallback wx.canvasToTempFilePath
     if (typeof wx !== 'undefined' && typeof wx.canvasToTempFilePath === 'function') {
       try {
         wx.canvasToTempFilePath({
           canvas,
           fileType: 'png',
           success: (res) => finish(resolve, res.tempFilePath),
-          fail: () => fallbackDataUrl()
+          fail: (err) => finish(reject, err)
         });
         return;
       } catch (e) {
-        fallbackDataUrl();
+        finish(reject, e);
         return;
       }
     }
 
-    fallbackDataUrl();
-
-    function fallbackDataUrl() {
-      let dataUrl = '';
-      try {
-        if (typeof canvas.toDataURL === 'function') dataUrl = canvas.toDataURL('image/png');
-      } catch (e) {}
-      if (dataUrl && dataUrl.indexOf('data:image') === 0) {
-        writeDataUrl(dataUrl)
-          .then((path) => finish(resolve, path))
-          .catch(() => finish(resolve, dataUrl));
-        return;
-      }
-      finish(reject, new Error('EXPORT_FAILED'));
-    }
+    finish(reject, new Error('EXPORT_FAILED'));
   });
 }
 

@@ -220,7 +220,7 @@
       </view>
     </view>
   </view>
-  <canvas wx:if="{{ batchCanvasActive }}" id="batch-qa-canvas" type="2d" class="batch-canvas-offscreen" style="width: 620px; height: 877px;"></canvas>
+  <canvas id="batch-qa-canvas" type="2d" class="batch-canvas-offscreen" style="width: 620px; height: 877px;"></canvas>
   <!-- Bailleur Tab Bar -->
   <app-custom-tab-bar activeTab="b-annonces" />
 </view>
