@@ -330,20 +330,40 @@
   color: var(--sl-on-dark);
 }
 
-.btn-modal-confirm {
-  width: 100%;
-  height: 104rpx;
-  border-radius: 28rpx;
-  background-color: var(--sl-berry);
-  color: var(--sl-on-dark);
-  font-size: var(--sl-fs-body-lg);
-  font-weight: var(--sl-fw-extrabold);
+.btn-modal-confirm,
+button.btn-modal-confirm {
+  width: 100% !important;
+  max-width: 100% !important;
+  min-height: 100rpx;
+  height: auto;
+  padding: 24rpx 32rpx !important;
+  box-sizing: border-box !important;
+  border-radius: 28rpx !important;
+  background: linear-gradient(135deg, #E0457E 0%, var(--sl-berry) 100%) !important;
+  color: #FFFFFF !important;
+  font-size: 28rpx !important;
+  font-weight: var(--sl-fw-extrabold) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  margin: 0 !important;
+  line-height: 1.3 !important;
+  box-shadow: 0 10rpx 24rpx rgba(200, 35, 95, 0.35) !important;
+  border: none !important;
+  text-align: center !important;
+}
+
+.btn-modal-confirm::after {
+  display: none !important;
+}
+
+.btn-modal-confirm .ic-row {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 0;
-  box-shadow: 0 8rpx 24rpx rgba(200, 35, 95, 0.3);
-  border: none;
+  gap: 12rpx;
+  width: 100%;
+  white-space: nowrap;
 }
 
 .modal-close-link {
