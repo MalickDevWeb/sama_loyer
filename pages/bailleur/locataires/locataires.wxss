@@ -1,5 +1,7 @@
 /* pages/bailleur/locataires/locataires.wxss */
 .mes-locataires-page {
+  display: flex;
+  flex-direction: column;
   height: 100vh;
   overflow: hidden;
   background-color: var(--sl-bg);
@@ -7,7 +9,9 @@
 }
 
 .locataires-scroll {
-  height: 100%;
+  flex: 1;
+  height: 0;
+  min-height: 0;
   padding: 0 28rpx;
   box-sizing: border-box;
   scrollbar-width: none;
@@ -18,6 +22,40 @@
 .locataires-top-header {
   margin-top: 10rpx;
   margin-bottom: 24rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.locataires-header-titles {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Bouton + : identique à « Mes annonces » */
+.btn-top-add {
+  width: 76rpx;
+  height: 76rpx;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: var(--sl-gradient-brand);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 6rpx 18rpx rgba(200, 35, 95, 0.35);
+  margin-left: 20rpx;
+}
+
+.btn-top-add--hover {
+  opacity: 0.8;
+  transform: scale(0.94);
+}
+
+.btn-top-plus {
+  font-size: var(--sl-fs-h2);
+  color: var(--sl-on-dark);
+  line-height: 1;
+  margin-top: -4rpx;
 }
 
 .page-title-main {
@@ -234,7 +272,7 @@
 
 
 .bottom-spacer-bailleur {
-  height: 160rpx;
+  height: calc(240rpx + env(safe-area-inset-bottom));
 }
 
 /* Liste simplifiée : une seule ligne par locataire */
@@ -422,10 +460,13 @@
   gap: 4rpx;
 }
 
+/* Largeur selon le contenu (« À confirmer » est plus long que « Tous ») :
+   avec flex: 1, les 4 onglets avaient la même largeur et les libellés débordaient */
 .ml-tab {
-  flex: 1;
+  flex: 1 1 auto;
   min-width: 0;
   height: 68rpx;
+  padding: 0 14rpx;
   border-radius: 20rpx;
   display: flex;
   align-items: center;
@@ -435,6 +476,17 @@
   font-weight: var(--sl-fw-bold);
   color: var(--sl-muted);
   white-space: nowrap;
+}
+
+/* Sur un écran très étroit, le libellé se raccourcit (…) au lieu de chevaucher l'onglet voisin */
+.ml-tab-label {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ml-tab-count {
+  flex: 0 0 auto;
 }
 
 .ml-tab--on {
@@ -565,4 +617,276 @@
 
 .ml-avatar-detail .avatar-initials-txt {
   color: var(--sl-text);
+}
+
+/* ================= Fenêtre « Nouvelle location » ================= */
+.nl-sheet {
+  overflow: hidden;
+}
+
+.nl-scroll {
+  max-height: 68vh;
+}
+
+.nl-label {
+  display: block;
+  margin: 24rpx 0 12rpx;
+  font-size: var(--sl-fs-body-sm);
+  font-weight: var(--sl-fw-extrabold);
+  color: var(--sl-text);
+}
+
+.nl-homes {
+  display: flex;
+  flex-direction: column;
+  gap: 12rpx;
+}
+
+.nl-home {
+  display: flex;
+  align-items: center;
+  gap: 18rpx;
+  padding: 18rpx 22rpx;
+  border: 2rpx solid var(--sl-border);
+  border-radius: 20rpx;
+}
+
+.nl-home--on {
+  border-color: var(--sl-berry);
+  background: var(--sl-berry-tint);
+}
+
+.nl-radio {
+  flex: 0 0 34rpx;
+  width: 34rpx;
+  height: 34rpx;
+  border-radius: 50%;
+  border: 4rpx solid var(--sl-border);
+  box-sizing: border-box;
+}
+
+.nl-radio--on {
+  border: 10rpx solid var(--sl-berry);
+}
+
+.nl-home-text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.nl-home-title {
+  font-size: var(--sl-fs-body-sm);
+  font-weight: var(--sl-fw-bold);
+  color: var(--sl-text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.nl-home-sub {
+  font-size: var(--sl-fs-caption);
+  color: #64748B;
+}
+
+.nl-input {
+  height: 88rpx;
+  padding: 0 24rpx;
+  border-radius: 20rpx;
+  background: var(--sl-surface-3);
+  font-size: var(--sl-fs-body);
+  font-weight: var(--sl-fw-bold);
+  color: var(--sl-text);
+}
+
+.nl-placeholder {
+  color: #94A3B8;
+  font-weight: normal;
+}
+
+.nl-field {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  height: 88rpx;
+  padding: 0 24rpx;
+  border-radius: 20rpx;
+  background: var(--sl-surface-3);
+}
+
+.nl-input--bare {
+  flex: 1;
+  padding: 0;
+  background: transparent;
+}
+
+.nl-prefix,
+.nl-suffix {
+  font-size: var(--sl-fs-body-sm);
+  font-weight: var(--sl-fw-bold);
+  color: #64748B;
+}
+
+.nl-field--picker {
+  justify-content: space-between;
+}
+
+.nl-picker-value {
+  font-size: var(--sl-fs-body);
+  font-weight: var(--sl-fw-bold);
+  color: var(--sl-text);
+}
+
+.nl-segment {
+  display: flex;
+  gap: 8rpx;
+  padding: 6rpx;
+  border-radius: 20rpx;
+  background: var(--sl-surface-3);
+}
+
+.nl-seg {
+  flex: 1;
+  height: 72rpx;
+  border-radius: 16rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--sl-fs-body-sm);
+  font-weight: var(--sl-fw-bold);
+  color: #64748B;
+}
+
+.nl-seg--on {
+  background: var(--sl-navy);
+  color: var(--sl-on-dark);
+}
+
+.nl-submit {
+  margin-top: 36rpx;
+  height: 92rpx;
+  border-radius: 24rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.nl-empty {
+  display: flex;
+  flex-direction: column;
+  gap: 24rpx;
+  padding: 24rpx 0;
+}
+
+.nl-empty-text {
+  font-size: var(--sl-fs-body-sm);
+  color: #64748B;
+  line-height: 1.5;
+}
+
+.nl-empty-btn {
+  height: 88rpx;
+  border-radius: 24rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Recherche du locataire (nom ou numéro) */
+.nl-hint {
+  display: block;
+  margin-top: 10rpx;
+  font-size: var(--sl-fs-caption);
+  color: #64748B;
+  line-height: 1.45;
+}
+
+.nl-hint--warn {
+  color: #9A6200;
+}
+
+.nl-results {
+  margin-top: 12rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 10rpx;
+}
+
+.nl-tenant {
+  display: flex;
+  align-items: center;
+  gap: 18rpx;
+  padding: 16rpx 20rpx;
+  border: 2rpx solid var(--sl-border);
+  border-radius: 20rpx;
+}
+
+.nl-tenant--picked {
+  border-color: var(--sl-berry);
+  background: var(--sl-berry-tint);
+}
+
+.nl-tenant-avatar {
+  flex: 0 0 68rpx;
+  width: 68rpx;
+  height: 68rpx;
+  border-radius: 50%;
+  background: var(--sl-navy);
+  color: var(--sl-on-dark);
+  font-size: var(--sl-fs-caption);
+  font-weight: var(--sl-fw-extrabold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.nl-tenant-text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2rpx;
+}
+
+.nl-tenant-name {
+  font-size: var(--sl-fs-body-sm);
+  font-weight: var(--sl-fw-extrabold);
+  color: var(--sl-text);
+}
+
+.nl-tenant-sub {
+  font-size: var(--sl-fs-caption);
+  color: #64748B;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.nl-tenant-pick,
+.nl-tenant-change {
+  flex: 0 0 auto;
+  font-size: var(--sl-fs-caption);
+  font-weight: var(--sl-fw-bold);
+  color: var(--sl-berry);
+}
+
+.nl-newphone {
+  margin-top: 12rpx;
+  padding: 20rpx;
+  border-radius: 20rpx;
+  background: var(--sl-warning-bg);
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.nl-newphone-text {
+  font-size: var(--sl-fs-caption);
+  color: #9A6200;
+  line-height: 1.45;
+}
+
+.nl-newphone .nl-input {
+  background: var(--sl-white);
 }
