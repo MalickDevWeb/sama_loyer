@@ -121,41 +121,51 @@
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23C8235F' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='3' width='18' height='18' rx='2'/%3E%3Cline x1='3' y1='9' x2='21' y2='9'/%3E%3Cline x1='3' y1='15' x2='21' y2='15'/%3E%3C/svg%3E");
 }
 
-/* Bouton spécial surélevé (Annonces bailleur au centre) */
+/* Bouton spécial surélevé 3D (Recherche Client ou Annonces Bailleur au centre) */
 .tab-special {
   position: relative;
-  margin-top: -36rpx;
+  margin-top: -38rpx;
   overflow: visible;
 }
 
 .special-circle {
-  width: 96rpx;
-  height: 96rpx;
-  border-radius: 48rpx;
-  background: linear-gradient(135deg, #C8235F 0%, #E6007A 100%);
+  width: 98rpx;
+  height: 98rpx;
+  border-radius: 49rpx;
+  background: linear-gradient(145deg, #FF6B98 0%, #C8235F 45%, #9E1749 100%);
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 10rpx 24rpx rgba(200, 35, 95, 0.42);
+  /* Effet 3D multi-couches : reflet supérieur, volume et ombre portée profonde */
   border: 6rpx solid #FFFFFF;
+  box-shadow: 
+    0 12rpx 26rpx rgba(200, 35, 95, 0.42),
+    0 4rpx 8rpx rgba(15, 30, 61, 0.16),
+    inset 0 4rpx 6rpx rgba(255, 255, 255, 0.45),
+    inset 0 -4rpx 8rpx rgba(0, 0, 0, 0.22);
   box-sizing: border-box;
-  transition: transform 0.18s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.18s ease;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease;
 }
 
 .special-circle--active {
-  background: linear-gradient(135deg, #FF6600 0%, #C8235F 100%);
-  box-shadow: 0 12rpx 28rpx rgba(255, 102, 0, 0.48);
-  transform: translateY(-4rpx) scale(1.04);
+  background: linear-gradient(145deg, #FF8C33 0%, #FF6600 50%, #C8235F 100%);
+  box-shadow: 
+    0 14rpx 32rpx rgba(255, 102, 0, 0.52),
+    0 6rpx 12rpx rgba(15, 30, 61, 0.2),
+    inset 0 4rpx 6rpx rgba(255, 255, 255, 0.55),
+    inset 0 -4rpx 8rpx rgba(0, 0, 0, 0.24);
+  transform: translateY(-6rpx) scale(1.06);
 }
 
 .special-circle__ic {
-  width: 46rpx;
-  height: 46rpx;
-  filter: brightness(0) invert(1);
+  width: 48rpx;
+  height: 48rpx;
+  /* Rendu 3D net de l icone en blanc */
+  filter: brightness(0) invert(1) drop-shadow(0 2rpx 3rpx rgba(0, 0, 0, 0.25));
 }
 
 .tab-special .osn-tab-bar__label {
-  margin-top: 2rpx;
+  margin-top: 4rpx;
   font-weight: 700;
   color: #0F1E3D;
 }

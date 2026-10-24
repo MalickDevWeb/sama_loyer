@@ -72,11 +72,6 @@ export const ERROR_MESSAGES = {
 // ============================================================================
 export const CLIENT_TABS = [
   {
-    id: 'home',
-    label: 'Chercher',
-    url: '/pages/client/home/home',
-  },
-  {
     id: 'loyers',
     label: 'Mes loyers',
     badge: '2',
@@ -86,6 +81,12 @@ export const CLIENT_TABS = [
     id: 'visites',
     label: 'Visites',
     url: '/pages/client/visites/visites',
+  },
+  {
+    id: 'home',
+    label: 'Chercher',
+    isSpecial: true,
+    url: '/pages/client/home/home',
   },
   {
     id: 'messages',
