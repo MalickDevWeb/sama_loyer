@@ -1,3 +1,10 @@
+function formatVideoTime(secs) {
+  const s = Math.max(0, Math.floor(secs || 0));
+  const m = Math.floor(s / 60);
+  const rem = s % 60;
+  return String(m).padStart(2, '0') + ':' + String(rem).padStart(2, '0');
+}
+
 import { getLogementById } from '../../../utils/mocks/logements';
 import { getMedia } from '../../../utils/mocks/media';
 
@@ -25,7 +32,11 @@ Page({
     ready: false,
     todoText: '',
     showMediaRequiredModal: false,
-    video: null, // { src, poster } quand le lecteur vidéo est ouvert
+    video: null,
+    videoCurrentTime: 0,
+    videoDuration: 0,
+    videoCurrentTimeFmt: '00:00',
+    videoDurationFmt: '00:00',
     toast: {
       visible: false,
       hiding: false,
@@ -94,7 +105,70 @@ Page({
 
   // Lecteur vidéo en fenêtre ; la vidéo compte comme vue à la fermeture
   openVideo() {
-    this.setData({ video: this.mediaSet.video });
+    this.setData({
+      video: this.mediaSet.video,
+      videoCurrentTime: 0,
+      videoDuration: 0,
+      videoCurrentTimeFmt: '00:00',
+      videoDurationFmt: '00:00'
+    });
+    this.videoCtx = wx.createVideoContext('lsv-player-video', this);
+  },
+
+    onVideoTimeUpdate(e) {
+    if (this._isSeeking) return;
+    const currentTime = Math.floor(e.detail.currentTime || 0);
+    const duration = Math.floor(e.detail.duration || 0);
+    this.setData({
+      videoCurrentTime: currentTime,
+      videoDuration: duration,
+      videoCurrentTimeFmt: formatVideoTime(currentTime),
+      videoDurationFmt: formatVideoTime(duration)
+    });
+  },
+
+  onVideoSliderChanging(e) {
+    this._isSeeking = true;
+    const val = Number(e.detail.value || 0);
+    this.setData({
+      videoCurrentTime: val,
+      videoCurrentTimeFmt: formatVideoTime(val)
+    });
+  },
+
+  onVideoSliderChange(e) {
+    const val = Number(e.detail.value || 0);
+    this._isSeeking = false;
+    this.setData({
+      videoCurrentTime: val,
+      videoCurrentTimeFmt: formatVideoTime(val)
+    });
+    if (this.videoCtx) {
+      this.videoCtx.seek(val);
+    }
+  },
+
+  onVideoRewind10() {
+    const target = Math.max(0, (this.data.videoCurrentTime || 0) - 10);
+    this.setData({
+      videoCurrentTime: target,
+      videoCurrentTimeFmt: formatVideoTime(target)
+    });
+    if (this.videoCtx) {
+      this.videoCtx.seek(target);
+    }
+  },
+
+  onVideoForward10() {
+    const maxDur = this.data.videoDuration || 100;
+    const target = Math.min(maxDur, (this.data.videoCurrentTime || 0) + 10);
+    this.setData({
+      videoCurrentTime: target,
+      videoCurrentTimeFmt: formatVideoTime(target)
+    });
+    if (this.videoCtx) {
+      this.videoCtx.seek(target);
+    }
   },
 
   onCloseVideo() {

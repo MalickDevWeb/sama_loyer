@@ -5,7 +5,7 @@ import { backendAPI } from '../../../utils/apis/index.js';
 import { getFavoritesMap, getFavoriteIds, toggleFavoriteId } from '../../../utils/helpers/favorites';
 import { TINTS } from '../../../utils/constants/theme';
 import { navigateWithData } from '../../../utils/helpers/nav-data';
-import { i18nBehavior, getLocale } from '../../../utils/i18n/index.js';
+import { i18nBehavior, getLocale, getMessages } from '../../../utils/i18n/index.js';
 
 function setTabBarVisible(page, visible) {
   try {
@@ -115,6 +115,8 @@ Page({
   behaviors: [i18nBehavior],
 
   data: {
+    i18n: getMessages(),
+    currentLocale: getLocale(),
     uiState: 'content', // 'loading' | 'content' | 'error' (Machine à états PMT)
     focusField: '', // champ actif (lieu | budget) : halo + icône animée
     statusBarHeight: 24,
@@ -169,7 +171,9 @@ Page({
     const favIds = getFavoriteIds();
     this.setData({
       favorites: getFavoritesMap(),
-      favoritesCount: favIds.length || 4
+      favoritesCount: favIds.length || 4,
+      currentLocale: getLocale(),
+      i18n: getMessages()
     });
 
     // Lancement de la recherche initiale directement sous les critères
@@ -181,6 +185,7 @@ Page({
       storage.set(STORAGE_KEYS.USER_ROLE, 'client');
     } catch (e) {}
     setCustomTabBarActive(this, 'home');
+    if (typeof this._syncI18n === 'function') this._syncI18n();
     const favIds = getFavoriteIds();
     this.setData({
       favorites: getFavoritesMap(),
@@ -192,7 +197,11 @@ Page({
     try { wx.showTabBar({ animation: false }); } catch (e) {}
   },
 
-  onLocaleChange() {
+  onLocaleChange(locale) {
+    this.setData({
+      currentLocale: locale || getLocale(),
+      i18n: getMessages(locale || getLocale())
+    });
     this.refreshSearch();
   },
 

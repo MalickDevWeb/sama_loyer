@@ -334,14 +334,14 @@
 button.btn-modal-confirm {
   width: 100% !important;
   max-width: 100% !important;
-  min-height: 100rpx;
+  min-height: 96rpx;
   height: auto;
-  padding: 24rpx 32rpx !important;
+  padding: 22rpx 24rpx !important;
   box-sizing: border-box !important;
   border-radius: 28rpx !important;
   background: linear-gradient(135deg, #E0457E 0%, var(--sl-berry) 100%) !important;
   color: #FFFFFF !important;
-  font-size: 28rpx !important;
+  font-size: 26rpx !important;
   font-weight: var(--sl-fw-extrabold) !important;
   display: flex !important;
   align-items: center !important;
@@ -540,3 +540,63 @@ button.btn-modal-confirm {
 }
 
 .lsv__player-back { width: 68rpx; height: 68rpx; border-radius: 50%; background: rgba(255,255,255,0.18); display: flex; align-items: center; justify-content: center; margin-right: 16rpx; }
+
+/* Barre de contrôle enrichie SAMA LOYER pour vidéo */
+.vplayer-quick-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16rpx;
+  padding: 16rpx 32rpx;
+  background: #0B1429;
+  border-top: 1rpx solid rgba(255, 255, 255, 0.1);
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.vplayer-quick-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8rpx;
+  height: 60rpx;
+  padding: 0 20rpx;
+  border-radius: 30rpx;
+  background: rgba(255, 255, 255, 0.15);
+  color: #FFFFFF;
+  font-size: 22rpx;
+  font-weight: var(--sl-fw-extrabold);
+  flex-shrink: 0;
+  transition: transform 0.15s ease;
+}
+
+.vplayer-quick-btn .ic {
+  width: 28rpx;
+  height: 28rpx;
+}
+
+.vplayer-slider-wrap {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4rpx;
+}
+
+.vplayer-slider {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.vplayer-time-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 6rpx;
+}
+
+.vplayer-time-txt {
+  font-size: 20rpx;
+  font-weight: var(--sl-fw-bold);
+  color: rgba(255, 255, 255, 0.7);
+  font-family: monospace;
+}
