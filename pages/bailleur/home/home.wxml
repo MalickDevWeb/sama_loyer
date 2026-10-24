@@ -7,6 +7,23 @@
     <!-- Top Header Section (Fond clair) -->
     <view class="bailleur-header">
 
+      <!-- Ligne : Sélecteur de rôle pleine largeur (Locataire / Bailleur) -->
+      <view class="role-switch-bar">
+        <view 
+          class="role-segment" 
+          hover-class="role-segment--hover" 
+          bindtap="onSwitchToClient"
+          aria-label="Basculer vers l'espace Locataire"
+        >
+          <view class="ic ic-home-grey ic--sm"></view>
+          <text class="role-label">Locataire</text>
+        </view>
+        <view class="role-segment role-segment--active">
+          <view class="ic ic-users-white ic--sm"></view>
+          <text class="role-label">Bailleur</text>
+        </view>
+      </view>
+
       <!-- Message de bienvenue : Bonjour Moussa -->
       <view class="hero-profile-row">
         <view class="hero-titles">

@@ -1,5 +1,5 @@
 import { storage } from '../../../../utils/storage.js';
-import { CLIENT_TABS, BAILLEUR_TABS, STORAGE_KEYS } from '../../../../utils/constants/index';
+import { CLIENT_TABS, BAILLEUR_TABS, STORAGE_KEYS } from '../../../../utils/constants/index.js';
 import { Bus } from '../../../../utils/event/index';
 import { STATE_KEYS } from '../../../../utils/event/keys';
 import { busBehavior } from '../../../../utils/behaviors/index';
@@ -63,11 +63,10 @@ Component({
       const currentPage = pages && pages.length > 0 ? pages[pages.length - 1] : null;
       const route = currentPage ? (currentPage.route || '') : '';
       
-      // La route actuelle est la source absolue de vérité
+      // Détection stricte selon la page courante ou le storage
       let isBailleur = false;
       if (route) {
-        isBailleur = route.includes('pages/bailleur');
-        // Synchronisation du rôle en storage pour garantir la cohérence globale
+        isBailleur = route.indexOf('pages/bailleur') !== -1;
         storage.set(STORAGE_KEYS.USER_ROLE, isBailleur ? 'bailleur' : 'client');
       } else {
         isBailleur = storage.get(STORAGE_KEYS.USER_ROLE, 'client') === 'bailleur';
@@ -81,7 +80,10 @@ Component({
       
       const cleanRoute = route.replace(/^\//, '');
       const match = currentTabs.find(t => t.url.replace(/^\//, '') === cleanRoute);
-      const activeTab = match ? match.id : (this.properties.activeTab || this.data.activeTab);
+      const defaultTab = isBailleur ? 'b-home' : 'home';
+      // Si la valeur actuelle appartient à l'autre profil (ex: 'b-annonces' en mode client), on réinitialise
+      const isValidForRole = currentTabs.some(t => t.id === this.properties.activeTab);
+      const activeTab = match ? match.id : (isValidForRole ? this.properties.activeTab : defaultTab);
 
       this.setData({
         tabs: currentTabs,
