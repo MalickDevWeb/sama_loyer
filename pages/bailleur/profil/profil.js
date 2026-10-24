@@ -57,7 +57,7 @@ Page({
 
   data: {
     statusBarHeight: 44,
-    activeModal: null, // 'help' | 'security' | 'support' | 'contrat' | 'fileSource' | null
+    activeModal: null, // 'help' | 'security' | 'support' | 'contrat' | 'fileSource' | 'kycSuccess' | null
     targetDocId: '',
     targetDocMaxFiles: 1,
     stats: {
@@ -220,15 +220,11 @@ Page({
     wx.showLoading({ title: 'Envoi du dossier...' });
     setTimeout(() => {
       wx.hideLoading();
-      this.setData({ kycEditing: false });
-      this.loadKyc();
-      wx.showModal({
-        title: 'Dossier transmis !',
-        content: 'Vos pièces ont été envoyées au Super Admin pour vérification. Vos annonces seront activées dès validation.',
-        showCancel: false,
-        confirmText: 'Compris',
-        confirmColor: '#F16E00'
+      this.setData({
+        kycEditing: false,
+        activeModal: 'kycSuccess'
       });
+      this.loadKyc();
     }, 700);
   },
 

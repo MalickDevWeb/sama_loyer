@@ -474,6 +474,26 @@
     </view>
   </view>
 
+  <!-- Modal 6 : Confirmation Dossier Transmis (Design SAMA LOYER) -->
+  <view wx:if="{{ activeModal === 'kycSuccess' }}" class="bprof__sheet-overlay" catchtouchmove="noop" bindtap="onCloseModal">
+    <view class="bprof__popup" catchtap="noop">
+      <view class="bprof__popup-badge">
+        <view class="ic ic-check-white bprof__popup-badge-ic"></view>
+      </view>
+      <text class="bprof__popup-title">Dossier transmis !</text>
+      <view class="bprof__popup-tag">
+        <view class="ui-dot bprof__popup-dot"></view>
+        <text class="bprof__popup-tag-txt">En cours de vérification</text>
+      </view>
+      <text class="bprof__popup-desc">
+        Vos pièces ont été envoyées à l'équipe Super Admin SAMA LOYER. Vous recevrez une notification Max it dès que votre compte sera certifié et vos annonces activées.
+      </text>
+      <button class="bprof__popup-btn" hover-class="sl-hover" bindtap="onCloseModal">
+        Parfait, j'ai compris
+      </button>
+    </view>
+  </view>
+
   <!-- Bottom Navigation Tab Bar (activeTab = b-profil, tout à droite) -->
   <app-custom-tab-bar activeTab="b-profil" />
 </view>
