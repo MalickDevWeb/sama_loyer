@@ -20,7 +20,7 @@ import {
   setBailleurKycStatus
 } from '../../../utils/helpers/store';
 import { backendAPI } from '../../../utils/apis/index';
-import { pickDocumentFiles, openPickedFile, formatsLabel } from '../../../utils/helpers/file-picker';
+import { pickImages, pickPdfs, pickDocumentFiles, openPickedFile, formatsLabel } from '../../../utils/helpers/file-picker';
 import { bailleurGuardBehavior } from '../../../utils/behaviors/index';
 
 function initialsOf(name) {
@@ -57,7 +57,9 @@ Page({
 
   data: {
     statusBarHeight: 44,
-    activeModal: null, // 'help' | 'security' | 'support' | null
+    activeModal: null, // 'help' | 'security' | 'support' | 'contrat' | 'fileSource' | null
+    targetDocId: '',
+    targetDocMaxFiles: 1,
     stats: {
       annonces: 3,
       demandes: 4,
@@ -142,13 +144,54 @@ Page({
     const id = e.currentTarget.dataset.id;
     const doc = getComplianceConfig().documents.find((d) => d.id === id);
     if (!doc) return;
-    pickDocumentFiles({ formats: doc.formats, count: doc.maxFiles || 1 })
+
+    const formats = Array.isArray(doc.formats) && doc.formats.length ? doc.formats : ['image'];
+    const allowsImage = formats.includes('image');
+    const allowsPdf = formats.includes('pdf');
+    const maxFiles = doc.maxFiles || 1;
+
+    // Si les deux formats sont possibles, ouvrir notre bottom-sheet design SAMA LOYER
+    if (allowsImage && allowsPdf) {
+      this.setData({
+        activeModal: 'fileSource',
+        targetDocId: id,
+        targetDocMaxFiles: maxFiles
+      });
+      return;
+    }
+
+    // Sinon ouvrir directement le format imposé par le Super Admin
+    if (allowsPdf) {
+      this._importKycFiles(id, maxFiles, () => pickPdfs(maxFiles));
+    } else {
+      this._importKycFiles(id, maxFiles, () => pickImages(maxFiles));
+    }
+  },
+
+  onSelectSourceImage() {
+    const id = this.data.targetDocId;
+    const max = this.data.targetDocMaxFiles || 1;
+    this.setData({ activeModal: null });
+    this._importKycFiles(id, max, () => pickImages(max));
+  },
+
+  onSelectSourcePdf() {
+    const id = this.data.targetDocId;
+    const max = this.data.targetDocMaxFiles || 1;
+    this.setData({ activeModal: null });
+    this._importKycFiles(id, max, () => pickPdfs(max));
+  },
+
+  _importKycFiles(id, maxFiles, pickerFn) {
+    pickerFn()
       .then((files) => {
-        if (!files.length) return;
-        setBailleurKycDocument(id, files.slice(0, doc.maxFiles || 1));
+        if (!files || !files.length) return;
+        setBailleurKycDocument(id, files.slice(0, maxFiles));
         this.loadKyc();
       })
       .catch((err) => {
+        const isCancel = err && (err.errMsg === 'chooseMedia:fail cancel' || err.errMsg === 'chooseMessageFile:fail cancel');
+        if (isCancel) return;
         const pdfOnly = err && err.message === 'PDF_UNSUPPORTED';
         wx.showToast({
           title: pdfOnly ? 'Envoi de PDF indisponible sur cette version de Max it' : 'Impossible d’ouvrir le fichier',
