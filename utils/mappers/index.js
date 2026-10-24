@@ -7,3 +7,4 @@ export * from './loyer.sculpt.js';
 export * from './visite.sculpt.js';
 export * from './example.sculpt.js';
 
+export * from './favorite.sculpt.js';

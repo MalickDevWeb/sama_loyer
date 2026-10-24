@@ -1,5 +1,5 @@
 import { getLogementById, FAVORITE_SAVED_LABELS } from '../../../utils/mocks/logements';
-import { getFavoriteIds, toggleFavoriteId } from '../../../utils/helpers/favorites';
+import { getFavoriteIds, toggleFavoriteId, reconcileFavoritesWithBackend } from '../../../utils/helpers/favorites';
 import { t, i18nBehavior } from '../../../utils/i18n/index';
 import { navigateWithData } from '../../../utils/helpers/nav-data';
 
