@@ -3,42 +3,32 @@
 // Point d'entrée centralisé pour l'API REST Sama Loyer.
 //
 // Architecture modulaire WeChat PMT :
-//   1. Endpoints & Services Locataire (utils/apis/locataire.js)
-//   2. Endpoints & Services Bailleur (utils/apis/bailleur.js)
-//   3. Configuration Cache & TTL centralisée (utils/apis/cache.js)
-//   4. Façade unifiée BackendAPI & délégation dynamique sans duplication
-//   5. Déballage sécurisé des réponses (utils/apis/response.js)
+//   1. Registre des Endpoints (utils/apis/endpionts/index.js)
+//   2. Service Locataire (utils/apis/locataire.js)
+//   3. Service Bailleur (utils/apis/bailleur.js)
+//   4. Configuration Cache & TTL centralisée (utils/apis/cache.js)
+//   5. Façade unifiée BackendAPI & délégation dynamique sans duplication
+//   6. Déballage sécurisé des réponses (utils/apis/response.js)
 // ============================================================================
 
 import { httpClient } from './http.js';
 import { invalidateCache } from './cache.js';
+import { locataireAPI, LocataireAPI } from './locataire.js';
+import { bailleurAPI, BailleurAPI } from './bailleur.js';
 
-import {
+// Re-exports des endpoints centralisés
+export {
   LOCATAIRE_ENDPOINTS,
-  LocataireAPI,
-  locataireAPI
-} from './locataire.js';
-
-import {
   BAILLEUR_ENDPOINTS,
-  BailleurAPI,
-  bailleurAPI
-} from './bailleur.js';
+  COMMON_ENDPOINTS,
+  ENDPOINTS
+} from './endpionts/index.js';
 
 // Re-exports modulaires par domaine et cache centralisé
-export { LOCATAIRE_ENDPOINTS, LocataireAPI, locataireAPI };
-export { BAILLEUR_ENDPOINTS, BailleurAPI, bailleurAPI };
+export { LocataireAPI, locataireAPI };
+export { BailleurAPI, bailleurAPI };
 export { TTL, LOCATAIRE_TTL, BAILLEUR_TTL, cached, invalidateCache, setCache } from './cache.js';
 export { extractApiResponse, unwrapApiResponse } from './response.js';
-
-/**
- * Registre global des Endpoints REST combinant Locataire et Bailleur.
- * Garantit 100% de rétrocompatibilité avec les imports existants.
- */
-export const ENDPOINTS = {
-  ...LOCATAIRE_ENDPOINTS,
-  ...BAILLEUR_ENDPOINTS
-};
 
 /**
  * Service central unifié Sama Loyer.

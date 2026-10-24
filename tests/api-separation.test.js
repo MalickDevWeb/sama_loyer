@@ -6,6 +6,7 @@ import assert from 'node:assert/strict';
 import {
   LOCATAIRE_ENDPOINTS,
   BAILLEUR_ENDPOINTS,
+  COMMON_ENDPOINTS,
   ENDPOINTS,
   locataireAPI,
   LocataireAPI,
@@ -23,6 +24,17 @@ import {
   LOCATAIRE_TTL as CACHE_LOCATAIRE_TTL,
   BAILLEUR_TTL as CACHE_BAILLEUR_TTL
 } from '../utils/apis/cache.js';
+
+import {
+  LOCATAIRE_ENDPOINTS as FOLDER_LOCATAIRE_ENDPOINTS,
+  BAILLEUR_ENDPOINTS as FOLDER_BAILLEUR_ENDPOINTS,
+  COMMON_ENDPOINTS as FOLDER_COMMON_ENDPOINTS,
+  ENDPOINTS as FOLDER_ENDPOINTS
+} from '../utils/apis/endpionts/index.js';
+
+import {
+  ENDPOINTS as ALIAS_ENDPOINTS
+} from '../utils/apis/endpoints.js';
 
 export async function runApiSeparationTests() {
   console.log('\n--- Test Suite 8: Séparation APIs Bailleur & Locataire ---');
@@ -111,6 +123,15 @@ export async function runApiSeparationTests() {
   assert.equal(BAILLEUR_TTL.SETTINGS, 5 * 60 * 1000);
   assert.equal(LOCATAIRE_TTL.LOGEMENT_DETAIL, 10 * 60 * 1000);
   console.log('  ✓ Centralisation unique des TTL dans utils/apis/cache.js validée');
+  passed++;
+
+  // Test 8 : Dossier centralisé utils/apis/endpionts/ et alias endpoints.js
+  assert.strictEqual(LOCATAIRE_ENDPOINTS, FOLDER_LOCATAIRE_ENDPOINTS);
+  assert.strictEqual(BAILLEUR_ENDPOINTS, FOLDER_BAILLEUR_ENDPOINTS);
+  assert.strictEqual(COMMON_ENDPOINTS, FOLDER_COMMON_ENDPOINTS);
+  assert.strictEqual(ENDPOINTS, FOLDER_ENDPOINTS);
+  assert.strictEqual(ENDPOINTS, ALIAS_ENDPOINTS);
+  console.log('  ✓ Dossier utils/apis/endpionts/ et alias endpoints.js validés à 100%');
   passed++;
 
   return passed;

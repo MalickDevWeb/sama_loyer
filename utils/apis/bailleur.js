@@ -13,6 +13,7 @@ import { extractApiResponse } from './response.js';
 import { cached, invalidateCache, BAILLEUR_TTL } from './cache.js';
 import { Bus } from '../event/index.js';
 import { EVENTS } from '../event/keys.js';
+import { BAILLEUR_ENDPOINTS } from './endpionts/bailleur.js';
 import {
   getStoredBailleurAnnonces,
   getStoredLocataires,
@@ -21,22 +22,9 @@ import {
   searchTenantCandidates
 } from '../helpers/store.js';
 
-// Ré-export de la configuration TTL centralisée dans utils/apis/cache.js
+// Ré-exports centralisés
 export { BAILLEUR_TTL };
-
-/**
- * Endpoints REST réservés à l'espace Bailleur / Propriétaire
- */
-export const BAILLEUR_ENDPOINTS = {
-  ANNONCES: '/api/v1/bailleur/annonces',
-  BAILLEUR_ANNONCES: '/api/v1/bailleur/annonces', // alias rétrocompatible
-  LOCATAIRES: '/api/v1/bailleur/locataires',
-  BAILLEUR_LOCATAIRES: '/api/v1/bailleur/locataires', // alias rétrocompatible
-  TENANT_SEARCH: '/api/v1/bailleur/tenant-search',
-  BAILLEUR_TENANT_SEARCH: '/api/v1/bailleur/tenant-search', // alias rétrocompatible
-  SETTINGS_COMPLIANCE: '/api/v1/settings/compliance',
-  COMPLIANCE: '/api/v1/settings/compliance' // alias court
-};
+export { BAILLEUR_ENDPOINTS };
 
 /**
  * Service API pour l'espace Bailleur

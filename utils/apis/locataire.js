@@ -28,26 +28,11 @@ import { storage } from '../storage.js';
 import { STORAGE_KEYS } from '../constants/index.js';
 import { Bus } from '../event/index.js';
 import { EVENTS } from '../event/keys.js';
+import { LOCATAIRE_ENDPOINTS } from './endpionts/locataire.js';
 
-// Ré-export de la configuration TTL centralisée dans utils/apis/cache.js
+// Ré-exports centralisés
 export { LOCATAIRE_TTL };
-
-/**
- * Endpoints REST réservés à l'espace Locataire / Client
- */
-export const LOCATAIRE_ENDPOINTS = {
-  AUTH_MAXIT: '/api/v1/auth/maxit',
-  LOGEMENTS: '/api/v1/logements',
-  LOGEMENT_DETAIL: (id) => `/api/v1/logements/${id}`,
-  LOYERS: '/api/v1/loyers',
-  LOYER_PAY: (id) => `/api/v1/loyers/${id}/pay`,
-  VISITES: '/api/v1/visites',
-  VISITE_CREATE: '/api/v1/visites',
-  FAVORITES: '/api/v1/favorites',
-  FAVORITE_ADD: (id) => `/api/v1/favorites/${id}`,
-  FAVORITE_REMOVE: (id) => `/api/v1/favorites/${id}`,
-  FAVORITES_SYNC: '/api/v1/favorites/sync',
-};
+export { LOCATAIRE_ENDPOINTS };
 
 /**
  * Service API pour l'espace Locataire
