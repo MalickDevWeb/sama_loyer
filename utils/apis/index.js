@@ -5,14 +5,12 @@
 // Architecture modulaire WeChat PMT :
 //   1. Endpoints & Services Locataire (utils/apis/locataire.js)
 //   2. Endpoints & Services Bailleur (utils/apis/bailleur.js)
-//   3. Façade unifiée BackendAPI & rétrocompatibilité totale
+//   3. Façade unifiée BackendAPI & délégation dynamique sans duplication
 //   4. Déballage sécurisé des réponses (utils/apis/response.js)
 // ============================================================================
 
 import { httpClient } from './http.js';
 import { invalidateCache } from './cache.js';
-import { Bus } from '../event/index.js';
-import { EVENTS } from '../event/keys.js';
 
 import {
   LOCATAIRE_ENDPOINTS,
@@ -26,7 +24,7 @@ import {
   bailleurAPI
 } from './bailleur.js';
 
-// Re-exports modulaires
+// Re-exports modulaires par domaine
 export { LOCATAIRE_ENDPOINTS, LocataireAPI, locataireAPI };
 export { BAILLEUR_ENDPOINTS, BailleurAPI, bailleurAPI };
 export { extractApiResponse, unwrapApiResponse } from './response.js';
@@ -42,8 +40,13 @@ export const ENDPOINTS = {
 
 /**
  * Service central unifié Sama Loyer.
- * Offre un accès direct à toutes les opérations, ainsi qu'aux sous-domaines typés
- * `backendAPI.locataire` et `backendAPI.bailleur`.
+ * Offre un accès distinct aux sous-domaines typés:
+ *   - backendAPI.locataire (LocataireAPI)
+ *   - backendAPI.bailleur  (BailleurAPI)
+ *
+ * Les méthodes des deux domaines sont automatiquement et dynamiquement
+ * composées sur BackendAPI.prototype pour garantir 100% de rétrocompatibilité
+ * sans aucune duplication de code.
  */
 class BackendAPI {
   /** @type {LocataireAPI} */
@@ -55,95 +58,28 @@ class BackendAPI {
   /** @type {import('./http').HttpClient} */
   #client = httpClient;
 
-  // ==========================================================================
-  // 1. ESPACE LOCATAIRE / CANDIDAT (Délégation transparente)
-  // ==========================================================================
-
-  getLogements(filters = {}, options = {}) {
-    return this.locataire.getLogements(filters, options);
-  }
-
-  getLogementDetail(id, options = {}) {
-    return this.locataire.getLogementDetail(id, options);
-  }
-
-  getLogementById(id, options = {}) {
-    return this.locataire.getLogementById(id, options);
-  }
-
-  getLoyers(options = {}) {
-    return this.locataire.getLoyers(options);
-  }
-
-  payLoyer(loyerId, payload = {}) {
-    return this.locataire.payLoyer(loyerId, payload);
-  }
-
-  getVisites(options = {}) {
-    return this.locataire.getVisites(options);
-  }
-
-  createVisite(payload) {
-    return this.locataire.createVisite(payload);
-  }
-
-  getFavorites(options = {}) {
-    return this.locataire.getFavorites(options);
-  }
-
-  addFavorite(logementId) {
-    return this.locataire.addFavorite(logementId);
-  }
-
-  removeFavorite(logementId) {
-    return this.locataire.removeFavorite(logementId);
-  }
-
-  syncFavoritesBatch(actions = []) {
-    return this.locataire.syncFavoritesBatch(actions);
-  }
-
-  // ==========================================================================
-  // 2. ESPACE BAILLEUR / PROPRIÉTAIRE (Délégation transparente)
-  // ==========================================================================
-
-  getBailleurAnnonces(options = {}) {
-    return this.bailleur.getBailleurAnnonces(options);
-  }
-
-  getBailleurLocataires(options = {}) {
-    return this.bailleur.getBailleurLocataires(options);
-  }
-
-  searchLocataires(q) {
-    return this.bailleur.searchLocataires(q);
-  }
-
-  getComplianceConfig(options = {}) {
-    return this.bailleur.getComplianceConfig(options);
-  }
-
-  // ==========================================================================
-  // 3. GESTION DE SESSION & CACHE
-  // ==========================================================================
-
   resetSession() {
     this.#client.resetSession();
     invalidateCache();
   }
 }
 
+// Composition dynamique des méthodes de domaines sur BackendAPI.prototype
+function attachDomainMethods(targetClass, sourceInstance) {
+  const proto = Object.getPrototypeOf(sourceInstance);
+  for (const name of Object.getOwnPropertyNames(proto)) {
+    if (name === 'constructor' || name.startsWith('#')) continue;
+    const desc = Object.getOwnPropertyDescriptor(proto, name);
+    if (desc && typeof desc.value === 'function') {
+      targetClass.prototype[name] = function(...args) {
+        return sourceInstance[name](...args);
+      };
+    }
+  }
+}
+
+attachDomainMethods(BackendAPI, locataireAPI);
+attachDomainMethods(BackendAPI, bailleurAPI);
+
 export const backendAPI = new BackendAPI();
 export { BackendAPI };
-
-// ============================================================================
-// COHÉRENCE DU CACHE : chaque écriture publie son événement (store.js) ;
-// on vide alors le cache concerné pour que la prochaine lecture soit à jour.
-// ============================================================================
-Bus.on(EVENTS.RENT_PAID, () => invalidateCache('loyers'));
-Bus.on(EVENTS.VISITES_CHANGED, () => invalidateCache('visites'));
-Bus.on(EVENTS.LOGEMENTS_CHANGED, () => {
-  invalidateCache('logement');
-  invalidateCache('bailleur:annonces');
-});
-Bus.on(EVENTS.LOCATAIRES_CHANGED, () => invalidateCache('bailleur:locataires'));

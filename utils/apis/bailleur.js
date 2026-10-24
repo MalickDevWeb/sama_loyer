@@ -10,7 +10,9 @@
 import { httpClient } from './http.js';
 import { authenticate } from './auth.js';
 import { extractApiResponse } from './response.js';
-import { cached } from './cache.js';
+import { cached, invalidateCache } from './cache.js';
+import { Bus } from '../event/index.js';
+import { EVENTS } from '../event/keys.js';
 import {
   getStoredBailleurAnnonces,
   getStoredLocataires,
@@ -131,3 +133,7 @@ export class BailleurAPI {
 }
 
 export const bailleurAPI = new BailleurAPI();
+
+// Invalidation réactive du cache par événement
+Bus.on(EVENTS.LOGEMENTS_CHANGED, () => invalidateCache('bailleur:annonces'));
+Bus.on(EVENTS.LOCATAIRES_CHANGED, () => invalidateCache('bailleur:locataires'));

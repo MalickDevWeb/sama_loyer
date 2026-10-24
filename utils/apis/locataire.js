@@ -26,6 +26,8 @@ import { RENTED_HOMES } from '../mocks/loyers.js';
 import { cached, invalidateCache } from './cache.js';
 import { storage } from '../storage.js';
 import { STORAGE_KEYS } from '../constants/index.js';
+import { Bus } from '../event/index.js';
+import { EVENTS } from '../event/keys.js';
 
 // Durée de vie en cache (ms)
 export const LOCATAIRE_TTL = {
@@ -239,3 +241,8 @@ export class LocataireAPI {
 }
 
 export const locataireAPI = new LocataireAPI();
+
+// Invalidation réactive du cache par événement
+Bus.on(EVENTS.RENT_PAID, () => invalidateCache('loyers'));
+Bus.on(EVENTS.VISITES_CHANGED, () => invalidateCache('visites'));
+Bus.on(EVENTS.LOGEMENTS_CHANGED, () => invalidateCache('logement'));
