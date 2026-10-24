@@ -54,7 +54,7 @@
 
   <!-- Notifications -->
   <view class="prof__section">
-    <text class="prof__section-title">NOTIFICATIONS</text>
+    <text class="prof__section-title">{{ i18n.profile.notifications || 'NOTIFICATIONS' }}</text>
     <view class="prof__group">
       <view wx:for="{{ notifs }}" wx:key="id" class="prof__row prof__row--notif">
         <view class="prof__row-text">
@@ -75,10 +75,10 @@
 
   <!-- Préférences -->
   <view class="prof__section">
-    <text class="prof__section-title">PRÉFÉRENCES</text>
+    <text class="prof__section-title">{{ i18n.profile.preferences || 'PRÉFÉRENCES' }}</text>
     <view class="prof__group">
       <view class="prof__lang">
-        <text class="prof__row-label">Langue de l'application</text>
+        <text class="prof__row-label">{{ i18n.profile.language || 'Langue de l\'application' }}</text>
         <view class="prof__segmented">
           <view
             wx:for="{{ langs }}"
@@ -91,14 +91,14 @@
       </view>
       <view class="prof__row prof__row--tall" hover-class="prof__row--hover" bindtap="onOpenZones">
         <view class="prof__row-text">
-          <text class="prof__row-label">Quartiers préférés</text>
+          <text class="prof__row-label">{{ i18n.profile.preferredZones || 'Quartiers préférés' }}</text>
           <text class="prof__row-sub">{{ prefs.zones }}</text>
         </view>
         <view class="ic ic-chevron-grey prof__chev"></view>
       </view>
       <view class="prof__row prof__row--tall" hover-class="prof__row--hover" bindtap="onOpenBudget">
         <view class="prof__row-text">
-          <text class="prof__row-label">Budget habituel</text>
+          <text class="prof__row-label">{{ i18n.profile.budgetMax || 'Budget habituel' }}</text>
           <text class="prof__row-sub">{{ prefs.budget }}</text>
         </view>
         <view class="ic ic-chevron-grey prof__chev"></view>
@@ -113,8 +113,8 @@
         <view class="ic ic-users-white ic--lg"></view>
       </view>
       <view class="prof__switch-profile-text">
-        <text class="prof__switch-profile-title">Changer de profil</text>
-        <text class="prof__switch-profile-sub">Basculer vers le profil Bailleur</text>
+        <text class="prof__switch-profile-title">{{ i18n.profile.switchToBailleur || 'Changer de profil' }}</text>
+        <text class="prof__switch-profile-sub">{{ i18n.profile.roleLandlord || 'Basculer vers le profil Bailleur' }}</text>
       </view>
       <view class="prof__switch-profile-badge">
         <text>Bailleur</text>
@@ -125,11 +125,11 @@
 
   <!-- Aide -->
   <view class="prof__section">
-    <text class="prof__section-title">AIDE & SUPPORT</text>
+    <text class="prof__section-title">{{ i18n.profile.helpAndLegal || 'AIDE & SUPPORT' }}</text>
     <view class="prof__group">
       <view class="prof__row prof__row--short" hover-class="prof__row--hover" bindtap="onOpenHelp">
         <view class="ic ic-help-berry prof__row-ic"></view>
-        <text class="prof__row-label">Centre d'aide</text>
+        <text class="prof__row-label">{{ i18n.profile.helpCenter || 'Centre d\'aide' }}</text>
         <view class="ic ic-chevron-grey prof__chev"></view>
       </view>
       <view class="prof__row prof__row--short" hover-class="prof__row--hover" bindtap="onOpenSecurity">

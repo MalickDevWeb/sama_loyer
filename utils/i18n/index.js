@@ -1,5 +1,5 @@
 // ============================================================================
-// I18N — Gestionnaire de langues SAMA LOYER (Français & Wolof)
+// I18N — Gestionnaire de langues SAMA LOYER (Français, Anglais & Wolof)
 //
 // DANS LE JS :
 //   import { t, setLocale, getLocale } from '../../utils/i18n/index';
@@ -12,6 +12,7 @@
 // ============================================================================
 
 import fr from './fr.js';
+import en from './en.js';
 import wo from './wo.js';
 import { storage } from '../storage.js';
 import { Bus } from '../event/index.js';
@@ -19,7 +20,7 @@ import { EVENTS } from '../event/keys.js';
 import { busBehavior } from '../behaviors/bus.js';
 
 const STORAGE_LOCALE_KEY = 'app_user_locale';
-const MESSAGES = { fr, wo };
+const MESSAGES = { fr, en, wo };
 const DEFAULT_LOCALE = 'fr';
 
 let currentLocale = storage.get(STORAGE_LOCALE_KEY, DEFAULT_LOCALE);
@@ -31,7 +32,7 @@ function lookup(dict, key) {
 
 /**
  * Traduit une clé ("domaine.cle") et remplace les paramètres {nom}.
- * Retombe sur le français si la clé wolof est absente, puis sur la clé elle-même.
+ * Retombe sur le français si la clé est absente, puis sur la clé elle-même.
  * @param {string} key
  * @param {Object} [params]
  * @returns {string}
@@ -51,20 +52,20 @@ export function getMessages(locale) {
   return MESSAGES[loc] || MESSAGES[DEFAULT_LOCALE];
 }
 
-/** @returns {string} 'fr' | 'wo' */
+/** @returns {string} 'fr' | 'en' | 'wo' */
 export function getLocale() {
   return currentLocale;
 }
 
 /**
  * Change la langue courante et la persiste en local storage.
- * @param {'fr'|'wo'} locale
+ * @param {'fr'|'en'|'wo'} locale
  */
 export function setLocale(locale) {
   if (MESSAGES[locale]) {
     currentLocale = locale;
     storage.set(STORAGE_LOCALE_KEY, locale);
-    // Les pages déjà ouvertes changent de langue tout de suite
+    // Les pages et composants ouverts changent de langue tout de suite
     Bus.emit(EVENTS.LOCALE_CHANGED, { locale }).catch(() => {});
     return true;
   }
@@ -83,9 +84,11 @@ export const i18nBehavior = Behavior({
 
   lifetimes: {
     attached() {
+      this.setData({ i18n: getMessages(), currentLocale: getLocale() });
       this.listen(EVENTS.LOCALE_CHANGED, ({ locale }) => {
-        if (locale !== this.data.currentLocale) {
-          this.setData({ i18n: getMessages(locale), currentLocale: locale });
+        this.setData({ i18n: getMessages(locale), currentLocale: locale });
+        if (typeof this.onLocaleChange === 'function') {
+          this.onLocaleChange(locale);
         }
       });
     },
@@ -101,6 +104,9 @@ export const i18nBehavior = Behavior({
           i18n: getMessages(stored),
           currentLocale: stored,
         });
+        if (typeof this.onLocaleChange === 'function') {
+          this.onLocaleChange(stored);
+        }
       }
     },
   },

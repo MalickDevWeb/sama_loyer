@@ -43,7 +43,7 @@
       <view class="role-switch-bar">
         <view class="role-segment role-segment--active">
           <view class="ic ic-home-white ic--sm"></view>
-          <text class="role-label">Locataire</text>
+          <text class="role-label">{{ i18n.profile.roleTenant || 'Locataire' }}</text>
         </view>
         <view 
           class="role-segment" 
@@ -52,7 +52,7 @@
           aria-label="Basculer vers l'espace Bailleur"
         >
           <view class="ic ic-users-navy ic--sm"></view>
-          <text class="role-label">Bailleur</text>
+          <text class="role-label">{{ i18n.profile.roleLandlord || 'Bailleur' }}</text>
         </view>
       </view>
     </view>
@@ -80,21 +80,21 @@
 
       <!-- Titre d'accroche -->
       <view class="hero-headline">
-        <text class="hero-title-dark">Trouve ton logement.</text>
-        <text class="hero-title-accent">Simplement.</text>
+        <text class="hero-title-dark">{{ i18n.home.heroTitleDark || 'Trouve ton logement.' }}</text>
+        <text class="hero-title-accent">{{ i18n.home.heroTitleAccent || 'Simplement.' }}</text>
       </view>
 
-      <text class="hero-subtitle">Dis-nous où et combien. L'IA choisit pour toi.</text>
+      <text class="hero-subtitle">{{ i18n.home.heroSubtitle || 'Dis-nous où et combien. L\'IA choisit pour toi.' }}</text>
 
       <!-- Tags de réassurance -->
       <view class="hero-trust-badges">
         <view class="trust-badge">
           <view class="ic ic-check-berry ic--sm"></view>
-          <text>Annonces vérifiées</text>
+          <text>{{ i18n.home.verifiedBadges || 'Annonces vérifiées' }}</text>
         </view>
         <view class="trust-badge">
           <view class="ic ic-check-berry ic--sm"></view>
-          <text>Paiement Max it</text>
+          <text>{{ i18n.home.maxitPayment || 'Paiement Max it' }}</text>
         </view>
       </view>
     </view>
@@ -103,7 +103,7 @@
     <view class="sama-form">
       <!-- Champ Localité -->
       <view class="form-group">
-        <text class="form-label">Localité</text>
+        <text class="form-label">{{ i18n.home.locality || 'Localité' }}</text>
         <view class="input-box input-box--stacked {{ focusField === 'lieu' ? 'input-box--focus' : '' }}">
           <view class="icon-svg icon-pin-berry form-ic form-ic--pin"></view>
           <view class="input-stacked-wrap">
@@ -121,7 +121,7 @@
               placeholder="Ex. Ouakam, Ngor, Yoff, Almadies…"
               placeholder-class="input-placeholder"
             />
-            <text class="input-sub-hint">Changez de localité si besoin</text>
+            <text class="input-sub-hint">{{ i18n.home.localityHint || 'Changez de localité si besoin' }}</text>
           </view>
           <view wx:if="{{ place }}" class="input-clear-btn" bindtap="onClearPlace"><view class="ic ic-close-grey ic--xs"></view></view>
         </view>
@@ -129,7 +129,7 @@
 
       <!-- Champ Budget -->
       <view class="form-group">
-        <text class="form-label">Budget maximum par mois</text>
+        <text class="form-label">{{ i18n.home.budgetLabel || 'Budget maximum par mois' }}</text>
         <view class="input-box {{ focusField === 'budget' ? 'input-box--focus' : '' }}">
           <view class="icon-svg icon-card-berry form-ic form-ic--card"></view>
           <input
@@ -167,7 +167,7 @@
           <view class="search-btn-icon-box {{ isSearching ? 'icon-spin' : '' }}">
             <view class="icon-svg icon-search-white"></view>
           </view>
-          <text class="btn-search-label">{{ isSearching ? 'Recherche en cours…' : 'Rechercher' }}</text>
+          <text class="btn-search-label">{{ isSearching ? (i18n.common.loading || 'Recherche en cours…') : (i18n.common.search || 'Rechercher') }}</text>
         </view>
         <view 
           class="split-right-pill" 
@@ -176,12 +176,12 @@
           bindtap="onVoiceTap"
         >
           <view class="mic-wave"><view class="icon-svg icon-mic-berry"></view></view>
-          <text class="btn-voice-label">Parler</text>
+          <text class="btn-voice-label">{{ i18n.home.voiceBtn || 'Parler' }}</text>
         </view>
       </view>
 
       <!-- Note d'aide sous le bouton -->
-      <text class="form-help-hint">Écris ci-dessus, ou touche « Parler » en wolof ou en français</text>
+      <text class="form-help-hint">{{ i18n.home.formHint || 'Écris ci-dessus, ou touche « Parler » en wolof ou en français' }}</text>
 
       <!-- Carte Mes favoris -->
       <view class="favorites-nav-card" hover-class="sl-hover" bindtap="onGoToFavorites">
@@ -189,7 +189,7 @@
           <view class="icon-svg icon-heart-fill-berry"></view>
         </view>
         <view class="fav-meta">
-          <text class="fav-title">Mes favoris</text>
+          <text class="fav-title">{{ i18n.favoris.title || 'Mes favoris' }}</text>
           <text class="fav-sub">{{ favoritesCount }} logement{{ favoritesCount > 1 ? 's' : '' }} enregistré{{ favoritesCount > 1 ? 's' : '' }}</text>
         </view>
         <view class="ic ic-chevron-berry ic--md"></view>
