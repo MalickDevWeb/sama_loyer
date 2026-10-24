@@ -5,7 +5,7 @@ import { backendAPI } from '../../../utils/apis/index.js';
 import { getFavoritesMap, getFavoriteIds, toggleFavoriteId } from '../../../utils/helpers/favorites';
 import { TINTS } from '../../../utils/constants/theme';
 import { navigateWithData } from '../../../utils/helpers/nav-data';
-import { i18nBehavior } from '../../../utils/i18n/index.js';
+import { i18nBehavior, getLocale } from '../../../utils/i18n/index.js';
 
 function setTabBarVisible(page, visible) {
   try {
@@ -97,6 +97,20 @@ function parseNaturalQuery(text) {
   return { place, budget };
 }
 
+function formatType(typeLabel, locale) {
+  if (locale === 'en') {
+    const map = {
+      'Chambre salon': '1-Bed & Living Room',
+      'Chambre': 'Single Room',
+      'Studio': 'Studio Apartment',
+      'Appartement': 'Apartment',
+      'Maison': 'House'
+    };
+    return map[typeLabel] || typeLabel;
+  }
+  return typeLabel;
+}
+
 Page({
   behaviors: [i18nBehavior],
 
@@ -172,9 +186,23 @@ Page({
       favorites: getFavoritesMap(),
       favoritesCount: favIds.length || 4
     });
+    this.doSearch(this.data.place, this.data.budget ? Number(String(this.data.budget).replace(/\D/g, '')) : 0, false);
 
     // Assure l'affichage permanent de la TabBar
     try { wx.showTabBar({ animation: false }); } catch (e) {}
+  },
+
+  onLocaleChange() {
+    this.refreshSearch();
+  },
+
+  refreshSearch() {
+    const favIds = getFavoriteIds();
+    this.setData({
+      favorites: getFavoritesMap(),
+      favoritesCount: favIds.length || 4
+    });
+    this.doSearch(this.data.place, this.data.budget ? Number(String(this.data.budget).replace(/\D/g, '')) : 0, false);
   },
 
   // ==========================================
@@ -263,9 +291,11 @@ Page({
     });
 
     // Mise en forme des résultats
+    const loc = getLocale();
     const results = filtered.map((l, i) => ({
       ...l,
       rank: i + 1,
+      displayType: formatType(l.typeLabel, loc),
       formattedPrice: l.priceFormatted || formatMoney(l.price),
       tintBg: tints[i % tints.length],
       isFav: !!this.data.favorites[l.id]
