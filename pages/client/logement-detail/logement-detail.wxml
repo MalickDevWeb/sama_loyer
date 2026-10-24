@@ -379,7 +379,7 @@
   <!-- ======================================================== -->
   <!-- LECTEUR DE LA VIDÉO DE VISITE -->
   <!-- ======================================================== -->
-  <view wx:if="{{ playingVideo }}" class="vplayer-overlay" catchtouchmove="noop">
+  <view wx:if="{{ playingVideo }}" class="vplayer-overlay">
     <view class="vplayer-head" style="padding-top: {{ headerTop }}px;">
       <view class="vplayer-back" hover-class="dh-btn--hover" bindtap="onCloseVideo" aria-label="Retour">
         <view class="ic ic-back-white ic--md"></view>
@@ -387,13 +387,54 @@
       <text class="vplayer-title">Visite vidéo</text>
     </view>
     <video
+      id="vplayer-video"
       class="vplayer-video"
       src="{{ logement.video.src }}"
       poster="{{ logement.video.poster }}"
       autoplay="{{ true }}"
-      object-fit="contain"
+      controls="{{ true }}"
+      show-progress="{{ true }}"
+      enable-progress-gesture="{{ true }}"
+      vslide-gesture="{{ true }}"
+      vslide-gesture-in-fullscreen="{{ true }}"
+      show-center-play-btn="{{ true }}"
+      show-play-btn="{{ true }}"
       show-fullscreen-btn="{{ true }}"
+      show-mute-btn="{{ true }}"
+      enable-play-gesture="{{ true }}"
+      object-fit="contain"
+      bindtimeupdate="onVideoTimeUpdate"
     ></video>
+    <!-- Barre de contrôle enrichie SAMA LOYER pour avancer / reculer / régler facilement -->
+    <view class="vplayer-quick-bar">
+      <view class="vplayer-quick-btn" hover-class="sl-hover" bindtap="onVideoRewind10" aria-label="Reculer de 10 secondes">
+        <view class="ic ic-rewind-white"></view>
+        <text>-10s</text>
+      </view>
+      <view class="vplayer-slider-wrap">
+        <slider
+          class="vplayer-slider"
+          value="{{ videoCurrentTime }}"
+          min="0"
+          max="{{ videoDuration || 100 }}"
+          step="1"
+          activeColor="#C8235F"
+          backgroundColor="rgba(255, 255, 255, 0.25)"
+          block-size="16"
+          block-color="#FFFFFF"
+          bindchange="onVideoSliderChange"
+          bindchanging="onVideoSliderChanging"
+        />
+        <view class="vplayer-time-row">
+          <text class="vplayer-time-txt">{{ videoCurrentTimeFmt || '00:00' }}</text>
+          <text class="vplayer-time-txt">{{ videoDurationFmt || '00:00' }}</text>
+        </view>
+      </view>
+      <view class="vplayer-quick-btn" hover-class="sl-hover" bindtap="onVideoForward10" aria-label="Avancer de 10 secondes">
+        <text>+10s</text>
+        <view class="ic ic-forward-white"></view>
+      </view>
+    </view>
     <view class="vplayer-foot">
       <text class="vplayer-note">{{ logement.title }} · filmée par le bailleur</text>
       <view class="vplayer-btn-close" hover-class="sl-hover" bindtap="onCloseVideo">
