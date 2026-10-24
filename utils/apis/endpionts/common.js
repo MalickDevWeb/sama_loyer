@@ -15,3 +15,4 @@ export const COMMON_ENDPOINTS = {
   HEALTH: '/api/v1/health',
   WEBHOOKS_MAXIT: '/api/v1/webhooks/maxit',
 };
+

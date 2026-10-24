@@ -84,15 +84,40 @@ export async function runApiSeparationTests() {
   console.log('  ✓ locataireAPI expose exclusivement les méthodes locataires');
   passed++;
 
-  // Test 5 : bailleurAPI instance et méthodes
+  // Test 5 : bailleurAPI instance et couverture intégrale des méthodes bailleurs
   assert.ok(bailleurAPI instanceof BailleurAPI);
+  assert.equal(typeof bailleurAPI.getDashboard, 'function');
+  assert.equal(typeof bailleurAPI.getCompte, 'function');
+  assert.equal(typeof bailleurAPI.activateCompte, 'function');
+  assert.equal(typeof bailleurAPI.renewAbonnement, 'function');
+  assert.equal(typeof bailleurAPI.getPaiements, 'function');
+  assert.equal(typeof bailleurAPI.getKyc, 'function');
+  assert.equal(typeof bailleurAPI.submitKyc, 'function');
+
   assert.equal(typeof bailleurAPI.getAnnonces, 'function');
   assert.equal(typeof bailleurAPI.getBailleurAnnonces, 'function');
+  assert.equal(typeof bailleurAPI.getAnnonceDetail, 'function');
+  assert.equal(typeof bailleurAPI.createAnnonce, 'function');
+  assert.equal(typeof bailleurAPI.updateAnnonce, 'function');
+  assert.equal(typeof bailleurAPI.confirmAvailability, 'function');
+  assert.equal(typeof bailleurAPI.hideAnnonce, 'function');
+  assert.equal(typeof bailleurAPI.unhideAnnonce, 'function');
+  assert.equal(typeof bailleurAPI.boostAnnonce, 'function');
+  assert.equal(typeof bailleurAPI.updateHorairesVisite, 'function');
+
+  assert.equal(typeof bailleurAPI.getVisites, 'function');
+  assert.equal(typeof bailleurAPI.acceptVisite, 'function');
+  assert.equal(typeof bailleurAPI.rejectVisite, 'function');
+
   assert.equal(typeof bailleurAPI.getLocataires, 'function');
   assert.equal(typeof bailleurAPI.getBailleurLocataires, 'function');
+  assert.equal(typeof bailleurAPI.createLocataire, 'function');
   assert.equal(typeof bailleurAPI.searchLocataires, 'function');
+  assert.equal(typeof bailleurAPI.recordCashPayment, 'function');
+  assert.equal(typeof bailleurAPI.sendContractNotice, 'function');
+  assert.equal(typeof bailleurAPI.refundDeposit, 'function');
   assert.equal(typeof bailleurAPI.getComplianceConfig, 'function');
-  console.log('  ✓ bailleurAPI expose exclusivement les méthodes bailleurs');
+  console.log('  ✓ bailleurAPI couvre 100% des méthodes de gestion immobilière');
   passed++;
 
   // Test 6 : Façade backendAPI unifiée avec sous-domaines .locataire et .bailleur
@@ -101,6 +126,7 @@ export async function runApiSeparationTests() {
   assert.strictEqual(backendAPI.bailleur, bailleurAPI);
   assert.equal(typeof backendAPI.getLogements, 'function');
   assert.equal(typeof backendAPI.getBailleurAnnonces, 'function');
+  assert.equal(typeof backendAPI.getDashboard, 'function');
   assert.equal(typeof backendAPI.getLogementById, 'function');
   assert.equal(typeof backendAPI.resetSession, 'function');
 
@@ -111,6 +137,10 @@ export async function runApiSeparationTests() {
 
   const annonces = await backendAPI.getBailleurAnnonces();
   assert.ok(Array.isArray(annonces));
+
+  const dashboard = await backendAPI.getDashboard();
+  assert.ok(dashboard);
+  assert.equal(typeof dashboard.annoncesCount, 'number');
 
   console.log('  ✓ backendAPI fédère locataire et bailleur avec sous-domaines typés');
   passed++;

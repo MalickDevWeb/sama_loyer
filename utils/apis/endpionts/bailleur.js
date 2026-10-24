@@ -47,3 +47,4 @@ export const BAILLEUR_ENDPOINTS = {
   SETTINGS_COMPLIANCE: '/api/v1/settings/compliance',
   COMPLIANCE: '/api/v1/settings/compliance', // alias court
 };
+

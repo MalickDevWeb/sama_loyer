@@ -62,3 +62,4 @@ export const LOCATAIRE_ENDPOINTS = {
   CONVERSATION_MESSAGES: (id) => `/api/v1/conversations/${id}/messages`,
   CONVERSATION_READ: (id) => `/api/v1/conversations/${id}/read`,
 };
+
