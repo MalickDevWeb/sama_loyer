@@ -3,13 +3,6 @@ import { setCustomTabBarActive } from '../../../utils/helpers/tab-bar';
 import { backendAPI } from '../../../utils/apis/index.js';
 import { i18nBehavior, getLocale } from '../../../utils/i18n/index.js';
 
-const TABS = [
-  { id: 'all', label: 'Toutes' },
-  { id: 'pending', label: 'En attente' },
-  { id: 'accepted', label: 'Acceptées' },
-  { id: 'rejected', label: 'Refusées' }
-];
-
 // Libellés d'onglets avec le nombre de visites par statut
 function buildTabs(list) {
   const isEn = getLocale() === 'en';
@@ -28,11 +21,35 @@ function buildTabs(list) {
     const n = t.id === 'all' ? list.length : list.filter((v) => v.status === t.id).length;
     return { id: t.id, label: `${t.label} (${n})` };
   });
-},
+}
+
+Page({
+  behaviors: [i18nBehavior],
+
+  data: {
+    uiState: 'content', // 'loading' | 'content' | 'error'
+    statusBarHeight: 44,
+    activeFilter: 'all', // all | pending | accepted | rejected
+    tabs: buildTabs([]),
+    visitesList: [],
+    filteredList: [],
+    expandedMap: {} // { [id]: boolean } pour déplier/replier avec "Voir plus"
+  },
+
+  onLoad() {
+    try {
+      const sysInfo = wx.getSystemInfoSync();
+      this.setData({ statusBarHeight: sysInfo.statusBarHeight || 44 });
+    } catch (e) {}
+  },
 
   onShow() {
     setCustomTabBarActive(this, 'visites');
     // Recharge à chaque affichage : une demande peut venir d'être envoyée
+    this.reload();
+  },
+
+  onLocaleChange() {
     this.reload();
   },
 
