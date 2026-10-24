@@ -56,16 +56,65 @@
   <view class="prof__section">
     <text class="prof__section-title">{{ i18n.profile.notifications || 'NOTIFICATIONS' }}</text>
     <view class="prof__group">
-      <view wx:for="{{ notifs }}" wx:key="id" class="prof__row prof__row--notif">
+      <!-- 1. Nouveaux messages -->
+      <view class="prof__row prof__row--notif">
         <view class="prof__row-text">
-          <text class="prof__row-label">{{ item.label }}</text>
-          <text class="prof__row-sub">{{ item.sub }}</text>
+          <text class="prof__row-label">{{ i18n.profile.notifMsgLabel || 'Nouveaux messages' }}</text>
+          <text class="prof__row-sub">{{ i18n.profile.notifMsgSub || 'Quand un bailleur te répond' }}</text>
         </view>
         <view
-          class="prof__switch {{ item.on ? 'prof__switch--on' : '' }}"
-          data-id="{{ item.id }}"
+          class="prof__switch {{ prefs.notifs.msg ? 'prof__switch--on' : '' }}"
+          data-id="msg"
           bindtap="onToggleNotif"
-          aria-label="{{ item.label }}"
+          aria-label="{{ i18n.profile.notifMsgLabel || 'Nouveaux messages' }}"
+        >
+          <view class="prof__knob"></view>
+        </view>
+      </view>
+
+      <!-- 2. Réponses aux visites -->
+      <view class="prof__row prof__row--notif">
+        <view class="prof__row-text">
+          <text class="prof__row-label">{{ i18n.profile.notifVisitLabel || 'Réponses aux visites' }}</text>
+          <text class="prof__row-sub">{{ i18n.profile.notifVisitSub || 'Acceptée, refusée ou modifiée' }}</text>
+        </view>
+        <view
+          class="prof__switch {{ prefs.notifs.visit ? 'prof__switch--on' : '' }}"
+          data-id="visit"
+          bindtap="onToggleNotif"
+          aria-label="{{ i18n.profile.notifVisitLabel || 'Réponses aux visites' }}"
+        >
+          <view class="prof__knob"></view>
+        </view>
+      </view>
+
+      <!-- 3. Nouvelles annonces -->
+      <view class="prof__row prof__row--notif">
+        <view class="prof__row-text">
+          <text class="prof__row-label">{{ i18n.profile.notifNewLabel || 'Nouvelles annonces' }}</text>
+          <text class="prof__row-sub">{{ i18n.profile.notifNewSub || 'Dans tes quartiers préférés' }}</text>
+        </view>
+        <view
+          class="prof__switch {{ prefs.notifs.new ? 'prof__switch--on' : '' }}"
+          data-id="new"
+          bindtap="onToggleNotif"
+          aria-label="{{ i18n.profile.notifNewLabel || 'Nouvelles annonces' }}"
+        >
+          <view class="prof__knob"></view>
+        </view>
+      </view>
+
+      <!-- 4. Baisses de prix -->
+      <view class="prof__row prof__row--notif">
+        <view class="prof__row-text">
+          <text class="prof__row-label">{{ i18n.profile.notifPriceLabel || 'Baisses de prix' }}</text>
+          <text class="prof__row-sub">{{ i18n.profile.notifPriceSub || 'Sur tes favoris' }}</text>
+        </view>
+        <view
+          class="prof__switch {{ prefs.notifs.price ? 'prof__switch--on' : '' }}"
+          data-id="price"
+          bindtap="onToggleNotif"
+          aria-label="{{ i18n.profile.notifPriceLabel || 'Baisses de prix' }}"
         >
           <view class="prof__knob"></view>
         </view>

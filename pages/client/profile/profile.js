@@ -7,30 +7,6 @@ import { getConversations } from '../../../utils/mocks/conversations';
 import { setLocale, getLocale, i18nBehavior, t, getMessages } from '../../../utils/i18n/index';
 import { COLORS } from '../../../utils/constants/theme';
 
-function getNotificationItems() {
-  return [
-    {
-      id: 'msg',
-      label: t('profile.notifMsgLabel'),
-      sub: t('profile.notifMsgSub')
-    },
-    {
-      id: 'visit',
-      label: t('profile.notifVisitLabel'),
-      sub: t('profile.notifVisitSub')
-    },
-    {
-      id: 'new',
-      label: t('profile.notifNewLabel'),
-      sub: t('profile.notifNewSub')
-    },
-    {
-      id: 'price',
-      label: t('profile.notifPriceLabel'),
-      sub: t('profile.notifPriceSub')
-    }
-  ];
-}
 
 const DEFAULT_PREFS = {
   notifs: { msg: true, visit: true, new: true, price: false },
@@ -192,14 +168,16 @@ Page({
   },
 
   renderPrefs() {
-    const notifDefs = getNotificationItems();
+    const currentLoc = this.prefs.lang || getLocale();
     this.setData({
-      lang: this.prefs.lang || getLocale(),
+      lang: currentLoc,
+      currentLocale: currentLoc,
+      i18n: getMessages(currentLoc),
       prefs: {
+        notifs: Object.assign({}, DEFAULT_PREFS.notifs, this.prefs.notifs),
         zones: this.prefs.zones || DEFAULT_PREFS.zones,
         budget: this.prefs.budget || DEFAULT_PREFS.budget
-      },
-      notifs: notifDefs.map((n) => ({ ...n, on: !!this.prefs.notifs[n.id] }))
+      }
     });
   },
 
