@@ -78,7 +78,7 @@
     <text class="prof__section-title">{{ i18n.profile.preferences || 'PRÉFÉRENCES' }}</text>
     <view class="prof__group">
       <view class="prof__lang">
-        <text class="prof__row-label">{{ i18n.profile.language || 'Langue de l\'application' }}</text>
+        <text class="prof__row-label">{{ i18n.profile.language || 'Langue de l’application' }}</text>
         <view class="prof__segmented">
           <view
             wx:for="{{ langs }}"
@@ -129,7 +129,7 @@
     <view class="prof__group">
       <view class="prof__row prof__row--short" hover-class="prof__row--hover" bindtap="onOpenHelp">
         <view class="ic ic-help-berry prof__row-ic"></view>
-        <text class="prof__row-label">{{ i18n.profile.helpCenter || 'Centre d\'aide' }}</text>
+        <text class="prof__row-label">{{ i18n.profile.helpCenter || 'Centre d’aide' }}</text>
         <view class="ic ic-chevron-grey prof__chev"></view>
       </view>
       <view class="prof__row prof__row--short" hover-class="prof__row--hover" bindtap="onOpenSecurity">

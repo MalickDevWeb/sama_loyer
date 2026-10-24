@@ -84,7 +84,7 @@
         <text class="hero-title-accent">{{ i18n.home.heroTitleAccent || 'Simplement.' }}</text>
       </view>
 
-      <text class="hero-subtitle">{{ i18n.home.heroSubtitle || 'Dis-nous où et combien. L\'IA choisit pour toi.' }}</text>
+      <text class="hero-subtitle">{{ i18n.home.heroSubtitle || 'Dis-nous où et combien. L’IA choisit pour toi.' }}</text>
 
       <!-- Tags de réassurance -->
       <view class="hero-trust-badges">
