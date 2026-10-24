@@ -7,8 +7,14 @@
     
     <!-- En-tête -->
     <view class="locataires-top-header">
-      <text class="page-title-main">Mes locataires</text>
-      <text class="page-sub-desc">{{ kpi.totalCount }} logements loués · loyers et problèmes</text>
+      <view class="locataires-header-titles">
+        <text class="page-title-main">Mes locataires</text>
+        <text class="page-sub-desc">{{ kpi.totalCount }} logements loués · loyers et problèmes</text>
+      </view>
+      <!-- Même bouton + que « Mes annonces » : ajouter une nouvelle location -->
+      <view class="btn-top-add" hover-class="btn-top-add--hover" bindtap="onOpenNewLoc" aria-label="Ajouter une nouvelle location">
+        <text class="btn-top-plus">+</text>
+      </view>
     </view>
 
     <!-- Synthèse du mois -->
@@ -37,7 +43,7 @@
         data-filter="{{ item.id }}"
         bindtap="onSelectFilter"
       >
-        <text>{{ item.label }}</text>
+        <text class="ml-tab-label">{{ item.label }}</text>
         <text class="ml-tab-count">{{ item.count }}</text>
       </view>
     </view>
@@ -59,7 +65,7 @@
           <text class="ml-name">{{ item.name }}</text>
           <text class="ml-sub">{{ item.property }}</text>
         </view>
-        <text class="ml-badge {{ item.status === 'a_confirmer' ? 'ml-badge--amber' : (item.status === 'en_retard' ? 'ml-badge--berry' : 'ml-badge--green') }}">{{ item.statusLabel }}</text>
+        <text class="ml-badge {{ item.status === 'a_confirmer' ? 'ml-badge--amber' : (item.status === 'en_retard' ? 'ml-badge--berry' : (item.status === 'invite' ? 'ml-badge--navy' : 'ml-badge--green')) }}">{{ item.statusLabel }}</text>
         <view class="ic ic-chevron-grey ic--sm"></view>
       </view>
     </view>
@@ -100,8 +106,9 @@
       </view>
 
       <view class="loc-sheet-status-row">
-        <text class="loc-sheet-label">Loyer d'octobre</text>
-        <view class="locataire-badge-status {{ detail.status === 'a_confirmer' ? 'badge-a-confirmer' : (detail.status === 'en_retard' ? 'badge-en-retard' : 'badge-paye') }}">
+        <text wx:if="{{ detail.status === 'invite' }}" class="loc-sheet-label">Contrat</text>
+        <text wx:else class="loc-sheet-label">Loyer d'octobre</text>
+        <view class="locataire-badge-status {{ detail.status === 'a_confirmer' ? 'badge-a-confirmer' : (detail.status === 'en_retard' ? 'badge-en-retard' : (detail.status === 'invite' ? 'badge-a-confirmer' : 'badge-paye')) }}">
           {{ detail.statusLabel }}
         </view>
       </view>
@@ -123,6 +130,11 @@
         <view class="btn-action-dark-navy" hover-class="btn-hover-opacity" bindtap="onMarquerPayeModou">Il a payé</view>
       </view>
 
+      <!-- Invité : contrat pas encore signé -->
+      <view wx:elif="{{ detail.status === 'invite' }}" class="action-buttons-pair-row">
+        <view class="btn-action-outline-navy" hover-class="btn-hover-opacity" bindtap="onRenvoyerInvitation">Renvoyer l'invitation</view>
+      </view>
+
       <view class="loc-sheet-rows">
         <view class="loc-sheet-row">
           <text class="loc-sheet-label">Caution détenue</text>
@@ -138,6 +150,110 @@
         <view class="ecrire-chat-bubble-icon"></view>
         <text class="ecrire-label-txt">Écrire à {{ detail.name }}</text>
       </view>
+    </view>
+  </view>
+
+  <!-- ================= NOUVELLE LOCATION (bouton +) ================= -->
+  <view wx:if="{{ newLocOpen }}" class="loc-sheet-overlay" catchtouchmove="noop" bindtap="onCloseNewLoc">
+    <view class="loc-sheet nl-sheet" catchtap="noop" aria-label="Nouvelle location">
+      <view class="loc-sheet-handle"></view>
+
+      <view class="card-head-row">
+        <view class="locataire-meta-col">
+          <text class="locataire-name-title">Nouvelle location</text>
+          <text class="locataire-prop-info">Ton locataire reçoit un SMS pour signer le contrat et payer avec Max it.</text>
+        </view>
+        <view class="loc-sheet-close" hover-class="btn-hover-opacity" bindtap="onCloseNewLoc"><view class="ic ic-close-navy ic--sm"></view></view>
+      </view>
+
+      <scroll-view class="nl-scroll" scroll-y="{{ true }}" show-scrollbar="{{ false }}">
+        <!-- Aucun logement libre : il faut d'abord publier une annonce -->
+        <view wx:if="{{ freeAnnonces.length === 0 }}" class="nl-empty">
+          <text class="nl-empty-text">Tous tes logements sont déjà loués. Publie une annonce pour ajouter une nouvelle location.</text>
+          <view class="btn-action-dark-navy nl-empty-btn" hover-class="btn-hover-opacity" bindtap="onGoAjouterAnnonce">Publier une annonce</view>
+        </view>
+
+        <block wx:else>
+          <text class="nl-label">Logement</text>
+          <view class="nl-homes">
+            <view
+              wx:for="{{ freeAnnonces }}"
+              wx:key="id"
+              class="nl-home {{ newLoc.annonceId === item.id ? 'nl-home--on' : '' }}"
+              data-id="{{ item.id }}"
+              bindtap="onPickNewLocAnnonce"
+            >
+              <view class="nl-radio {{ newLoc.annonceId === item.id ? 'nl-radio--on' : '' }}"></view>
+              <view class="nl-home-text">
+                <text class="nl-home-title">{{ item.title }}</text>
+                <text class="nl-home-sub">{{ item.place }}</text>
+              </view>
+            </view>
+          </view>
+
+          <text class="nl-label">Locataire</text>
+
+          <!-- Personne choisie -->
+          <view wx:if="{{ tenant }}" class="nl-tenant nl-tenant--picked">
+            <view class="nl-tenant-avatar">{{ tenant.initials }}</view>
+            <view class="nl-tenant-text">
+              <text class="nl-tenant-name">{{ tenant.name }}</text>
+              <text class="nl-tenant-sub">+221 {{ tenant.phoneText }} · {{ tenant.contactOf }}</text>
+            </view>
+            <text class="nl-tenant-change" bindtap="onChangeTenant">Changer</text>
+          </view>
+
+          <!-- Un seul champ : nom OU numéro -->
+          <block wx:else>
+            <view class="nl-field">
+              <view class="ic ic-search-grey ic--sm"></view>
+              <input class="nl-input nl-input--bare" placeholder="Nom ou numéro (77 123 45 67)" placeholder-class="nl-placeholder" value="{{ tenantQuery }}" bindinput="onTenantSearch" confirm-type="search" />
+            </view>
+            <text wx:if="{{ !tenantQuery }}" class="nl-hint">Par nom : les personnes qui t'ont écrit ou ont visité. Par numéro complet : tout compte Max it.</text>
+
+            <view wx:if="{{ tenantResults.length }}" class="nl-results">
+              <view wx:for="{{ tenantResults }}" wx:key="id" class="nl-tenant" hover-class="btn-hover-opacity" data-id="{{ item.id }}" bindtap="onPickTenant">
+                <view class="nl-tenant-avatar">{{ item.initials }}</view>
+                <view class="nl-tenant-text">
+                  <text class="nl-tenant-name">{{ item.name }}</text>
+                  <text class="nl-tenant-sub">+221 {{ item.phoneText }} · {{ item.contactOf }}</text>
+                </view>
+                <text class="nl-tenant-pick">Choisir</text>
+              </view>
+            </view>
+
+            <!-- Numéro complet sans compte : invitation par SMS, on demande juste le nom -->
+            <view wx:if="{{ tenantNewPhone }}" class="nl-newphone">
+              <text class="nl-newphone-text">Aucun compte SAMA LOYER avec ce numéro. Il recevra l'invitation par SMS et créera son compte avec Max it.</text>
+              <input class="nl-input" placeholder="Nom du locataire, ex. Awa Diop" placeholder-class="nl-placeholder" value="{{ newLoc.name }}" bindinput="onTenantNewName" />
+            </view>
+
+            <text wx:if="{{ tenantNoMatch }}" class="nl-hint nl-hint--warn">Personne avec ce nom parmi tes contacts. Tape son numéro pour l'inviter.</text>
+          </block>
+
+          <text class="nl-label">Loyer mensuel</text>
+          <view class="nl-field">
+            <input class="nl-input nl-input--bare" type="number" placeholder="65000" placeholder-class="nl-placeholder" value="{{ newLoc.rent }}" data-field="rent" bindinput="onNewLocInput" />
+            <text class="nl-suffix">F / mois</text>
+          </view>
+
+          <text class="nl-label">Caution · {{ newLocCautionText }}</text>
+          <view class="nl-segment">
+            <view class="nl-seg {{ newLoc.cautionMonths === 1 ? 'nl-seg--on' : '' }}" data-months="1" bindtap="onNewLocCaution">1 mois</view>
+            <view class="nl-seg {{ newLoc.cautionMonths === 2 ? 'nl-seg--on' : '' }}" data-months="2" bindtap="onNewLocCaution">2 mois</view>
+          </view>
+
+          <text class="nl-label">Date d'entrée</text>
+          <picker mode="date" value="{{ newLoc.startDate }}" bindchange="onNewLocDate">
+            <view class="nl-field nl-field--picker">
+              <text class="nl-picker-value">{{ newLoc.startDate }}</text>
+              <view class="ic ic-chevron-grey ic--sm"></view>
+            </view>
+          </picker>
+
+          <view class="btn-action-dark-navy nl-submit" hover-class="btn-hover-opacity" bindtap="onSubmitNewLoc">Envoyer l'invitation</view>
+        </block>
+      </scroll-view>
     </view>
   </view>
 </view>

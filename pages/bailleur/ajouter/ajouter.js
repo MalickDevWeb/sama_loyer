@@ -27,10 +27,9 @@ Page({
   behaviors: [bailleurGuardBehavior],
 
   data: {
-    // En-tête calé sur la capsule WeChat (valeurs recalculées dans onLoad)
-    headStyle: 'padding-top: 44px;',
-    navStyle: 'height: 32px; padding-right: 100px;',
-    bodyStyle: 'padding-top: 124px;',
+    // Corps décalé sous l'en-tête fixe (barre SAMA LOYER + titre + progression),
+    // hauteur mesurée dans measureHeader()
+    bodyStyle: 'padding-top: 160px;',
     step: 1, // 1 : le logement → 2 : photos et atouts → 3 : confirmation
 
     // Étape 1 : Type & Quartier
@@ -90,25 +89,30 @@ Page({
   },
 
   onLoad(options) {
-    try {
-      const sys = wx.getSystemInfoSync();
-      const statusBarHeight = sys.statusBarHeight || 20;
-      const menu = wx.getMenuButtonBoundingClientRect ? wx.getMenuButtonBoundingClientRect() : null;
-      const navTop = menu && menu.top ? menu.top : statusBarHeight + 6;
-      const navHeight = menu && menu.height ? menu.height : 32;
-      const capsuleSpace = menu && menu.left ? sys.windowWidth - menu.left + 8 : 100;
-      // Hauteur de l'en-tête : barre de navigation + barre de progression (~40 px)
-      const bodyTop = navTop + navHeight + 48;
-      const initialStep = options && options.step ? Math.min(Math.max(Number(options.step) || 1, 1), 2) : 1;
-      this.setData({
-        headStyle: `padding-top: ${navTop}px;`,
-        navStyle: `height: ${navHeight}px; padding-right: ${capsuleSpace}px;`,
-        bodyStyle: `padding-top: ${bodyTop}px;`,
-        step: initialStep
-      });
-    } catch (e) {}
-
+    const initialStep = options && options.step ? Math.min(Math.max(Number(options.step) || 1, 1), 2) : 1;
+    this.setData({ step: initialStep });
     this.updateFinancialSummary();
+  },
+
+  onReady() {
+    this.measureHeader();
+  },
+
+  // L'en-tête fixe change de hauteur (barre d'état, progression masquée à l'étape 3) :
+  // on mesure sa hauteur réelle pour que le formulaire commence juste dessous.
+  measureHeader() {
+    wx.createSelectorQuery()
+      .in(this)
+      .select('.aj-fixed')
+      .boundingClientRect((rect) => {
+        if (rect && rect.height) this.setData({ bodyStyle: `padding-top: ${Math.ceil(rect.height)}px;` });
+      })
+      .exec();
+  },
+
+  goToStep(step, extra = {}) {
+    this.setData(Object.assign({ step }, extra), () => this.measureHeader());
+    wx.pageScrollTo && wx.pageScrollTo({ scrollTop: 0, duration: 0 });
   },
 
   updateFinancialSummary() {
@@ -124,7 +128,7 @@ Page({
 
   onClose() {
     if (this.data.step === 2) {
-      this.setData({ step: this.data.step - 1 });
+      this.goToStep(1);
       return;
     }
     if (this.backToAnnonces()) return;
@@ -276,8 +280,7 @@ Page({
       wx.showToast({ title: 'Indique le montant du loyer', icon: 'none' });
       return;
     }
-    this.setData({ step: 2 });
-    wx.pageScrollTo && wx.pageScrollTo({ scrollTop: 0, duration: 0 });
+    this.goToStep(2);
   },
 
   onPublishListing() {
@@ -324,15 +327,13 @@ Page({
 
     setTimeout(() => {
       wx.hideLoading();
-      this.setData({ step: 3 });
-      wx.pageScrollTo && wx.pageScrollTo({ scrollTop: 0, duration: 0 });
+      this.goToStep(3);
     }, 600);
   },
 
   // Repart d'un formulaire vierge pour une nouvelle annonce
   onAddAnother() {
-    this.setData({
-      step: 1,
+    this.goToStep(1, {
       adresseDetail: '',
       description: '',
       contractMode: 'standard',
@@ -340,7 +341,6 @@ Page({
       ...photoState([]),
       ...videoState(null)
     });
-    wx.pageScrollTo && wx.pageScrollTo({ scrollTop: 0, duration: 0 });
   },
 
   onVoirAnnonces() {

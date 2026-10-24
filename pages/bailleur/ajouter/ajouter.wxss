@@ -16,8 +16,8 @@
   opacity: 0.75;
 }
 
-/* --- En-tête fixe ------------------------------------------------------- */
-.aj-head {
+/* --- En-tête fixe : barre SAMA LOYER + titre + progression --------------- */
+.aj-fixed {
   position: fixed;
   top: 0;
   left: 0;
@@ -31,7 +31,8 @@
   display: flex;
   align-items: center;
   gap: 12rpx;
-  padding-left: 16rpx;
+  height: 80rpx;
+  padding: 0 32rpx 0 16rpx;
 }
 
 .aj-back {

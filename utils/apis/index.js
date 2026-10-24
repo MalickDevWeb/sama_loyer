@@ -27,7 +27,8 @@ import {
   getStoredLocataires,
   recordRentPayment,
   getComplianceConfig,
-  setComplianceConfig
+  setComplianceConfig,
+  searchTenantCandidates
 } from '../helpers/store.js';
 import { RENTED_HOMES } from '../mocks/loyers.js';
 import { cached, invalidateCache } from './cache.js';
@@ -52,6 +53,7 @@ export const ENDPOINTS = {
   BAILLEUR_LOCATAIRES: '/api/v1/bailleur/locataires',
   AUTH_MAXIT: '/api/v1/auth/maxit',
   SETTINGS_COMPLIANCE: '/api/v1/settings/compliance',
+  BAILLEUR_TENANT_SEARCH: '/api/v1/bailleur/tenant-search',
 };
 
 function extractApiResponse(res, fallbackMessage) {
@@ -276,6 +278,23 @@ class BackendAPI {
     } catch (err) {
       // Dernière configuration connue, sinon valeurs par défaut (utils/mocks/compliance.js)
       return getComplianceConfig();
+    }
+  }
+
+  /**
+   * Recherche du locataire d'une nouvelle location, par nom ou par numéro.
+   * Pas de cache : le résultat dépend de chaque frappe.
+   * @param {string} q
+   * @returns {Promise<Array<{ id, name, phone, contactOf }>>}
+   */
+  async searchLocataires(q) {
+    try {
+      await authenticate();
+      const res = await this.#client.get(ENDPOINTS.BAILLEUR_TENANT_SEARCH, { query: { q } });
+      const body = extractApiResponse(res, 'Recherche impossible');
+      return Array.isArray(body.data) ? body.data : (Array.isArray(body) ? body : []);
+    } catch (err) {
+      return searchTenantCandidates(q);
     }
   }
 

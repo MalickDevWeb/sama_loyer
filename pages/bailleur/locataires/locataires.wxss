@@ -792,3 +792,101 @@
   align-items: center;
   justify-content: center;
 }
+
+/* Recherche du locataire (nom ou numéro) */
+.nl-hint {
+  display: block;
+  margin-top: 10rpx;
+  font-size: var(--sl-fs-caption);
+  color: #64748B;
+  line-height: 1.45;
+}
+
+.nl-hint--warn {
+  color: #9A6200;
+}
+
+.nl-results {
+  margin-top: 12rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 10rpx;
+}
+
+.nl-tenant {
+  display: flex;
+  align-items: center;
+  gap: 18rpx;
+  padding: 16rpx 20rpx;
+  border: 2rpx solid var(--sl-border);
+  border-radius: 20rpx;
+}
+
+.nl-tenant--picked {
+  border-color: var(--sl-berry);
+  background: var(--sl-berry-tint);
+}
+
+.nl-tenant-avatar {
+  flex: 0 0 68rpx;
+  width: 68rpx;
+  height: 68rpx;
+  border-radius: 50%;
+  background: var(--sl-navy);
+  color: var(--sl-on-dark);
+  font-size: var(--sl-fs-caption);
+  font-weight: var(--sl-fw-extrabold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.nl-tenant-text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2rpx;
+}
+
+.nl-tenant-name {
+  font-size: var(--sl-fs-body-sm);
+  font-weight: var(--sl-fw-extrabold);
+  color: var(--sl-text);
+}
+
+.nl-tenant-sub {
+  font-size: var(--sl-fs-caption);
+  color: #64748B;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.nl-tenant-pick,
+.nl-tenant-change {
+  flex: 0 0 auto;
+  font-size: var(--sl-fs-caption);
+  font-weight: var(--sl-fw-bold);
+  color: var(--sl-berry);
+}
+
+.nl-newphone {
+  margin-top: 12rpx;
+  padding: 20rpx;
+  border-radius: 20rpx;
+  background: var(--sl-warning-bg);
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.nl-newphone-text {
+  font-size: var(--sl-fs-caption);
+  color: #9A6200;
+  line-height: 1.45;
+}
+
+.nl-newphone .nl-input {
+  background: var(--sl-white);
+}

@@ -1,7 +1,9 @@
 <view class="ajouter-page">
-  <!-- En-tête fixe : retour + titre (à gauche de la capsule WeChat) + progression -->
-  <view class="aj-head" style="{{ headStyle }}">
-    <view class="aj-nav" style="{{ navStyle }}">
+  <!-- En-tête fixe : barre SAMA LOYER (comme les autres écrans) + retour, titre et progression -->
+  <view class="aj-fixed">
+  <sama-top-bar />
+  <view class="aj-head">
+    <view class="aj-nav">
       <view class="aj-back" hover-class="aj-hover" bindtap="onClose" aria-label="{{ step === 2 ? 'Étape précédente' : 'Fermer' }}">
         <view class="ic ic--md {{ step === 2 ? 'ic-back-navy' : 'ic-close-navy' }}"></view>
       </view>
@@ -14,6 +16,7 @@
       </view>
       <text class="aj-progress-label">Étape {{ step }} sur 2 · {{ step === 1 ? 'Le logement' : 'Photos et atouts' }}</text>
     </view>
+  </view>
   </view>
 
   <view class="aj-body" style="{{ bodyStyle }}">

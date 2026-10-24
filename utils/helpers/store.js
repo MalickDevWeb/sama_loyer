@@ -14,6 +14,7 @@ import { RENTED_HOMES as DEFAULT_RENTED_HOMES, RENT_MONTH } from '../mocks/loyer
 import { CONVERSATIONS as DEFAULT_CONVERSATIONS } from '../mocks/conversations.js';
 import { BAILLEUR_CONVERSATIONS as DEFAULT_BAILLEUR_CONVERSATIONS } from '../mocks/bailleur-conversations.js';
 import { COMPLIANCE_DEFAULTS } from '../mocks/compliance.js';
+import { MAXIT_USERS } from '../mocks/users.js';
 import { Bus } from '../event/index.js';
 import { EVENTS, STATE_KEYS } from '../event/keys.js';
 
@@ -461,6 +462,102 @@ export function getStoredLocataires() {
   }
   storage.set(STORAGE_KEYS.LOCATAIRES, DEFAULT_LOCATAIRES);
   return DEFAULT_LOCATAIRES.slice();
+}
+
+// Minuscules sans accents : « Ndèye » se trouve en tapant « ndeye »
+function normalizeSearch(s) {
+  const lower = String(s || '').toLowerCase();
+  const plain = typeof lower.normalize === 'function' ? lower.normalize('NFD').replace(/[̀-ͯ]/g, '') : lower;
+  return plain.trim();
+}
+
+/**
+ * Recherche du locataire pour une nouvelle location, par nom OU par numéro.
+ * - Nom ou début de numéro : seulement les personnes déjà en contact avec le
+ *   bailleur (messages, visites), pour ne pas exposer tout l'annuaire Max it.
+ * - Numéro complet (9 chiffres) : n'importe quel compte Max it.
+ * @param {string} query
+ * @returns {Array<{ id: string, name: string, phone: string, contactOf: string|null }>}
+ */
+export function searchTenantCandidates(query) {
+  const q = normalizeSearch(query);
+  const digits = q.replace(/[\s+]/g, '').replace(/^221/, '');
+  const isPhone = /^\d+$/.test(digits);
+  if ((isPhone && digits.length < 3) || (!isPhone && q.length < 2)) return [];
+
+  // Les locataires déjà en place ne sont pas proposés une seconde fois
+  const taken = getStoredLocataires().map((l) => String(l.phone || '').replace(/\D/g, ''));
+  return MAXIT_USERS.filter((u) => {
+    if (taken.indexOf(u.phone) !== -1) return false;
+    if (isPhone && digits.length === 9) return u.phone === digits;
+    if (!u.contactOf) return false;
+    return isPhone ? u.phone.indexOf(digits) !== -1 : normalizeSearch(u.name).indexOf(q) !== -1;
+  }).slice(0, 5);
+}
+
+/** Annonces du bailleur encore libres : celles qu'on peut attribuer à un locataire */
+export function getAvailableBailleurAnnonces() {
+  return getStoredBailleurAnnonces()
+    .filter((a) => a.type !== 'loue')
+    .map((a) => ({
+      id: a.id,
+      title: a.title,
+      place: String(a.placeName || '').replace(/\s*·\s*$/, ''),
+      rent: Number(String(a.price || '').replace(/\D/g, '')) || 0
+    }));
+}
+
+/**
+ * Nouvelle location saisie par le bailleur (locataire déjà trouvé, hors appli).
+ * Le locataire reçoit une invitation par SMS : il signe le contrat dans l'appli,
+ * puis paie ses loyers avec Max it. L'annonce passe en « Loué ».
+ * @param {{ annonceId: string, name: string, phone: string, rent: number, cautionMonths: number, startDate: string }} data
+ */
+export function addStoredLocataire(data) {
+  const annonce = getStoredBailleurAnnonces().find((a) => a.id === data.annonceId) || {};
+  const place = String(annonce.placeName || '').replace(/\s*·\s*$/, '');
+  const rent = Number(data.rent) || 0;
+  const caution = rent * (Number(data.cautionMonths) || 1);
+  const name = String(data.name || '').trim();
+  const initials = name.split(/\s+/).slice(0, 2).map((w) => w.charAt(0).toUpperCase()).join('') || 'L';
+  const digits = String(data.phone || '').replace(/\D/g, '');
+  const phone = digits.replace(/(\d{2})(\d{3})(\d{2})(\d{2})/, '$1 $2 $3 $4');
+  const [y, m, d] = String(data.startDate || '').split('-');
+  const startLabel = d ? `${Number(d)} ${['janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin', 'juil.', 'août', 'sept.', 'oct.', 'nov.', 'déc.'][Number(m) - 1]} ${y}` : 'la date prévue';
+
+  const locataire = {
+    id: `loc-${Date.now()}`,
+    name,
+    initials,
+    avatarBg: '#0F1E3D',
+    property: `${annonce.title || 'Logement'} · ${place} · ${formatMoney(rent)} F`,
+    status: 'invite', // invitation envoyée : contrat pas encore signé
+    statusLabel: 'Invité',
+    bannerType: 'warning',
+    bannerText: `Invitation envoyée par SMS au +221 ${phone}. ${name.split(/\s+/)[0]} signe le contrat dans l'appli, puis paie avec Max it à partir du ${startLabel}.`,
+    cautionDetenue: `${formatMoney(caution)} F`,
+    phone,
+    annonceId: data.annonceId,
+    startDate: data.startDate
+  };
+  storage.set(STORAGE_KEYS.LOCATAIRES, [locataire, ...getStoredLocataires()]);
+
+  // L'annonce n'est plus proposée aux locataires
+  const annonces = getStoredBailleurAnnonces().map((a) => (a.id === data.annonceId
+    ? Object.assign({}, a, {
+      tag: 'Loué',
+      tagClass: 'tag-loue',
+      type: 'loue',
+      stats: `Loué à ${name} à partir du ${startLabel}`,
+      notice: 'Invitation envoyée au locataire. Loyer géré via SAMA LOYER après signature.',
+      noticeClass: 'notice-gray'
+    })
+    : a));
+  storage.set('sama_bailleur_annonces', annonces);
+
+  notify(EVENTS.LOCATAIRES_CHANGED, { locataireId: locataire.id });
+  notify(EVENTS.LOGEMENTS_CHANGED, { logementId: data.annonceId });
+  return locataire;
 }
 
 export function confirmLocataireCashPayment(id) {
