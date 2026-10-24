@@ -7,6 +7,7 @@ Ce dossier est la référence partagée entre l'équipe mini-programme, l'équip
 | [01-modele-de-donnees.md](01-modele-de-donnees.md) | Entités, diagramme, cycles de vie, règles métier, tâches planifiées | Backend, produit |
 | [schema.sql](schema.sql) | Schéma PostgreSQL 15+ exécutable (types, contraintes, index, données initiales) | Backend |
 | [02-contrat-api.md](02-contrat-api.md) | Conventions (enveloppe, erreurs, idempotence), catalogue des endpoints, flux détaillés, écarts à corriger côté front | Tous |
+| [03-guide-implementation-endpoints.md](03-guide-implementation-endpoints.md) | Guide exhaustif par endpoint : rôle, entrées, validations strictes, sorties JSON et erreurs | Développeurs Backend |
 | [openapi.yaml](openapi.yaml) | Spécification OpenAPI 3.1 complète (81 opérations) | Backend (génération de code), front (types), QA (tests) |
 
 ## Périmètre
