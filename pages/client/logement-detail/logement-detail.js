@@ -254,7 +254,7 @@ Page({
                 title: 'WhatsApp 💬',
                 content: `Le message pré-rempli pour ${bailleur.name} a été copié. Vous pouvez le coller dans WhatsApp.`,
                 showCancel: false,
-                confirmText: 'Ouvrir WhatsApp'
+                confirmText: 'WhatsApp'
               });
             }
           });
@@ -301,7 +301,7 @@ Page({
       wx.showModal({
         title: 'Demande envoyée ! 📅',
         content: `Votre demande pour le créneau "${this.data.selectedVisitDate}" a été transmise à ${this.data.logement.bailleur.name}.\n\nVous recevrez une notification dès sa confirmation.`,
-        confirmText: 'Voir mes messages',
+        confirmText: 'Voir messages',
         confirmColor: COLORS.berry,
         cancelText: 'Fermer',
         success: (res) => {

@@ -129,7 +129,7 @@ Page({
     wx.showModal({
       title: 'Marquer comme loué ?',
       content: 'Ce logement sera retiré des résultats de recherche des locataires.',
-      confirmText: "Oui, c'est loué",
+      confirmText: 'Confirmer',
       confirmColor: COLORS.navy,
       cancelText: 'Annuler',
       success: (res) => {
@@ -208,6 +208,8 @@ Page({
       isBatchSaving: false
     });
   },
+
+  noop() {},
 
   onCloseBatchModal() {
     if (this.data.isBatchSaving) return;
@@ -374,7 +376,7 @@ Page({
         wx.showModal({
           title: `Archive ZIP prête (${targets.length} affiches)`,
           content: `Vos ${targets.length} affiches A6 sont réunies dans le fichier "affiches-qr-sama-loyer.zip".\n\nAppuyez sur "Partager le ZIP" pour l'envoyer sur WhatsApp ou l'enregistrer dans vos fichiers.`,
-          confirmText: 'Partager le ZIP',
+          confirmText: 'Partager',
           cancelText: 'Fermer',
           confirmColor: '#C8235F',
           success: (res) => {
