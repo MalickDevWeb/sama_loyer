@@ -192,11 +192,31 @@
         </block>
       </scroll-view>
       <view class="batch-footer">
-        <button class="batch-download-btn {{ selectedIds.length === 0 ? 'batch-download-btn--disabled' : '' }}" hover-class="sl-hover" bindtap="onDownloadSelectedPosters">
+        <!-- Message explicatif clair sur le mode de téléchargement -->
+        <view wx:if="{{ selectedIds.length > 1 }}" class="batch-hint">
+          <view class="ic ic-check-green ic--xs"></view>
+          <text class="batch-hint-txt">Les {{ selectedIds.length }} affiches A6 seront réunies dans 1 seul fichier ZIP, prêtes à imprimer ou partager.</text>
+        </view>
+        <view wx:elif="{{ selectedIds.length === 1 }}" class="batch-hint">
+          <view class="ic ic-check-green ic--xs"></view>
+          <text class="batch-hint-txt">L'affiche A6 sera enregistrée directement dans votre galerie photo en haute résolution.</text>
+        </view>
+        <view wx:else class="batch-hint batch-hint--muted">
+          <text class="batch-hint-txt">Cochez les logements dont vous souhaitez obtenir l'affiche QR.</text>
+        </view>
+
+        <!-- Bouton d'action pleine largeur -->
+        <view 
+          class="batch-download-btn {{ selectedIds.length === 0 ? 'batch-download-btn--disabled' : '' }}" 
+          hover-class="{{ selectedIds.length === 0 ? '' : 'sl-hover' }}" 
+          bindtap="onDownloadSelectedPosters"
+          aria-label="Télécharger les affiches QR"
+        >
           <text wx:if="{{ isBatchSaving }}">{{ batchSaveProgressText }}</text>
-          <text wx:elif="{{ selectedIds.length <= 1 }}">Enregistrer 1 affiche A6</text>
-          <text wx:else>Télécharger {{ selectedIds.length }} affiches (ZIP)</text>
-        </button>
+          <text wx:elif="{{ selectedIds.length === 0 }}">Sélectionnez au moins 1 logement</text>
+          <text wx:elif="{{ selectedIds.length === 1 }}">Enregistrer 1 affiche A6 (Galerie)</text>
+          <text wx:else>Télécharger {{ selectedIds.length }} affiches (ZIP groupé)</text>
+        </view>
       </view>
     </view>
   </view>

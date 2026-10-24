@@ -275,17 +275,25 @@ Page({
       batchSaveProgressText: `Préparation (0/${targets.length})...`
     });
 
+    const isMulti = targets.length > 1;
+    wx.showLoading({
+      title: isMulti ? `Génération 1/${targets.length}...` : 'Création de l\'affiche...',
+      mask: true
+    });
+
     try {
       // Préparation du canvas haute définition (620px × scale 2 = 1240px de large A6)
       const { canvas, ctx } = await getCanvas(this, '#batch-qa-canvas', 2);
-      const isMulti = targets.length > 1;
       const filesToZip = [];
 
       for (let i = 0; i < targets.length; i++) {
         const a = targets[i];
-        this.setData({
-          batchSaveProgressText: `Création ${i + 1}/${targets.length} : ${a.title.slice(0, 16)}...`
-        });
+        const progressLabel = isMulti
+          ? `Affiche ${i + 1}/${targets.length}`
+          : `Création affiche...`;
+        
+        this.setData({ batchSaveProgressText: `${progressLabel} (${a.title.slice(0, 14)}...)` });
+        wx.showLoading({ title: progressLabel, mask: true });
 
         const posterData = {
           title: a.title,
@@ -299,14 +307,13 @@ Page({
         // Dessin de l'affiche
         drawPoster(ctx, 620, posterData);
 
-        // Export PNG
+        // Export PNG haute définition
         const filePath = await exportCanvas(canvas, 4000);
 
         if (isMulti) {
           // Lecture du binaire pour l'archive ZIP
           const fsm = wx.getFileSystemManager();
           const fileData = fsm.readFileSync(filePath);
-          // Nom de fichier propre sans accents
           const cleanName = String(a.title || 'affiche')
             .toLowerCase()
             .normalize('NFD')
@@ -323,6 +330,16 @@ Page({
         }
       }
 
+      if (isMulti) {
+        wx.showLoading({ title: 'Création du fichier ZIP...', mask: true });
+        this.setData({ batchSaveProgressText: 'Création du fichier ZIP...' });
+        const zipBuffer = createZipArchive(filesToZip);
+        const fsm = wx.getFileSystemManager();
+        const zipPath = `${wx.env.USER_DATA_PATH}/affiches-qr-sama-loyer.zip`;
+        fsm.writeFileSync(zipPath, zipBuffer);
+      }
+
+      wx.hideLoading();
       this.setData({
         isBatchSaving: false,
         batchModalOpen: false,
@@ -330,13 +347,7 @@ Page({
       });
 
       if (isMulti) {
-        // Génération de l'archive ZIP
-        this.setData({ batchSaveProgressText: 'Création du fichier ZIP...' });
-        const zipBuffer = createZipArchive(filesToZip);
-        const fsm = wx.getFileSystemManager();
         const zipPath = `${wx.env.USER_DATA_PATH}/affiches-qr-sama-loyer.zip`;
-        fsm.writeFileSync(zipPath, zipBuffer);
-
         const openOrShare = () => {
           if (typeof wx.shareFileMessage === 'function') {
             wx.shareFileMessage({
@@ -361,9 +372,9 @@ Page({
         };
 
         wx.showModal({
-          title: `${targets.length} affiches groupées en ZIP !`,
-          content: `Toutes vos affiches A6 sont réunies dans le fichier "affiches-qr-sama-loyer.zip". Vous pouvez le partager par WhatsApp, l'envoyer ou l'enregistrer dans vos fichiers.`,
-          confirmText: 'Exporter / Partager',
+          title: `Archive ZIP prête (${targets.length} affiches)`,
+          content: `Vos ${targets.length} affiches A6 sont réunies dans le fichier "affiches-qr-sama-loyer.zip".\n\nAppuyez sur "Partager le ZIP" pour l'envoyer sur WhatsApp ou l'enregistrer dans vos fichiers.`,
+          confirmText: 'Partager le ZIP',
           cancelText: 'Fermer',
           confirmColor: '#C8235F',
           success: (res) => {
@@ -375,13 +386,14 @@ Page({
       } else {
         wx.showModal({
           title: 'Affiche enregistrée !',
-          content: 'Votre affiche A6 a été enregistrée dans votre galerie. Vous pouvez l\'imprimer directement.',
+          content: 'Votre affiche A6 a été enregistrée en haute résolution dans votre galerie photo. Vous pouvez l\'imprimer directement.',
           showCancel: false,
           confirmText: 'Parfait',
           confirmColor: '#C8235F'
         });
       }
     } catch (err) {
+      wx.hideLoading();
       this.setData({ isBatchSaving: false, batchCanvasActive: false });
       const authDenied = err && (err.errMsg || '').includes('auth deny');
       wx.showModal({
