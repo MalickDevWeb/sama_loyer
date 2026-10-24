@@ -10,6 +10,9 @@ export const STORAGE_KEYS = {
   TOKEN_EXPIRY: 'app_token_expiry',
   USER_ROLE: 'sama_user_role', // 'client' | 'bailleur'
   FAVORITES: 'sama_favorites',
+  FAVORITES_QUEUE: 'sama_favorites_queue',
+  FAVORITES_LAST_SYNC: 'sama_favorites_last_sync',
+  FAVORITES_SERVER_CACHE: 'sama_favorites_server_cache',
   VISITES: 'sama_visites',
   LOGEMENTS: 'sama_logements',
   RENTED_HOMES: 'sama_rented_homes',

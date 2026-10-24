@@ -4,13 +4,21 @@
 // ============================================================================
 
 // 1. Initialiser les globales WeChat AVANT le chargement des modules ESM
+const memStorage = new Map();
 global.Behavior = function(def) { return def; };
 global.wx = {
-  getStorageSync: () => null,
-  setStorageSync: () => {},
+  getStorageSync: (key) => (memStorage.has(key) ? memStorage.get(key) : ''),
+  setStorageSync: (key, val) => memStorage.set(key, val),
+  removeStorageSync: (key) => memStorage.delete(key),
+  clearStorageSync: () => memStorage.clear(),
   showToast: () => {},
   showModal: () => {},
   getSystemInfoSync: () => ({ statusBarHeight: 44 }),
+  request: ({ success }) => {
+    if (typeof success === 'function') {
+      success({ statusCode: 200, data: { success: true, data: [] } });
+    }
+  }
 };
 
 async function main() {
@@ -28,12 +36,14 @@ async function main() {
     const { runI18nTests } = await import('./i18n.test.js');
     const { runZipTests } = await import('./zip.test.js');
     const { runShareRedirectTests } = await import('./share-redirect.test.js');
+    const { runFavoritesResilienceTests } = await import('./favorites-resilience.test.js');
 
     totalPassed += await runEventBusTests();
     totalPassed += await runSculptTests();
     totalPassed += await runI18nTests();
     totalPassed += await runZipTests();
     totalPassed += await runShareRedirectTests();
+    totalPassed += await runFavoritesResilienceTests();
 
     const duration = ((Date.now() - start) / 1000).toFixed(2);
     console.log('\n====================================================');

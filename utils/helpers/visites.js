@@ -4,7 +4,7 @@
 // ============================================================================
 
 import { storage } from '../storage.js';
-import { STORAGE_KEYS } from '../constants/index';
+import { STORAGE_KEYS } from '../constants/index.js';
 import { DEFAULT_VISITES } from '../mocks/visites';
 import { getLogementById } from '../mocks/logements';
 

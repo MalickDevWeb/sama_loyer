@@ -37,6 +37,8 @@ export const EVENTS = {
 
   // Données métier SAMA LOYER
   FAVORITES_CHANGED: 'sama.favorites.changed', // { ids }
+  FAVORITES_SYNCED: 'sama.favorites.synced', // { ids, count }
+  FAVORITES_SYNC_STATUS: 'sama.favorites.sync.status', // { status, pendingCount }
   MESSAGES_CHANGED: 'sama.messages.changed', // { side: 'client' | 'bailleur', convId }
   VISITES_CHANGED: 'sama.visites.changed', // { visiteId }
   RENT_PAID: 'sama.rent.paid', // { logementId }

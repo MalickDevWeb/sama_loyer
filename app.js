@@ -9,6 +9,7 @@ import { nativeService } from './utils/apis/native';
 // Noms des états et événements : source unique dans utils/event/keys.js
 import { STATE_KEYS, EVENTS } from './utils/event/keys';
 import { publishUnreadCounts, getBailleurAccount, isBailleurActivated } from './utils/helpers/store';
+import { reconcileFavoritesWithBackend } from './utils/helpers/favorites';
 import { storage } from './utils/storage';
 import { STORAGE_KEYS } from './utils/constants/index';
 

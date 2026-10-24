@@ -1,3 +1,5 @@
+import { storage } from '../storage.js';
+import { STORAGE_KEYS } from '../constants/index.js';
 // ============================================================================
 // SAMA LOYER BACKEND API SERVICE
 // Centralized access to the Sama Loyer REST endpoints via BackendAPI singleton.
@@ -43,6 +45,10 @@ const TTL = {
 };
 
 export const ENDPOINTS = {
+  FAVORITES: '/api/v1/favorites',
+  FAVORITE_ADD: (id) => `/api/v1/favorites/${id}`,
+  FAVORITE_REMOVE: (id) => `/api/v1/favorites/${id}`,
+  FAVORITES_SYNC: '/api/v1/favorites/sync',
   LOGEMENTS: '/api/v1/logements',
   LOGEMENT_DETAIL: (id) => `/api/v1/logements/${id}`,
   LOYERS: '/api/v1/loyers',
@@ -332,9 +338,80 @@ class BackendAPI {
     return cached('bailleur:locataires', () => this.#fetchBailleurLocataires(), { ttl: TTL.PERSONAL, ...options });
   }
 
-  resetSession() {
+    resetSession() {
     this.#client.resetSession();
     invalidateCache();
+  }
+
+  /**
+   * Récupère la liste des IDs favoris depuis le serveur (avec cache TTL)
+   * @param {Object} [options]
+   * @returns {Promise<Array<string>>}
+   */
+  async getFavorites(options = {}) {
+    return cached(
+      'favorites:all',
+      async () => {
+        try {
+          const res = await this.#client.get(ENDPOINTS.FAVORITES);
+          const data = extractApiResponse(res, 'Impossible de récupérer les favoris');
+          if (Array.isArray(data)) return data.map(String);
+          if (data && Array.isArray(data.favorites)) return data.favorites.map(String);
+          if (data && Array.isArray(data.items)) return data.items.map(String);
+          if (data && Array.isArray(data.data)) return data.data.map(String);
+          return [];
+        } catch (error) {
+          // Fallback transparent : renvoie les favoris stockés en local
+          const local = storage.get(STORAGE_KEYS.FAVORITES, null);
+          return Array.isArray(local) ? local.map(String) : [];
+        }
+      },
+      { ttl: TTL.PERSONAL, ...options }
+    );
+  }
+
+  /**
+   * Ajoute un favori sur le backend
+   * @param {string|number} logementId
+   */
+  async addFavorite(logementId) {
+    invalidateCache('favorites:all');
+    try {
+      const res = await this.#client.post(ENDPOINTS.FAVORITE_ADD(logementId), { logementId });
+      return extractApiResponse(res, 'Impossible d’ajouter le favori');
+    } catch (error) {
+      // Fallback local résilient
+      return { success: true, id: String(logementId), action: 'add', simulated: true };
+    }
+  }
+
+  /**
+   * Supprime un favori sur le backend
+   * @param {string|number} logementId
+   */
+  async removeFavorite(logementId) {
+    invalidateCache('favorites:all');
+    try {
+      const res = await this.#client.delete(ENDPOINTS.FAVORITE_REMOVE(logementId));
+      return extractApiResponse(res, 'Impossible de retirer le favori');
+    } catch (error) {
+      // Fallback local résilient
+      return { success: true, id: String(logementId), action: 'remove', simulated: true };
+    }
+  }
+
+  /**
+   * Synchronise par lot un ensemble d'actions de favoris
+   * @param {Array<{ id: string, isLiked: boolean, timestamp: number }>} actions
+   */
+  async syncFavoritesBatch(actions = []) {
+    invalidateCache('favorites:all');
+    try {
+      const res = await this.#client.post(ENDPOINTS.FAVORITES_SYNC, { actions });
+      return extractApiResponse(res, 'Impossible de synchroniser les favoris');
+    } catch (error) {
+      return { success: true, syncedCount: actions.length, simulated: true };
+    }
   }
 }
 

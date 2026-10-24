@@ -4,7 +4,7 @@
 // À remplacer par BackendAPI + un schéma json-sculpt quand l'API sera prête.
 // ============================================================================
 
-import { getLogementById } from './logements';
+import { getLogementById } from './logements.js';
 
 const DEFAULT_AVATAR_BG = '#0F1E3D';
 
