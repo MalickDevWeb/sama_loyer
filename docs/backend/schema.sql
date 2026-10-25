@@ -36,7 +36,19 @@ CREATE TYPE payment_method         AS ENUM ('maxit', 'cash');
 CREATE TYPE payment_status         AS ENUM ('pending', 'succeeded', 'failed', 'refunded', 'expired');
 CREATE TYPE incident_category      AS ENUM ('plumbing', 'electricity', 'lock', 'humidity', 'other');
 CREATE TYPE incident_status        AS ENUM ('open', 'in_progress', 'resolved');
-CREATE TYPE report_target          AS ENUM ('logement', 'user');
+CREATE TYPE report_target          AS ENUM ('logement', 'user', 'group');
+
+-- Types énumérés Colocation & Partage de chambres (Multi-groupes)
+CREATE TYPE coloc_rental_mode      AS ENUM ('SOLO_UNIQUEMENT', 'COLOC_UNIQUEMENT', 'FLEXIBLE');
+CREATE TYPE coloc_gender_policy    AS ENUM ('HOMMES_UNIQUEMENT', 'FEMMES_UNIQUEMENT', 'COUPLES_UNIQUEMENT');
+CREATE TYPE coloc_habit_policy     AS ENUM ('ALLOWED', 'FORBIDDEN', 'OUTDOOR_ONLY');
+CREATE TYPE coloc_incomplete_policy AS ENUM ('ANNULATION_REMBOURSEMENT', 'POURSUIVRE_AU_PRIX_SOLO', 'PRIX_ALTERNATIF_PREDEFINI');
+CREATE TYPE place_status           AS ENUM ('DISPONIBLE', 'BLOQUEE', 'RESERVEE', 'OCCUPEE', 'INDISPONIBLE');
+CREATE TYPE group_status           AS ENUM ('CREE', 'RECRUTEMENT', 'ATTENTE_CONFIRMATION', 'COMPLET', 'RESERVE', 'ANNULE');
+CREATE TYPE group_member_role      AS ENUM ('CREATEUR', 'MEMBRE');
+CREATE TYPE group_member_status    AS ENUM ('EN_ATTENTE', 'CONFIRME', 'REFUSE', 'RETIRE');
+CREATE TYPE reservation_status     AS ENUM ('VERROUILLEE', 'EN_ATTENTE_PAIEMENT', 'CONFIRMEE', 'ANNULEE', 'REMBOURSEE', 'EXPIREE');
+CREATE TYPE lock_status            AS ENUM ('ACTIF', 'LIBERE', 'CONVERTI', 'EXPIRE');
 CREATE TYPE report_priority        AS ENUM ('urgent', 'medium', 'low');
 CREATE TYPE report_status          AS ENUM ('new', 'in_progress', 'resolved', 'dismissed');
 
@@ -145,6 +157,17 @@ CREATE TABLE logements (
   fees_amount                BIGINT NOT NULL DEFAULT 0 CHECK (fees_amount >= 0),
   surface_m2                 INT CHECK (surface_m2 > 0),
   rooms                      SMALLINT CHECK (rooms > 0),
+  -- Configuration Colocation & Partage de chambre
+  room_capacity              SMALLINT NOT NULL DEFAULT 1 CHECK (room_capacity >= 1),
+  rental_mode                coloc_rental_mode NOT NULL DEFAULT 'SOLO_UNIQUEMENT',
+  gender_policy              coloc_gender_policy NOT NULL DEFAULT 'HOMMES_UNIQUEMENT',
+  place_price                BIGINT CHECK (place_price IS NULL OR place_price > 0),
+  solo_price                 BIGINT CHECK (solo_price IS NULL OR solo_price > 0),
+  multi_group_allowed        BOOLEAN NOT NULL DEFAULT FALSE,
+  smoking_policy             coloc_habit_policy NOT NULL DEFAULT 'FORBIDDEN',
+  alcohol_policy             coloc_habit_policy NOT NULL DEFAULT 'FORBIDDEN',
+  incomplete_policy          coloc_incomplete_policy NOT NULL DEFAULT 'ANNULATION_REMBOURSEMENT',
+  incomplete_deadline        TIMESTAMPTZ,
   available_from             DATE,
   status                     logement_status NOT NULL DEFAULT 'validation',
   verification_level         verification_level NOT NULL DEFAULT 'declared',
@@ -203,6 +226,112 @@ CREATE TABLE favoris (
 );
 
 -- ----------------------------------------------------------------------------
+-- 3.bis COLOCATION & PARTAGE DE CHAMBRES (Multi-groupes, Places, Verrous)
+-- ----------------------------------------------------------------------------
+-- Places individuelles au sein d'une chambre partagée
+CREATE TABLE room_places (
+  id                         UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  logement_id                UUID NOT NULL REFERENCES logements(id) ON DELETE CASCADE,
+  place_number               SMALLINT NOT NULL CHECK (place_number > 0),
+  status                     place_status NOT NULL DEFAULT 'DISPONIBLE',
+  created_at                 TIMESTAMPTZ NOT NULL DEFAULT now(),
+  updated_at                 TIMESTAMPTZ NOT NULL DEFAULT now(),
+  UNIQUE (logement_id, place_number)
+);
+CREATE INDEX idx_room_places_logement ON room_places (logement_id, status);
+
+-- Groupes de colocation (candidats ou colocataires constitués)
+CREATE TABLE coloc_groups (
+  id                         UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  name                       TEXT NOT NULL CHECK (char_length(name) BETWEEN 2 AND 60),
+  creator_id                 UUID NOT NULL REFERENCES users(id),
+  target_logement_id         UUID REFERENCES logements(id),
+  places_requested           SMALLINT NOT NULL DEFAULT 1 CHECK (places_requested > 0),
+  places_assigned            SMALLINT NOT NULL DEFAULT 0 CHECK (places_assigned >= 0),
+  gender_mode                coloc_gender_policy NOT NULL,
+  status                     group_status NOT NULL DEFAULT 'CREE',
+  is_couple                  BOOLEAN NOT NULL DEFAULT FALSE,
+  couple_partner_id          UUID REFERENCES users(id),
+  couple_confirmed_by_partner BOOLEAN NOT NULL DEFAULT FALSE,
+  created_at                 TIMESTAMPTZ NOT NULL DEFAULT now(),
+  updated_at                 TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+CREATE INDEX idx_coloc_groups_target ON coloc_groups (target_logement_id, status);
+CREATE INDEX idx_coloc_groups_creator ON coloc_groups (creator_id);
+
+-- Membres d'un groupe de colocation
+CREATE TABLE coloc_group_members (
+  id                         UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  group_id                   UUID NOT NULL REFERENCES coloc_groups(id) ON DELETE CASCADE,
+  user_id                    UUID NOT NULL REFERENCES users(id),
+  role                       group_member_role NOT NULL DEFAULT 'MEMBRE',
+  status                     group_member_status NOT NULL DEFAULT 'EN_ATTENTE',
+  invited_at                 TIMESTAMPTZ NOT NULL DEFAULT now(),
+  confirmed_at               TIMESTAMPTZ,
+  UNIQUE (group_id, user_id)
+);
+CREATE INDEX idx_group_members_user ON coloc_group_members (user_id);
+
+-- Invitations de groupe (liens sécurisés avec expiration et token unique)
+CREATE TABLE coloc_invitations (
+  id                         UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  group_id                   UUID NOT NULL REFERENCES coloc_groups(id) ON DELETE CASCADE,
+  token                      TEXT NOT NULL UNIQUE,
+  inviter_id                 UUID NOT NULL REFERENCES users(id),
+  max_uses                   SMALLINT NOT NULL DEFAULT 1,
+  uses_count                 SMALLINT NOT NULL DEFAULT 0,
+  expires_at                 TIMESTAMPTZ NOT NULL,
+  revoked_at                 TIMESTAMPTZ,
+  created_at                 TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+CREATE INDEX idx_invitations_token ON coloc_invitations (token) WHERE revoked_at IS NULL;
+
+-- Réservations de places de colocation (avec séquestre Orange Money / Wave)
+CREATE TABLE coloc_reservations (
+  id                         UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  logement_id                UUID NOT NULL REFERENCES logements(id),
+  group_id                   UUID REFERENCES coloc_groups(id),
+  user_id                    UUID NOT NULL REFERENCES users(id),
+  places_count               SMALLINT NOT NULL DEFAULT 1 CHECK (places_count > 0),
+  amount_total               BIGINT NOT NULL CHECK (amount_total > 0),
+  is_solo_privatization      BOOLEAN NOT NULL DEFAULT FALSE,
+  conditions_accepted        BOOLEAN NOT NULL DEFAULT FALSE CHECK (conditions_accepted = TRUE),
+  status                     reservation_status NOT NULL DEFAULT 'VERROUILLEE',
+  payment_id                 UUID REFERENCES payments(id),
+  lock_expires_at            TIMESTAMPTZ NOT NULL,
+  confirmed_at               TIMESTAMPTZ,
+  cancelled_at               TIMESTAMPTZ,
+  refunded_at                TIMESTAMPTZ,
+  refund_reason              TEXT,
+  idempotency_key            TEXT UNIQUE,
+  created_at                 TIMESTAMPTZ NOT NULL DEFAULT now(),
+  updated_at                 TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+CREATE INDEX idx_coloc_res_logement ON coloc_reservations (logement_id, status);
+CREATE INDEX idx_coloc_res_user ON coloc_reservations (user_id);
+
+-- Association places réservées <-> réservation
+CREATE TABLE reservation_places (
+  reservation_id             UUID NOT NULL REFERENCES coloc_reservations(id) ON DELETE CASCADE,
+  place_id                   UUID NOT NULL REFERENCES room_places(id) ON DELETE CASCADE,
+  PRIMARY KEY (reservation_id, place_id)
+);
+
+-- Verrous concurrents de places (Atomic 15 min TTL Lock)
+CREATE TABLE place_locks (
+  id                         UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  place_id                   UUID NOT NULL REFERENCES room_places(id) ON DELETE CASCADE,
+  reservation_id             UUID REFERENCES coloc_reservations(id) ON DELETE SET NULL,
+  user_id                    UUID NOT NULL REFERENCES users(id),
+  group_id                   UUID REFERENCES coloc_groups(id),
+  status                     lock_status NOT NULL DEFAULT 'ACTIF',
+  locked_at                  TIMESTAMPTZ NOT NULL DEFAULT now(),
+  expires_at                 TIMESTAMPTZ NOT NULL,
+  released_at                TIMESTAMPTZ
+);
+CREATE INDEX idx_place_locks_active ON place_locks (place_id, status) WHERE status = 'ACTIF';
+CREATE INDEX idx_place_locks_expires ON place_locks (expires_at) WHERE status = 'ACTIF';
+
 -- 4. HORAIRES & VISITES
 -- Semaine type par logement + jours bloqués. Les créneaux libres sont calculés.
 -- ----------------------------------------------------------------------------

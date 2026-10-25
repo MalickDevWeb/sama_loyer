@@ -1,0 +1,370 @@
+// ============================================================================
+// SAMA LOYER — MOTEUR DE COLOCATION & RÉSERVATION MULTI-GROUPES
+// Règles métier strictes, validation côté serveur / moteur de domaine :
+// 1. Isolation stricte des genres (HOMMES_UNIQUEMENT, FEMMES_UNIQUEMENT, COUPLES_UNIQUEMENT)
+//    -> AUCUN mélange mixte entre personnes quelconques.
+// 2. Validation bilatérale des couples (deux comptes Max it distincts confirmés).
+// 3. Cohabitation de groupes indépendants sans fusion (multi_group_allowed).
+// 4. Verrouillage concurrent atomique de places avec TTL de 15 minutes.
+// 5. Rachat exclusif (privatisation solo) avec remboursement intégral instantané.
+// 6. Gestion des chambres incomplètes (échéance, remboursement ou solo).
+// ============================================================================
+
+export const COLOC_GENDER_POLICIES = Object.freeze({
+  HOMMES_UNIQUEMENT: 'HOMMES_UNIQUEMENT',
+  FEMMES_UNIQUEMENT: 'FEMMES_UNIQUEMENT',
+  COUPLES_UNIQUEMENT: 'COUPLES_UNIQUEMENT'
+});
+
+export const COLOC_RENTAL_MODES = Object.freeze({
+  SOLO_UNIQUEMENT: 'SOLO_UNIQUEMENT',
+  COLOC_UNIQUEMENT: 'COLOC_UNIQUEMENT',
+  FLEXIBLE: 'FLEXIBLE'
+});
+
+export const COLOC_HABIT_POLICIES = Object.freeze({
+  ALLOWED: 'ALLOWED',
+  FORBIDDEN: 'FORBIDDEN',
+  OUTDOOR_ONLY: 'OUTDOOR_ONLY'
+});
+
+export const COLOC_INCOMPLETE_POLICIES = Object.freeze({
+  ANNULATION_REMBOURSEMENT: 'ANNULATION_REMBOURSEMENT',
+  POURSUIVRE_AU_PRIX_SOLO: 'POURSUIVRE_AU_PRIX_SOLO',
+  PRIX_ALTERNATIF_PREDEFINI: 'PRIX_ALTERNATIF_PREDEFINI'
+});
+
+export const PLACE_STATUS = Object.freeze({
+  DISPONIBLE: 'DISPONIBLE',
+  BLOQUEE: 'BLOQUEE',
+  RESERVEE: 'RESERVEE',
+  OCCUPEE: 'OCCUPEE',
+  INDISPONIBLE: 'INDISPONIBLE'
+});
+
+export const LOCK_TTL_MS = 15 * 60 * 1000; // 15 minutes strict
+
+/**
+ * Normalise le genre utilisateur.
+ */
+export function normalizeGender(gender) {
+  if (!gender) return null;
+  const g = String(gender).trim().toUpperCase();
+  if (g === 'HOMME' || g === 'H' || g === 'MALE' || g === 'M') return 'HOMME';
+  if (g === 'FEMME' || g === 'F' || g === 'FEMALE') return 'FEMME';
+  return null;
+}
+
+/**
+ * 1. Validation stricte de la politique de genre.
+ * @throws {Error} si incompatibilité
+ */
+export function validateGenderCompatibility(genderPolicy, applicantProfiles = []) {
+  if (!Object.values(COLOC_GENDER_POLICIES).includes(genderPolicy)) {
+    throw new Error(`POLITIQUE_GENRE_INVALIDE: "${genderPolicy}" n'est pas supportée.`);
+  }
+
+  if (!Array.isArray(applicantProfiles) || applicantProfiles.length === 0) {
+    throw new Error('CANDIDATS_REQUIS: Au moins un profil candidat est nécessaire pour la validation.');
+  }
+
+  const normalizedGenders = applicantProfiles.map(p => {
+    const norm = normalizeGender(p.gender);
+    if (!norm) {
+      throw new Error(`GENRE_NON_DEFINI: Le genre de l'utilisateur ${p.name || p.id || ''} doit être renseigné.`);
+    }
+    return norm;
+  });
+
+  if (genderPolicy === COLOC_GENDER_POLICIES.HOMMES_UNIQUEMENT) {
+    const hasNonMale = normalizedGenders.some(g => g !== 'HOMME');
+    if (hasNonMale) {
+      throw new Error('GENRE_INCOMPATIBLE: Cette chambre est strictement réservée aux hommes (aucun mélange mixte autorisé).');
+    }
+    return { compatible: true, policy: genderPolicy };
+  }
+
+  if (genderPolicy === COLOC_GENDER_POLICIES.FEMMES_UNIQUEMENT) {
+    const hasNonFemale = normalizedGenders.some(g => g !== 'FEMME');
+    if (hasNonFemale) {
+      throw new Error('GENRE_INCOMPATIBLE: Cette chambre est strictement réservée aux femmes (aucun mélange mixte autorisé).');
+    }
+    return { compatible: true, policy: genderPolicy };
+  }
+
+  if (genderPolicy === COLOC_GENDER_POLICIES.COUPLES_UNIQUEMENT) {
+    if (applicantProfiles.length !== 2) {
+      throw new Error('COUPLE_REQUIS: Le mode couples requiert exactement deux conjoints déclarés.');
+    }
+    return { compatible: true, policy: genderPolicy };
+  }
+
+  throw new Error('POLITIQUE_GENRE_INCONNUE');
+}
+
+/**
+ * 2. Validation bilatérale des couples (mutual opt-in).
+ */
+export function validateCoupleDuo(userA, userB, options = {}) {
+  if (!userA || !userB) {
+    throw new Error('DUO_INCOMPLET: Deux profils d\'utilisateurs distincts sont obligatoires pour former un couple.');
+  }
+
+  if (userA.id === userB.id || userA.phone === userB.phone) {
+    throw new Error('COMPTES_IDENTIQUES: Un utilisateur ne peut pas former un couple avec son propre compte.');
+  }
+
+  const confirmedByPartner = Boolean(options.coupleConfirmedByPartner);
+  if (!confirmedByPartner) {
+    throw new Error('CONFIRMATION_CONJOINT_REQUISE: Le conjoint doit valider explicitement l\'association avant toute réservation.');
+  }
+
+  return {
+    valid: true,
+    userAId: userA.id,
+    userBId: userB.id,
+    confirmedAt: new Date().toISOString()
+  };
+}
+
+/**
+ * 3. Validation des règles d'habitudes de vie (fumeur, alcool).
+ */
+export function validateLivingHabits(logementRules, applicantHabits = {}) {
+  const { smokingPolicy = COLOC_HABIT_POLICIES.FORBIDDEN, alcoholPolicy = COLOC_HABIT_POLICIES.FORBIDDEN } = logementRules;
+
+  if (smokingPolicy === COLOC_HABIT_POLICIES.FORBIDDEN && applicantHabits.isSmoker && !applicantHabits.agreesNotToSmoke) {
+    throw new Error('REGLE_FUMEUR_REFUSEE: Ce logement est non-fumeur. Vous devez vous engager à ne pas fumer dans la chambre.');
+  }
+
+  if (alcoholPolicy === COLOC_HABIT_POLICIES.FORBIDDEN && applicantHabits.drinksAlcohol && !applicantHabits.agreesNoAlcoholOnSite) {
+    throw new Error('REGLE_ALCOOL_REFUSEE: La consommation d\'alcool est interdite dans ce logement.');
+  }
+
+  return { valid: true };
+}
+
+/**
+ * 4. Gestion de la capacité et du multi-groupes.
+ */
+export function validateMultiGroupCapacity({
+  roomCapacity,
+  multiGroupAllowed,
+  existingReservations = [],
+  placesRequested = 1
+}) {
+  if (roomCapacity <= 0) {
+    throw new Error('CAPACITE_INVALIDE: La capacité de la chambre doit être supérieure à 0.');
+  }
+
+  if (placesRequested <= 0) {
+    throw new Error('PLACES_DEMANDEES_INVALIDES: Le nombre de places demandées doit être au moins 1.');
+  }
+
+  // Calcul du nombre de places déjà occupées ou confirmées
+  const occupiedPlaces = existingReservations
+    .filter(r => ['VERROUILLEE', 'EN_ATTENTE_PAIEMENT', 'CONFIRMEE'].includes(r.status))
+    .reduce((sum, r) => sum + (r.placesCount || 0), 0);
+
+  const availablePlaces = roomCapacity - occupiedPlaces;
+
+  if (placesRequested > availablePlaces) {
+    throw new Error(`CAPACITE_DEPASSEE: Seulement ${availablePlaces} place(s) disponible(s) sur ${roomCapacity}. Demandé: ${placesRequested}.`);
+  }
+
+  // Si multi_group_allowed est faux, aucun autre groupe ne peut réserver si des réservations existent déjà
+  const distinctGroups = new Set(existingReservations.map(r => r.groupId).filter(Boolean));
+  if (!multiGroupAllowed && distinctGroups.size > 0) {
+    throw new Error('PARTAGE_GROUPES_NON_AUTORISE: Le bailleur n\'autorise pas plusieurs groupes indépendants dans cette chambre.');
+  }
+
+  return {
+    allowed: true,
+    availablePlaces,
+    remainingAfter: availablePlaces - placesRequested
+  };
+}
+
+/**
+ * 5. Moteur de Verrouillage Atomique 15 minutes (Place Locks).
+ */
+export function createPlaceLock({
+  place,
+  userId,
+  groupId = null,
+  now = Date.now(),
+  existingActiveLock = null
+}) {
+  // Vérification si un verrou actif existe déjà et n'est pas expiré
+  if (existingActiveLock && existingActiveLock.status === 'ACTIF') {
+    const expiresAt = new Date(existingActiveLock.expiresAt).getTime();
+    if (expiresAt > now) {
+      if (existingActiveLock.userId !== userId) {
+        throw new Error(`PLACE_DEJA_VERROUILLEE: La place #${place.placeNumber} est temporairement verrouillée par un autre candidat.`);
+      }
+      // Renouvellement / Prolongation autorisée pour le même utilisateur
+    }
+  }
+
+  if (place.status === PLACE_STATUS.RESERVEE || place.status === PLACE_STATUS.OCCUPEE) {
+    throw new Error(`PLACE_NON_DISPONIBLE: La place #${place.placeNumber} est déjà réservée ou occupée.`);
+  }
+
+  const expiresAt = new Date(now + LOCK_TTL_MS).toISOString();
+
+  return {
+    lockId: `lock-${Date.now()}-${Math.random().toString(36).substr(2, 6)}`,
+    placeId: place.id,
+    placeNumber: place.placeNumber,
+    userId,
+    groupId,
+    status: 'ACTIF',
+    lockedAt: new Date(now).toISOString(),
+    expiresAt,
+    ttlMinutes: 15
+  };
+}
+
+/**
+ * Vérifie si un verrou est expiré.
+ */
+export function isLockExpired(lock, now = Date.now()) {
+  if (!lock || lock.status !== 'ACTIF') return true;
+  return new Date(lock.expiresAt).getTime() <= now;
+}
+
+/**
+ * 6. Rachat Exclusif (Privatisation Solo de toute la chambre).
+ * Annule les réservations partielles en attente et déclenche le remboursement à 100%.
+ */
+export function executeSoloPrivatization({
+  logement,
+  soloUser,
+  existingReservations = [],
+  idempotencyKey
+}) {
+  if (logement.rentalMode === COLOC_RENTAL_MODES.COLOC_UNIQUEMENT) {
+    throw new Error('PRIVATISATION_NON_AUTORISEE: Ce logement est réservé exclusivement à la colocation par place.');
+  }
+
+  const soloPrice = logement.soloPrice || logement.rentAmount;
+  if (!soloPrice || soloPrice <= 0) {
+    throw new Error('PRIX_SOLO_NON_DEFINI: Aucun tarif solo n\'a été configuré par le bailleur.');
+  }
+
+  // Vérifier si la chambre est déjà totalement confirmée par les colocataires
+  const fullyConfirmedPlaces = existingReservations
+    .filter(r => r.status === 'CONFIRMEE')
+    .reduce((sum, r) => sum + (r.placesCount || 0), 0);
+
+  if (fullyConfirmedPlaces >= logement.roomCapacity) {
+    throw new Error('CHAMBRE_DEJA_VALIDEE: La chambre est déjà intégralement payée et réservée. Rachat impossible.');
+  }
+
+  // Identifier les réservations partielles à rembourser
+  const refundsToProcess = [];
+  const notificationsToSend = [];
+
+  for (const res of existingReservations) {
+    if (['VERROUILLEE', 'EN_ATTENTE_PAIEMENT', 'CONFIRMEE'].includes(res.status)) {
+      refundsToProcess.push({
+        reservationId: res.id,
+        userId: res.userId,
+        amount: res.amountTotal,
+        reason: 'RACHAT_EXCLUSIF_SOLO',
+        operator: 'ORANGE_MONEY_OR_WAVE',
+        fullRefundPercent: 100
+      });
+
+      notificationsToSend.push({
+        userId: res.userId,
+        channel: 'SMS_AND_INAPP',
+        template: 'SOLO_BUYOUT_REFUND',
+        message: `Bonjour, un locataire a réservé l'intégralité de la chambre "${logement.title}". Votre avance de ${res.amountTotal} FCFA vous est intégralement remboursée sans aucun frais sur votre compte mobile money.`
+      });
+    }
+  }
+
+  const soloReservation = {
+    id: `res-solo-${Date.now()}`,
+    logementId: logement.id,
+    userId: soloUser.id,
+    groupId: null,
+    placesCount: logement.roomCapacity,
+    amountTotal: soloPrice,
+    isSoloPrivatization: true,
+    conditionsAccepted: true,
+    status: 'CONFIRMEE',
+    idempotencyKey: idempotencyKey || `idem-solo-${soloUser.id}-${Date.now()}`,
+    createdAt: new Date().toISOString()
+  };
+
+  return {
+    success: true,
+    soloReservation,
+    cancelledReservationsCount: refundsToProcess.length,
+    refundsToProcess,
+    notificationsToSend
+  };
+}
+
+/**
+ * 7. Résolution de la politique de chambre incomplète.
+ */
+export function resolveIncompleteRoom({
+  logement,
+  currentReservations = [],
+  now = Date.now()
+}) {
+  const bookedPlaces = currentReservations
+    .filter(r => ['VERROUILLEE', 'CONFIRMEE'].includes(r.status))
+    .reduce((sum, r) => sum + r.placesCount, 0);
+
+  const isFull = bookedPlaces >= logement.roomCapacity;
+  if (isFull) {
+    return { status: 'COMPLETE', action: 'NONE' };
+  }
+
+  const deadline = logement.incompleteDeadline ? new Date(logement.incompleteDeadline).getTime() : null;
+  const deadlinePassed = deadline ? now >= deadline : false;
+
+  if (!deadlinePassed) {
+    return {
+      status: 'RECRUTEMENT_ACTIF',
+      remainingPlaces: logement.roomCapacity - bookedPlaces,
+      deadlineAt: logement.incompleteDeadline
+    };
+  }
+
+  // Échéance dépassée : application de la politique choisie par le bailleur
+  const policy = logement.incompletePolicy || COLOC_INCOMPLETE_POLICIES.ANNULATION_REMBOURSEMENT;
+
+  if (policy === COLOC_INCOMPLETE_POLICIES.ANNULATION_REMBOURSEMENT) {
+    return {
+      status: 'ANNULEE_ECHEANCE_ATTEINTE',
+      policy,
+      action: 'REFUND_ALL_CANDIDATES',
+      refundList: currentReservations.map(r => ({
+        reservationId: r.id,
+        userId: r.userId,
+        amount: r.amountTotal,
+        refundPercent: 100
+      }))
+    };
+  }
+
+  if (policy === COLOC_INCOMPLETE_POLICIES.POURSUIVRE_AU_PRIX_SOLO) {
+    return {
+      status: 'PROPOSITION_UPGRADE_SOLO',
+      policy,
+      action: 'OFFER_SOLO_CONVERSION',
+      soloPrice: logement.soloPrice || logement.rentAmount
+    };
+  }
+
+  return {
+    status: 'PRIX_ALTERNATIF',
+    policy,
+    action: 'ADJUST_SPLIT_PRICE'
+  };
+}

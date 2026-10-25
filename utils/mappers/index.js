@@ -8,3 +8,4 @@ export * from './visite.sculpt.js';
 export * from './example.sculpt.js';
 
 export * from './favorite.sculpt.js';
+export * from './coloc.sculpt.js';

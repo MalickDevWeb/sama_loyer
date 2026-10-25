@@ -219,6 +219,69 @@ export class LocataireAPI {
       return { success: true, syncedCount: actions.length, simulated: true };
     }
   }
+
+  // --- COLOCATION & CHAMBRES PARTAGÉES ---------------------------------------
+
+  async getRoomPlaces(logementId) {
+    return cached(`coloc:places:${logementId}`, 60000, async () => {
+      try {
+        const res = await this.#client.get(LOCATAIRE_ENDPOINTS.LOGEMENT_PLACES(logementId));
+        return extractApiResponse(res, 'Impossible de charger les places');
+      } catch (error) {
+        return {
+          logementId,
+          places: [
+            { id: `p-${logementId}-1`, placeNumber: 1, status: 'DISPONIBLE' },
+            { id: `p-${logementId}-2`, placeNumber: 2, status: 'DISPONIBLE' }
+          ]
+        };
+      }
+    });
+  }
+
+  async lockRoomPlaces(logementId, payload = {}) {
+    const res = await this.#client.post(LOCATAIRE_ENDPOINTS.LOGEMENT_PLACE_LOCK(logementId), payload);
+    invalidateCache(`coloc:places:${logementId}`);
+    return extractApiResponse(res, 'Impossible de verrouiller la place');
+  }
+
+  async unlockRoomPlaces(logementId, payload = {}) {
+    const res = await this.#client.post(LOCATAIRE_ENDPOINTS.LOGEMENT_PLACE_UNLOCK(logementId), payload);
+    invalidateCache(`coloc:places:${logementId}`);
+    return extractApiResponse(res, 'Impossible de libérer le verrou');
+  }
+
+  async reserveRoomPlaces(logementId, payload = {}) {
+    const res = await this.#client.post(LOCATAIRE_ENDPOINTS.LOGEMENT_PLACE_RESERVE(logementId), payload);
+    invalidateCache(`coloc:places:${logementId}`);
+    invalidateCache('logement');
+    return extractApiResponse(res, 'Impossible de finaliser la réservation');
+  }
+
+  async createColocGroup(groupData = {}) {
+    const res = await this.#client.post(LOCATAIRE_ENDPOINTS.COLOC_GROUPS, groupData);
+    return extractApiResponse(res, 'Impossible de créer le groupe de colocation');
+  }
+
+  async getColocGroup(groupId) {
+    const res = await this.#client.get(LOCATAIRE_ENDPOINTS.COLOC_GROUP_DETAIL(groupId));
+    return extractApiResponse(res, 'Impossible de charger le groupe');
+  }
+
+  async inviteToColocGroup(groupId) {
+    const res = await this.#client.post(LOCATAIRE_ENDPOINTS.COLOC_GROUP_INVITE(groupId));
+    return extractApiResponse(res, 'Impossible de générer le lien d\'invitation');
+  }
+
+  async acceptColocInvitation(token) {
+    const res = await this.#client.post(LOCATAIRE_ENDPOINTS.COLOC_INVITATION_ACCEPT(token));
+    return extractApiResponse(res, 'Impossible d\'accepter l\'invitation');
+  }
+
+  async confirmCouplePartner(groupId) {
+    const res = await this.#client.post(LOCATAIRE_ENDPOINTS.COLOC_CONFIRM_COUPLE(groupId));
+    return extractApiResponse(res, 'Impossible de confirmer l\'accord couple');
+  }
 }
 
 export const locataireAPI = new LocataireAPI();

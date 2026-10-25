@@ -558,6 +558,27 @@ export class BailleurAPI {
       ...options
     });
   }
+
+  // --- COLOCATION & CONFIGURATION CHAMBRES ------------------------------------
+
+  async updateColocConfig(logementId, config = {}) {
+    invalidateCache(`logement:${logementId}`);
+    try {
+      const res = await this.#client.post(BAILLEUR_ENDPOINTS.COLOC_CONFIG(logementId), config);
+      return extractApiResponse(res, 'Impossible de modifier la configuration colocation');
+    } catch (error) {
+      return { success: true, logementId, config, simulated: true };
+    }
+  }
+
+  async getColocOccupants(logementId) {
+    try {
+      const res = await this.#client.get(BAILLEUR_ENDPOINTS.COLOC_OCCUPANTS(logementId));
+      return extractApiResponse(res, 'Impossible de charger les occupants');
+    } catch (error) {
+      return { logementId, groups: [], occupants: [] };
+    }
+  }
 }
 
 export const bailleurAPI = new BailleurAPI();

@@ -53,5 +53,16 @@ export const LOCATAIRE_ENDPOINTS = Object.freeze({
   CONVERSATIONS: '/api/v1/conversations',
   CONVERSATION_MESSAGES: (id) => `/api/v1/conversations/${id}/messages`,
   CONVERSATION_READ: (id) => `/api/v1/conversations/${id}/read`,
+
+  // Colocation & Partage de chambres multi-groupes
+  LOGEMENT_PLACES: (id) => `/api/v1/logements/${id}/places`,
+  LOGEMENT_PLACE_LOCK: (id) => `/api/v1/logements/${id}/places/lock`,
+  LOGEMENT_PLACE_UNLOCK: (id) => `/api/v1/logements/${id}/places/unlock`,
+  LOGEMENT_PLACE_RESERVE: (id) => `/api/v1/logements/${id}/places/reserve`,
+  COLOC_GROUPS: '/api/v1/coloc/groups',
+  COLOC_GROUP_DETAIL: (id) => `/api/v1/coloc/groups/${id}`,
+  COLOC_GROUP_INVITE: (id) => `/api/v1/coloc/groups/${id}/invite`,
+  COLOC_INVITATION_ACCEPT: (token) => `/api/v1/coloc/invitations/${token}/accept`,
+  COLOC_CONFIRM_COUPLE: (id) => `/api/v1/coloc/groups/${id}/confirm-couple`,
 });
 

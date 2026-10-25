@@ -39,5 +39,9 @@ export const BAILLEUR_ENDPOINTS = Object.freeze({
   // Conformité & Pièces réglementaires
   SETTINGS_COMPLIANCE: '/api/v1/settings/compliance',
   COMPLIANCE: '/api/v1/settings/compliance', // alias court
+
+  // Configuration Colocation & Partage de chambres
+  COLOC_CONFIG: (id) => `/api/v1/bailleur/annonces/${id}/coloc-config`,
+  COLOC_OCCUPANTS: (id) => `/api/v1/bailleur/annonces/${id}/coloc-occupants`,
 });
 

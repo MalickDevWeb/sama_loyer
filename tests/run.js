@@ -39,6 +39,7 @@ async function main() {
     const { runFavoritesResilienceTests } = await import('./favorites-resilience.test.js');
     const { runApiResponseTests } = await import('./api-response.test.js');
     const { runApiSeparationTests } = await import('./api-separation.test.js');
+    const { runColocSystemTests } = await import('./coloc-system.test.js');
 
     totalPassed += await runEventBusTests();
     totalPassed += await runSculptTests();
@@ -48,6 +49,7 @@ async function main() {
     totalPassed += await runFavoritesResilienceTests();
     totalPassed += await runApiResponseTests();
     totalPassed += await runApiSeparationTests();
+    totalPassed += await runColocSystemTests();
 
     const duration = ((Date.now() - start) / 1000).toFixed(2);
     console.log('\n====================================================');
