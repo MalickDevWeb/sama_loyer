@@ -27,6 +27,9 @@ import {
   resolveIncompleteRoom,
   generateGroupInvitation,
   verifyGroupInvitation,
+  createInAppGroupInvitation,
+  respondToInAppInvitation,
+  sendInAppGroupMessage,
   processPaymentWebhookIdempotent,
   createDisputeReport,
   resolveDisputeReport
@@ -367,6 +370,59 @@ export async function runColocSystemTests() {
   assert.equal(resolved.actionTaken, 'AVERTISSEMENT_ENVOYE');
   passed++;
   console.log('  ✓ Signalements : Traitement et décision administrative tracée');
+
+  // --------------------------------------------------------------------------
+  // TEST 12 : Invitations & Messagerie Internes dans l'App (sans WhatsApp)
+  // --------------------------------------------------------------------------
+  const groupInApp = {
+    id: 'grp-inapp-01',
+    name: 'Groupe ISEP Interne',
+    placesRequested: 2,
+    members: [{ id: 'user-moussa', name: 'Moussa Diop', role: 'CHEF_GROUPE' }]
+  };
+  const inviterMoussa = { id: 'user-moussa', name: 'Moussa Diop', phone: '+221771234567' };
+  const recipientAmadou = { id: 'user-amadou', name: 'Amadou Sall', phone: '+221770000001' };
+
+  // 1. Émission d'une invitation interne dans l'application
+  const inAppInv = createInAppGroupInvitation({
+    group: groupInApp,
+    inviter: inviterMoussa,
+    recipientPhoneOrId: recipientAmadou.phone
+  });
+  assert.equal(inAppInv.type, 'IN_APP_GROUP_INVITE');
+  assert.equal(inAppInv.status, 'EN_ATTENTE');
+  assert.equal(inAppInv.recipient, '+221770000001');
+  assert.ok(inAppInv.text.includes('Moussa Diop t\'invite à rejoindre son groupe'));
+  passed++;
+  console.log('  ✓ Messagerie interne : Émission d\'une invitation in-app sans dépendre de WhatsApp');
+
+  // 2. Acceptation de l'invitation directement dans l'application
+  const acceptRes = respondToInAppInvitation({
+    invitation: inAppInv,
+    response: 'ACCEPTER',
+    responder: recipientAmadou,
+    group: groupInApp
+  });
+  assert.equal(acceptRes.success, true);
+  assert.equal(acceptRes.status, 'ACCEPTEE');
+  assert.equal(acceptRes.updatedGroup.members.length, 2);
+  assert.equal(acceptRes.updatedGroup.status, 'COMPLET');
+  assert.ok(acceptRes.systemMessage.includes('Amadou Sall a accepté l\'invitation'));
+  passed++;
+  console.log('  ✓ Messagerie interne : Acceptation in-app d\'invitation, groupe complété (2/2)');
+
+  // 3. Discussion et messages internes au groupe dans l'application
+  const chatMsg = sendInAppGroupMessage({
+    groupId: groupInApp.id,
+    sender: recipientAmadou,
+    text: 'Salut Moussa ! J\'ai validé mon lit pour Keur Gorgui directement dans Sama Loyer.'
+  });
+  assert.equal(chatMsg.groupId, 'grp-inapp-01');
+  assert.equal(chatMsg.senderId, 'user-amadou');
+  assert.equal(chatMsg.status, 'ENVOYE');
+  assert.ok(chatMsg.time.includes(':'));
+  passed++;
+  console.log('  ✓ Messagerie interne : Échange de messages in-app entre colocataires du groupe');
 
   console.log(`\n  Total tests Colocation passés : ${passed}`);
   return passed;

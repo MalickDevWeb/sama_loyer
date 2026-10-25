@@ -257,12 +257,73 @@
         <text class="created-group-token">Jeton Duo : {{ groupInvite.token }}</text>
 
         <view class="created-group-actions">
+          <button class="btn-group-action btn-group-action--inapp" bindtap="onSendInAppInviteClick">
+            💬 Inviter dans l'app (par n° tél)
+          </button>
           <button class="btn-group-action btn-group-action--wa" bindtap="onCopyGroupWhatsApp">
-            📲 Copier l'invitation WhatsApp
+            📲 Copier l'invitation WhatsApp (Optionnel)
           </button>
           <button class="btn-group-action btn-group-action--book" bindtap="onBookTargetRoomWithGroup" data-roomid="coloc-isep-keur-gorgui">
             🛏️ Réserver dans Chambre Keur Gorgui
           </button>
+        </view>
+      </view>
+    </view>
+
+    <!-- ======================================================== -->
+    <!-- SECTION MESSAGERIE INTERNE : BOÎTE DE RÉCEPTION & CHAT -->
+    <!-- ======================================================== -->
+    <view class="test-card test-card--inapp-chat">
+      <view class="test-card-head">
+        <text class="test-badge test-badge--blue">💬 Messagerie & Invitations Internes à l'Application</text>
+        <text class="test-card-desc">Pas besoin de WhatsApp : invite, accepte et discute directement dans SAMA LOYER</text>
+      </view>
+
+      <!-- Invitations Internes Reçues -->
+      <view class="inapp-section-title">📬 Invitations Reçues dans l'App</view>
+      <view class="inapp-invitations-list">
+        <block wx:for="{{ inAppInvitations }}" wx:key="id">
+          <view class="inapp-inv-card">
+            <view class="inapp-inv-head">
+              <text class="inapp-inv-group">👥 {{ item.groupName }}</text>
+              <text class="inapp-inv-status inapp-inv-status--{{ item.status }}">{{ item.status }}</text>
+            </view>
+            <text class="inapp-inv-text">{{ item.text }}</text>
+            <view wx:if="{{ item.status === 'EN_ATTENTE' }}" class="inapp-inv-btns">
+              <button class="btn-inv-accept" bindtap="onAcceptInAppInvitation" data-id="{{ item.id }}">
+                ✅ Accepter dans l'app
+              </button>
+              <button class="btn-inv-decline" bindtap="onDeclineInAppInvitation" data-id="{{ item.id }}">
+                ❌ Refuser
+              </button>
+            </view>
+          </view>
+        </block>
+      </view>
+
+      <!-- Fil de discussion interne du groupe -->
+      <view class="inapp-section-title" style="margin-top: 20rpx;">🗨️ Discussion Interne du Groupe (Chat Privé)</view>
+      <view class="inapp-chat-box">
+        <scroll-view class="inapp-chat-messages" scroll-y="{{true}}">
+          <block wx:for="{{ inAppGroupChat }}" wx:key="id">
+            <view class="inapp-chat-bubble {{ item.isMine ? 'inapp-chat-bubble--mine' : 'inapp-chat-bubble--other' }}">
+              <text class="inapp-chat-author">{{ item.senderName }} · {{ item.time }}</text>
+              <text class="inapp-chat-content">{{ item.text }}</text>
+            </view>
+          </block>
+        </scroll-view>
+
+        <!-- Barre de saisie interne -->
+        <view class="inapp-chat-input-bar">
+          <input
+            class="inapp-chat-input"
+            value="{{ chatInputText }}"
+            placeholder="Écrire un message aux colocataires..."
+            bindinput="onInputChatText"
+            confirm-type="send"
+            bindconfirm="onSendInAppGroupChat"
+          />
+          <button class="btn-chat-send" bindtap="onSendInAppGroupChat">Envoyer</button>
         </view>
       </view>
     </view>

@@ -427,6 +427,140 @@ export function verifyGroupInvitation(invitation, now = Date.now()) {
 }
 
 /**
+ * 8.b Invitations et Messagerie Internes à l'Application SAMA LOYER
+ * Permet d'inviter et d'échanger directement dans l'application sans dépendre de WhatsApp.
+ */
+export function createInAppGroupInvitation({
+  group,
+  inviter,
+  recipientPhoneOrId,
+  validityHours = 72,
+  now = Date.now()
+}) {
+  if (!group || !group.id) {
+    throw new Error('GROUPE_INVALIDE: Un groupe valide est requis pour envoyer une invitation.');
+  }
+  if (!inviter || !inviter.id) {
+    throw new Error('EXPEDITEUR_INVALIDE: Le profil émetteur est obligatoire.');
+  }
+  if (!recipientPhoneOrId || !String(recipientPhoneOrId).trim()) {
+    throw new Error('DESTINATAIRE_MANQUANT: Le numéro ou identifiant du destinataire est requis.');
+  }
+
+  const id = `inv-inapp-${Date.now().toString(36)}-${Math.random().toString(36).substring(2, 6)}`;
+  const expiresAt = new Date(now + validityHours * 3600 * 1000).toISOString();
+
+  return {
+    id,
+    type: 'IN_APP_GROUP_INVITE',
+    groupId: group.id,
+    groupName: group.name,
+    inviter: {
+      id: inviter.id,
+      name: inviter.name,
+      phone: inviter.phone || null
+    },
+    recipient: String(recipientPhoneOrId).trim(),
+    status: 'EN_ATTENTE', // 'EN_ATTENTE' | 'ACCEPTEE' | 'REFUSEE' | 'EXPIREE'
+    createdAt: new Date(now).toISOString(),
+    expiresAt,
+    text: `${inviter.name} t'invite à rejoindre son groupe "${group.name}" sur SAMA LOYER pour partager une colocation.`
+  };
+}
+
+export function respondToInAppInvitation({
+  invitation,
+  response, // 'ACCEPTER' | 'REFUSER'
+  responder,
+  group,
+  now = Date.now()
+}) {
+  if (!invitation || !invitation.id) {
+    throw new Error('INVITATION_INTROUVABLE: L\'invitation sélectionnée n\'existe pas.');
+  }
+  if (invitation.status !== 'EN_ATTENTE') {
+    throw new Error(`INVITATION_DEJA_TRAITEE: Cette invitation a déjà été ${invitation.status.toLowerCase()}.`);
+  }
+  if (new Date(invitation.expiresAt).getTime() <= now) {
+    invitation.status = 'EXPIREE';
+    throw new Error('INVITATION_EXPIREE: Cette invitation a expiré.');
+  }
+
+  if (response === 'ACCEPTER') {
+    invitation.status = 'ACCEPTEE';
+    invitation.respondedAt = new Date(now).toISOString();
+
+    const members = (group && Array.isArray(group.members)) ? [...group.members] : [];
+    const alreadyMember = members.some(m => m.id === responder.id);
+    if (!alreadyMember) {
+      members.push({
+        id: responder.id,
+        name: responder.name,
+        phone: responder.phone || null,
+        joinedAt: new Date(now).toISOString(),
+        role: 'MEMBRE'
+      });
+    }
+
+    const updatedGroup = Object.assign({}, group, {
+      members,
+      placesAttributed: members.length,
+      status: members.length >= (group?.placesRequested || 2) ? 'COMPLET' : 'EN_ATTENTE_MEMBRES'
+    });
+
+    return {
+      success: true,
+      status: 'ACCEPTEE',
+      invitation,
+      updatedGroup,
+      systemMessage: `${responder.name} a accepté l'invitation interne et a rejoint le groupe "${invitation.groupName}".`
+    };
+  } else {
+    invitation.status = 'REFUSEE';
+    invitation.respondedAt = new Date(now).toISOString();
+
+    return {
+      success: true,
+      status: 'REFUSEE',
+      invitation,
+      updatedGroup: group,
+      systemMessage: `${responder.name} a décliné l'invitation pour le groupe "${invitation.groupName}".`
+    };
+  }
+}
+
+export function sendInAppGroupMessage({
+  groupId,
+  sender,
+  text,
+  now = Date.now()
+}) {
+  if (!groupId) {
+    throw new Error('GROUPE_REQUIS: Un identifiant de groupe est obligatoire.');
+  }
+  if (!sender || !sender.id) {
+    throw new Error('EXPEDITEUR_REQUIS: L\'expéditeur doit être authentifié.');
+  }
+  if (!text || !text.trim()) {
+    throw new Error('MESSAGE_VIDE: Le contenu du message ne peut être vide.');
+  }
+
+  const d = new Date(now);
+  const timeStr = `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
+
+  return {
+    id: `grp-msg-${Date.now().toString(36)}-${Math.random().toString(36).substring(2, 6)}`,
+    groupId,
+    senderId: sender.id,
+    senderName: sender.name,
+    text: text.trim(),
+    time: timeStr,
+    timestamp: now,
+    status: 'ENVOYE'
+  };
+}
+
+/**
  * 9. Traitement Idempotent des Paiements et Webhooks (Orange Money / Wave).
  */
 export function processPaymentWebhookIdempotent({

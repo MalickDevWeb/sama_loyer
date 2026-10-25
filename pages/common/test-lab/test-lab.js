@@ -15,6 +15,9 @@ import {
   resolveIncompleteRoom,
   generateGroupInvitation,
   verifyGroupInvitation,
+  createInAppGroupInvitation,
+  respondToInAppInvitation,
+  sendInAppGroupMessage,
   processPaymentWebhookIdempotent,
   createDisputeReport,
   resolveDisputeReport
@@ -60,6 +63,20 @@ const PERSONAS = [
         subtitle: 'Bloque la place contre les réservations concurrentes',
         badgeType: 'action',
         expected: 'VERROU ATOMIQUE'
+      },
+      {
+        id: 'moussa_send_inapp_invite',
+        title: '💬 Inviter son binôme DANS L\'APP (sans WhatsApp)',
+        subtitle: 'Envoie l\'invitation directement sur le compte Sama Loyer d\'Amadou',
+        badgeType: 'action',
+        expected: 'INVITATION INTERNE'
+      },
+      {
+        id: 'moussa_chat_inapp',
+        title: '🗨️ Écrire un message interne au groupe dans Sama Loyer',
+        subtitle: 'Fil de discussion privé entre les colocataires du groupe',
+        badgeType: 'action',
+        expected: 'CHAT INTERNE'
       }
     ]
   },
@@ -146,6 +163,13 @@ const PERSONAS = [
         expected: 'RACHAT & REMBOURSEMENT'
       },
       {
+        id: 'amadou_accept_inapp_invite',
+        title: '📬 Réceptionner & Accepter l\'invitation de Moussa',
+        subtitle: 'Acceptation directe dans l\'application : Groupe complet 2/2',
+        badgeType: 'pass',
+        expected: 'VALIDATION INTERNE'
+      },
+      {
         id: 'amadou_smoker_fail',
         title: '🚭 Tenter d\'entrer en logement Non-Fumeur',
         subtitle: 'Refuse de signer la charte non-fumeur · Rejet immédiat',
@@ -196,6 +220,22 @@ Page({
     selectedPersonaId: 'moussa',
     selectedPersona: PERSONAS[0],
     personaResults: {},
+
+    // Messagerie Interne & Invitations In-App
+    inAppInvitations: [
+      {
+        id: 'inv-init-1',
+        groupName: 'Groupe ISEP',
+        inviterName: 'Moussa Diop',
+        recipientPhone: '+221 77 000 00 01',
+        status: 'EN_ATTENTE',
+        text: 'Moussa Diop t\'invite à rejoindre le groupe "Groupe ISEP" pour partager une chambre 4 lits à Keur Gorgui.'
+      }
+    ],
+    inAppGroupChat: [
+      { id: 'm-init-1', senderName: 'Moussa Diop', text: 'Salut Amadou ! J\'ai créé notre groupe ISEP sur Sama Loyer pour Keur Gorgui.', time: '14:20', isMine: true }
+    ],
+    chatInputText: '',
 
     // Formulaire Groupe
     groupForm: {
@@ -287,6 +327,42 @@ Page({
           detail: `Verrou atomique actif jusqu'à ${expiry}. Tout autre utilisateur qui clique verra le lit bloqué.`
         });
         this.addLog(`[Moussa Diop] Verrouillage atomique du Lit #3 actif jusqu'à ${expiry}.`, 'info');
+
+      } else if (actionId === 'moussa_send_inapp_invite') {
+        const group = this.data.createdGroup || {
+          id: 'GRP-ISEP-' + now.toString(36).toUpperCase(),
+          name: 'Groupe ISEP',
+          placesRequested: 2,
+          members: [{ id: 'u-moussa', name: 'Moussa Diop', role: 'CHEF' }]
+        };
+        const inv = createInAppGroupInvitation({
+          group,
+          inviter: { id: 'u-moussa', name: 'Moussa Diop', phone: '+221771234567' },
+          recipientPhoneOrId: '+221 77 000 00 01'
+        });
+        const currentInvs = [inv, ...this.data.inAppInvitations];
+        this.setData({ inAppInvitations: currentInvs });
+        this.setPersonaActionResult(actionId, {
+          status: 'success',
+          title: 'Invitation Interne Envoyée à Amadou 💬',
+          detail: `Notification transmise directement dans Sama Loyer à Amadou Sall (+221 77 000 00 01) sans passer par WhatsApp. Statut : En attente.`
+        });
+        this.addLog(`[Moussa Diop] Invitation interne envoyée dans l'app à Amadou (+221 77 000 00 01).`, 'success');
+
+      } else if (actionId === 'moussa_chat_inapp') {
+        const msg = sendInAppGroupMessage({
+          groupId: 'grp-isep',
+          sender: { id: 'u-moussa', name: 'Moussa Diop' },
+          text: 'Salut Amadou ! J\'ai bloqué le lit #3 à Keur Gorgui, confirme ton arrivée dans l\'app.'
+        });
+        const currentChat = [...this.data.inAppGroupChat, Object.assign({}, msg, { isMine: true })];
+        this.setData({ inAppGroupChat: currentChat });
+        this.setPersonaActionResult(actionId, {
+          status: 'info',
+          title: 'Message Interne Publié au Groupe 🗨️',
+          detail: `Moussa : "${msg.text}" (envoyé à ${msg.time} dans le chat privé du groupe).`
+        });
+        this.addLog(`[Chat Interne] Nouveau message de Moussa envoyé au groupe.`, 'info');
 
       } else if (actionId === 'fatou_book_ok') {
         validateGenderCompatibility(COLOC_GENDER_POLICIES.FEMMES_UNIQUEMENT, [
@@ -383,6 +459,41 @@ Page({
           detail: `Rachat exclusif solo validé ! Remboursement intégral de 40 000 FCFA à 100% sans frais pour Awa généré via Orange Money + SMS de notification envoyé.`
         });
         this.addLog(`[Amadou Sall] Rachat exclusif solo : Remboursement 100% automatique émis.`, 'success');
+
+      } else if (actionId === 'amadou_accept_inapp_invite') {
+        const targetInv = this.data.inAppInvitations[0] || {
+          id: 'inv-init-1',
+          groupName: 'Groupe ISEP',
+          status: 'EN_ATTENTE'
+        };
+        const res = respondToInAppInvitation({
+          invitation: targetInv,
+          response: 'ACCEPTER',
+          responder: { id: 'u-amadou', name: 'Amadou Sall', phone: '+221 77 000 00 01' },
+          group: {
+            id: 'grp-isep',
+            name: 'Groupe ISEP',
+            placesRequested: 2,
+            members: [{ id: 'u-moussa', name: 'Moussa Diop' }]
+          }
+        });
+        const updatedInvs = this.data.inAppInvitations.map(i => i.id === targetInv.id ? Object.assign({}, i, { status: 'ACCEPTEE' }) : i);
+        const welcomeMsg = sendInAppGroupMessage({
+          groupId: 'grp-isep',
+          sender: { id: 'u-amadou', name: 'Amadou Sall' },
+          text: 'Merci Moussa ! J\'ai accepté dans Sama Loyer. Je prends le 2ème lit à Keur Gorgui.'
+        });
+        const currentChat = [...this.data.inAppGroupChat, Object.assign({}, welcomeMsg, { isMine: true })];
+        this.setData({
+          inAppInvitations: updatedInvs,
+          inAppGroupChat: currentChat
+        });
+        this.setPersonaActionResult(actionId, {
+          status: 'success',
+          title: 'Invitation Acceptée dans l\'App ✅',
+          detail: `${res.systemMessage} Le Groupe ISEP compte désormais 2 membres confirmés. Aucun recours à WhatsApp n'a été requis.`
+        });
+        this.addLog(`[Amadou Sall] Invitation in-app acceptée : Groupe ISEP complet (2/2).`, 'success');
 
       } else if (actionId === 'amadou_smoker_fail') {
         try {
@@ -517,6 +628,113 @@ Page({
         this.addLog('Lien WhatsApp copié dans le presse-papier.', 'info');
       }
     });
+  },
+
+  onSendInAppInviteClick() {
+    const group = this.data.createdGroup || {
+      id: 'GRP-ISEP-' + Date.now().toString(36).toUpperCase(),
+      name: this.data.groupForm.name || 'Groupe ISEP',
+      placesRequested: this.data.groupForm.placesRequested || 2
+    };
+
+    const inv = createInAppGroupInvitation({
+      group,
+      inviter: { id: 'u-moussa', name: 'Moussa Diop', phone: '+221771234567' },
+      recipientPhoneOrId: '+221 77 000 00 01'
+    });
+
+    const currentInvs = [inv, ...this.data.inAppInvitations];
+    this.setData({ inAppInvitations: currentInvs });
+
+    wx.showToast({
+      title: 'Invitation envoyée dans l\'App !',
+      icon: 'success'
+    });
+    this.addLog(`Invitation interne envoyée directement dans Sama Loyer au +221 77 000 00 01 (aucun WhatsApp requis).`, 'success');
+  },
+
+  onAcceptInAppInvitation(e) {
+    const invId = e.currentTarget.dataset.id;
+    const targetInv = this.data.inAppInvitations.find(i => i.id === invId) || this.data.inAppInvitations[0];
+    if (!targetInv) return;
+
+    const res = respondToInAppInvitation({
+      invitation: targetInv,
+      response: 'ACCEPTER',
+      responder: { id: 'u-amadou', name: 'Amadou Sall', phone: '+221 77 000 00 01' },
+      group: {
+        id: targetInv.groupId || 'grp-isep',
+        name: targetInv.groupName || 'Groupe ISEP',
+        placesRequested: 2,
+        members: [{ id: 'u-moussa', name: 'Moussa Diop' }]
+      }
+    });
+
+    const updatedInvs = this.data.inAppInvitations.map(i => i.id === targetInv.id ? Object.assign({}, i, { status: 'ACCEPTEE' }) : i);
+    const welcomeMsg = sendInAppGroupMessage({
+      groupId: targetInv.groupId || 'grp-isep',
+      sender: { id: 'u-amadou', name: 'Amadou Sall' },
+      text: 'J\'ai accepté l\'invitation dans l\'application ! Prêt pour la colocation.'
+    });
+
+    this.setData({
+      inAppInvitations: updatedInvs,
+      inAppGroupChat: [...this.data.inAppGroupChat, Object.assign({}, welcomeMsg, { isMine: false })]
+    });
+
+    wx.showToast({
+      title: 'Invitation acceptée !',
+      icon: 'success'
+    });
+    this.addLog(`${res.systemMessage} Traité directement dans l'app SAMA LOYER.`, 'success');
+  },
+
+  onDeclineInAppInvitation(e) {
+    const invId = e.currentTarget.dataset.id;
+    const targetInv = this.data.inAppInvitations.find(i => i.id === invId);
+    if (!targetInv) return;
+
+    respondToInAppInvitation({
+      invitation: targetInv,
+      response: 'REFUSER',
+      responder: { id: 'u-amadou', name: 'Amadou Sall' },
+      group: { id: targetInv.groupId, name: targetInv.groupName }
+    });
+
+    const updatedInvs = this.data.inAppInvitations.map(i => i.id === targetInv.id ? Object.assign({}, i, { status: 'REFUSEE' }) : i);
+    this.setData({ inAppInvitations: updatedInvs });
+
+    wx.showToast({ title: 'Invitation déclinée', icon: 'none' });
+    this.addLog(`Invitation déclinée pour le groupe "${targetInv.groupName}".`, 'info');
+  },
+
+  onInputChatText(e) {
+    this.setData({
+      chatInputText: e.detail.value || ''
+    });
+  },
+
+  onSendInAppGroupChat() {
+    const text = this.data.chatInputText;
+    if (!text || !text.trim()) return;
+
+    const sender = this.data.selectedPersona ? {
+      id: this.data.selectedPersona.id,
+      name: this.data.selectedPersona.name
+    } : { id: 'u-moussa', name: 'Moussa Diop' };
+
+    const msg = sendInAppGroupMessage({
+      groupId: 'grp-isep',
+      sender,
+      text: text.trim()
+    });
+
+    this.setData({
+      inAppGroupChat: [...this.data.inAppGroupChat, Object.assign({}, msg, { isMine: true })],
+      chatInputText: ''
+    });
+
+    this.addLog(`Message in-app envoyé par ${sender.name} dans la discussion du groupe.`, 'info');
   },
 
   onBookTargetRoomWithGroup(e) {
