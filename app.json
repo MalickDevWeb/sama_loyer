@@ -1,5 +1,6 @@
 {
   "pages": [
+    "pages/common/test-lab/test-lab",
     "pages/client/home/home",
     "pages/client/search/results",
     "pages/client/logement-detail/logement-detail",
@@ -24,8 +25,7 @@
     "pages/bailleur/conversation/conversation",
     "pages/bailleur/horaires/horaires",
     "pages/bailleur/qr-affiche/qr-affiche",
-    "pages/common/404/404",
-    "pages/common/test-lab/test-lab"
+    "pages/common/404/404"
   ],
   "usingComponents": {
     "sama-top-bar": "/components/custom/ui/sama-top-bar/index",

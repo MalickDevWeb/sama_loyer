@@ -57,6 +57,18 @@
       </view>
     </view>
 
+    <!-- Bannière Test Lab (Prompt Maître) -->
+    <view class="test-lab-hero-trigger" hover-class="sl-hover" bindtap="onOpenTestLab" style="margin: 16rpx 24rpx; padding: 18rpx 24rpx; background: #FFF1F5; border: 2.5rpx dashed #C8235F; border-radius: 20rpx; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 4rpx 14rpx rgba(200, 35, 95, 0.12);">
+      <view style="display: flex; align-items: center; gap: 16rpx;">
+        <text style="font-size: 38rpx;">🧪</text>
+        <view style="display: flex; flex-direction: column;">
+          <text style="font-size: 24rpx; font-weight: 800; color: #C8235F; letter-spacing: 0.5rpx;">LABORATOIRE DE TEST PROMPT MAÎTRE</text>
+          <text style="font-size: 20rpx; font-weight: 600; color: #64748B;">Tester règles de genre, lits, 15 min lock & multi-groupes</text>
+        </view>
+      </view>
+      <view class="ic ic-chevron-berry ic--sm"></view>
+    </view>
+
     <!-- Carte d'accroche dégradée rose avec filigrane maison -->
     <view class="hero-pink-card">
       <!-- Scène animée : halo, maison flottante, ombre, buissons, étincelles, repère -->

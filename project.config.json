@@ -97,8 +97,16 @@
       "list": []
     },
     "miniprogram": {
-      "current": -1,
-      "list": []
+      "current": 0,
+      "list": [
+        {
+          "name": "🧪 Laboratoire de Test SAMA LOYER",
+          "pathName": "pages/common/test-lab/test-lab",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        }
+      ]
     }
   }
 }
