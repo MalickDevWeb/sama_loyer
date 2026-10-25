@@ -42,3 +42,4 @@ export const ColocReservationSchema = {
   status: (data) => data.status || 'VERROUILLEE',
   lockExpiresAt: '@link.lock_expires_at'
 };
+

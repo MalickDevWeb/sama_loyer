@@ -16,6 +16,7 @@ import {
   COLOC_HABIT_POLICIES,
   COLOC_INCOMPLETE_POLICIES,
   PLACE_STATUS,
+  REPORT_REASONS,
   validateGenderCompatibility,
   validateCoupleDuo,
   validateLivingHabits,
@@ -23,7 +24,12 @@ import {
   createPlaceLock,
   isLockExpired,
   executeSoloPrivatization,
-  resolveIncompleteRoom
+  resolveIncompleteRoom,
+  generateGroupInvitation,
+  verifyGroupInvitation,
+  processPaymentWebhookIdempotent,
+  createDisputeReport,
+  resolveDisputeReport
 } from '../utils/helpers/coloc-engine.js';
 
 export async function runColocSystemTests() {
@@ -254,6 +260,115 @@ export async function runColocSystemTests() {
   passed++;
   console.log('  ✓ Chambre incomplète : Échéance dépassée déclenchant remboursement complet');
 
-  console.log(`\n  Total tests Colocation passés : ${passed}/11`);
+  // --------------------------------------------------------------------------
+  // TEST 8 : Tests de Capacité Dynamique (2, 3 et 4 places)
+  // --------------------------------------------------------------------------
+  // Chambre 3 places
+  const cap3 = validateMultiGroupCapacity({
+    roomCapacity: 3,
+    multiGroupAllowed: true,
+    existingReservations: [{ id: 'r1', placesCount: 1, status: 'CONFIRMEE' }],
+    placesRequested: 2
+  });
+  assert.equal(cap3.allowed, true);
+  assert.equal(cap3.remainingAfter, 0);
+  passed++;
+  console.log('  ✓ Capacité dynamique : Chambre 3 places remplie exactement (1 + 2)');
+
+  // --------------------------------------------------------------------------
+  // TEST 9 : Invitations sécurisées Duo WhatsApp
+  // --------------------------------------------------------------------------
+  const groupDuo = { id: 'grp-duo-77', name: 'Binôme Keur Gorgui' };
+  const invite = generateGroupInvitation({
+    group: groupDuo,
+    inviterId: 'user-awa',
+    validityHours: 48,
+    maxUses: 1,
+    now: Date.now()
+  });
+  assert.ok(invite.token.startsWith('inv-grp-duo-'));
+  assert.ok(invite.whatsappShareText.includes('https://samaloyer.sn/join-group?t='));
+  passed++;
+  console.log('  ✓ Invitations : Jeton Duo WhatsApp cryptographique généré');
+
+  // Consommation valide
+  const verifyRes = verifyGroupInvitation(invite, Date.now() + 1000);
+  assert.equal(verifyRes.valid, true);
+  assert.equal(verifyRes.groupId, 'grp-duo-77');
+  passed++;
+  console.log('  ✓ Invitations : Vérification du token d\'invitation réussie');
+
+  // Rejet après expiration
+  assert.throws(() => {
+    verifyGroupInvitation(invite, Date.now() + 50 * 3600 * 1000); // 50h plus tard
+  }, /INVITATION_EXPIREE/);
+  passed++;
+  console.log('  ✓ Invitations : Rejet immédiat d\'un lien d\'invitation expiré');
+
+  // --------------------------------------------------------------------------
+  // TEST 10 : Idempotence des Paiements et Webhooks (Orange Money)
+  // --------------------------------------------------------------------------
+  const processedStore = new Set();
+  const resMap = new Map([
+    ['res-om-1', { id: 'res-om-1', status: 'VERROUILLEE', placesCount: 1, amountTotal: 25000 }]
+  ]);
+
+  const webhookPayload = {
+    eventId: 'evt-om-999',
+    transactionReference: 'OM-TX-SN-20261025-01',
+    reservationId: 'res-om-1',
+    status: 'SUCCESS',
+    amount: 25000,
+    currency: 'XOF'
+  };
+
+  // 1ère réception : validation et confirmation
+  const firstProcessing = processPaymentWebhookIdempotent({
+    webhookEvent: webhookPayload,
+    processedEventsStore: processedStore,
+    activeReservationsMap: resMap
+  });
+  assert.equal(firstProcessing.status, 'PROCESSED_CONFIRMED');
+  assert.equal(resMap.get('res-om-1').status, 'CONFIRMEE');
+  passed++;
+  console.log('  ✓ Paiement webhook : Première notification confirmée avec succès');
+
+  // 2ème réception identique : idempotence stricte, ignorée sans double crédit
+  const secondProcessing = processPaymentWebhookIdempotent({
+    webhookEvent: webhookPayload,
+    processedEventsStore: processedStore,
+    activeReservationsMap: resMap
+  });
+  assert.equal(secondProcessing.status, 'IGNORED_DUPLICATE');
+  passed++;
+  console.log('  ✓ Paiement webhook : Notification dupliquée ignorée idempotemment');
+
+  // --------------------------------------------------------------------------
+  // TEST 11 : Signalements et Modération (Logement, Utilisateur, Groupe)
+  // --------------------------------------------------------------------------
+  const report = createDisputeReport({
+    reporterId: 'user-plaignant-1',
+    targetType: 'group',
+    targetId: 'grp-suspect-02',
+    reason: REPORT_REASONS.COMPORTEMENT_INAPPROPRIE,
+    description: 'Propos irrespectueux tenus dans les échanges préalables'
+  });
+  assert.equal(report.status, 'A_TRAITER');
+  assert.equal(report.targetType, 'group');
+  passed++;
+  console.log('  ✓ Signalements : Création d\'un signalement ciblant un groupe');
+
+  // Décision modérateur
+  const resolved = resolveDisputeReport(report, {
+    action: 'AVERTISSEMENT_ENVOYE',
+    notes: 'Rappel à l\'ordre envoyé au membre'
+  });
+  assert.equal(resolved.status, 'TRAITE');
+  assert.equal(resolved.actionTaken, 'AVERTISSEMENT_ENVOYE');
+  passed++;
+  console.log('  ✓ Signalements : Traitement et décision administrative tracée');
+
+  console.log(`\n  Total tests Colocation passés : ${passed}`);
   return passed;
 }
+

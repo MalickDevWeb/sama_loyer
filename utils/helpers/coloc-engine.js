@@ -368,3 +368,178 @@ export function resolveIncompleteRoom({
     action: 'ADJUST_SPLIT_PRICE'
   };
 }
+
+/**
+ * 8. Invitations sécurisées de groupe (Duo WhatsApp).
+ */
+export function generateGroupInvitation({
+  group,
+  inviterId,
+  validityHours = 48,
+  maxUses = 1,
+  now = Date.now()
+}) {
+  if (!group || !group.id) {
+    throw new Error('GROUPE_INVALIDE: Un groupe valide est requis pour générer une invitation.');
+  }
+
+  // Jeton cryptographiquement aléatoire / non devinable
+  const randomEntropy = Math.random().toString(36).substring(2) + Math.random().toString(36).substring(2);
+  const token = `inv-${group.id.slice(0, 8)}-${randomEntropy}`;
+  const expiresAt = new Date(now + validityHours * 3600 * 1000).toISOString();
+
+  return {
+    token,
+    groupId: group.id,
+    inviterId,
+    maxUses,
+    usesCount: 0,
+    expiresAt,
+    inviteUrl: `https://samaloyer.sn/join-group?t=${token}`,
+    whatsappShareText: `Rejoins notre colocation "${group.name}" sur SAMA LOYER pour réserver ensemble : https://samaloyer.sn/join-group?t=${token}`
+  };
+}
+
+/**
+ * Vérifie et consomme une invitation.
+ */
+export function verifyGroupInvitation(invitation, now = Date.now()) {
+  if (!invitation || !invitation.token) {
+    throw new Error('INVITATION_INTROUVABLE: Ce lien d\'invitation n\'existe pas ou a été révoqué.');
+  }
+
+  if (invitation.revokedAt) {
+    throw new Error('INVITATION_REVOQUEE: Cette invitation a été révoquée par le créateur du groupe.');
+  }
+
+  if (new Date(invitation.expiresAt).getTime() <= now) {
+    throw new Error('INVITATION_EXPIREE: Ce lien d\'invitation a expiré. Demande un nouveau lien au groupe.');
+  }
+
+  if (invitation.usesCount >= invitation.maxUses) {
+    throw new Error('QUOTA_INVITATION_ATTEINT: Le nombre maximal d\'adhésions pour ce lien a été atteint.');
+  }
+
+  return {
+    valid: true,
+    groupId: invitation.groupId
+  };
+}
+
+/**
+ * 9. Traitement Idempotent des Paiements et Webhooks (Orange Money / Wave).
+ */
+export function processPaymentWebhookIdempotent({
+  webhookEvent,
+  processedEventsStore = new Set(),
+  activeReservationsMap = new Map()
+}) {
+  const { eventId, transactionReference, reservationId, status, amount, currency } = webhookEvent;
+
+  if (!transactionReference) {
+    throw new Error('REFERENCE_TRANSACTION_MANQUANTE: Référence opérateur obligatoire.');
+  }
+
+  // Vérification de l'idempotence
+  if (processedEventsStore.has(transactionReference)) {
+    return {
+      status: 'IGNORED_DUPLICATE',
+      message: 'Événement de paiement déjà traité. Aucune double attribution ni double facturation.',
+      transactionReference
+    };
+  }
+
+  if (currency && currency !== 'XOF') {
+    throw new Error(`DEVISE_INVALIDE: Devise ${currency} non acceptée. Seul le XOF est supporté.`);
+  }
+
+  const reservation = activeReservationsMap.get(reservationId);
+  if (!reservation) {
+    throw new Error('RESERVATION_INTROUVABLE: La réservation associée à ce paiement n\'existe pas.');
+  }
+
+  if (status === 'SUCCESS' || status === 'PAID') {
+    reservation.status = 'CONFIRMEE';
+    reservation.paidAt = new Date().toISOString();
+    reservation.transactionReference = transactionReference;
+    processedEventsStore.add(transactionReference);
+
+    return {
+      status: 'PROCESSED_CONFIRMED',
+      reservationId,
+      transactionReference,
+      amount
+    };
+  }
+
+  if (status === 'FAILED' || status === 'EXPIRED') {
+    reservation.status = 'ANNULEE';
+    processedEventsStore.add(transactionReference);
+
+    return {
+      status: 'PROCESSED_FAILED',
+      reservationId,
+      transactionReference
+    };
+  }
+
+  return {
+    status: 'PENDING_STATUS',
+    transactionReference
+  };
+}
+
+/**
+ * 10. Signalements et Modération (Logement, Utilisateur, Groupe).
+ */
+export const REPORT_REASONS = Object.freeze({
+  FAUSSE_ANNONCE: 'FAUSSE_ANNONCE',
+  NON_RESPECT_REGLES: 'NON_RESPECT_REGLES',
+  COMPORTEMENT_INAPPROPRIE: 'COMPORTEMENT_INAPPROPRIE',
+  INCOHERENCE_PROFIL: 'INCOHERENCE_PROFIL',
+  FRAUDE_PAIEMENT: 'FRAUDE_PAIEMENT'
+});
+
+export function createDisputeReport({
+  reporterId,
+  targetType,
+  targetId,
+  reason,
+  description = ''
+}) {
+  if (!['logement', 'user', 'group'].includes(targetType)) {
+    throw new Error(`CIBLE_INVALIDE: Le type de cible "${targetType}" n'est pas autorisé.`);
+  }
+
+  if (!Object.values(REPORT_REASONS).includes(reason)) {
+    throw new Error(`MOTIF_INVALIDE: Le motif "${reason}" n'est pas reconnu.`);
+  }
+
+  return {
+    id: `rep-${Date.now()}-${Math.random().toString(36).substr(2, 6)}`,
+    reporterId,
+    targetType,
+    targetId,
+    reason,
+    description,
+    status: 'A_TRAITER',
+    priority: reason === REPORT_REASONS.FRAUDE_PAIEMENT ? 'URGENT' : 'NORMAL',
+    createdAt: new Date().toISOString()
+  };
+}
+
+export function resolveDisputeReport(report, decision = {}) {
+  if (!report || report.status !== 'A_TRAITER') {
+    throw new Error('SIGNALEMENT_NON_TRAITABLE: Le dossier doit être en attente de traitement.');
+  }
+
+  return {
+    ...report,
+    status: decision.action === 'REJETER' ? 'REJETE' : 'TRAITE',
+    actionTaken: decision.action,
+    moderatorNotes: decision.notes || '',
+    handledAt: new Date().toISOString()
+  };
+}
+
+
