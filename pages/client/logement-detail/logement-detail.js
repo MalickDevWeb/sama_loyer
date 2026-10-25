@@ -46,6 +46,19 @@ Page({
       'Samedi à 11h',
       'Dimanche à 15h30',
       'Lundi à 17h'
+    ],
+    isColoc: true,
+    roomCapacity: 2,
+    availablePlacesCount: 1,
+    placePrice: 40000,
+    placePriceFormatted: '40 000',
+    soloPrice: 80000,
+    soloPriceFormatted: '80 000',
+    genderPolicyLabel: 'Hommes uniquement',
+    selectedPlaceNumber: 2,
+    places: [
+      { id: 'p1', placeNumber: 1, status: 'OCCUPEE', statusLabel: 'Occupé (Awa D.)' },
+      { id: 'p2', placeNumber: 2, status: 'DISPONIBLE', statusLabel: 'Disponible' }
     ]
   },
 
@@ -423,6 +436,72 @@ Page({
           title: 'Signalement transmis à la modération',
           icon: 'none',
           duration: 2000
+        });
+      }
+    });
+  },
+
+  // --- Logiques de Colocation & Lits -------------------------------------------
+  onSelectBedPlace(e) {
+    const place = e.currentTarget.dataset.place;
+    if (place.status === 'OCCUPEE' || place.status === 'RESERVEE') {
+      wx.showToast({ title: 'Ce lit est déjà occupé', icon: 'none' });
+      return;
+    }
+    if (place.status === 'BLOQUEE') {
+      wx.showToast({ title: 'Place temporairement verrouillée', icon: 'none' });
+      return;
+    }
+    this.setData({ selectedPlaceNumber: place.placeNumber });
+  },
+
+  onReservePlace() {
+    const num = this.data.selectedPlaceNumber;
+    wx.showModal({
+      title: `Lit #${num} sélectionné 🛏️`,
+      content: `Tu bloques ce lit pour ${this.data.placePriceFormatted} FCFA/mois. Un verrou de 15 minutes est activé pour te permettre de finaliser ton avance avec Orange Money / Wave.`,
+      confirmText: 'Payer l\'avance',
+      confirmColor: COLORS.berry,
+      cancelText: 'Annuler',
+      success: (res) => {
+        if (res.confirm) {
+          wx.navigateTo({
+            url: `/pages/client/louer-sans-visite/louer-sans-visite?id=${encodeURIComponent(this.data.logement.id)}&placeNumber=${num}&mode=coloc`
+          });
+        }
+      }
+    });
+  },
+
+  onPrivatizeSolo() {
+    wx.showModal({
+      title: 'Privatisation Solo 🏠',
+      content: `Prendre l'intégralité de la chambre pour toi seul coûte ${this.data.soloPriceFormatted} FCFA/mois.\n\nSi tu valides, les colocataires en cours de réservation seront intégralement remboursés sans frais sur Orange Money.`,
+      confirmText: 'Privatiser',
+      confirmColor: COLORS.berry,
+      cancelText: 'Annuler',
+      success: (res) => {
+        if (res.confirm) {
+          wx.navigateTo({
+            url: `/pages/client/louer-sans-visite/louer-sans-visite?id=${encodeURIComponent(this.data.logement.id)}&mode=solo_privatization`
+          });
+        }
+      }
+    });
+  },
+
+  onInviteDuoWhatsApp() {
+    const l = this.data.logement;
+    const shareText = `Salut ! J'ai trouvé cette chambre partagée à ${l.place} (${this.data.placePriceFormatted} FCFA/lit) sur SAMA LOYER. Viens on la prend en binôme : https://samaloyer.sn/logement/${l.id}?coloc=1`;
+    wx.setClipboardData({
+      data: shareText,
+      success: () => {
+        wx.showModal({
+          title: 'Lien d\'invitation copié ! 📋',
+          content: 'Le texte et le lien sécurisé Duo ont été copiés dans ton presse-papier. Ouvre WhatsApp pour l\'envoyer à ton binôme.',
+          showCancel: false,
+          confirmText: 'Compris',
+          confirmColor: COLORS.berry
         });
       }
     });

@@ -38,6 +38,13 @@ Page({
     quartierList: ['Ouakam', 'Pikine', 'Ngor', 'Yoff', 'Almadies', 'Grand Yoff', 'Mermoz', 'Liberté 6'],
     selectedQuartier: 'Ouakam',
     adresseDetail: '',
+    // Mode Colocation
+    rentalMode: 'solo', // 'solo' | 'coloc'
+    colocCapacity: 2,
+    colocPlacePrice: 35000,
+    colocSoloPrice: 70000,
+    colocGenderPolicy: 'HOMMES_UNIQUEMENT',
+    colocIncompletePolicy: 'ANNULATION_REMBOURSEMENT',
 
     // Étape 1 (suite) : Loyer & Caution
     loyer: 65000,
@@ -155,6 +162,31 @@ Page({
 
   onSelectQuartier(e) {
     this.setData({ selectedQuartier: e.currentTarget.dataset.quartier });
+  },
+
+  onSelectRentalMode(e) {
+    const mode = e.currentTarget.dataset.mode;
+    this.setData({ rentalMode: mode });
+  },
+
+  onSelectColocCapacity(e) {
+    const cap = Number(e.currentTarget.dataset.cap) || 2;
+    this.setData({ colocCapacity: cap });
+  },
+
+  onInputColocPlacePrice(e) {
+    const val = Number(e.detail.value) || 0;
+    this.setData({ colocPlacePrice: val });
+  },
+
+  onSelectColocGender(e) {
+    const gender = e.currentTarget.dataset.gender;
+    this.setData({ colocGenderPolicy: gender });
+  },
+
+  onSelectColocIncomplete(e) {
+    const pol = e.currentTarget.dataset.pol;
+    this.setData({ colocIncompletePolicy: pol });
   },
 
   onInputAdresse(e) {

@@ -90,6 +90,74 @@
         <view class="ic ic-chevron-white remote-card__chev"></view>
       </view>
 
+      <!-- ======================================================== -->
+      <!-- SECTION COLOCATION & PLACES EN CHAMBRE PARTAGÉE -->
+      <!-- ======================================================== -->
+      <view wx:if="{{ isColoc }}" class="coloc-card">
+        <view class="coloc-card__header">
+          <view class="coloc-card__title-row">
+            <view class="coloc-badge-pill">
+              <view class="ic ic-home-door-white ic--xs"></view>
+              <text>Chambre partagée</text>
+            </view>
+            <text class="coloc-capacity-tag">{{ availablePlacesCount }} place(s) dispo sur {{ roomCapacity }}</text>
+          </view>
+          <text class="coloc-card__hint">Sélectionne ton lit pour verrouiller ta place pendant 15 min.</text>
+        </view>
+
+        <!-- Jauge visuelle des lits -->
+        <view class="coloc-beds-gauge">
+          <block wx:for="{{ places }}" wx:key="id">
+            <view
+              class="coloc-bed-item coloc-bed-item--{{ item.status }} {{ selectedPlaceNumber === item.placeNumber ? 'coloc-bed-item--selected' : '' }}"
+              data-place="{{ item }}"
+              bindtap="onSelectBedPlace"
+            >
+              <view class="coloc-bed-icon-wrap">
+                <text class="coloc-bed-emoji">{{ item.status === 'OCCUPEE' || item.status === 'RESERVEE' ? '👤' : (item.status === 'BLOQUEE' ? '🔒' : '🛏️') }}</text>
+              </view>
+              <view class="coloc-bed-info">
+                <text class="coloc-bed-num">Lit #{{ item.placeNumber }}</text>
+                <text class="coloc-bed-status-txt">{{ item.statusLabel }}</text>
+              </view>
+              <view wx:if="{{ selectedPlaceNumber === item.placeNumber }}" class="coloc-bed-check">
+                <view class="ic ic-check-berry ic--xs"></view>
+              </view>
+            </view>
+          </block>
+        </view>
+
+        <!-- Règles de cohabitation et genre -->
+        <view class="coloc-rules-strip">
+          <view class="coloc-rule-badge">
+            <text class="coloc-rule-icon">👥</text>
+            <text class="coloc-rule-text">{{ genderPolicyLabel }}</text>
+          </view>
+          <view class="coloc-rule-badge">
+            <text class="coloc-rule-icon">🚭</text>
+            <text class="coloc-rule-text">Non-fumeur</text>
+          </view>
+          <view class="coloc-rule-badge">
+            <text class="coloc-rule-icon">🚫</text>
+            <text class="coloc-rule-text">Alcool interdit</text>
+          </view>
+        </view>
+
+        <!-- Carte Inviter son Binôme (WhatsApp Duo) -->
+        <view class="coloc-invite-duo" hover-class="coloc-invite-duo--hover" bindtap="onInviteDuoWhatsApp">
+          <view class="coloc-invite-duo__left">
+            <text class="coloc-invite-duo__emoji">💬</text>
+            <view class="coloc-invite-duo__texts">
+              <text class="coloc-invite-duo__title">Tu as déjà un binôme ?</text>
+              <text class="coloc-invite-duo__sub">Invite-le sur WhatsApp pour prendre la chambre ensemble</text>
+            </view>
+          </view>
+          <view class="coloc-invite-duo__btn">
+            <text>Inviter</text>
+          </view>
+        </view>
+      </view>
+
       <!-- SECTION : Prix et conditions -->
       <view class="section-block">
         <text class="section-title">Prix et conditions</text>

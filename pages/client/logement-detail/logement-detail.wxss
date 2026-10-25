@@ -1720,3 +1720,270 @@ button.share-opt-btn::after,
   color: rgba(255, 255, 255, 0.7);
   font-family: monospace;
 }
+
+/* ========================================================================== */
+/* SECTION COLOCATION & PLACES EN CHAMBRE PARTAGÉE */
+/* ========================================================================== */
+.coloc-card {
+  margin: 24rpx 0;
+  padding: 24rpx;
+  background: #FFFFFF;
+  border-radius: 20rpx;
+  border: 2rpx solid #F0D5E0;
+  box-shadow: 0 4rpx 16rpx rgba(200, 35, 95, 0.06);
+}
+
+.coloc-card__header {
+  margin-bottom: 20rpx;
+}
+
+.coloc-card__title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8rpx;
+}
+
+.coloc-badge-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8rpx;
+  padding: 6rpx 16rpx;
+  background: #C8235F;
+  color: #FFFFFF;
+  border-radius: 999rpx;
+  font-size: 22rpx;
+  font-weight: 700;
+}
+
+.coloc-capacity-tag {
+  font-size: 22rpx;
+  font-weight: 600;
+  color: #059669;
+  background: #ECFDF5;
+  padding: 6rpx 14rpx;
+  border-radius: 12rpx;
+}
+
+.coloc-card__hint {
+  display: block;
+  font-size: 22rpx;
+  color: #64748B;
+  margin-top: 6rpx;
+}
+
+/* Jauge des lits */
+.coloc-beds-gauge {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16rpx;
+  margin: 18rpx 0;
+}
+
+.coloc-bed-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding: 16rpx;
+  border-radius: 16rpx;
+  border: 2rpx solid #E2E8F0;
+  background: #F8FAFC;
+  transition: all 0.2s ease;
+}
+
+.coloc-bed-item--DISPONIBLE {
+  border-color: #A7F3D0;
+  background: #F0FDF4;
+}
+
+.coloc-bed-item--BLOQUEE {
+  border-color: #FDE68A;
+  background: #FFFBEB;
+}
+
+.coloc-bed-item--OCCUPEE, .coloc-bed-item--RESERVEE {
+  border-color: #E2E8F0;
+  background: #F1F5F9;
+  opacity: 0.85;
+}
+
+.coloc-bed-item--selected {
+  border-color: #C8235F !important;
+  background: #FFF1F5 !important;
+  box-shadow: 0 0 0 2rpx #C8235F;
+}
+
+.coloc-bed-icon-wrap {
+  width: 56rpx;
+  height: 56rpx;
+  border-radius: 12rpx;
+  background: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 14rpx;
+  font-size: 28rpx;
+  box-shadow: 0 2rpx 6rpx rgba(0,0,0,0.04);
+}
+
+.coloc-bed-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.coloc-bed-num {
+  font-size: 24rpx;
+  font-weight: 700;
+  color: #0F172A;
+}
+
+.coloc-bed-status-txt {
+  font-size: 20rpx;
+  font-weight: 600;
+  color: #64748B;
+}
+
+.coloc-bed-item--DISPONIBLE .coloc-bed-status-txt {
+  color: #059669;
+}
+
+.coloc-bed-item--BLOQUEE .coloc-bed-status-txt {
+  color: #D97706;
+}
+
+.coloc-bed-check {
+  margin-left: auto;
+}
+
+/* Badges de règles */
+.coloc-rules-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12rpx;
+  margin: 16rpx 0;
+}
+
+.coloc-rule-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8rpx;
+  padding: 8rpx 14rpx;
+  background: #F1F5F9;
+  border-radius: 10rpx;
+  font-size: 20rpx;
+  font-weight: 600;
+  color: #334155;
+}
+
+.coloc-rule-icon {
+  font-size: 22rpx;
+}
+
+/* Carte Duo WhatsApp */
+.coloc-invite-duo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16rpx 20rpx;
+  background: #ECFDF5;
+  border: 1.5rpx dashed #059669;
+  border-radius: 14rpx;
+  margin-top: 14rpx;
+}
+
+.coloc-invite-duo--hover {
+  background: #D1FAE5;
+}
+
+.coloc-invite-duo__left {
+  display: flex;
+  align-items: center;
+  gap: 14rpx;
+}
+
+.coloc-invite-duo__emoji {
+  font-size: 34rpx;
+}
+
+.coloc-invite-duo__texts {
+  display: flex;
+  flex-direction: column;
+}
+
+.coloc-invite-duo__title {
+  font-size: 22rpx;
+  font-weight: 700;
+  color: #065F46;
+}
+
+.coloc-invite-duo__sub {
+  font-size: 19rpx;
+  color: #047857;
+}
+
+.coloc-invite-duo__btn {
+  padding: 8rpx 20rpx;
+  background: #059669;
+  color: #FFFFFF;
+  border-radius: 999rpx;
+  font-size: 20rpx;
+  font-weight: 700;
+}
+
+/* Boutons adaptés dans la barre fixe */
+.entry-actions--coloc {
+  display: flex;
+  gap: 16rpx;
+  width: 100%;
+}
+
+.btn-privatize-solo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #FFFFFF;
+  border: 2rpx solid #C8235F;
+  border-radius: 16rpx;
+  padding: 12rpx 8rpx;
+  line-height: 1.2;
+}
+
+.btn-privatize-sub {
+  font-size: 20rpx;
+  font-weight: 700;
+  color: #C8235F;
+}
+
+.btn-privatize-price {
+  font-size: 24rpx;
+  font-weight: 800;
+  color: #C8235F;
+}
+
+.btn-reserve-place {
+  flex: 1.3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #C8235F;
+  border-radius: 16rpx;
+  padding: 12rpx 8rpx;
+  line-height: 1.2;
+  box-shadow: 0 6rpx 18rpx rgba(200, 35, 95, 0.35);
+}
+
+.btn-reserve-sub {
+  font-size: 20rpx;
+  font-weight: 700;
+  color: #FFFFFF;
+}
+
+.btn-reserve-price {
+  font-size: 24rpx;
+  font-weight: 800;
+  color: #FFFFFF;
+}

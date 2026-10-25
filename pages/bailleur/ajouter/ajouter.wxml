@@ -39,7 +39,55 @@
         </view>
       </view>
 
+            <!-- Mode d'occupation (Solo ou Colocation) -->
       <view class="aj-card">
+        <text class="aj-label">Mode d'occupation</text>
+        <view class="aj-segment">
+          <view class="aj-seg {{ rentalMode === 'solo' ? 'aj-seg--on' : '' }}" bindtap="onSelectRentalMode" data-mode="solo">Logement individuel</view>
+          <view class="aj-seg {{ rentalMode === 'coloc' ? 'aj-seg--on' : '' }}" bindtap="onSelectRentalMode" data-mode="coloc">Chambre partagée (Coloc)</view>
+        </view>
+      </view>
+
+      <!-- Configuration spécifique Colocation -->
+      <view wx:if="{{ rentalMode === 'coloc' }}" class="aj-card">
+        <view class="coloc-form-head">
+          <text class="aj-label">Règles de colocation & Lits</text>
+        </view>
+
+        <text class="aj-label aj-label--mt">Nombre de lits (Capacité)</text>
+        <view class="aj-segment">
+          <view class="aj-seg {{ colocCapacity === 2 ? 'aj-seg--on' : '' }}" bindtap="onSelectColocCapacity" data-cap="2">2 lits</view>
+          <view class="aj-seg {{ colocCapacity === 3 ? 'aj-seg--on' : '' }}" bindtap="onSelectColocCapacity" data-cap="3">3 lits</view>
+          <view class="aj-seg {{ colocCapacity === 4 ? 'aj-seg--on' : '' }}" bindtap="onSelectColocCapacity" data-cap="4">4 lits</view>
+        </view>
+
+        <text class="aj-label aj-label--mt">Prix par place (FCFA / mois)</text>
+        <view class="aj-field aj-field--money">
+          <input
+            class="aj-input aj-input--money"
+            type="number"
+            placeholder="35000"
+            value="{{ colocPlacePrice }}"
+            bindinput="onInputColocPlacePrice"
+          />
+          <text class="aj-suffix">F / lit</text>
+        </view>
+
+        <text class="aj-label aj-label--mt">Règle de genre obligatoire</text>
+        <view class="chip-grid">
+          <view class="chip-item {{ colocGenderPolicy === 'HOMMES_UNIQUEMENT' ? 'chip-item-active' : '' }}" bindtap="onSelectColocGender" data-gender="HOMMES_UNIQUEMENT">Hommes uniquement</view>
+          <view class="chip-item {{ colocGenderPolicy === 'FEMMES_UNIQUEMENT' ? 'chip-item-active' : '' }}" bindtap="onSelectColocGender" data-gender="FEMMES_UNIQUEMENT">Femmes uniquement</view>
+          <view class="chip-item {{ colocGenderPolicy === 'COUPLES_UNIQUEMENT' ? 'chip-item-active' : '' }}" bindtap="onSelectColocGender" data-gender="COUPLES_UNIQUEMENT">Couples uniquement</view>
+        </view>
+
+        <text class="aj-label aj-label--mt">Si la chambre est incomplète à l'échéance</text>
+        <view class="aj-segment">
+          <view class="aj-seg {{ colocIncompletePolicy === 'ANNULATION_REMBOURSEMENT' ? 'aj-seg--on' : '' }}" bindtap="onSelectColocIncomplete" data-pol="ANNULATION_REMBOURSEMENT">Remboursement</view>
+          <view class="aj-seg {{ colocIncompletePolicy === 'POURSUIVRE_AU_PRIX_SOLO' ? 'aj-seg--on' : '' }}" bindtap="onSelectColocIncomplete" data-pol="POURSUIVRE_AU_PRIX_SOLO">Option Solo</view>
+        </view>
+      </view>
+
+<view class="aj-card">
         <text class="aj-label">Quartier à Dakar</text>
         <view class="chip-grid">
           <view
