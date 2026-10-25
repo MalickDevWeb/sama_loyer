@@ -5,3 +5,4 @@
 
 export { LOCATAIRE_ENDPOINTS } from './endpoints.js';
 export { LocataireAPI, locataireAPI, LOCATAIRE_TTL } from './service.js';
+

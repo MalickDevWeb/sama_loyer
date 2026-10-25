@@ -227,3 +227,4 @@ export const locataireAPI = new LocataireAPI();
 Bus.on(EVENTS.RENT_PAID, () => invalidateCache('loyers'));
 Bus.on(EVENTS.VISITES_CHANGED, () => invalidateCache('visites'));
 Bus.on(EVENTS.LOGEMENTS_CHANGED, () => invalidateCache('logement'));
+

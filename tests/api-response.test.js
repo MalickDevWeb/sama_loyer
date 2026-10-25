@@ -4,8 +4,8 @@
 
 import assert from 'assert';
 import { extractApiResponse, unwrapApiResponse } from '../utils/apis/index.js';
-import { extractApiResponse as extractFromResponseModule } from '../utils/apis/response.js';
-import { extractApiResponse as extractFromHttpModule } from '../utils/apis/http.js';
+import { extractApiResponse as extractFromResponseModule } from '../utils/apis/core/response.js';
+import { extractApiResponse as extractFromHttpModule } from '../utils/apis/core/http.js';
 
 export async function runApiResponseTests() {
   console.log('\n--- Test Suite 7: API Response Extraction & Error Handling ---');

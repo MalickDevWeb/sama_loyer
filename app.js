@@ -4,7 +4,7 @@
 // ============================================================================
 
 import { Bus } from './utils/event/index';
-import { nativeService } from './utils/apis/native';
+import { nativeService } from './utils/apis/index';
 
 // Noms des états et événements : source unique dans utils/event/keys.js
 import { STATE_KEYS, EVENTS } from './utils/event/keys';

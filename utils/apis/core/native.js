@@ -135,3 +135,4 @@ export const nativeService = {
   invokePlugin,
   getUserInfos,
 };
+

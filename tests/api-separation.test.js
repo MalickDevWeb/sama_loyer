@@ -23,7 +23,7 @@ import {
   TTL as CACHE_TTL,
   LOCATAIRE_TTL as CACHE_LOCATAIRE_TTL,
   BAILLEUR_TTL as CACHE_BAILLEUR_TTL
-} from '../utils/apis/cache.js';
+} from '../utils/apis/core/cache.js';
 
 import {
   LOCATAIRE_ENDPOINTS as FOLDER_LOCATAIRE_ENDPOINTS,
@@ -145,14 +145,14 @@ export async function runApiSeparationTests() {
   console.log('  ✓ backendAPI fédère locataire et bailleur avec sous-domaines typés');
   passed++;
 
-  // Test 7 : Centralisation unique des TTL dans utils/apis/cache.js
+  // Test 7 : Centralisation unique des TTL dans utils/apis/core/cache.js
   assert.strictEqual(TTL, CACHE_TTL);
   assert.strictEqual(LOCATAIRE_TTL, CACHE_LOCATAIRE_TTL);
   assert.strictEqual(BAILLEUR_TTL, CACHE_BAILLEUR_TTL);
   assert.equal(BAILLEUR_TTL.PERSONAL, 60 * 1000);
   assert.equal(BAILLEUR_TTL.SETTINGS, 5 * 60 * 1000);
   assert.equal(LOCATAIRE_TTL.LOGEMENT_DETAIL, 10 * 60 * 1000);
-  console.log('  ✓ Centralisation unique des TTL dans utils/apis/cache.js validée');
+  console.log('  ✓ Centralisation unique des TTL dans utils/apis/core/cache.js validée');
   passed++;
 
   // Test 8 : Dossier centralisé utils/apis/endpoints/

@@ -84,3 +84,4 @@ export function extractApiResponse(res, fallbackMessage) {
 
 /** Alias sémantique moderne pour l'extraction de charge utile */
 export const unwrapApiResponse = extractApiResponse;
+
