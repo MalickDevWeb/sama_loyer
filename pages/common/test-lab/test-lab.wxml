@@ -16,6 +16,115 @@
   <scroll-view class="test-lab-body" scroll-y="{{true}}">
 
     <!-- ======================================================== -->
+    <!-- SECTION 0 : SIMULATEUR MULTI-UTILISATEURS & PERSONAS -->
+    <!-- ======================================================== -->
+    <view class="test-card test-card--personas">
+      <view class="test-card-head">
+        <view class="test-badge test-badge--purple">🎭 Simulateur Multi-Utilisateurs & Tests Dédiés</view>
+        <text class="test-card-desc">Sélectionne un utilisateur test pour voir ses contraintes de colocation et appliquer ses propres tests en live :</text>
+      </view>
+
+      <!-- Carrousel horizontal de sélection d'utilisateur -->
+      <scroll-view class="personas-scroll" scroll-x="{{true}}" enable-flex="{{true}}">
+        <block wx:for="{{ personas }}" wx:key="id">
+          <view
+            class="persona-tab {{ selectedPersonaId === item.id ? 'persona-tab--active' : '' }}"
+            bindtap="onSelectPersona"
+            data-id="{{ item.id }}"
+          >
+            <view class="persona-tab__avatar" style="background: {{ item.themeColor }}20; border-color: {{ selectedPersonaId === item.id ? item.themeColor : 'transparent' }};">
+              <text class="persona-tab__emoji">{{ item.icon }}</text>
+            </view>
+            <view class="persona-tab__meta">
+              <text class="persona-tab__name {{ selectedPersonaId === item.id ? 'persona-tab__name--active' : '' }}">{{ item.name }}</text>
+              <text class="persona-tab__role">{{ item.badge }}</text>
+            </view>
+          </view>
+        </block>
+      </scroll-view>
+
+      <!-- Fiche détaillée de la Persona sélectionnée -->
+      <view class="active-persona-card" style="border-left-color: {{ selectedPersona.themeColor }};">
+        <view class="active-persona-head">
+          <view class="active-persona-left">
+            <view class="active-persona-avatar" style="background: {{ selectedPersona.themeColor }}15;">
+              <text class="active-persona-icon">{{ selectedPersona.icon }}</text>
+            </view>
+            <view class="active-persona-info">
+              <view class="active-persona-name-row">
+                <text class="active-persona-name">{{ selectedPersona.name }}</text>
+                <text class="active-persona-pill" style="background: {{ selectedPersona.themeColor }}; color: #fff;">{{ selectedPersona.badge }}</text>
+              </view>
+              <text class="active-persona-sub">{{ selectedPersona.role }}</text>
+            </view>
+          </view>
+        </view>
+
+        <!-- Attributs de profil & habitudes -->
+        <view class="active-persona-props">
+          <view class="persona-prop-item">
+            <text class="prop-label">Habitudes :</text>
+            <text class="prop-val">{{ selectedPersona.habits }}</text>
+          </view>
+          <view class="persona-prop-item">
+            <text class="prop-label">Budget :</text>
+            <text class="prop-val">{{ selectedPersona.budget }}</text>
+          </view>
+          <view class="persona-prop-item">
+            <text class="prop-label">Objectif :</text>
+            <text class="prop-val">{{ selectedPersona.desc }}</text>
+          </view>
+        </view>
+
+        <!-- Liste des tests dédiés à cette persona -->
+        <view class="persona-actions-head">
+          <text class="persona-actions-title">⚡ Tests Dédiés pour {{ selectedPersona.name }}</text>
+          <text class="persona-actions-sub">Clique sur une action pour appliquer la règle métier et voir le rendu design en direct :</text>
+        </view>
+
+        <view class="persona-actions-list">
+          <block wx:for="{{ selectedPersona.actions }}" wx:key="id">
+            <view class="persona-action-card">
+              <view class="persona-action-row">
+                <view class="persona-action-desc">
+                  <text class="persona-action-title">{{ item.title }}</text>
+                  <text class="persona-action-subtitle">{{ item.subtitle }}</text>
+                </view>
+                <button
+                  class="btn-persona-exec {{ item.badgeType === 'fail' ? 'btn-persona-exec--danger' : (item.badgeType === 'pass' ? 'btn-persona-exec--success' : 'btn-persona-exec--primary') }}"
+                  bindtap="runPersonaAction"
+                  data-actionid="{{ item.id }}"
+                >
+                  Appliquer
+                </button>
+              </view>
+
+              <!-- Résultat en direct après clic sur l'action -->
+              <view
+                wx:if="{{ personaResults[item.id] }}"
+                class="persona-action-result persona-action-result--{{ personaResults[item.id].status }}"
+              >
+                <view class="result-title-row">
+                  <text class="result-title">{{ personaResults[item.id].title }}</text>
+                </view>
+                <text class="result-detail">{{ personaResults[item.id].detail }}</text>
+                <view
+                  wx:if="{{ personaResults[item.id].linkId }}"
+                  class="btn-action-goto"
+                  bindtap="onOpenScenarioLink"
+                  data-id="{{ personaResults[item.id].linkId }}"
+                >
+                  <text class="goto-text">{{ personaResults[item.id].linkText }}</text>
+                  <view class="ic ic-chevron-berry ic--xs"></view>
+                </view>
+              </view>
+            </view>
+          </block>
+        </view>
+      </view>
+    </view>
+
+    <!-- ======================================================== -->
     <!-- SECTION A : ACCÈS DIRECT AUX ÉCRANS & SCÉNARIOS UI -->
     <!-- ======================================================== -->
     <view class="test-card">

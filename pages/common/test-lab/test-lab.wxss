@@ -382,3 +382,319 @@
   background: #0A192F !important;
   color: #FFFFFF !important;
 }
+
+/* ======================================================== */
+/* SECTION PERSONAS & SIMULATEUR MULTI-UTILISATEURS         */
+/* ======================================================== */
+.test-card--personas {
+  border-top: 6rpx solid #8B5CF6;
+  background: #FFFFFF;
+}
+
+.test-badge--purple {
+  background: #8B5CF6 !important;
+  color: #FFFFFF !important;
+}
+
+.personas-scroll {
+  display: flex;
+  flex-direction: row;
+  white-space: nowrap;
+  gap: 16rpx;
+  margin: 16rpx 0 24rpx 0;
+  padding-bottom: 8rpx;
+  width: 100%;
+}
+
+.persona-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 14rpx;
+  padding: 12rpx 20rpx;
+  border-radius: 18rpx;
+  background: #F8FAFC;
+  border: 2rpx solid #E2E8F0;
+  margin-right: 14rpx;
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+}
+
+.persona-tab--active {
+  background: #F5F3FF;
+  border-color: #8B5CF6;
+  box-shadow: 0 4rpx 12rpx rgba(139, 92, 246, 0.15);
+}
+
+.persona-tab__avatar {
+  width: 56rpx;
+  height: 56rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2rpx solid transparent;
+}
+
+.persona-tab__emoji {
+  font-size: 28rpx;
+}
+
+.persona-tab__meta {
+  display: flex;
+  flex-direction: column;
+}
+
+.persona-tab__name {
+  font-size: 22rpx;
+  font-weight: 700;
+  color: #1E293B;
+}
+
+.persona-tab__name--active {
+  color: #7C3AED;
+}
+
+.persona-tab__role {
+  font-size: 18rpx;
+  color: #64748B;
+}
+
+/* Fiche Persona Active */
+.active-persona-card {
+  background: #FAF5FF;
+  border-radius: 16rpx;
+  border: 1.5rpx solid #E9D5FF;
+  border-left-width: 8rpx;
+  padding: 20rpx;
+}
+
+.active-persona-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16rpx;
+}
+
+.active-persona-left {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+}
+
+.active-persona-avatar {
+  width: 76rpx;
+  height: 76rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2rpx solid rgba(139, 92, 246, 0.2);
+}
+
+.active-persona-icon {
+  font-size: 40rpx;
+}
+
+.active-persona-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.active-persona-name-row {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+}
+
+.active-persona-name {
+  font-size: 28rpx;
+  font-weight: 800;
+  color: #0A192F;
+}
+
+.active-persona-pill {
+  font-size: 18rpx;
+  font-weight: 700;
+  padding: 4rpx 12rpx;
+  border-radius: 8rpx;
+}
+
+.active-persona-sub {
+  font-size: 20rpx;
+  color: #64748B;
+  margin-top: 4rpx;
+}
+
+.active-persona-props {
+  background: #FFFFFF;
+  border-radius: 12rpx;
+  padding: 14rpx 16rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+  border: 1rpx solid #EDE9FE;
+  margin-bottom: 20rpx;
+}
+
+.persona-prop-item {
+  display: flex;
+  font-size: 20rpx;
+  gap: 10rpx;
+  line-height: 1.4;
+}
+
+.prop-label {
+  font-weight: 700;
+  color: #4B5563;
+  width: 140rpx;
+  flex-shrink: 0;
+}
+
+.prop-val {
+  color: #1F2937;
+  flex: 1;
+}
+
+/* Actions Dédiées */
+.persona-actions-head {
+  margin-bottom: 14rpx;
+}
+
+.persona-actions-title {
+  display: block;
+  font-size: 24rpx;
+  font-weight: 800;
+  color: #1E293B;
+}
+
+.persona-actions-sub {
+  display: block;
+  font-size: 20rpx;
+  color: #64748B;
+  margin-top: 4rpx;
+}
+
+.persona-actions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14rpx;
+}
+
+.persona-action-card {
+  background: #FFFFFF;
+  border-radius: 14rpx;
+  padding: 16rpx 18rpx;
+  border: 1.5rpx solid #E2E8F0;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.02);
+}
+
+.persona-action-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16rpx;
+}
+
+.persona-action-desc {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.persona-action-title {
+  font-size: 22rpx;
+  font-weight: 700;
+  color: #0F172A;
+}
+
+.persona-action-subtitle {
+  font-size: 19rpx;
+  color: #64748B;
+  margin-top: 4rpx;
+}
+
+.btn-persona-exec {
+  margin: 0 !important;
+  font-size: 20rpx !important;
+  font-weight: 700 !important;
+  padding: 10rpx 20rpx !important;
+  border-radius: 10rpx !important;
+  flex-shrink: 0;
+  line-height: 1.4 !important;
+}
+
+.btn-persona-exec--primary {
+  background: #0284C7 !important;
+  color: #FFFFFF !important;
+}
+
+.btn-persona-exec--success {
+  background: #10B981 !important;
+  color: #FFFFFF !important;
+}
+
+.btn-persona-exec--danger {
+  background: #EF4444 !important;
+  color: #FFFFFF !important;
+}
+
+/* Rendu du Résultat d'Action */
+.persona-action-result {
+  margin-top: 14rpx;
+  padding: 14rpx 16rpx;
+  border-radius: 10rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 6rpx;
+  animation: fadeIn 0.25s ease;
+}
+
+.persona-action-result--success {
+  background: #F0FDF4;
+  border: 1.5rpx solid #86EFAC;
+}
+
+.persona-action-result--reject {
+  background: #FEF2F2;
+  border: 1.5rpx solid #FCA5A5;
+}
+
+.persona-action-result--info {
+  background: #F0F9FF;
+  border: 1.5rpx solid #BAE6FD;
+}
+
+.result-title {
+  font-size: 21rpx;
+  font-weight: 800;
+  color: #0F172A;
+}
+
+.result-detail {
+  font-size: 19rpx;
+  color: #334155;
+  line-height: 1.4;
+}
+
+.btn-action-goto {
+  display: inline-flex;
+  align-items: center;
+  gap: 8rpx;
+  margin-top: 6rpx;
+  padding: 8rpx 12rpx;
+  background: #FFFFFF;
+  border-radius: 8rpx;
+  border: 1rpx solid #CBD5E1;
+  align-self: flex-start;
+}
+
+.goto-text {
+  font-size: 19rpx;
+  font-weight: 700;
+  color: #C8235F;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-4rpx); }
+  to { opacity: 1; transform: translateY(0); }
+}

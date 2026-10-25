@@ -20,6 +20,170 @@ import {
   resolveDisputeReport
 } from '../../../utils/helpers/coloc-engine.js';
 
+const PERSONAS = [
+  {
+    id: 'moussa',
+    name: 'Moussa Diop',
+    role: 'Étudiant ISEP · Dakar',
+    icon: '👨',
+    badge: 'Homme (Solo ou Duo)',
+    gender: 'HOMME',
+    habits: 'Non-fumeur · Pas d\'alcool · Étudiant sérieux',
+    budget: '25 000 FCFA / mois',
+    themeColor: '#0284C7',
+    desc: 'Cherche un lit dans une chambre masculine (Keur Gorgui ou Fann) avec son groupe d\'étudiants ISEP.',
+    actions: [
+      {
+        id: 'moussa_book_ok',
+        title: '🛏️ Réserver lit dans Ch. Keur Gorgui (Hommes)',
+        subtitle: 'Chambre 4 lits réservée aux hommes · 25 000 FCFA/mois',
+        badgeType: 'pass',
+        expected: 'SUCCÈS'
+      },
+      {
+        id: 'moussa_book_femme_fail',
+        title: '🛡️ Tenter d\'entrer dans Ch. Ouakam (Femmes)',
+        subtitle: 'Chambre 2 lits réservée aux femmes · Rejet strict',
+        badgeType: 'fail',
+        expected: 'REJET STRICT'
+      },
+      {
+        id: 'moussa_create_group',
+        title: '👥 Créer le "Groupe ISEP" & inviter son binôme',
+        subtitle: 'Génère 2 places et le jeton Duo WhatsApp 72h',
+        badgeType: 'action',
+        expected: 'INVITATION DUO'
+      },
+      {
+        id: 'moussa_lock_bed',
+        title: '🔒 Poser un verrou atomique 15 min sur le Lit #3',
+        subtitle: 'Bloque la place contre les réservations concurrentes',
+        badgeType: 'action',
+        expected: 'VERROU ATOMIQUE'
+      }
+    ]
+  },
+  {
+    id: 'fatou',
+    name: 'Fatou Ndiaye',
+    role: 'Ingénieure Logiciel · Sonatel',
+    icon: '👩',
+    badge: 'Femme (Solo ou Duo)',
+    gender: 'FEMME',
+    habits: 'Non-fumeuse · Respectueuse · Professionnelle',
+    budget: '40 000 FCFA / mois',
+    themeColor: '#EC4899',
+    desc: 'Cherche une colocation 100% féminine à Ouakam ou Mermoz avec d\'autres jeunes femmes actives.',
+    actions: [
+      {
+        id: 'fatou_book_ok',
+        title: '🌸 Rejoindre Awa dans Ch. Femmes Ouakam',
+        subtitle: 'Chambre 2 lits Femmes · Remplissage 2/2 lits sans conflit',
+        badgeType: 'pass',
+        expected: 'SUCCÈS'
+      },
+      {
+        id: 'fatou_book_hommes_fail',
+        title: '🛡️ Tenter de réserver dans Ch. Hommes Keur Gorgui',
+        subtitle: 'Isolation stricte des genres · Protection des colocataires',
+        badgeType: 'fail',
+        expected: 'REJET STRICT'
+      },
+      {
+        id: 'fatou_create_duo',
+        title: '👭 Créer le "Binôme Sonatel" (Femmes)',
+        subtitle: 'Génère une invitation Duo pour sa collègue',
+        badgeType: 'action',
+        expected: 'GROUPE FÉMININ'
+      }
+    ]
+  },
+  {
+    id: 'couple',
+    name: 'Mariama & Cheikh',
+    role: 'Jeune Couple Marié · 2 comptes vérifiés',
+    icon: '👫',
+    badge: 'Couple Certifié',
+    gender: 'COUPLE',
+    habits: 'Couple marié · Calme · 2 comptes distincts',
+    budget: '95 000 FCFA / mois',
+    themeColor: '#8B5CF6',
+    desc: 'Cherchent un logement en mode couple exclusif avec validation bilatérale des deux conjoints.',
+    actions: [
+      {
+        id: 'couple_book_both_ok',
+        title: '👫 Réserver Studio Mermoz (Opt-in mutuel)',
+        subtitle: 'Validation bilatérale : Mariama + Cheikh confirment',
+        badgeType: 'pass',
+        expected: 'VALIDATION MUTUELLE'
+      },
+      {
+        id: 'couple_book_solo_fail',
+        title: '❌ Simulation : Mariama réserve seule sans Cheikh',
+        subtitle: 'Compte partenaire non confirmé · Rejet obligatoire',
+        badgeType: 'fail',
+        expected: 'REJET DUO REQUIS'
+      }
+    ]
+  },
+  {
+    id: 'amadou',
+    name: 'Amadou Sall',
+    role: 'Professionnel Solo · Rachat exclusif',
+    icon: '👤',
+    badge: 'Candidat Solo',
+    gender: 'HOMME',
+    habits: 'Fumeur occasionnel · Souhaite privatiser seul',
+    budget: '80 000 FCFA / mois',
+    themeColor: '#F59E0B',
+    desc: 'Candidat disposant du budget pour privatiser toute la chambre ou tester les règles d\'hygiène du bailleur.',
+    actions: [
+      {
+        id: 'amadou_buyout_solo',
+        title: '👑 Privatiser toute la chambre (Rachat Solo)',
+        subtitle: 'Remboursement immédiat à 100% sans frais des colocataires',
+        badgeType: 'pass',
+        expected: 'RACHAT & REMBOURSEMENT'
+      },
+      {
+        id: 'amadou_smoker_fail',
+        title: '🚭 Tenter d\'entrer en logement Non-Fumeur',
+        subtitle: 'Refuse de signer la charte non-fumeur · Rejet immédiat',
+        badgeType: 'fail',
+        expected: 'RÈGLE DE VIE REJETÉE'
+      }
+    ]
+  },
+  {
+    id: 'babacar',
+    name: 'Babacar Seck',
+    role: 'Bailleur Propriétaire · Keur Gorgui & Ouakam',
+    icon: '🏢',
+    badge: 'Bailleur Vérifié',
+    gender: 'BAILLEUR',
+    habits: 'Gestionnaire immobilier rigoureux',
+    budget: 'Propriétaire',
+    themeColor: '#10B981',
+    desc: 'Configure les règles des chambres : prix par lit, genres autorisés, colocation multi-groupes autorisée ou interdite.',
+    actions: [
+      {
+        id: 'babacar_inspect_multigroup',
+        title: '📊 Voir Ch. Keur Gorgui : 2 groupes sans fusion',
+        subtitle: 'Groupe ISEP (2 lits) + Groupe Sonatel (2 lits) = 4/4',
+        badgeType: 'pass',
+        expected: 'MULTI-GROUPES ACTIFS'
+      },
+      {
+        id: 'babacar_open_add_form',
+        title: '📋 Configurer une nouvelle chambre colocation',
+        subtitle: 'Ouvre le formulaire bailleur avec lits, prix et règles',
+        badgeType: 'action',
+        expected: 'ÉCRAN BAILLEUR'
+      }
+    ]
+  }
+];
+
 Page({
   data: {
     activeTab: 'all', // 'all' | 'rules' | 'screens' | 'log'
@@ -27,6 +191,13 @@ Page({
     logs: [
       { time: 'Initialisation', msg: 'Laboratoire prêt pour les tests du Prompt Maître.', type: 'info' }
     ],
+    // Module de Personas
+    personas: PERSONAS,
+    selectedPersonaId: 'moussa',
+    selectedPersona: PERSONAS[0],
+    personaResults: {},
+
+    // Formulaire Groupe
     groupForm: {
       name: 'Groupe ISEP',
       placesRequested: 2,
@@ -34,6 +205,229 @@ Page({
     },
     createdGroup: null,
     groupInvite: null
+  },
+
+  onSelectPersona(e) {
+    const id = e.currentTarget.dataset.id;
+    const persona = PERSONAS.find(p => p.id === id) || PERSONAS[0];
+    this.setData({
+      selectedPersonaId: id,
+      selectedPersona: persona
+    });
+    this.addLog(`Utilisateur actif basculé : ${persona.name} (${persona.role})`, 'info');
+  },
+
+  runPersonaAction(e) {
+    const actionId = e.currentTarget.dataset.actionid;
+    const { selectedPersona } = this.data;
+    const now = Date.now();
+
+    try {
+      if (actionId === 'moussa_book_ok') {
+        const res = validateGenderCompatibility(COLOC_GENDER_POLICIES.HOMMES_UNIQUEMENT, [
+          { id: 'u-moussa', name: 'Moussa Diop', gender: 'HOMME' }
+        ]);
+        this.setPersonaActionResult(actionId, {
+          status: 'success',
+          title: 'Lit #3 attribué avec succès ✅',
+          detail: 'Chambre Hommes uniquement validée côté serveur. Moussa Diop est installé dans le Lit #3 (25 000 FCFA/mois).',
+          linkId: 'coloc-isep-keur-gorgui',
+          linkText: 'Voir la chambre Keur Gorgui'
+        });
+        this.addLog(`[Moussa Diop] Réservation Lit #3 accordée dans Ch. Keur Gorgui (Hommes).`, 'success');
+
+      } else if (actionId === 'moussa_book_femme_fail') {
+        try {
+          validateGenderCompatibility(COLOC_GENDER_POLICIES.FEMMES_UNIQUEMENT, [
+            { id: 'u-moussa', name: 'Moussa Diop', gender: 'HOMME' }
+          ]);
+        } catch (err) {
+          this.setPersonaActionResult(actionId, {
+            status: 'reject',
+            title: 'Accès Bloqué par le Serveur 🛡️',
+            detail: `Message serveur : "${err.message}". Aucun profil masculin ne peut réserver dans une chambre 100% femmes.`
+          });
+          this.addLog(`[Moussa Diop] Tentative d'intrusion rejetée : ${err.message}`, 'reject');
+        }
+
+      } else if (actionId === 'moussa_create_group') {
+        const group = {
+          id: 'GRP-ISEP-' + now.toString(36).toUpperCase(),
+          name: 'Groupe ISEP',
+          placesRequested: 2,
+          genderMode: 'HOMMES_UNIQUEMENT'
+        };
+        const invite = generateGroupInvitation({
+          group,
+          inviterId: 'u-moussa',
+          validityHours: 72
+        });
+        this.setData({
+          createdGroup: Object.assign({}, group, { creator: { name: 'Moussa Diop' } }),
+          groupInvite: invite
+        });
+        this.setPersonaActionResult(actionId, {
+          status: 'success',
+          title: 'Groupe ISEP Créé ✨',
+          detail: `Jeton Duo : ${invite.token} · Valide 72h · Lien WhatsApp prêt à partager avec son binôme !`,
+          inviteUrl: invite.inviteUrl
+        });
+        this.addLog(`[Moussa Diop] Groupe ISEP créé avec jeton d'invitation 72h.`, 'success');
+
+      } else if (actionId === 'moussa_lock_bed') {
+        const lock = createPlaceLock({
+          place: { id: 'bed-3', placeNumber: 3, status: 'DISPONIBLE' },
+          userId: 'u-moussa',
+          now
+        });
+        const expiry = new Date(lock.expiresAt).toLocaleTimeString();
+        this.setPersonaActionResult(actionId, {
+          status: 'info',
+          title: 'Lit #3 verrouillé pendant 15 min 🔒',
+          detail: `Verrou atomique actif jusqu'à ${expiry}. Tout autre utilisateur qui clique verra le lit bloqué.`
+        });
+        this.addLog(`[Moussa Diop] Verrouillage atomique du Lit #3 actif jusqu'à ${expiry}.`, 'info');
+
+      } else if (actionId === 'fatou_book_ok') {
+        validateGenderCompatibility(COLOC_GENDER_POLICIES.FEMMES_UNIQUEMENT, [
+          { id: 'u-awa', name: 'Awa Fall', gender: 'FEMME' },
+          { id: 'u-fatou', name: 'Fatou Ndiaye', gender: 'FEMME' }
+        ]);
+        this.setPersonaActionResult(actionId, {
+          status: 'success',
+          title: 'Lit #2 attribué à Fatou ✅',
+          detail: 'Chambre Ouakam (2/2 lits) complète : Awa (Lit 1) et Fatou (Lit 2). Colocation 100% féminine certifiée.',
+          linkId: 'coloc-femmes-ouakam',
+          linkText: 'Voir la chambre Ouakam'
+        });
+        this.addLog(`[Fatou Ndiaye] Réservation réussie dans Ch. Ouakam (2/2 lits occupés).`, 'success');
+
+      } else if (actionId === 'fatou_book_hommes_fail') {
+        try {
+          validateGenderCompatibility(COLOC_GENDER_POLICIES.HOMMES_UNIQUEMENT, [
+            { id: 'u-fatou', name: 'Fatou Ndiaye', gender: 'FEMME' }
+          ]);
+        } catch (err) {
+          this.setPersonaActionResult(actionId, {
+            status: 'reject',
+            title: 'Accès Bloqué par le Serveur 🛡️',
+            detail: `Message serveur : "${err.message}". Chambre réservée exclusivement aux hommes.`
+          });
+          this.addLog(`[Fatou Ndiaye] Rejet strict côté serveur : ${err.message}`, 'reject');
+        }
+
+      } else if (actionId === 'fatou_create_duo') {
+        const group = {
+          id: 'GRP-SONATEL-' + now.toString(36).toUpperCase(),
+          name: 'Binôme Sonatel',
+          placesRequested: 2,
+          genderMode: 'FEMMES_UNIQUEMENT'
+        };
+        const invite = generateGroupInvitation({
+          group,
+          inviterId: 'u-fatou',
+          validityHours: 72
+        });
+        this.setData({
+          createdGroup: Object.assign({}, group, { creator: { name: 'Fatou Ndiaye' } }),
+          groupInvite: invite
+        });
+        this.setPersonaActionResult(actionId, {
+          status: 'success',
+          title: 'Binôme Sonatel Créé ✨',
+          detail: `Invitation Duo générée : ${invite.token} · Partage direct WhatsApp prêt pour sa collègue.`,
+          inviteUrl: invite.inviteUrl
+        });
+        this.addLog(`[Fatou Ndiaye] Binôme Sonatel créé avec succès.`, 'success');
+
+      } else if (actionId === 'couple_book_both_ok') {
+        validateCoupleDuo(
+          { id: 'u-mariama', name: 'Mariama' },
+          { id: 'u-cheikh', name: 'Cheikh' },
+          { coupleConfirmedByPartner: true }
+        );
+        this.setPersonaActionResult(actionId, {
+          status: 'success',
+          title: 'Validation Bilatérale Accordée ✅',
+          detail: 'Mariama et Cheikh ont confirmé mutuellement leur union. Le Studio Couples de Mermoz est validé.',
+          linkId: 'coloc-couples-mermoz',
+          linkText: 'Voir le Studio Couples'
+        });
+        this.addLog(`[Mariama & Cheikh] Accord bilatéral de couple vérifié et accepté.`, 'success');
+
+      } else if (actionId === 'couple_book_solo_fail') {
+        try {
+          validateCoupleDuo(
+            { id: 'u-mariama', name: 'Mariama' },
+            { id: 'u-cheikh', name: 'Cheikh' },
+            { coupleConfirmedByPartner: false }
+          );
+        } catch (err) {
+          this.setPersonaActionResult(actionId, {
+            status: 'reject',
+            title: 'Réservation Rejetée ❌',
+            detail: `Message serveur : "${err.message}". Un logement en mode couple ne peut pas être réservé sans l'accord explicite du conjoint.`
+          });
+          this.addLog(`[Couple] Rejet solo sans confirmation partenaire : ${err.message}`, 'reject');
+        }
+
+      } else if (actionId === 'amadou_buyout_solo') {
+        const result = executeSoloPrivatization({
+          logement: { id: 'chambre-ouakam', title: 'Chambre 2 lits Ouakam', roomCapacity: 2, rentAmount: 80000, soloPrice: 80000 },
+          soloUser: { id: 'u-amadou', name: 'Amadou Sall' },
+          existingReservations: [{ id: 'res-awa', userId: 'user-awa', placesCount: 1, amountTotal: 40000, status: 'VERROUILLEE' }]
+        });
+        this.setPersonaActionResult(actionId, {
+          status: 'success',
+          title: 'Chambre Privatisée par Amadou 👑',
+          detail: `Rachat exclusif solo validé ! Remboursement intégral de 40 000 FCFA à 100% sans frais pour Awa généré via Orange Money + SMS de notification envoyé.`
+        });
+        this.addLog(`[Amadou Sall] Rachat exclusif solo : Remboursement 100% automatique émis.`, 'success');
+
+      } else if (actionId === 'amadou_smoker_fail') {
+        try {
+          validateLivingHabits({
+            logementHabits: { smokingPolicy: COLOC_HABIT_POLICIES.INTERDIT },
+            candidateAgreements: { agreesNoSmoking: false }
+          });
+        } catch (err) {
+          this.setPersonaActionResult(actionId, {
+            status: 'reject',
+            title: 'Règles d\'Hygiène Rejetées 🚭',
+            detail: `Message serveur : "${err.message}". Logement non-fumeur : l'engagement formel est obligatoire.`
+          });
+          this.addLog(`[Amadou Sall] Refus charte non-fumeur : ${err.message}`, 'reject');
+        }
+
+      } else if (actionId === 'babacar_inspect_multigroup') {
+        const step = validateMultiGroupCapacity({
+          roomCapacity: 4,
+          multiGroupAllowed: true,
+          existingReservations: [{ id: 'res-a', groupId: 'isep', placesCount: 2, status: 'CONFIRMEE' }],
+          placesRequested: 2
+        });
+        this.setPersonaActionResult(actionId, {
+          status: 'success',
+          title: 'Vue Bailleur : 2 groupes sans fusion 📊',
+          detail: 'Chambre Keur Gorgui 4/4 : Groupe ISEP (2 lits) + Groupe Sonatel (2 lits). Les 2 groupes cohabitent physiquement sans JAMAIS être fusionnés dans le système.',
+          linkId: 'coloc-isep-keur-gorgui',
+          linkText: 'Inspecter la chambre Keur Gorgui'
+        });
+        this.addLog(`[Bailleur Babacar] Vérification multi-groupes : 2 groupes distincts hébergés.`, 'success');
+
+      } else if (actionId === 'babacar_open_add_form') {
+        wx.navigateTo({
+          url: '/pages/bailleur/ajouter/ajouter'
+        });
+      }
+    } catch (globalErr) {
+      this.addLog(`Erreur action : ${globalErr.message}`, 'reject');
+    }
+  },
+
+  setPersonaActionResult(actionId, res) {
+    const pResults = Object.assign({}, this.data.personaResults, { [actionId]: res });
+    this.setData({ personaResults: pResults });
   },
 
   onInputGroupName(e) {
@@ -317,6 +711,15 @@ Page({
     wx.navigateTo({
       url: `/pages/client/logement-detail/logement-detail?id=${encodeURIComponent(id)}`
     });
+  },
+
+  onOpenScenarioLink(e) {
+    const id = e.currentTarget.dataset.id;
+    if (id) {
+      wx.navigateTo({
+        url: `/pages/client/logement-detail/logement-detail?id=${encodeURIComponent(id)}`
+      });
+    }
   },
 
   openBailleurAdd() {
