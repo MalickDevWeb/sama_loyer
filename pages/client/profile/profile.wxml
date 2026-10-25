@@ -151,6 +151,14 @@
           data-profile="couple"
         >👫 Couple</view>
       </view>
+
+      <view class="prof__row prof__row--tall" hover-class="prof__row--hover" bindtap="onOpenTestLab" style="border-top: 1.5rpx dashed #E2E8F0; background: #FFF1F5; padding: 16rpx 20rpx;">
+        <view class="prof__row-text">
+          <text class="prof__row-label" style="color: #C8235F; font-weight: 800;">🚀 Ouvrir le Laboratoire de Test Complet</text>
+          <text class="prof__row-sub">Tester toutes les règles, verrous, remboursements et chambres</text>
+        </view>
+        <view class="ic ic-chevron-berry prof__chev"></view>
+      </view>
     </view>
   </view>
 

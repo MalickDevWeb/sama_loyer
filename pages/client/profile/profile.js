@@ -435,6 +435,10 @@ Page({
     }
   },
 
+  onOpenTestLab() {
+    wx.navigateTo({ url: '/pages/common/test-lab/test-lab' });
+  },
+
   onSwitchToBailleur() {
     storage.set(STORAGE_KEYS.USER_ROLE, 'bailleur');
     wx.reLaunch({ url: '/pages/bailleur/home/home' });

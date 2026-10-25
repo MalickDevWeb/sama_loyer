@@ -1,0 +1,186 @@
+<view class="test-lab-page">
+  <!-- Barre supérieure fixe -->
+  <sama-top-bar />
+  <view class="test-lab-header">
+    <view class="test-lab-nav">
+      <view class="btn-back" bindtap="onBack">
+        <view class="ic ic-back-navy ic--md"></view>
+      </view>
+      <view class="test-lab-title-box">
+        <text class="test-lab-title">🧪 Laboratoire de Test SAMA LOYER</text>
+        <text class="test-lab-sub">Vérification interactive du Prompt Maître</text>
+      </view>
+    </view>
+  </view>
+
+  <scroll-view class="test-lab-body" scroll-y="{{true}}">
+
+    <!-- ======================================================== -->
+    <!-- SECTION A : ACCÈS DIRECT AUX ÉCRANS & SCÉNARIOS UI -->
+    <!-- ======================================================== -->
+    <view class="test-card">
+      <view class="test-card-head">
+        <text class="test-badge">1. Écrans UI & Scénarios</text>
+        <text class="test-card-desc">Ouvrir et tester chaque chambre dans l'interface complète :</text>
+      </view>
+
+      <view class="scenarios-grid">
+        <view class="scenario-btn" bindtap="openListing" data-id="coloc-isep-keur-gorgui">
+          <view class="scenario-btn__icon">🛏️</view>
+          <view class="scenario-btn__text">
+            <text class="scenario-btn__title">Chambre 4 lits (Hommes)</text>
+            <text class="scenario-btn__sub">Keur Gorgui · 2 lits ISEP + 2 libres</text>
+          </view>
+          <view class="ic ic-chevron-berry ic--sm"></view>
+        </view>
+
+        <view class="scenario-btn" bindtap="openListing" data-id="coloc-femmes-ouakam">
+          <view class="scenario-btn__icon">🌸</view>
+          <view class="scenario-btn__text">
+            <text class="scenario-btn__title">Chambre 2 lits (Femmes)</text>
+            <text class="scenario-btn__sub">Ouakam · 1 lit Awa + 1 libre</text>
+          </view>
+          <view class="ic ic-chevron-berry ic--sm"></view>
+        </view>
+
+        <view class="scenario-btn" bindtap="openListing" data-id="coloc-couples-mermoz">
+          <view class="scenario-btn__icon">👫</view>
+          <view class="scenario-btn__text">
+            <text class="scenario-btn__title">Studio Couples Uniquement</text>
+            <text class="scenario-btn__sub">Mermoz · Opt-in bilatéral requis</text>
+          </view>
+          <view class="ic ic-chevron-berry ic--sm"></view>
+        </view>
+
+        <view class="scenario-btn" bindtap="openListing" data-id="coloc-libre-fann">
+          <view class="scenario-btn__icon">✨</view>
+          <view class="scenario-btn__text">
+            <text class="scenario-btn__title">Chambre 3 lits 100% libre</text>
+            <text class="scenario-btn__sub">Fann · Créer un groupe d'amis</text>
+          </view>
+          <view class="ic ic-chevron-berry ic--sm"></view>
+        </view>
+
+        <view class="scenario-btn scenario-btn--bailleur" bindtap="openBailleurAdd">
+          <view class="scenario-btn__icon">📋</view>
+          <view class="scenario-btn__text">
+            <text class="scenario-btn__title">Formulaire Bailleur Colocation</text>
+            <text class="scenario-btn__sub">Créer une annonce par lits & règles</text>
+          </view>
+          <view class="ic ic-chevron-navy ic--sm"></view>
+        </view>
+      </view>
+    </view>
+
+    <!-- ======================================================== -->
+    <!-- SECTION B : TESTS DES RÈGLES MÉTIER EN DIRECT -->
+    <!-- ======================================================== -->
+    <view class="test-card">
+      <view class="test-card-head">
+        <text class="test-badge">2. Moteur Métier & Règles de Validation</text>
+        <text class="test-card-desc">Clique sur chaque bouton pour exécuter la validation serveur :</text>
+      </view>
+
+      <!-- RÈGLE 1 : GENRES -->
+      <view class="rule-box">
+        <text class="rule-title">Règle 1 : Isolation absolue des genres</text>
+        <view class="btn-cluster">
+          <button class="btn-test btn-test--pass" bindtap="runTestGender" data-variant="valid_males">
+            2 Hommes dans ch. Hommes ✅
+          </button>
+          <button class="btn-test btn-test--fail" bindtap="runTestGender" data-variant="female_in_male">
+            Femme dans ch. Hommes ❌
+          </button>
+          <button class="btn-test btn-test--fail" bindtap="runTestGender" data-variant="male_in_female">
+            Homme dans ch. Femmes ❌
+          </button>
+        </view>
+        <view wx:if="{{ results.gender }}" class="rule-result {{ results.gender.success ? 'rule-result--success' : 'rule-result--reject' }}">
+          {{ results.gender.msg }}
+        </view>
+      </view>
+
+      <!-- RÈGLE 2 : COUPLES -->
+      <view class="rule-box">
+        <text class="rule-title">Règle 2 : Mode Couples (Opt-in mutuel)</text>
+        <view class="btn-cluster">
+          <button class="btn-test btn-test--pass" bindtap="runTestCouples" data-variant="valid_couple">
+            Duo 2 comptes confirmés ✅
+          </button>
+          <button class="btn-test btn-test--fail" bindtap="runTestCouples" data-variant="solo">
+            Personne seule en couple ❌
+          </button>
+          <button class="btn-test btn-test--fail" bindtap="runTestCouples" data-variant="unconfirmed">
+            Partenaire non confirmé ❌
+          </button>
+        </view>
+        <view wx:if="{{ results.couple }}" class="rule-result {{ results.couple.success ? 'rule-result--success' : 'rule-result--reject' }}">
+          {{ results.couple.msg }}
+        </view>
+      </view>
+
+      <!-- RÈGLE 3 : MULTI-GROUPES -->
+      <view class="rule-box">
+        <text class="rule-title">Règle 3 : Cohabitation multi-groupes sans fusion</text>
+        <button class="btn-test btn-test--wide" bindtap="runTestMultiGroup">
+          Simuler Groupe A (2 lits) + Groupe B (2 lits) dans 4 places
+        </button>
+        <view wx:if="{{ results.multigroup }}" class="rule-result {{ results.multigroup.success ? 'rule-result--success' : 'rule-result--reject' }}">
+          {{ results.multigroup.msg }}
+        </view>
+      </view>
+
+      <!-- RÈGLE 4 : CONCURRENCE -->
+      <view class="rule-box">
+        <text class="rule-title">Règle 4 : Verrou atomique 15 min (Collision)</text>
+        <button class="btn-test btn-test--wide" bindtap="runTestConcurrency">
+          Simuler 2 candidats verrouillant le Lit #1 au même instant
+        </button>
+        <view wx:if="{{ results.concurrency }}" class="rule-result {{ results.concurrency.success ? 'rule-result--success' : 'rule-result--reject' }}">
+          {{ results.concurrency.msg }}
+        </view>
+      </view>
+
+      <!-- RÈGLE 5 : RACHAT EXCLUSIF SOLO -->
+      <view class="rule-box">
+        <text class="rule-title">Règle 5 : Rachat solo exclusif & Remboursement 100%</text>
+        <button class="btn-test btn-test--wide" bindtap="runTestSoloPrivatization">
+          Simuler un candidat solo qui rachète toute la chambre
+        </button>
+        <view wx:if="{{ results.solobuyout }}" class="rule-result {{ results.solobuyout.success ? 'rule-result--success' : 'rule-result--reject' }}">
+          {{ results.solobuyout.msg }}
+        </view>
+      </view>
+
+      <!-- RÈGLE 6 : IDEMPOTENCE PAIEMENTS -->
+      <view class="rule-box">
+        <text class="rule-title">Règle 6 : Webhooks Orange Money idempotents</text>
+        <button class="btn-test btn-test--wide" bindtap="runTestIdempotence">
+          Simuler l'envoi répété du même paiement (Déduplication)
+        </button>
+        <view wx:if="{{ results.idempotence }}" class="rule-result {{ results.idempotence.success ? 'rule-result--success' : 'rule-result--reject' }}">
+          {{ results.idempotence.msg }}
+        </view>
+      </view>
+    </view>
+
+    <!-- ======================================================== -->
+    <!-- SECTION C : TERMINAL ET LOGS EN DIRECT -->
+    <!-- ======================================================== -->
+    <view class="test-card">
+      <view class="test-card-head">
+        <text class="test-badge">3. Journal d'Audit & Console</text>
+      </view>
+
+      <view class="terminal-box">
+        <block wx:for="{{ logs }}" wx:key="index">
+          <view class="term-line term-line--{{ item.type }}">
+            <text class="term-time">[{{ item.time }}]</text>
+            <text class="term-msg">{{ item.msg }}</text>
+          </view>
+        </block>
+      </view>
+    </view>
+
+  </scroll-view>
+</view>

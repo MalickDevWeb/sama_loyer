@@ -1,0 +1,7 @@
+{
+  "usingComponents": {
+    "sama-top-bar": "/components/custom/ui/sama-top-bar/index"
+  },
+  "navigationBarTitleText": "Laboratoire de Test SAMA LOYER",
+  "navigationStyle": "custom"
+}

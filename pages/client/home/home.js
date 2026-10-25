@@ -395,6 +395,10 @@ Page({
   },
 
   // Aller vers les favoris
+  onOpenTestLab() {
+    wx.navigateTo({ url: '/pages/common/test-lab/test-lab' });
+  },
+
   onGoToFavorites() {
     wx.navigateTo({
       url: '/pages/client/favoris/favoris'
