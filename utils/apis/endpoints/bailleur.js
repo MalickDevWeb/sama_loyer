@@ -40,3 +40,4 @@ export const BAILLEUR_ENDPOINTS = Object.freeze({
   SETTINGS_COMPLIANCE: '/api/v1/settings/compliance',
   COMPLIANCE: '/api/v1/settings/compliance', // alias court
 });
+

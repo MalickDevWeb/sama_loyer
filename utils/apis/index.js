@@ -3,7 +3,7 @@
 // Point d'entrée centralisé pour l'API REST Sama Loyer.
 //
 // Architecture modulaire WeChat PMT :
-//   1. Registre des Endpoints (utils/apis/endpionts/index.js)
+//   1. Registre des Endpoints (utils/apis/endpoints/index.js)
 //   2. Service Locataire (utils/apis/locataire.js)
 //   3. Service Bailleur (utils/apis/bailleur.js)
 //   4. Configuration Cache & TTL centralisée (utils/apis/cache.js)

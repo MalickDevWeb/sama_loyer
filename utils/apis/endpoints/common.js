@@ -11,3 +11,4 @@ export const COMMON_ENDPOINTS = Object.freeze({
   HEALTH: '/api/v1/health',
   WEBHOOKS_MAXIT: '/api/v1/webhooks/maxit',
 });
+

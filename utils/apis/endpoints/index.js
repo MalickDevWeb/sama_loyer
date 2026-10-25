@@ -22,3 +22,4 @@ export const ENDPOINTS = Object.freeze({
 });
 
 export default ENDPOINTS;
+
