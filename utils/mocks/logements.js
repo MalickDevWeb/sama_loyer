@@ -11,6 +11,145 @@ import { getMedia, withCover } from './media.js';
 
 export const LOGEMENTS = [
   {
+    id: 'coloc-isep-keur-gorgui',
+    title: 'Chambre 4 lits étudiants (Hommes)',
+    typeLabel: 'Chambre partagée',
+    place: 'Cité Keur Gorgui',
+    zone: 'mermoz',
+    price: 25000,
+    caution: 25000,
+    avance: 25000,
+    frais: 0,
+    verified: true,
+    verificationLevel: 'Identité & visite vérifiées',
+    dateConfirmation: "Confirmé aujourd'hui",
+    phone: '771234567',
+    bailleurName: 'Mamadou Diallo',
+    equipements: ['Woyofal individuel', 'Wifi fibre', 'Espace étude'],
+    description: "Chambre partagée pour 4 étudiants ou jeunes actifs à Keur Gorgui. Deux places réservées par des étudiants de l'ISEP, deux places disponibles immédiatement.",
+    tint: '#E3E9F5',
+    isColoc: true,
+    roomCapacity: 4,
+    availablePlacesCount: 2,
+    placePrice: 25000,
+    soloPrice: 90000,
+    genderPolicy: 'HOMMES_UNIQUEMENT',
+    genderPolicyLabel: 'Hommes uniquement',
+    multiGroupAllowed: true,
+    smokingPolicy: 'FORBIDDEN',
+    alcoholPolicy: 'FORBIDDEN',
+    incompletePolicy: 'ANNULATION_REMBOURSEMENT',
+    places: [
+      { id: 'kg-1', placeNumber: 1, status: 'OCCUPEE', statusLabel: 'Occupé (Groupe ISEP)' },
+      { id: 'kg-2', placeNumber: 2, status: 'OCCUPEE', statusLabel: 'Occupé (Groupe ISEP)' },
+      { id: 'kg-3', placeNumber: 3, status: 'DISPONIBLE', statusLabel: 'Disponible' },
+      { id: 'kg-4', placeNumber: 4, status: 'DISPONIBLE', statusLabel: 'Disponible' }
+    ]
+  },
+  {
+    id: 'coloc-femmes-ouakam',
+    title: 'Chambre 2 lits calme (Femmes)',
+    typeLabel: 'Chambre partagée',
+    place: 'Ouakam, Cité Avion',
+    zone: 'ouakam',
+    price: 40000,
+    caution: 40000,
+    avance: 40000,
+    frais: 0,
+    verified: true,
+    verificationLevel: 'Identité vérifiée',
+    dateConfirmation: 'Confirmé hier',
+    phone: '782345678',
+    bailleurName: 'Aïssatou Sow',
+    equipements: ['Toilettes privées', 'Cuisine équipée', 'Ventilateur'],
+    description: 'Chambre de 2 lits pour étudiantes ou jeunes actives à Ouakam. 1ère place occupée par Awa D., 2ème place libre.',
+    tint: '#FBE3EC',
+    isColoc: true,
+    roomCapacity: 2,
+    availablePlacesCount: 1,
+    placePrice: 40000,
+    soloPrice: 80000,
+    genderPolicy: 'FEMMES_UNIQUEMENT',
+    genderPolicyLabel: 'Femmes uniquement',
+    multiGroupAllowed: false,
+    smokingPolicy: 'FORBIDDEN',
+    alcoholPolicy: 'FORBIDDEN',
+    incompletePolicy: 'ANNULATION_REMBOURSEMENT',
+    places: [
+      { id: 'ow-1', placeNumber: 1, status: 'OCCUPEE', statusLabel: 'Occupé (Awa D.)' },
+      { id: 'ow-2', placeNumber: 2, status: 'DISPONIBLE', statusLabel: 'Disponible' }
+    ]
+  },
+  {
+    id: 'coloc-couples-mermoz',
+    title: 'Studio partagé (Couples uniquement)',
+    typeLabel: 'Chambre partagée',
+    place: 'Mermoz Pyrotechnie',
+    zone: 'mermoz',
+    price: 60000,
+    caution: 60000,
+    avance: 60000,
+    frais: 0,
+    verified: true,
+    verificationLevel: 'Identité & visite vérifiées',
+    dateConfirmation: 'Confirmé il y a 3 jours',
+    phone: '776789012',
+    bailleurName: 'Cheikh Gueye',
+    equipements: ['Lit double', 'Douche privative', 'Balcon'],
+    description: 'Studio réservé exclusivement aux couples déclarés et confirmés par les deux conjoints.',
+    tint: '#F3ECE1',
+    isColoc: true,
+    roomCapacity: 2,
+    availablePlacesCount: 2,
+    placePrice: 60000,
+    soloPrice: 120000,
+    genderPolicy: 'COUPLES_UNIQUEMENT',
+    genderPolicyLabel: 'Couples uniquement',
+    multiGroupAllowed: false,
+    smokingPolicy: 'FORBIDDEN',
+    alcoholPolicy: 'FORBIDDEN',
+    incompletePolicy: 'POURSUIVRE_AU_PRIX_SOLO',
+    places: [
+      { id: 'mz-1', placeNumber: 1, status: 'DISPONIBLE', statusLabel: 'Conjoint 1 (Libre)' },
+      { id: 'mz-2', placeNumber: 2, status: 'DISPONIBLE', statusLabel: 'Conjoint 2 (Libre)' }
+    ]
+  },
+  {
+    id: 'coloc-libre-fann',
+    title: 'Chambre 3 lits 100% libre (Groupe libre)',
+    typeLabel: 'Chambre partagée',
+    place: 'Fann Résidence',
+    zone: 'fann',
+    price: 30000,
+    caution: 30000,
+    avance: 30000,
+    frais: 0,
+    verified: true,
+    verificationLevel: 'Numéro vérifié',
+    dateConfirmation: "Confirmé aujourd'hui",
+    phone: '771234567',
+    bailleurName: 'Mamadou Diallo',
+    equipements: ['Proche UCAD', 'Eau courante SDE', 'Balcon'],
+    description: "Chambre neuve de 3 lits prête pour accueillir un nouveau groupe d'amis ou des réservations individuelles.",
+    tint: '#E3E9F5',
+    isColoc: true,
+    roomCapacity: 3,
+    availablePlacesCount: 3,
+    placePrice: 30000,
+    soloPrice: 85000,
+    genderPolicy: 'HOMMES_UNIQUEMENT',
+    genderPolicyLabel: 'Hommes uniquement',
+    multiGroupAllowed: true,
+    smokingPolicy: 'FORBIDDEN',
+    alcoholPolicy: 'FORBIDDEN',
+    incompletePolicy: 'ANNULATION_REMBOURSEMENT',
+    places: [
+      { id: 'fn-1', placeNumber: 1, status: 'DISPONIBLE', statusLabel: 'Disponible' },
+      { id: 'fn-2', placeNumber: 2, status: 'DISPONIBLE', statusLabel: 'Disponible' },
+      { id: 'fn-3', placeNumber: 3, status: 'DISPONIBLE', statusLabel: 'Disponible' }
+    ]
+  },
+  {
     id: 'ouakam-cite-avion',
     title: 'Avec toilettes privées',
     typeLabel: 'Chambre salon',
@@ -446,6 +585,22 @@ export function toLogementDetail(l) {
   detail.slides = media.gallery
     .map((g) => ({ id: g.id, label: g.label, url: g.url, bg: l.tint }))
     .concat({ id: 'video', label: 'Vidéo visite', isVideo: true, url: media.video.poster, video: media.video.src, bg: '#0F1E3D' });
+  if (l.isColoc) {
+    detail.isColoc = true;
+    detail.roomCapacity = l.roomCapacity || 2;
+    detail.availablePlacesCount = l.availablePlacesCount || 1;
+    detail.placePrice = l.placePrice || l.price;
+    detail.placePriceFormatted = formatMoney(l.placePrice || l.price);
+    detail.soloPrice = l.soloPrice || (l.price * 2);
+    detail.soloPriceFormatted = formatMoney(detail.soloPrice);
+    detail.genderPolicy = l.genderPolicy || 'HOMMES_UNIQUEMENT';
+    detail.genderPolicyLabel = l.genderPolicyLabel || 'Hommes uniquement';
+    detail.places = l.places || [];
+    detail.smokingPolicy = l.smokingPolicy || 'FORBIDDEN';
+    detail.alcoholPolicy = l.alcoholPolicy || 'FORBIDDEN';
+    detail.multiGroupAllowed = l.multiGroupAllowed !== false;
+    detail.incompletePolicy = l.incompletePolicy || 'ANNULATION_REMBOURSEMENT';
+  }
   detail.video = media.video;
   return detail;
 }

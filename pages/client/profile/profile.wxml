@@ -122,6 +122,38 @@
     </view>
   </view>
 
+  <!-- 🧪 SECTION TEST & DÉMO COLOCATION -->
+  <view class="prof__section">
+    <text class="prof__section-title">🧪 TESTEUR COLOCATION (PROMPT MAÎTRE)</text>
+    <view class="prof__group">
+      <!-- Changement rapide de profil de test -->
+      <view class="prof__row prof__row--tall">
+        <view class="prof__row-text">
+          <text class="prof__row-label">Simuler un profil candidat</text>
+          <text class="prof__row-sub">Genre : {{ userGender }} · {{ userSmokeStatus }} · {{ userCoupleStatus }}</text>
+        </view>
+      </view>
+
+      <view class="prof__segmented" style="margin: 12rpx 24rpx 20rpx;">
+        <view
+          class="prof__segment {{ testProfileId === 'moussa' ? 'prof__segment--on' : '' }}"
+          bindtap="onSelectTestProfile"
+          data-profile="moussa"
+        >👤 Moussa (H)</view>
+        <view
+          class="prof__segment {{ testProfileId === 'fatou' ? 'prof__segment--on' : '' }}"
+          bindtap="onSelectTestProfile"
+          data-profile="fatou"
+        >👩 Fatou (F)</view>
+        <view
+          class="prof__segment {{ testProfileId === 'couple' ? 'prof__segment--on' : '' }}"
+          bindtap="onSelectTestProfile"
+          data-profile="couple"
+        >👫 Couple</view>
+      </view>
+    </view>
+  </view>
+
   <!-- Préférences -->
   <view class="prof__section">
     <text class="prof__section-title">{{ i18n.profile.preferences || 'PRÉFÉRENCES' }}</text>

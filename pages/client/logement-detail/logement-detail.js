@@ -100,10 +100,22 @@ Page({
     const found = passed || (options && options.id ? getLogementById(decodeURIComponent(options.id)) : null);
     const logement = found ? toLogementDetail(found) : DEFAULT_LOGEMENT;
 
+    const isColoc = Boolean(logement.isColoc);
+    const firstAvailable = (logement.places || []).find(p => p.status === 'DISPONIBLE');
     this.setData({
       uiState: 'content',
       headerTop: top,
       logement,
+      isColoc,
+      roomCapacity: logement.roomCapacity || 2,
+      availablePlacesCount: logement.availablePlacesCount || 1,
+      placePrice: logement.placePrice || 40000,
+      placePriceFormatted: logement.placePriceFormatted || '40 000',
+      soloPrice: logement.soloPrice || 80000,
+      soloPriceFormatted: logement.soloPriceFormatted || '80 000',
+      genderPolicyLabel: logement.genderPolicyLabel || 'Hommes uniquement',
+      selectedPlaceNumber: firstAvailable ? firstAvailable.placeNumber : 1,
+      places: logement.places || [],
       isFavorite: isFavorite(logement.id)
     });
 

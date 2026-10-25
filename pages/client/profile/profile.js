@@ -89,6 +89,10 @@ Page({
     userPhone: '+221 77 123 45 12',
     userInitials: 'AD',
     userProfile: {},
+    testProfileId: 'moussa',
+    userGender: 'Homme',
+    userSmokeStatus: 'Non-fumeur',
+    userCoupleStatus: 'Solo',
     stats: { favoris: 0, visites: 0, conversations: 0 },
     notifs: [],
     i18n: getMessages(),
@@ -394,6 +398,41 @@ Page({
 
   onNavMessages() {
     wx.switchTab({ url: '/pages/client/messages/messages' });
+  },
+
+  onSelectTestProfile(e) {
+    const prof = e.currentTarget.dataset.profile;
+    if (prof === 'moussa') {
+      this.setData({
+        testProfileId: 'moussa',
+        userName: 'Moussa Diop',
+        userInitials: 'MD',
+        userGender: 'Homme',
+        userSmokeStatus: 'Non-fumeur',
+        userCoupleStatus: 'Solo'
+      });
+      wx.showToast({ title: 'Profil actif : Moussa (Homme)', icon: 'none' });
+    } else if (prof === 'fatou') {
+      this.setData({
+        testProfileId: 'fatou',
+        userName: 'Fatou Sall',
+        userInitials: 'FS',
+        userGender: 'Femme',
+        userSmokeStatus: 'Non-fumeuse',
+        userCoupleStatus: 'Solo'
+      });
+      wx.showToast({ title: 'Profil actif : Fatou (Femme)', icon: 'none' });
+    } else if (prof === 'couple') {
+      this.setData({
+        testProfileId: 'couple',
+        userName: 'Amadou & Mariama',
+        userInitials: 'AM',
+        userGender: 'Couple',
+        userSmokeStatus: 'Non-fumeurs',
+        userCoupleStatus: 'Duo confirmé'
+      });
+      wx.showToast({ title: 'Profil actif : Couple confirmé', icon: 'none' });
+    }
   },
 
   onSwitchToBailleur() {
