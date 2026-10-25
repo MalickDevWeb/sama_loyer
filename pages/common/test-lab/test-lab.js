@@ -58,56 +58,61 @@ Page({
   },
 
   onCreateGroup() {
-    const { name, placesRequested, genderMode } = this.data.groupForm;
-    if (!name || !name.trim()) {
-      wx.showToast({ title: 'Donnez un nom au groupe', icon: 'none' });
-      return;
+    try {
+      const { name, placesRequested, genderMode } = this.data.groupForm;
+      if (!name || !name.trim()) {
+        wx.showToast({ title: 'Donnez un nom au groupe', icon: 'none' });
+        return;
+      }
+
+      const groupId = `GRP-${Date.now().toString(36).toUpperCase()}`;
+      const creator = {
+        id: 'user-moussa',
+        name: 'Moussa Diop',
+        phone: '+221771234567',
+        gender: genderMode === 'FEMMES_UNIQUEMENT' ? 'FEMME' : 'HOMME'
+      };
+
+      const group = {
+        id: groupId,
+        name: name.trim(),
+        placesRequested: placesRequested,
+        placesAttributed: 0,
+        genderMode: genderMode,
+        creator: creator,
+        members: [creator],
+        status: 'EN_ATTENTE_MEMBRES',
+        createdAt: new Date().toISOString()
+      };
+
+      const invite = generateGroupInvitation({
+        group: group,
+        inviterId: creator.id,
+        validityHours: 72
+      });
+
+      this.setData({
+        createdGroup: group,
+        groupInvite: invite
+      });
+
+      this.addLog(`Groupe créé : "${group.name}" (${placesRequested} places, ${genderMode})`, 'success');
+      this.addLog(`Jeton Duo généré : ${invite.token.substring(0, 16)}... (valide 72h)`, 'info');
+
+      wx.showToast({
+        title: 'Groupe créé avec succès',
+        icon: 'success'
+      });
+    } catch (err) {
+      console.error('[TestLab] Erreur création groupe:', err);
+      this.addLog(`Erreur création groupe : ${err.message}`, 'reject');
+      wx.showToast({ title: err.message, icon: 'none' });
     }
-
-    const groupId = `GRP-${Date.now().toString(36).toUpperCase()}`;
-    const creator = {
-      id: 'user-moussa',
-      name: 'Moussa Diop',
-      phone: '+221771234567',
-      gender: genderMode === 'FEMMES_UNIQUEMENT' ? 'FEMME' : 'HOMME'
-    };
-
-    const group = {
-      id: groupId,
-      name: name.trim(),
-      placesRequested: placesRequested,
-      placesAttributed: 0,
-      genderMode: genderMode,
-      creator: creator,
-      members: [creator],
-      status: 'EN_ATTENTE_MEMBRES',
-      createdAt: new Date().toISOString()
-    };
-
-    const invite = generateGroupInvitation({
-      groupId: group.id,
-      groupName: group.name,
-      creatorId: creator.id,
-      ttlHours: 72
-    });
-
-    this.setData({
-      createdGroup: group,
-      groupInvite: invite
-    });
-
-    this.addLog(`Groupe créé : "${group.name}" (${placesRequested} places, ${genderMode})`, 'success');
-    this.addLog(`Jeton Duo généré : ${invite.token.substring(0, 16)}... (valide 72h)`, 'info');
-
-    wx.showToast({
-      title: 'Groupe créé avec succès',
-      icon: 'success'
-    });
   },
 
   onCopyGroupWhatsApp() {
     if (!this.data.groupInvite) return;
-    const msg = this.data.groupInvite.shareMessage || `Rejoins mon groupe ${this.data.createdGroup.name} : ${this.data.groupInvite.shareUrl}`;
+    const msg = this.data.groupInvite.whatsappShareText || (this.data.createdGroup ? `Rejoins notre colocation "${this.data.createdGroup.name}" : ${this.data.groupInvite.inviteUrl}` : this.data.groupInvite.inviteUrl);
     wx.setClipboardData({
       data: msg,
       success: () => {
