@@ -2,19 +2,38 @@
 // SAMA LOYER BACKEND API SERVICE
 // Point d'entrée centralisé pour l'API REST Sama Loyer.
 //
-// Architecture modulaire WeChat PMT :
-//   1. Registre des Endpoints (utils/apis/endpoints/index.js)
-//   2. Service Locataire (utils/apis/locataire.js)
-//   3. Service Bailleur (utils/apis/bailleur.js)
-//   4. Configuration Cache & TTL centralisée (utils/apis/cache.js)
-//   5. Façade unifiée BackendAPI & délégation dynamique sans duplication
-//   6. Déballage sécurisé des réponses (utils/apis/response.js)
+// Architecture modulaire (Option B - Domain-Driven Design) :
+//   1. core/       : Infrastructure technique (http, auth, cache, response, native)
+//   2. endpoints/  : Registre centralisé des contrats de routage
+//   3. locataire/  : Module métier Locataire (endpoints, service)
+//   4. bailleur/   : Module métier Bailleur (endpoints, service)
+//   5. Façade unifiée BackendAPI avec composition dynamique
 // ============================================================================
 
-import { httpClient } from './http.js';
-import { invalidateCache } from './cache.js';
-import { locataireAPI, LocataireAPI } from './locataire.js';
-import { bailleurAPI, BailleurAPI } from './bailleur.js';
+import { httpClient, invalidateCache } from './core/index.js';
+import { locataireAPI, LocataireAPI } from './locataire/index.js';
+import { bailleurAPI, BailleurAPI } from './bailleur/index.js';
+
+// Re-exports des modules d'infrastructure technique (core)
+export {
+  httpClient,
+  HttpClient,
+  authenticate,
+  setAccessToken,
+  clearAccessToken,
+  cached,
+  setCache,
+  invalidateCache,
+  TTL,
+  LOCATAIRE_TTL,
+  BAILLEUR_TTL,
+  extractApiResponse,
+  unwrapApiResponse,
+  nativeService,
+  invokePlugin,
+  withRetry,
+  isDevtools
+} from './core/index.js';
 
 // Re-exports des endpoints centralisés
 export {
@@ -24,11 +43,9 @@ export {
   ENDPOINTS
 } from './endpoints/index.js';
 
-// Re-exports modulaires par domaine et cache centralisé
-export { LocataireAPI, locataireAPI };
-export { BailleurAPI, bailleurAPI };
-export { TTL, LOCATAIRE_TTL, BAILLEUR_TTL, cached, invalidateCache, setCache } from './cache.js';
-export { extractApiResponse, unwrapApiResponse } from './response.js';
+// Re-exports des services de domaines
+export { LocataireAPI, locataireAPI } from './locataire/index.js';
+export { BailleurAPI, bailleurAPI } from './bailleur/index.js';
 
 /**
  * Service central unifié Sama Loyer.
@@ -47,7 +64,7 @@ class BackendAPI {
   /** @type {BailleurAPI} */
   bailleur = bailleurAPI;
 
-  /** @type {import('./http').HttpClient} */
+  /** @type {import('./core/http').HttpClient} */
   #client = httpClient;
 
   resetSession() {

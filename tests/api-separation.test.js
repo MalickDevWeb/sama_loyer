@@ -32,6 +32,10 @@ import {
   ENDPOINTS as FOLDER_ENDPOINTS
 } from '../utils/apis/endpoints/index.js';
 
+import { locataireAPI as moduleLocataireAPI, LOCATAIRE_ENDPOINTS as moduleLocataireEndpoints } from '../utils/apis/locataire/index.js';
+import { bailleurAPI as moduleBailleurAPI, BAILLEUR_ENDPOINTS as moduleBailleurEndpoints } from '../utils/apis/bailleur/index.js';
+import { httpClient as coreHttpClient, authenticate as coreAuthenticate } from '../utils/apis/core/index.js';
+
 export async function runApiSeparationTests() {
   console.log('\n--- Test Suite 8: Séparation APIs Bailleur & Locataire ---');
   let passed = 0;
@@ -157,6 +161,16 @@ export async function runApiSeparationTests() {
   assert.strictEqual(COMMON_ENDPOINTS, FOLDER_COMMON_ENDPOINTS);
   assert.strictEqual(ENDPOINTS, FOLDER_ENDPOINTS);
   console.log('  ✓ Architecture SOLID : utils/apis/endpoints/ validée à 100%');
+  passed++;
+
+  // Test 9 : Architecture modulaire Option B (core, locataire, bailleur)
+  assert.strictEqual(locataireAPI, moduleLocataireAPI);
+  assert.strictEqual(LOCATAIRE_ENDPOINTS, moduleLocataireEndpoints);
+  assert.strictEqual(bailleurAPI, moduleBailleurAPI);
+  assert.strictEqual(BAILLEUR_ENDPOINTS, moduleBailleurEndpoints);
+  assert.ok(coreHttpClient);
+  assert.equal(typeof coreAuthenticate, 'function');
+  console.log('  ✓ Découpage modulaire DDD (core/, locataire/, bailleur/) validé à 100%');
   passed++;
 
   return passed;
