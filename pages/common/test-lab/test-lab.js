@@ -26,7 +26,107 @@ Page({
     results: {},
     logs: [
       { time: 'Initialisation', msg: 'Laboratoire prêt pour les tests du Prompt Maître.', type: 'info' }
-    ]
+    ],
+    groupForm: {
+      name: 'Groupe ISEP',
+      placesRequested: 2,
+      genderMode: 'HOMMES_UNIQUEMENT'
+    },
+    createdGroup: null,
+    groupInvite: null
+  },
+
+  onInputGroupName(e) {
+    const val = e.detail && e.detail.value !== undefined ? e.detail.value : '';
+    this.setData({
+      'groupForm.name': val
+    });
+  },
+
+  onSelectGroupPlaces(e) {
+    const places = Number(e.currentTarget.dataset.places) || 2;
+    this.setData({
+      'groupForm.placesRequested': places
+    });
+  },
+
+  onSelectGroupGender(e) {
+    const gender = e.currentTarget.dataset.gender || 'HOMMES_UNIQUEMENT';
+    this.setData({
+      'groupForm.genderMode': gender
+    });
+  },
+
+  onCreateGroup() {
+    const { name, placesRequested, genderMode } = this.data.groupForm;
+    if (!name || !name.trim()) {
+      wx.showToast({ title: 'Donnez un nom au groupe', icon: 'none' });
+      return;
+    }
+
+    const groupId = `GRP-${Date.now().toString(36).toUpperCase()}`;
+    const creator = {
+      id: 'user-moussa',
+      name: 'Moussa Diop',
+      phone: '+221771234567',
+      gender: genderMode === 'FEMMES_UNIQUEMENT' ? 'FEMME' : 'HOMME'
+    };
+
+    const group = {
+      id: groupId,
+      name: name.trim(),
+      placesRequested: placesRequested,
+      placesAttributed: 0,
+      genderMode: genderMode,
+      creator: creator,
+      members: [creator],
+      status: 'EN_ATTENTE_MEMBRES',
+      createdAt: new Date().toISOString()
+    };
+
+    const invite = generateGroupInvitation({
+      groupId: group.id,
+      groupName: group.name,
+      creatorId: creator.id,
+      ttlHours: 72
+    });
+
+    this.setData({
+      createdGroup: group,
+      groupInvite: invite
+    });
+
+    this.addLog(`Groupe créé : "${group.name}" (${placesRequested} places, ${genderMode})`, 'success');
+    this.addLog(`Jeton Duo généré : ${invite.token.substring(0, 16)}... (valide 72h)`, 'info');
+
+    wx.showToast({
+      title: 'Groupe créé avec succès',
+      icon: 'success'
+    });
+  },
+
+  onCopyGroupWhatsApp() {
+    if (!this.data.groupInvite) return;
+    const msg = this.data.groupInvite.shareMessage || `Rejoins mon groupe ${this.data.createdGroup.name} : ${this.data.groupInvite.shareUrl}`;
+    wx.setClipboardData({
+      data: msg,
+      success: () => {
+        wx.showToast({
+          title: 'Lien copié pour WhatsApp !',
+          icon: 'success'
+        });
+        this.addLog('Lien WhatsApp copié dans le presse-papier.', 'info');
+      }
+    });
+  },
+
+  onBookTargetRoomWithGroup(e) {
+    const roomId = e.currentTarget.dataset.roomid || 'coloc-isep-keur-gorgui';
+    const groupId = this.data.createdGroup ? this.data.createdGroup.id : '';
+    this.addLog(`Navigation vers ${roomId} avec groupe ${groupId}...`, 'info');
+    wx.navigateTo({
+      url: `/pages/client/logement-detail/logement-detail?id=${encodeURIComponent(roomId)}&groupId=${encodeURIComponent(groupId)}`
+    });
   },
 
   addLog(msg, type = 'info') {
