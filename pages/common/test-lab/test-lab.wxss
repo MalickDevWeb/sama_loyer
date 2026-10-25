@@ -239,3 +239,146 @@
   color: #F87171;
 }
 
+
+/* Styles Création de groupe */
+.test-card--highlight {
+  border: 2.5rpx solid #10B981;
+  background: #F0FDF4;
+}
+
+.test-badge--green {
+  background: #059669 !important;
+}
+
+.group-form-box {
+  background: #FFFFFF;
+  border-radius: 16rpx;
+  padding: 20rpx;
+  border: 1.5rpx solid #E2E8F0;
+}
+
+.group-label {
+  display: block;
+  font-size: 22rpx;
+  font-weight: 700;
+  color: #1E293B;
+  margin-bottom: 8rpx;
+}
+
+.group-input-wrap {
+  background: #F8FAFC;
+  border: 2rpx solid #CBD5E1;
+  border-radius: 12rpx;
+  padding: 14rpx 18rpx;
+}
+
+.group-input {
+  font-size: 24rpx;
+  font-weight: 600;
+  color: #0F172A;
+}
+
+.group-segmented {
+  display: flex;
+  background: #F1F5F9;
+  border-radius: 12rpx;
+  padding: 6rpx;
+  gap: 8rpx;
+}
+
+.group-seg {
+  flex: 1;
+  text-align: center;
+  padding: 12rpx;
+  font-size: 22rpx;
+  font-weight: 700;
+  color: #64748B;
+  border-radius: 8rpx;
+}
+
+.group-seg--active {
+  background: #FFFFFF;
+  color: #0F172A;
+  box-shadow: 0 2rpx 8rpx rgba(0,0,0,0.06);
+}
+
+.btn-create-group {
+  margin-top: 20rpx !important;
+  background: #C8235F !important;
+  color: #FFFFFF !important;
+  font-size: 24rpx !important;
+  font-weight: 800 !important;
+  border-radius: 14rpx !important;
+  padding: 16rpx !important;
+}
+
+.created-group-card {
+  margin-top: 18rpx;
+  background: #FFFFFF;
+  border-radius: 16rpx;
+  padding: 20rpx;
+  border: 2rpx solid #A7F3D0;
+}
+
+.created-group-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.created-group-title {
+  font-size: 26rpx;
+  font-weight: 800;
+  color: #065F46;
+}
+
+.created-group-badge {
+  background: #ECFDF5;
+  color: #059669;
+  padding: 4rpx 12rpx;
+  border-radius: 8rpx;
+  font-size: 20rpx;
+  font-weight: 700;
+}
+
+.created-group-creator, .created-group-token {
+  display: block;
+  font-size: 20rpx;
+  color: #64748B;
+  margin-top: 6rpx;
+}
+
+.created-group-token {
+  font-family: monospace;
+  color: #059669;
+  background: #F0FDF4;
+  padding: 6rpx 10rpx;
+  border-radius: 6rpx;
+  margin-top: 10rpx;
+}
+
+.created-group-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12rpx;
+  margin-top: 16rpx;
+}
+
+.btn-group-action {
+  margin: 0 !important;
+  font-size: 22rpx !important;
+  font-weight: 700 !important;
+  border-radius: 12rpx !important;
+  padding: 14rpx !important;
+}
+
+.btn-group-action--wa {
+  background: #ECFDF5 !important;
+  color: #065F46 !important;
+  border: 1.5rpx solid #059669 !important;
+}
+
+.btn-group-action--book {
+  background: #0A192F !important;
+  color: #FFFFFF !important;
+}

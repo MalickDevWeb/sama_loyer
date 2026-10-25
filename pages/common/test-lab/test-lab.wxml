@@ -72,7 +72,93 @@
       </view>
     </view>
 
+    <!-<!-- ======================================================== -->
+    <!-- SECTION GROUPE : CRÉATION & TEST DU MODULE DE GROUPE -->
     <!-- ======================================================== -->
+    <view class="test-card test-card--highlight">
+      <view class="test-card-head">
+        <text class="test-badge test-badge--green">Nouveau : Créer & Tester un Groupe de Colocation</text>
+        <text class="test-card-desc">Configure ton groupe, génère le lien Duo WhatsApp et réserve ensemble :</text>
+      </view>
+
+      <view class="group-form-box">
+        <text class="group-label">Nom de ton groupe</text>
+        <view class="group-input-wrap">
+          <input
+            class="group-input"
+            value="{{ groupForm.name }}"
+            placeholder="Ex : Groupe ISEP, Binôme Keur Gorgui..."
+            bindinput="onInputGroupName"
+          />
+        </view>
+
+        <text class="group-label" style="margin-top: 16rpx;">Places demandées par le groupe</text>
+        <view class="group-segmented">
+          <view
+            class="group-seg {{ groupForm.placesRequested === 2 ? 'group-seg--active' : '' }}"
+            bindtap="onSelectGroupPlaces"
+            data-places="2"
+          >2 places</view>
+          <view
+            class="group-seg {{ groupForm.placesRequested === 3 ? 'group-seg--active' : '' }}"
+            bindtap="onSelectGroupPlaces"
+            data-places="3"
+          >3 places</view>
+          <view
+            class="group-seg {{ groupForm.placesRequested === 4 ? 'group-seg--active' : '' }}"
+            bindtap="onSelectGroupPlaces"
+            data-places="4"
+          >4 places</view>
+        </view>
+
+        <text class="group-label" style="margin-top: 16rpx;">Genre autorisé pour ce groupe</text>
+        <view class="chip-grid" style="display: flex; gap: 10rpx; margin-top: 8rpx;">
+          <view
+            class="chip-item {{ groupForm.genderMode === 'HOMMES_UNIQUEMENT' ? 'chip-item-active' : '' }}"
+            bindtap="onSelectGroupGender"
+            data-gender="HOMMES_UNIQUEMENT"
+            style="padding: 10rpx 16rpx; font-size: 20rpx; border-radius: 10rpx; background: {{ groupForm.genderMode === 'HOMMES_UNIQUEMENT' ? '#C8235F' : '#F1F5F9' }}; color: {{ groupForm.genderMode === 'HOMMES_UNIQUEMENT' ? '#fff' : '#0F172A' }};"
+          >Hommes</view>
+          <view
+            class="chip-item {{ groupForm.genderMode === 'FEMMES_UNIQUEMENT' ? 'chip-item-active' : '' }}"
+            bindtap="onSelectGroupGender"
+            data-gender="FEMMES_UNIQUEMENT"
+            style="padding: 10rpx 16rpx; font-size: 20rpx; border-radius: 10rpx; background: {{ groupForm.genderMode === 'FEMMES_UNIQUEMENT' ? '#C8235F' : '#F1F5F9' }}; color: {{ groupForm.genderMode === 'FEMMES_UNIQUEMENT' ? '#fff' : '#0F172A' }};"
+          >Femmes</view>
+          <view
+            class="chip-item {{ groupForm.genderMode === 'COUPLES_UNIQUEMENT' ? 'chip-item-active' : '' }}"
+            bindtap="onSelectGroupGender"
+            data-gender="COUPLES_UNIQUEMENT"
+            style="padding: 10rpx 16rpx; font-size: 20rpx; border-radius: 10rpx; background: {{ groupForm.genderMode === 'COUPLES_UNIQUEMENT' ? '#C8235F' : '#F1F5F9' }}; color: {{ groupForm.genderMode === 'COUPLES_UNIQUEMENT' ? '#fff' : '#0F172A' }};"
+          >Couple</view>
+        </view>
+
+        <button class="btn-create-group" bindtap="onCreateGroup">
+          ✨ Créer le groupe & Générer le lien WhatsApp
+        </button>
+      </view>
+
+      <!-- Carte du Groupe Créé -->
+      <view wx:if="{{ createdGroup }}" class="created-group-card">
+        <view class="created-group-header">
+          <text class="created-group-title">👥 {{ createdGroup.name }}</text>
+          <text class="created-group-badge">{{ createdGroup.placesRequested }} places demandées</text>
+        </view>
+        <text class="created-group-creator">Créateur : {{ createdGroup.creator.name }}</text>
+        <text class="created-group-token">Jeton Duo : {{ groupInvite.token }}</text>
+
+        <view class="created-group-actions">
+          <button class="btn-group-action btn-group-action--wa" bindtap="onCopyGroupWhatsApp">
+            📲 Copier l'invitation WhatsApp
+          </button>
+          <button class="btn-group-action btn-group-action--book" bindtap="onBookTargetRoomWithGroup" data-roomid="coloc-isep-keur-gorgui">
+            🛏️ Réserver dans Chambre Keur Gorgui
+          </button>
+        </view>
+      </view>
+    </view>
+
+    - ======================================================== -->
     <!-- SECTION B : TESTS DES RÈGLES MÉTIER EN DIRECT -->
     <!-- ======================================================== -->
     <view class="test-card">
