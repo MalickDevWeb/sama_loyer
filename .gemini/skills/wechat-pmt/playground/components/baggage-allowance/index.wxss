@@ -1,0 +1,174 @@
+.baggage-allowance-card
+    overflow:  hidden;
+    border:  1rpx solid #e4e7ec;
+    border-radius:  20rpx;
+    background:  #ffffff;
+    box-shadow:  0 4rpx 14rpx rgba(16,  24,  40,  0.05);
+    margin-bottom:  24rpx;
+}
+.baggage-allowance-card__header
+    display:  flex;
+    align-items:  center;
+    justify-content:  space-between;
+    gap:  16rpx;
+    padding:  24rpx 28rpx;
+}
+.baggage-allowance-card__title-row
+    display:  flex;
+    align-items:  center;
+    min-width:  0;
+    flex:  1;
+    gap:  16rpx;
+}
+.baggage-allowance-card__title
+    font-size:  28rpx;
+    font-weight:  700;
+    line-height:  1.3;
+    color:  #1d2939;
+}
+.baggage-allowance-card__chevron
+    width:  32rpx;
+    height:  32rpx;
+    display:  flex;
+    align-items:  center;
+    justify-content:  center;
+    transition:  transform 0.25s ease;
+}
+.baggage-allowance-card__chevron.is-open
+    transform:  rotate(180deg);
+}
+.baggage-allowance-card__arrow-glyph
+    font-size:  20rpx;
+    color:  #98a2b3;
+}
+.baggage-summary
+    display:  flex;
+    align-items:  center;
+    gap:  10rpx;
+    flex-wrap:  nowrap;
+    padding:  6rpx 14rpx;
+    border-radius:  12rpx;
+    background:  #f8fafc;
+    border:  1rpx solid #eef2f7;
+}
+.baggage-summary__item
+    display:  flex;
+    align-items:  center;
+    gap:  6rpx;
+}
+.baggage-summary__item--accent
+    color:  #ff6600;
+}
+.baggage-summary__item--muted
+    color:  #667085;
+}
+.baggage-summary__count
+    font-size:  22rpx;
+    font-weight:  600;
+}
+.baggage-summary__mini
+    width:  22rpx;
+    height:  22rpx;
+    display:  block;
+}
+.baggage-allowance-card__body
+    max-height:  0;
+    overflow:  hidden;
+    opacity:  0;
+    transform:  translateY(-4rpx);
+    transition:  max-height 0.32s ease,  opacity 0.24s ease,  transform 0.32s ease;
+}
+.baggage-allowance-card.is-open .baggage-allowance-card__body
+    max-height:  2000rpx;
+    opacity:  1;
+    transform:  translateY(0);
+    border-top:  1rpx solid #f2f4f7;
+}
+.baggage-allowance-card__inner
+    padding:  24rpx 28rpx 30rpx;
+}
+.baggage-route
+    display:  flex;
+    flex-direction:  column;
+    gap:  18rpx;
+}
+.baggage-route__head
+    display:  flex;
+    align-items:  center;
+    justify-content:  space-between;
+    gap:  12rpx;
+}
+.baggage-route__title
+    font-size:  25rpx;
+    font-weight:  700;
+    color:  #344054;
+}
+.baggage-route__tag
+    padding:  4rpx 16rpx;
+    border-radius:  999rpx;
+    font-size:  20rpx;
+    font-weight:  500;
+    color:  #ff6600;
+    background:  #fff4eb;
+}
+.baggage-route__items
+    display:  flex;
+    flex-direction:  column;
+}
+.baggage-item
+    display:  flex;
+    align-items:  flex-start;
+    gap:  16rpx;
+    padding:  10rpx 0;
+}
+.baggage-item__icon
+    width:  54rpx;
+    height:  54rpx;
+    border-radius:  14rpx;
+    flex-shrink:  0;
+    display:  flex;
+    align-items:  center;
+    justify-content:  center;
+    background:  #fff4eb;
+}
+.baggage-item__icon--carryon
+    background:  #f2f4fc;
+}
+.baggage-item__glyph
+    font-size:  24rpx;
+}
+.baggage-item__content
+    flex:  1;
+    min-width:  0;
+}
+.baggage-item__title-row
+    display:  flex;
+    align-items:  baseline;
+    gap:  10rpx;
+}
+.baggage-item__title
+    font-size:  25rpx;
+    font-weight:  700;
+    color:  #344054;
+}
+.baggage-item__value
+    font-size:  24rpx;
+    font-weight:  500;
+    color:  #475467;
+}
+.baggage-item__subtitle
+    display:  block;
+    margin-top:  4rpx;
+    font-size:  22rpx;
+    color:  #98a2b3;
+}
+.baggage-item__divider
+    height:  1rpx;
+    margin:  14rpx 0 14rpx 70rpx;
+    background:  #f2f4f7;
+}
+.baggage-route__separator
+    height:  1rpx;
+    margin:  20rpx -28rpx;
+    background:  #f2f4f7;
+}

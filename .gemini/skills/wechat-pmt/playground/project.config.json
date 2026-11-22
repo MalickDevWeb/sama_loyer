@@ -1,0 +1,17 @@
+{
+  "miniprogramRoot": "./",
+  "projectname": "wechat-pmt-playground",
+  "description": "Showcase Interactif Sonatel Max It / WeChat PMT",
+  "appid": "touristappid",
+  "setting": {
+    "urlCheck": false,
+    "es6": true,
+    "enhance": true,
+    "postcss": true,
+    "preloadBackgroundData": false,
+    "minified": true
+  },
+  "compileType": "miniprogram",
+  "libVersion": "3.4.0"
+}
+

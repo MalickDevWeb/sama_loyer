@@ -1,0 +1,56 @@
+<view class="baggage-allowance-card {{isOpen ? 'is-open' : ''}}">
+  <!-- En-tête cliquable avec flèche accordéon -->
+  <view class="baggage-allowance-card__header" bindtap="toggleOpen">
+    <view class="baggage-allowance-card__title-row">
+      <text class="baggage-allowance-card__title">Franchise bagages</text>
+      <view wx:if="{{ showSummaryBadges && summary && summary.length }}" class="baggage-summary">
+        <block wx:for="{{summary}}" wx:for-item="badge" wx:key="id">
+          <view class="baggage-summary__item baggage-summary__item--{{badge.tone || 'muted'}}">
+            <text class="baggage-summary__count">{{badge.label}}</text>
+            <image wx:if="{{ badge.icon }}" class="baggage-summary__mini" src="{{badge.icon}}" mode="aspectFit"/>
+          </view>
+        </block>
+      </view>
+    </view>
+
+    <view class="baggage-allowance-card__chevron {{isOpen ? 'is-open' : ''}}">
+      <text class="baggage-allowance-card__arrow-glyph">▼</text>
+    </view>
+  </view>
+
+  <!-- Corps de l'accordéon animé -->
+  <view class="baggage-allowance-card__body">
+    <view class="baggage-allowance-card__inner">
+      <block wx:for="{{routeList}}" wx:for-item="route" wx:for-index="routeIndex" wx:key="id">
+        <view class="baggage-route">
+          <view class="baggage-route__head">
+            <text class="baggage-route__title">{{route.title}}</text>
+            <text wx:if="{{ route.tag }}" class="baggage-route__tag">{{route.tag}}</text>
+          </view>
+
+          <view class="baggage-route__items">
+            <block wx:for="{{route.items}}" wx:for-item="bag" wx:for-index="bagIndex" wx:key="id">
+              <view class="baggage-item">
+                <view class="baggage-item__icon baggage-item__icon--{{bag.kind || 'standard'}}">
+                  <text class="baggage-item__glyph">{{ bag.glyph || '🧳' }}</text>
+                </view>
+
+                <view class="baggage-item__content">
+                  <view class="baggage-item__title-row">
+                    <text class="baggage-item__title">{{bag.title}}</text>
+                    <text wx:if="{{bag.value}}" class="baggage-item__value">{{bag.value}}</text>
+                  </view>
+                  <text wx:if="{{ bag.subtitle }}" class="baggage-item__subtitle">{{bag.subtitle}}</text>
+                </view>
+              </view>
+
+              <view wx:if="{{bagIndex < route.items.length - 1}}" class="baggage-item__divider"></view>
+            </block>
+          </view>
+
+          <view wx:if="{{routeIndex < routeList.length - 1}}" class="baggage-route__separator"></view>
+        </view>
+      </block>
+    </view>
+  </view>
+</view>

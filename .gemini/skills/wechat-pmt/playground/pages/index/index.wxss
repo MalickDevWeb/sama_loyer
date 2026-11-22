@@ -1,0 +1,151 @@
+.container
+    padding:  32rpx;
+    box-sizing:  border-box;
+}
+.header
+    display:  flex;
+    align-items:  center;
+    justify-content:  space-between;
+    margin-bottom:  32rpx;
+}
+.header-left
+    display:  flex;
+    flex-direction:  column;
+}
+.app-badge
+    font-size:  20rpx;
+    font-weight:  700;
+    color:  #F16E00;
+    letter-spacing:  2rpx;
+    margin-bottom:  4rpx;
+}
+.app-title
+    font-size:  34rpx;
+    font-weight:  700;
+    color:  #1A1A1A;
+}
+.lang-switch
+    display:  flex;
+    background-color:  #EEEEEE;
+    border-radius:  9999rpx;
+    padding:  4rpx;
+}
+.lang-pill
+    padding:  8rpx 20rpx;
+    font-size:  22rpx;
+    font-weight:  600;
+    color:  #666666;
+    border-radius:  9999rpx;
+    transition:  all 0.2s ease;
+}
+.lang-pill.active
+    background-color:  #F16E00;
+    color:  #FFFFFF;
+}
+.section
+    margin-bottom:  32rpx;
+}
+.section-title
+    font-size:  26rpx;
+    font-weight:  600;
+    color:  #666666;
+    margin-bottom:  16rpx;
+    display:  block;
+}
+.state-buttons
+    display:  flex;
+    gap:  16rpx;
+}
+.state-btn
+    flex:  1;
+    height:  64rpx;
+    line-height:  64rpx;
+    font-size:  24rpx;
+    font-weight:  600;
+    border-radius:  12rpx;
+    background-color:  #FFFFFF;
+    border:  1rpx solid #EEEEEE;
+    color:  #666666;
+}
+.state-btn.active
+    background-color:  #1A1A1A;
+    color:  #FFFFFF;
+    border-color:  #1A1A1A;
+}
+/* Skeletons Shimmer Wave */ .skeleton-card
+    height:  120rpx;
+    margin-bottom:  16rpx;
+}
+/* Cartes Services */ .service-card
+    display:  flex;
+    align-items:  center;
+    background-color:  #FFFFFF;
+    padding:  24rpx;
+    border-radius:  16rpx;
+    border:  1rpx solid #EEEEEE;
+    margin-bottom:  16rpx;
+}
+.service-icon
+    font-size:  44rpx;
+    margin-right:  20rpx;
+}
+.service-info
+    display:  flex;
+    flex-direction:  column;
+}
+.service-name
+    font-size:  28rpx;
+    font-weight:  600;
+    color:  #1A1A1A;
+    margin-bottom:  6rpx;
+}
+.service-price
+    font-size:  24rpx;
+    color:  #F16E00;
+    font-weight:  700;
+}
+/* Empty State */ .empty-box
+    display:  flex;
+    flex-direction:  column;
+    align-items:  center;
+    justify-content:  center;
+    padding:  48rpx 0;
+    background-color:  #FFFFFF;
+    border-radius:  16rpx;
+    border:  1rpx dashed #CCCCCC;
+}
+.empty-icon
+    font-size:  56rpx;
+    margin-bottom:  12rpx;
+}
+.empty-text
+    font-size:  26rpx;
+    color:  #999999;
+}
+/* Outbox Box */ .outbox-section
+    background-color:  #FFFFFF;
+    border-radius:  20rpx;
+    padding:  28rpx;
+    border:  1rpx solid #EEEEEE;
+}
+.outbox-header
+    display:  flex;
+    align-items:  center;
+    justify-content:  space-between;
+    margin-bottom:  20rpx;
+}
+.outbox-badge
+    font-size:  22rpx;
+    font-weight:  600;
+    color:  #F16E00;
+    background-color:  #FFF3E8;
+    padding:  4rpx 16rpx;
+    border-radius:  9999rpx;
+}
+.flush-btn
+    margin-top:  16rpx;
+}
+.safe-area-spacer
+    height:  calc(32rpx + env(safe-area-inset-bottom,  32rpx));
+    width:  100%;
+}

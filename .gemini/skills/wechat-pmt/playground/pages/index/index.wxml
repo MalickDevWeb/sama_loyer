@@ -1,0 +1,80 @@
+<wxs src="../../utils/i18n/i18n.wxs" module="i18n" />
+
+<view class="container">
+  <!-- En-tête : Langues & Titre -->
+  <view class="header">
+    <view class="header-left">
+      <text class="app-badge">MAX IT DEMO</text>
+      <text class="app-title">{{ i18n.t('app.title', lang) }}</text>
+    </view>
+    <view class="lang-switch">
+      <view class="lang-pill {{ lang === 'fr' ? 'active' : '' }}" bindtap="changeLanguage" data-lang="fr">FR</view>
+      <view class="lang-pill {{ lang === 'wo' ? 'active' : '' }}" bindtap="changeLanguage" data-lang="wo">WO</view>
+      <view class="lang-pill {{ lang === 'en' ? 'active' : '' }}" bindtap="changeLanguage" data-lang="en">EN</view>
+    </view>
+  </view>
+
+  <!-- 1. Composant Signature Solde Orange Money -->
+  <view class="section">
+    <om-balance-pill balance="45250" currency="FCFA"/>
+  </view>
+
+  <!-- 2. Contrôles Machine à États (uiState) -->
+  <view class="section">
+    <text class="section-title">Contrôleur uiState :</text>
+    <view class="state-buttons">
+      <button class="state-btn {{ uiState === 'loading' ? 'active' : '' }}" bindtap="setUiState" data-state="loading">
+        Shimmer
+      </button>
+      <button class="state-btn {{ uiState === 'success' ? 'active' : '' }}" bindtap="setUiState" data-state="success">
+        Données
+      </button>
+      <button class="state-btn {{ uiState === 'empty' ? 'active' : '' }}" bindtap="setUiState" data-state="empty">
+        Vide
+      </button>
+    </view>
+  </view>
+
+  <!-- 3. Rendu Dynamique selon uiState -->
+  <view class="section">
+    <!-- Mode Chargement : Skeletons Shimmer Wave 60 FPS -->
+    <block wx:if="{{ uiState === 'loading' }}">
+      <view class="skeleton-card shimmer"></view>
+      <view class="skeleton-card shimmer"></view>
+    </block>
+
+    <!-- Mode Succès : Cartes Services Max It -->
+    <block wx:elif="{{ uiState === 'success' }}">
+      <view wx:for="{{ services }}" wx:key="id" class="service-card">
+        <view class="service-icon">{{ item.icon }}</view>
+        <view class="service-info">
+          <text class="service-name">{{ item.name }}</text>
+          <text class="service-price">{{ item.price }}</text>
+        </view>
+      </view>
+    </block>
+
+    <!-- Mode Vide : Empty State -->
+    <block wx:elif="{{ uiState === 'empty' }}">
+      <view class="empty-box">
+        <text class="empty-icon">📂</text>
+        <text class="empty-text">{{ i18n.t('state.empty', lang) }}</text>
+      </view>
+    </block>
+  </view>
+
+  <!-- 4. Test Outbox Hors-Ligne & Auto-Replay -->
+  <view class="section outbox-section">
+    <view class="outbox-header">
+      <text class="section-title">Outbox Pattern (Résilience 4G)</text>
+      <text class="outbox-badge">{{ pendingOutboxCount }} en attente</text>
+    </view>
+    <button class="ods-btn ods-btn--primary" hover-class="ods-btn--pressed" bindtap="testOfflineOutbox">{{ i18n.t('btn.offline_test', lang) }}</button>
+    <button wx:if="{{ pendingOutboxCount > 0 }}" class="ods-btn ods-btn--secondary flush-btn" bindtap="flushOutboxNow">
+      Synchroniser Manuellement
+    </button>
+  </view>
+
+  <!-- Espaceur physique Safe Area iPhone -->
+  <view class="safe-area-spacer"></view>
+</view>

@@ -1,0 +1,34 @@
+{
+  "name": "wechat-pmt-skills",
+  "version": "2.0.0",
+  "description": "Le Référentiel Industriel & Kit d'Architecture pour WeChat Mini-Program (PMT / TCMPP)",
+  "main": "scripts/skill-doctor.js",
+  "scripts": {
+    "lint": "node scripts/skill-doctor.js",
+    "doctor": "node scripts/skill-doctor.js",
+    "analyze": "node scripts/bundle-doctor.js",
+    "test:doctor": "node scripts/skill-doctor.js",
+    "test:generators": "node scripts/test-generators.js",
+    "test:bundle": "node scripts/bundle-doctor.js --self-test",
+    "test:harness": "node scripts/test-page-harness.js",
+    "test": "node scripts/skill-doctor.js && node scripts/test-generators.js && node scripts/bundle-doctor.js --self-test && node scripts/test-page-harness.js",
+    "create:page": "node scripts/create-page.js",
+    "create:component": "node scripts/create-component.js",
+    "create:api": "node scripts/create-api.js"
+  },
+  "keywords": [
+    "wechat",
+    "mini-program",
+    "tcmpp",
+    "maxit",
+    "orange-money",
+    "skills",
+    "architecture"
+  ],
+  "author": "Malick Dev Web",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MalickDevWeb/skills_wechat_pmt.git"
+  }
+}

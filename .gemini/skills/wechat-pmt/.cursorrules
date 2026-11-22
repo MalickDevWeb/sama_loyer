@@ -11,9 +11,23 @@ You MUST follow ALL rules in this document for every code change.
 
 | Mot-Clé dans le prompt | Comportement imposé |
 |---|---|
-| `@UI-MOCK` | Crée l'UI avec de fausses données. N'appelle AUCUNE API. |
-| `@API-CONNECT` | Connecte une page existante au backend (Mapper + Méthode API). |
-| `@FULL-FEATURE` | Crée l'UI ET l'API en même temps. Pas de données Mock. |
+| `@UI-MOCK` | Crée l'UI en mode Mock-First avec state machine (`uiState`), feedback tactile Apple Press (`hover-class="btn--pressed"`) et animations 60 FPS. Zéro appel API. |
+| `@SKELETON-UX` | Conçoit les skeletons shimmer wave (`components/ux/`), cartes fantômes, empty-states et error-boundaries. Isolation totale de `components/ui/`. |
+| `@RESPONSIVE-UI` | Dimensionnement iPhone physique : Safe Areas `env(safe-area-inset-bottom)`, suppression de `100vh` rigide, nav bar dynamique calculée sous l'encoche et custom tab bar officiel synchronisé. |
+| `@INTERACTIVE-UI` | Bottom-sheets avec backdrop blur et fermeture sécurisée (`catchtap="noop"`), et calendrier horizontal sans décalage de fuseau UTC avec gestion du délai `minDays`. |
+| `@IMAGE-MEDIA` | Composant image tout-terrain : auto-retry à 3 essais pour réseau 4G instable, cache local de timestamps, fallback d'erreur et zoom plein écran natif WeChat (`wx.previewImage`). |
+| `@STATE-ENGINE` | Gestion d'état industrielle : liaison déclarative sans fuite mémoire (`createPageHelpers`), Mixin `loadingBehavior` et cache Stale-While-Revalidate à 0 ms avec garde anti-race. |
+| `@SAFE-STORAGE` | Accès stockage sécurisé : contournement du piège natif de la chaîne vide WeChat, protection contre le dépassement du quota de 10 Mo et méthode atomique `getOrSet`. |
+| `@SAFE-NAV` | Sécurise la navigation contre le crash silencieux de la pile à 10 pages (`navigateToSafe`), anti-double clic (`withLock`) et retour intelligent vers Home si historique vide. |
+| `@API-CONNECT` | Connecte l'écran au backend via le workflow strict en 4 étapes (Endpoint, Schema json-sculpt, Méthode BackendAPI, UI), auth OAuth2 avec buffer de sécurité de 60s et erreurs typées. |
+| `@NATIVE-PAY` | Déploie le paiement marchand natif avec bouclier bancaire `_confirmedTxnid` (garantie 0% double débit), Smart Polling 4G et gestion des statuts incertains (`err.uncertain`). |
+| `@MAXIT-SDK` | Intègre le SDK officiel `@sonatel-os/maxit-mini-sdk` : profil sans écran de login (`user()`), contacts, scan caméra seule anti-fraude et protection anti-capture d'écran (`screen.protect`). |
+| `@ANALYTICS-TRACK` | Suivi d'audience et de conversion conforme Sonatel/Orange : traçage des écrans (`page_view`), clics CTA, tunnel de réservation et paiements avec file d'attente hors-ligne. |
+| `@DARK-MODE` | Support du mode sombre natif WeChat (`theme.json`), variables CSS sémantiques adaptatives et respect des normes de contraste WCAG AA. |
+| `@COMPILER-SAFE` | Élimine les pièges de compilation fatals : zéro BOM UTF-8 (`\uFEFF`), zéro `@font-face` local, clauses de garde obligatoires dans `onLoad` avec retour automatique. |
+| `@TUNNEL-COMPLEXE` | Orchestre les entonnoirs multi-écrans : générateur PDF vectoriel natif 0 dépendance (%PDF-1.4), plan de sièges GDS 15 champs, rendu par lots de 20 (batching anti-freeze IPC) et décomposition tarifaire certifiée. |
+| `@SUPPORT-WHATSAPP` | Déploie le pont hybride support client (WhatsApp Business, Téléphone vocal, E-mail) : modale in-app anti-écran noir pour simulateur DevTools, appui long (`show-menu-by-longpress`) et ActionSheet multi-canaux. |
+| `@DECOMPOSE-METHODS` | Découpe les tunnels complexes monolithiques (> 35 lignes) en 6 sous-méthodes atomiques (Pattern Kalidou) avec gestion error.uncertain et helpers de page. |
 
 ---
 
@@ -156,3 +170,87 @@ async loadData() {
 
 JAMAIS de texte en dur dans `.wxml` ou `.js`.
 Toujours utiliser les clés de traduction : `{{ t('ma.cle') }}`
+
+---
+
+## RÈGLE 4 — Paiement Marchand Natif & Anti-Double Débit (`merchantPay`)
+
+1. **Bouclier Bancaire (`this._confirmedTxnid`) :** Dès que `wx.invokeNativePlugin('merchantPay')` retourne un succès, scelle immédiatement `this._confirmedTxnid = txnid`.
+2. **Idempotence :** En cas d'erreur de confirmation backend, toute relance de la fonction de paiement vérifie d'abord `if (this._confirmedTxnid)` pour sauter intégralement le débit bancaire. Zéro double débit.
+3. **Zéro Timeout JS :** Ne place JAMAIS de `Promise.race` ou de timeout de 30s sur le plugin natif.
+4. **Smart Polling :** Effectue 3 tentatives silencieuses avec backoff (0s, 2s, 4s) avant d'afficher un dialogue de retry utilisateur.
+
+---
+
+## RÈGLE 5 — Responsive iPhone Réel & Custom TabBar
+
+1. **Safe Area Bas :** Tout élément fixé en bas (`position: fixed; bottom: 0;`) DOIT avoir `padding-bottom: calc(XXrpx + env(safe-area-inset-bottom));`.
+2. **Bannir `height: 100vh; overflow: hidden;` :** Utilise toujours `min-height: 100vh;` pour permettre le défilement naturel sur les écrans à encoche et Dynamic Island.
+3. **Capsule WeChat :** Calcule dynamiquement la géométrie de la barre de navigation via `wx.getMenuButtonBoundingClientRect()`.
+4. **Custom TabBar Sans Clignotement :** Dans le `onShow()` de chaque page d'onglet, appelle obligatoirement :
+   ```javascript
+   if (typeof this.getTabBar === 'function' && this.getTabBar()) {
+     this.getTabBar().setData({ selected: MON_INDEX });
+   }
+   ```
+
+---
+
+## RÈGLE 6 — Navigation Sécurisée & Behaviors
+
+1. **Limite des 10 pages :** Utilise toujours `navigateToSafe()` pour basculer sur `redirectTo` dès que la pile atteint 10 pages.
+2. **Anti-Double Clic :** Verrouille la navigation pendant 500ms pour éviter les doubles ouvertures d'écran.
+3. **Behaviors :** Partage la logique asynchrone (`isLoading`, `hasError`, `withLoading`) via `Behavior({ ... })` au lieu de dupliquer du code.
+
+---
+
+## RÈGLE 7 — SDK Officiel Max It (@sonatel-os/maxit-mini-sdk)
+
+1. **Façade Unique :** Privilégie `miniSDK` pour les interactions hôte (identité, login, paiement, contacts, scan, deeplink).
+2. **Paiement Incertain (`uncertain: true`) :** Si une erreur de paiement porte `err.uncertain === true`, l'argent a pu être prélevé. Ne redemande jamais de payer immédiatement.
+3. **Protection d'Écran Obligatoire :** Tout `miniSDK.screen.protect(true)` doit obligatoirement avoir son `miniSDK.screen.protect(false)` dans `onHide` et `onUnload`.
+4. **DevTools :** Configure `simulate: isDev` au démarrage dans `app.js`.
+
+---
+
+## RÈGLE 8 — Compilateur TCMPP & Robustesse
+
+1. **Bannir les polices locales dans WXSS :** Utilise toujours les polices système pour éviter l'erreur 404 `-do-not-use-local-path-`.
+2. **Pas de BOM UTF-8 :** Enregistre en UTF-8 sans BOM.
+3. **Retour Intelligent :** Toujours vérifier `getCurrentPages().length > 1` avant `navigateBack()`, sinon basculer vers `switchTab('/pages/home/home')`.
+4. **Guards d'arguments dans onLoad :** Vérifie toujours la présence de l'ID obligatoire.
+
+---
+
+## RÈGLE 9 — Animations & Feedback Tactile au Clic
+
+1. **Feedback Tactile :** N'utilise JAMAIS `:active`. Utilise toujours `hover-class="btn--pressed"` avec `transform: scale(0.96); opacity: 0.85;`.
+2. **Entrée de Page Fluide :** Ajoute la classe `.page-enter` sur le conteneur principal de la page (`cubic-bezier(0.22, 1, 0.36, 1)`).
+3. **Animations Séquentielles :** Utilise `wx.createAnimation()` pour les séquences de succès / pop avec docking.
+
+---
+
+## RÈGLE 10 — Support Client WhatsApp & Modale Anti-Black-Screen
+
+1. **Pas de `wx.previewImage` sur chemins relatifs locaux :** Sur WeChat DevTools PC, `wx.previewImage({ urls: ['/assets/...'] })` bloque sur un écran noir infini. Utilise toujours une modale in-app (`<whatsapp-modal>` ou `<osn-modal>`).
+2. **Appui Long Natif Obligatoire :** Place toujours `show-menu-by-longpress="{{ true }}"` sur la balise `<image>` du QR Code pour que l'utilisateur mobile puisse déclencher l'action "Identifier le code QR" sans matériel externe.
+3. **ActionSheet Hybride Multi-Canaux :** Offre 3 options résilientes : 📷 Afficher QR Code, 📋 Copier lien direct (avec `wa.me/message/...` ou message pré-rempli `?text=...`), 📞 Appel vocal direct `wx.makePhoneCall`.
+4. **Retour Haptique & Feedback :** Tout événement de copie presse-papier doit appeler `wx.vibrateShort({ type: 'medium' })` et un toast de confirmation.
+
+---
+
+## RÈGLE 11 — Découpage Strict des Tunnels Monolithiques (Pattern Kalidou)
+
+1. **Bannir les fonctions monolithiques > 35 lignes :** Ne jamais mélanger préparation, calcul, appel SDK, confirmation et gestion d'erreur dans une seule fonction géante.
+2. **Architecture Standardisée en 6 Méthodes :**
+   - `handlePayAction()` / `handleMainAction()` : Orchestrateur pur protégé par verrou `_isBusy` / `_isPaying` avec `try / catch / finally`.
+   - `preparePaymentContext(item)` : Validation de l'objet et initialisation de la transaction backend.
+   - `getPaymentAmount(item)` : Calcul pur sans effets de bord.
+   - `processNativePayment(context)` : Appel direct au SDK officiel (`miniSDK.merchantPay`).
+   - `openSimulatedPayment(context)` : Fallback automatique simulateur DevTools.
+   - `confirmPaymentReceipt(payment)` : Confirmation backend avec étiquette `apiError.uncertain = true` en cas de timeout post-débit.
+   - `handlePaymentFailure(error)` : Centralisation bienveillante des erreurs et annulations.
+3. **Protection Mémoire Écran Obligatoire :** Tout appel à `setScreenProtection(sdk, true)` doit être annulé avec `setScreenProtection(sdk, false)` dans `onHide` et `onUnload`.
+4. **Gestion Déclarative de la TabBar :** Utiliser `setPageTabBarHidden(page, hidden)` pour éviter les scintillements visuels lors de l'ouverture de modales ou tiroirs plein écran.
+
+

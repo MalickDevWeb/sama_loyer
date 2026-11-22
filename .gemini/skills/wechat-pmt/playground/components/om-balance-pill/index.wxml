@@ -1,0 +1,30 @@
+<view class="om-pill">
+  <view class="om-pill__brand">
+    <view class="om-pill__dot"></view>
+    <text class="om-pill__title">Orange Money</text>
+  </view>
+
+  <view class="om-pill__body">
+    <view class="om-pill__amount-wrapper" bindtap="toggleMask">
+      <block wx:if="{{ isMasked }}">
+        <text class="om-pill__amount om-pill__amount--masked">•••••• {{ currency }}</text>
+      </block>
+      <block wx:else>
+        <text class="om-pill__amount">{{ balance }}{{ currency }}</text>
+      </block>
+      <view class="om-pill__eye-btn">
+        <text class="om-pill__eye-icon">{{ isMasked ? '👁️' : '🔒' }}</text>
+      </view>
+    </view>
+
+    <view class="om-pill__refresh-btn {{ isRefreshing ? 'om-pill__refresh-btn--spinning' : '' }}" bindtap="onRefresh">
+      <text class="om-pill__refresh-icon">🔄</text>
+    </view>
+  </view>
+
+  <view class="om-pill__footer">
+    <button class="om-pill__action-btn" hover-class="om-pill__action-btn--pressed" bindtap="onTopup">
+      Recharger
+    </button>
+  </view>
+</view>

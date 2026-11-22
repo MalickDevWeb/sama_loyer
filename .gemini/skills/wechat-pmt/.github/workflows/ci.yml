@@ -1,0 +1,24 @@
+name: Validation du Skill WeChat PMT
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  validate:
+    name: Audit de Santé, Zéro BOM & Test des Générateurs
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Récupération du code
+        uses: actions/checkout@v4
+
+      - name: Configuration de Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Exécution des Tests Automatiques
+        run: npm test

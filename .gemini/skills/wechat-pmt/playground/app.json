@@ -1,0 +1,15 @@
+{
+  "pages": [
+    "pages/index/index"
+  ],
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#F16E00",
+    "navigationBarTitleText": "Sonatel PMT Showcase",
+    "navigationBarTextStyle": "white",
+    "backgroundColor": "#F6F6F6"
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json"
+}
+

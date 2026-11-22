@@ -1,0 +1,164 @@
+/* ============================================================================
+   WHATSAPP MODAL — ODS COMPLIANT & ANTI-BLACK-SCREEN DEVTOOLS
+   ============================================================================ */
+
+.wa-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  animation: waFadeIn 0.22s ease-out both;
+}
+
+@keyframes waFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.wa-modal-card {
+  width: 86%;
+  max-width: 620rpx;
+  background: #ffffff;
+  border-radius: 32rpx;
+  overflow: hidden;
+  box-shadow: 0 20rpx 60rpx rgba(0, 0, 0, 0.22);
+  animation: waScaleUp 0.28s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes waScaleUp {
+  from {
+    opacity: 0;
+    transform: scale(0.92) translateY(30rpx);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.wa-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 28rpx 32rpx;
+  border-bottom: 1rpx solid #f2f4f7;
+}
+
+.wa-modal-title-row {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+}
+
+.wa-modal-brand-badge {
+  background: #25d366;
+  color: #ffffff;
+  font-size: 20rpx;
+  font-weight: 700;
+  padding: 4rpx 14rpx;
+  border-radius: 999rpx;
+  letter-spacing: 0.5rpx;
+}
+
+.wa-modal-title {
+  font-size: 28rpx;
+  font-weight: 700;
+  color: #101828;
+}
+
+.wa-modal-close-btn {
+  width: 56rpx;
+  height: 56rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: #f8fafc;
+}
+
+.wa-modal-close-icon {
+  font-size: 26rpx;
+  color: #667085;
+}
+
+.wa-modal-body {
+  padding: 32rpx 32rpx 20rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.wa-modal-qr-frame {
+  width: 100%;
+  max-width: 480rpx;
+  border-radius: 20rpx;
+  overflow: hidden;
+  border: 1rpx solid #eaecf0;
+  background: #000000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.wa-modal-qr-img {
+  width: 100%;
+  max-height: 620rpx;
+  display: block;
+}
+
+.wa-modal-hint {
+  margin-top: 20rpx;
+  font-size: 23rpx;
+  color: #667085;
+  text-align: center;
+  line-height: 1.4;
+}
+
+.wa-modal-footer {
+  padding: 24rpx 32rpx 32rpx;
+  display: flex;
+  gap: 16rpx;
+  border-top: 1rpx solid #f2f4f7;
+}
+
+.wa-modal-btn {
+  flex: 1;
+  height: 84rpx;
+  border-radius: 999rpx;
+  font-size: 26rpx;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  outline: none;
+  margin: 0;
+  padding: 0 20rpx;
+}
+
+.wa-modal-btn::after {
+  border: none;
+}
+
+.wa-modal-btn--secondary {
+  background: #f2f4f7;
+  color: #344054;
+}
+
+.wa-modal-btn--primary {
+  background: #ff6600;
+  color: #ffffff;
+}
+
+.wa-modal-btn--pressed {
+  opacity: 0.85;
+  transform: scale(0.98);
+}
