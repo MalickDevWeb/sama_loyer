@@ -1,0 +1,37 @@
+<view wx:if="{{ visible }}" class="wa-modal-overlay" bindtap="handleOverlayTap">
+  <view class="wa-modal-card" catchtap="preventClose">
+    <!-- Header -->
+    <view class="wa-modal-header">
+      <view class="wa-modal-title-row">
+        <text class="wa-modal-brand-badge">WhatsApp</text>
+        <text class="wa-modal-title">{{ title }}</text>
+      </view>
+      <view class="wa-modal-close-btn" bindtap="handleClose">
+        <text class="wa-modal-close-icon">✕</text>
+      </view>
+    </view>
+
+    <!-- Body : QR Code Image with Native Long-Press Scan -->
+    <view class="wa-modal-body">
+      <view class="wa-modal-qr-frame">
+        <image
+          class="wa-modal-qr-img"
+          src="{{ qrImage }}"
+          mode="widthFix"
+          show-menu-by-longpress="{{ true }}"
+        />
+      </view>
+      <text class="wa-modal-hint">{{ hintText }}</text>
+    </view>
+
+    <!-- Footer Actions -->
+    <view class="wa-modal-footer">
+      <button class="wa-modal-btn wa-modal-btn--secondary" hover-class="wa-modal-btn--pressed" bindtap="handleCopyLink">
+        Copier le lien direct
+      </button>
+      <button class="wa-modal-btn wa-modal-btn--primary" hover-class="wa-modal-btn--pressed" bindtap="handleClose">
+        Fermer
+      </button>
+    </view>
+  </view>
+</view>

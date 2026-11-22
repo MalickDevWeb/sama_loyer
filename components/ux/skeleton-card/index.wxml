@@ -1,0 +1,15 @@
+<view wx:if="{{ loading }}" class="skeleton-card-wrap">
+  <block wx:for="{{ count }}" wx:key="index">
+    <view class="skeleton-card">
+      <view class="skeleton-img shimmer"></view>
+      <view class="skeleton-body">
+        <view class="skeleton-line skeleton-title shimmer"></view>
+        <view class="skeleton-line skeleton-sub shimmer"></view>
+        <view class="skeleton-row">
+          <view class="skeleton-badge shimmer"></view>
+          <view class="skeleton-price shimmer"></view>
+        </view>
+      </view>
+    </view>
+  </block>
+</view>
