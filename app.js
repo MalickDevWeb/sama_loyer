@@ -277,5 +277,8 @@ App({
 
     /** Event names for convenience */
     EVENTS,
+
+    /** Navigation history stack */
+    navHistory: [],
   },
 });

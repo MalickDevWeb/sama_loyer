@@ -96,7 +96,10 @@ Component({
 
         const app = getApp();
         if (app) {
-          if (!app.globalData.navHistory) {
+          if (!app.globalData) {
+            app.globalData = {};
+          }
+          if (!Array.isArray(app.globalData.navHistory)) {
             app.globalData.navHistory = [];
           }
           

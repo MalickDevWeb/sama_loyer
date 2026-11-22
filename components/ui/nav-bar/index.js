@@ -69,7 +69,7 @@ Component({
       }
 
       const app = getApp();
-      if (app && app.globalData.navHistory && app.globalData.navHistory.length > 0) {
+      if (app && app.globalData && Array.isArray(app.globalData.navHistory) && app.globalData.navHistory.length > 0) {
         const prevUrl = app.globalData.navHistory.pop();
 
         if (isTabBarUrl(prevUrl)) {
