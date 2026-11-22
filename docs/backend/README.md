@@ -8,6 +8,7 @@ Ce dossier est la référence partagée entre l'équipe mini-programme, l'équip
 | [schema.sql](schema.sql) | Schéma PostgreSQL 15+ exécutable (types, contraintes, index, données initiales) | Backend |
 | [02-contrat-api.md](02-contrat-api.md) | Conventions (enveloppe, erreurs, idempotence), catalogue des endpoints, flux détaillés, écarts à corriger côté front | Tous |
 | [openapi.yaml](openapi.yaml) | Spécification OpenAPI 3.1 complète (81 opérations) | Backend (génération de code), front (types), QA (tests) |
+| [rust-architecture/](rust-architecture/README.md) | **Guide d'architecture & implémentation en Rust (Clean Architecture, Axum, Tokio, SQLx, Redis)** découpé par modules : Shared, Client, Bailleur | Équipe Backend Rust |
 
 ## Périmètre
 
