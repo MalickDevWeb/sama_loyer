@@ -17,6 +17,7 @@ L'architecture retenue est une **Clean Architecture / Architecture Hexagonale (D
 | **[01. Module Shared (Transverse)](01-module-shared.md)** | Authentification Max It (OAuth / JWT), Idempotence, Webhooks HMAC Orange Money, Uploads de documents (COS), Gestion unifiée des erreurs, Audit et **matrice complète des contraintes par endpoint**. | Infrastructure, Sécurité, Paiements |
 | **[02. Module Client (Locataire)](02-module-client.md)** | Recherche de logements, Moteur de Colocation Progressive (verrou 15 min, genres stricts, rachat solo 100%), Visites, Messagerie, Loyers, Quittances et **matrice complète des contraintes par endpoint**. | Équipe Produit Locataire |
 | **[03. Module Bailleur](03-module-bailleur.md)** | Gestion des annonces, Souscription Pro (30j d'essai), Validation des créneaux de visite, Encaissement espèces (Cash payments), Gestion locative et **matrice complète des contraintes par endpoint**. | Équipe Produit Bailleur |
+| **[04. Spécification Exhaustive : Tables & Fichiers](04-specification-complete-fichiers-et-tables.md)** | **Bible d'implémentation** : 30+ tables détaillées (colonnes, types SQL & Rust, clés étrangères, index partiels, héritage) et arborescence exhaustive de tous les fichiers Rust à créer. | Tous les développeurs Backend Rust |
 
 ---
 
