@@ -1,0 +1,59 @@
+<app-modal visible="{{ visible }}" placement="bottom" size="full" overlayOpacity="0.55" hasContent="{{ true }}" bind:close="handleCancel">
+  <view slot="content" class="maxit-sheet">
+    <!-- Titre officiel Max It -->
+    <text class="maxit-sheet__title">Paiement marchand</text>
+
+    <!-- 1. Carte Marchand (Nom + Code marchand Orange) -->
+    <view class="maxit-box maxit-box--merchant">
+      <view class="maxit-box__icon-wrap">
+        <image class="maxit-icon maxit-icon--user" src="/assets/icons/maxit-user.svg" mode="aspectFit" aria-hidden="true"/>
+      </view>
+      <view class="maxit-merchant">
+        <text class="maxit-merchant__name">{{ receiverName }}</text>
+        <text class="maxit-merchant__code">{{ receiver }}</text>
+      </view>
+    </view>
+
+    <!-- 2. Carte Total (Globe + Total + Montant Orange) -->
+    <view class="maxit-box maxit-box--total">
+      <view class="maxit-total-left">
+        <image class="maxit-icon maxit-icon--globe" src="/assets/icons/maxit-globe.svg" mode="aspectFit" aria-hidden="true"/>
+        <text class="maxit-total-label">Total</text>
+      </view>
+      <text class="maxit-total-amount">{{ formattedAmount }} F</text>
+    </view>
+
+    <!-- 3. Carte Compte principal (Solde + Pastille Orange avec coche) -->
+    <view class="maxit-account-card {{ isInsufficient ? 'maxit-account-card--insufficient' : '' }}">
+      <view class="maxit-account-row">
+        <text class="maxit-account-label">Compte principal</text>
+        <view class="maxit-account-right">
+          <text class="maxit-account-balance">{{ currentBalance }} F</text>
+          <image class="maxit-icon maxit-icon--check" src="/assets/icons/maxit-check-orange.svg" mode="aspectFit" aria-hidden="true"/>
+        </view>
+      </view>
+
+      <!-- Message d'alerte rouge : Votre solde est insuffisant -->
+      <view wx:if="{{ isInsufficient }}" class="maxit-insufficient-msg">
+        <text class="maxit-insufficient-text">Votre solde est insuffisant</text>
+      </view>
+    </view>
+
+    <!-- 4. Deux boutons d'action côte-à-côte : Quitter / Valider -->
+    <view class="maxit-actions-row">
+      <button class="maxit-btn maxit-btn--cancel" hover-class="maxit-btn--cancel-pressed" aria-role="button" aria-label="Quitter" bind:tap="handleCancel">
+        Quitter
+      </button>
+      <button class="maxit-btn {{ isInsufficient ? 'maxit-btn--disabled' : 'maxit-btn--confirm' }}" hover-class="{{ isInsufficient ? '' : 'maxit-btn--confirm-pressed' }}" aria-role="button" aria-label="Valider" bind:tap="handleConfirm">
+        Valider
+      </button>
+    </view>
+
+    <!-- Outil QA discret pour basculer entre solde suffisant et la reproduction exacte de la capture -->
+    <view class="maxit-qa-bar">
+      <text class="maxit-qa-toggle" bind:tap="toggleScenario">
+        {{ isInsufficient ? '↩ Mode normal (solde suffisant)' : '⚙ Simuler solde insuffisant (comme sur la capture)' }}
+      </text>
+    </view>
+  </view>
+</app-modal>

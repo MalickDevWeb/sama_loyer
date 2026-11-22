@@ -1,0 +1,7 @@
+{
+  "component": true,
+  "usingComponents": {
+    "app-modal": "/components/ui/modal/index"
+  }
+}
+
