@@ -1,4 +1,4 @@
-page
+page {
     /* Tokens de Marque Orange Sonatel */ --ods-orange-primary:  #F16E00;
     --ods-orange-vibrant:  #FF7900;
     --ods-orange-light:  #FFF3E8;
@@ -17,7 +17,8 @@ page
     font-family:  -apple-system,  BlinkMacSystemFont,  "Segoe UI",  Roboto,  "Helvetica Neue",  Arial,  sans-serif;
     box-sizing:  border-box;
 }
-/* Boutons Standards Orange Sonatel */ .ods-btn
+/* Boutons Standards Orange Sonatel */
+.ods-btn {
     display:  flex;
     align-items:  center;
     justify-content:  center;
@@ -29,32 +30,33 @@ page
     border:  none;
     box-sizing:  border-box;
 }
-.ods-btn--primary
+.ods-btn--primary {
     background-color:  #F16E00;
     color:  #FFFFFF;
     box-shadow:  0 8rpx 24rpx rgba(241,  110,  0,  0.28);
 }
-.ods-btn--pressed
+.ods-btn--pressed {
     transform:  scale(0.98);
     background-color:  #D96300;
     opacity:  0.92;
 }
-.ods-btn--secondary
+.ods-btn--secondary {
     background-color:  #FFFFFF;
     color:  #000000;
     border:  2rpx solid #000000;
 }
-/* Animation Shimmer Universelle 60 FPS */ .shimmer
+/* Animation Shimmer Universelle 60 FPS */
+.shimmer {
     background:  linear-gradient(90deg,  #EEEEEE 25%,  #F6F6F6 50%,  #EEEEEE 75%);
     background-size:  200% 100%;
     animation:  shimmerWave 1.5s infinite;
     border-radius:  16rpx;
 }
-@keyframes shimmerWave
-    0%
+@keyframes shimmerWave {
+    0% {
         background-position:  200% 0;
     }
-    100%
+    100% {
         background-position:  -200% 0;
     }
 }

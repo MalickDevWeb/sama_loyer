@@ -1,4 +1,4 @@
-.om-pill
+.om-pill {
     display:  flex;
     flex-direction:  column;
     background-color:  #FFFFFF;
@@ -8,50 +8,50 @@
     border:  1rpx solid #EEEEEE;
     box-sizing:  border-box;
 }
-.om-pill__brand
+.om-pill__brand {
     display:  flex;
     align-items:  center;
     margin-bottom:  12rpx;
 }
-.om-pill__dot
+.om-pill__dot {
     width:  14rpx;
     height:  14rpx;
     background-color:  #F16E00;
     border-radius:  9999rpx;
     margin-right:  12rpx;
 }
-.om-pill__title
+.om-pill__title {
     font-size:  22rpx;
     font-weight:  600;
     color:  #666666;
     text-transform:  uppercase;
     letter-spacing:  1rpx;
 }
-.om-pill__body
+.om-pill__body {
     display:  flex;
     align-items:  center;
     justify-content:  space-between;
     margin-bottom:  16rpx;
 }
-.om-pill__amount-wrapper
+.om-pill__amount-wrapper {
     display:  flex;
     align-items:  center;
 }
-.om-pill__amount
+.om-pill__amount {
     font-size:  38rpx;
     font-weight:  700;
     color:  #1A1A1A;
     margin-right:  14rpx;
 }
-.om-pill__amount--masked
+.om-pill__amount--masked {
     letter-spacing:  2rpx;
     color:  #666666;
 }
-.om-pill__eye-btn
+.om-pill__eye-btn {
     padding:  4rpx 8rpx;
     font-size:  24rpx;
 }
-.om-pill__refresh-btn
+.om-pill__refresh-btn {
     display:  flex;
     align-items:  center;
     justify-content:  center;
@@ -61,25 +61,25 @@
     background-color:  #F6F6F6;
     transition:  transform 0.3s ease;
 }
-.om-pill__refresh-btn--spinning
+.om-pill__refresh-btn--spinning {
     animation:  omSpin 0.8s linear infinite;
 }
-@keyframes omSpin
-    from
+@keyframes omSpin {
+    from {
         transform:  rotate(0deg);
     }
-    to
+    to {
         transform:  rotate(360deg);
     }
 }
-.om-pill__refresh-icon
+.om-pill__refresh-icon {
     font-size:  24rpx;
 }
-.om-pill__footer
+.om-pill__footer {
     display:  flex;
     justify-content:  flex-end;
 }
-.om-pill__action-btn
+.om-pill__action-btn {
     margin:  0;
     padding:  0 28rpx;
     height:  52rpx;
@@ -91,7 +91,7 @@
     border-radius:  9999rpx;
     border:  none;
 }
-.om-pill__action-btn--pressed
+.om-pill__action-btn--pressed {
     opacity:  0.8;
     transform:  scale(0.96);
 }
