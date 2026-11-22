@@ -154,6 +154,9 @@ CREATE TABLE logements (
   availability_confirmed_at  TIMESTAMPTZ,             -- « Confirmé il y a 2 jours »
   published_at               TIMESTAMPTZ,
   views_count                INT NOT NULL DEFAULT 0,
+  is_coloc                   BOOLEAN NOT NULL DEFAULT FALSE, -- colocation progressive
+  total_places               SMALLINT NOT NULL DEFAULT 1 CHECK (total_places BETWEEN 1 AND 10),
+  gender_policy              TEXT CHECK (gender_policy IN ('HOMMES_UNIQUEMENT', 'FEMMES_UNIQUEMENT', 'COUPLES_UNIQUEMENT')),
   created_at                 TIMESTAMPTZ NOT NULL DEFAULT now(),
   updated_at                 TIMESTAMPTZ NOT NULL DEFAULT now(),
   deleted_at                 TIMESTAMPTZ
@@ -161,6 +164,20 @@ CREATE TABLE logements (
 CREATE INDEX idx_logements_search  ON logements (status, zone_id, rent_amount) WHERE deleted_at IS NULL;
 CREATE INDEX idx_logements_bailleur ON logements (bailleur_id) WHERE deleted_at IS NULL;
 CREATE INDEX idx_logements_title_trgm ON logements USING gin (title gin_trgm_ops);
+
+-- Gestion fine des lits/places de colocation (verrous atomiques 15 min)
+CREATE TABLE coloc_places (
+  id                         UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  logement_id                UUID NOT NULL REFERENCES logements(id) ON DELETE CASCADE,
+  place_number               SMALLINT NOT NULL CHECK (place_number BETWEEN 1 AND 10),
+  occupant_id                UUID REFERENCES users(id),
+  locked_by                  UUID REFERENCES users(id),
+  locked_until               TIMESTAMPTZ,
+  created_at                 TIMESTAMPTZ NOT NULL DEFAULT now(),
+  updated_at                 TIMESTAMPTZ NOT NULL DEFAULT now(),
+  UNIQUE (logement_id, place_number)
+);
+CREATE INDEX idx_coloc_places_logement ON coloc_places (logement_id);
 
 CREATE TABLE logement_media (
   id           UUID PRIMARY KEY DEFAULT gen_random_uuid(),

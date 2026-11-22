@@ -599,7 +599,7 @@ pub struct CreateAnnonceRequest {
     )]
     pub description: String,
 
-    pub zone_id: Uuid,
+    pub zone_id: String, // ID mnémonique de zone ex: "ouakam", "almadies", "plateau"
 
     pub logement_type: String, // "chambre", "studio", "appartement", "villa"
 
@@ -746,12 +746,12 @@ pub async fn execute_solo_privatization_tx(
     // 2. Récupération des colocataires ayant déjà versé un acompte
     let other_tenants = sqlx::query!(
         r#"
-        SELECT p.user_id, p.amount 
+        SELECT p.payer_id, p.amount 
         FROM payments p
         JOIN echeances e ON p.echeance_id = e.id
         JOIN contrats c ON e.contrat_id = c.id
         WHERE c.logement_id = $1 
-          AND p.user_id != $2 
+          AND p.payer_id != $2 
           AND p.status = 'succeeded'
         "#,
         logement_id,
@@ -771,7 +771,7 @@ pub async fn execute_solo_privatization_tx(
             VALUES ($1, 'sms', (SELECT phone FROM users WHERE id = $2), $3, 'pending', NOW())
             "#,
             Uuid::new_v4(),
-            tenant.user_id,
+            tenant.payer_id,
             serde_json::json!({
                 "message_fr": "Votre acompte de colocation a été intégralement remboursé à 100% suite à la privatisation de la chambre.",
                 "message_wo": "Xaalis bi nga feyoon ci néeg bi dagnu la ko dellu 100% ndax kenn nit a ko jël."
@@ -781,7 +781,7 @@ pub async fn execute_solo_privatization_tx(
         .await
         .map_err(|e| anyhow::anyhow!(e))?;
 
-        refunded_users.push(tenant.user_id);
+        refunded_users.push(tenant.payer_id);
     }
 
     // 4. Bascule du logement en occupation solo privée
@@ -811,3 +811,4 @@ Quand une IA génère le code Rust sur cette base :
 2. **Types d'argent stricts** : Tout montant est manipulé sous forme de `i64` en FCFA, jamais de flottant (`f32` ou `f64`).
 3. **Compilation vérifiée par `sqlx`** : Utiliser la macro `query!` ou `query_as!` pour que le compilateur Rust teste chaque requête contre PostgreSQL.
 4. **Idempotence systématique** : Sur chaque route de modification financière, extraire l'en-tête `Idempotency-Key` et vérifier l'absence de rejouement.
+

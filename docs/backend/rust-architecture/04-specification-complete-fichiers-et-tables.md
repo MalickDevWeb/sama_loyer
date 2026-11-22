@@ -138,14 +138,14 @@ Ce document constitue la **bible d'implémentation absolue** du backend SAMA LOY
 ## 2. Module Client (Locataire, Catalogue, Colocation & Baux)
 
 ### Table 2.1 : `zones` & Table 2.2 : `zone_neighbours` (Référentiel Territorial)
-- **`zones`** : `id UUID PRIMARY KEY`, `code TEXT UNIQUE`, `name TEXT NOT NULL`, `city TEXT DEFAULT 'Dakar'`, `latitude DOUBLE PRECISION`, `longitude DOUBLE PRECISION`.
-- **`zone_neighbours`** : `(zone_id UUID, neighbour_zone_id UUID) PRIMARY KEY` (pour élargir la recherche géographique aux quartiers adjacents).
+- **`zones`** : `id TEXT PRIMARY KEY` (code mnémonique ex: `'ouakam'`, `'almadies'`, `'mermoz'`), `code TEXT UNIQUE`, `name TEXT NOT NULL`, `city TEXT DEFAULT 'Dakar'`, `latitude DOUBLE PRECISION`, `longitude DOUBLE PRECISION`.
+- **`zone_neighbours`** : `(zone_id TEXT REFERENCES zones(id), neighbour_zone_id TEXT REFERENCES zones(id)) PRIMARY KEY`.
 
 ---
 
 ### Table 2.3 : `amenities` & Table 2.4 : `logement_amenities` (Équipements)
-- **`amenities`** : `id UUID PRIMARY KEY`, `code TEXT UNIQUE`, `label_fr TEXT`, `label_wo TEXT` (libellé en wolof), `icon_url TEXT`.
-- **`logement_amenities`** : `(logement_id UUID, amenity_id UUID) PRIMARY KEY`.
+- **`amenities`** : `id TEXT PRIMARY KEY`, `code TEXT UNIQUE`, `label_fr TEXT`, `label_wo TEXT` (libellé en wolof), `icon_url TEXT`.
+- **`logement_amenities`** : `(logement_id UUID REFERENCES logements(id), amenity_id TEXT REFERENCES amenities(id)) PRIMARY KEY`.
 
 ---
 
@@ -156,22 +156,40 @@ Ce document constitue la **bible d'implémentation absolue** du backend SAMA LOY
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | `id` | `UUID` | `uuid::Uuid` | Non | `PRIMARY KEY DEFAULT gen_random_uuid()` | ID du logement. |
 | `bailleur_id` | `UUID` | `uuid::Uuid` | Non | `REFERENCES bailleur_profiles(user_id) ON DELETE RESTRICT` | Propriétaire bailleur. |
-| `zone_id` | `UUID` | `uuid::Uuid` | Non | `REFERENCES zones(id) ON DELETE RESTRICT` | Zone/Quartier. |
+| `zone_id` | `TEXT` | `String` | Non | `REFERENCES zones(id) ON DELETE RESTRICT` | Quartier (ex: `'ouakam'`). |
 | `type` | `logement_type` | `enum LogementType` | Non | `'chambre'`, `'studio'`, etc. | Typologie architecturale. |
-| `title` | `TEXT` | `String` | Non | 5 à 120 caractères | Titre de l'annonce. |
-| `description` | `TEXT` | `String` | Non | Sans numéros de téléphone | Description détaillée. |
-| `rent_amount` | `BIGINT` | `i64` | Non | `CHECK (rent_amount >= 10000)` | Loyer mensuel en XOF (sans centimes). |
-| `deposit_amount`| `BIGINT` | `i64` | Non | `CHECK (deposit_amount <= rent_amount * 2)` | Caution légale (max 2 mois). |
+| `title` | `TEXT` | `String` | Non | 3 à 80 caractères | Titre de l'annonce. |
+| `description` | `TEXT` | `String` | Non | Sans numéros de téléphone (max 1500) | Description détaillée. |
+| `rent_amount` | `BIGINT` | `i64` | Non | `CHECK (rent_amount > 0)` | Loyer mensuel en XOF (sans centimes). |
+| `deposit_amount`| `BIGINT` | `i64` | Non | `CHECK (deposit_amount >= 0)` | Caution légale (max 2 mois). |
+| `advance_amount`| `BIGINT` | `i64` | Non | `CHECK (advance_amount > 0)` | Avance obligatoire (1er mois). |
 | `fees_amount` | `BIGINT` | `i64` | Non | `DEFAULT 0` | Frais de dossier / agence. |
+| `surface_m2` | `INT` | `Option<i32>` | Oui | `CHECK (surface_m2 > 0)` | Surface en mètres carrés. |
+| `rooms` | `SMALLINT` | `Option<i16>` | Oui | `CHECK (rooms > 0)` | Nombre de pièces. |
 | `is_coloc` | `BOOLEAN` | `bool` | Non | `DEFAULT FALSE` | Activation du mode Colocation. |
 | `total_places` | `SMALLINT` | `i16` | Non | `DEFAULT 1, CHECK (total_places BETWEEN 1 AND 10)` | Nombre total de lits/places. |
 | `gender_policy` | `TEXT` | `Option<String>` | Oui | `CHECK (gender_policy IN ('HOMMES_UNIQUEMENT', 'FEMMES_UNIQUEMENT', 'COUPLES_UNIQUEMENT'))` | Règle stricte du Prompt Maître. |
-| `status` | `logement_status`| `enum LogementStatus`| Non | `DEFAULT 'draft'` | Machine d'état (`draft`, `online`, etc.). |
+| `status` | `logement_status`| `enum LogementStatus`| Non | `DEFAULT 'validation'` | Machine d'état (`validation`, `online`, etc.). |
 | `place_label` | `TEXT` | `String` | Non | Non vide | Libellé public (« Ouakam, Cité Avion »). |
 | `address_detail`| `TEXT` | `String` | Non | Masqué publiquement | Adresse précise (déverrouillée après visite). |
-| `latitude` | `DOUBLE PRECISION`| `f64` | Non | Coordonnée GPS | Positionnement cartographique. |
-| `longitude` | `DOUBLE PRECISION`| `f64` | Non | Coordonnée GPS | Positionnement cartographique. |
+| `lat` | `NUMERIC(9,6)` | `rust_decimal::Decimal` / `f64` | Oui | Coordonnée GPS latitude | Positionnement cartographique. |
+| `lng` | `NUMERIC(9,6)` | `rust_decimal::Decimal` / `f64` | Oui | Coordonnée GPS longitude | Positionnement cartographique. |
+| `views_count` | `INT` | `i32` | Non | `DEFAULT 0` | Compteur de vues de l'annonce. |
 | `deleted_at` | `TIMESTAMPTZ` | `Option<DateTime<Utc>>` | Oui | NULL | Soft delete. |
+
+---
+
+### Table 2.5 bis : `coloc_places` (Gestion des Lits & Verrous Atomiques 15 min)
+
+| Colonne | Type SQL | Type Rust | Nullable | Contrainte / Défaut | Description |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| `id` | `UUID` | `uuid::Uuid` | Non | `PRIMARY KEY DEFAULT gen_random_uuid()` | ID unique du lit. |
+| `logement_id` | `UUID` | `uuid::Uuid` | Non | `REFERENCES logements(id) ON DELETE CASCADE` | Chambre rattachée. |
+| `place_number` | `SMALLINT` | `i16` | Non | `CHECK (place_number BETWEEN 1 AND 10)` | Numéro du lit (1..total_places). |
+| `occupant_id` | `UUID` | `Option<uuid::Uuid>` | Oui | `REFERENCES users(id)` | Colocataire ayant confirmé le lit. |
+| `locked_by` | `UUID` | `Option<uuid::Uuid>` | Oui | `REFERENCES users(id)` | Utilisateur détenant le verrou 15 min. |
+| `locked_until` | `TIMESTAMPTZ` | `Option<DateTime<Utc>>` | Oui | Date expiration verrou | Échéance du verrou temporaire. |
+| `created_at` | `TIMESTAMPTZ` | `DateTime<Utc>` | Non | `DEFAULT now()` | Date de création. |
 
 ---
 
@@ -217,12 +235,11 @@ Ce document constitue la **bible d'implémentation absolue** du backend SAMA LOY
 ---
 
 ### Table 2.11 : `contrat_templates` (Modèles Juridiques Versionnés)
-*Stockage des clauses légales immuables (v1, v2...).*
+*Stockage des clauses légales immuables (version 1, 2...).*
 
 | Colonne | Type SQL | Type Rust | Nullable | Contrainte / Défaut | Description |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| `id` | `UUID` | `uuid::Uuid` | Non | `PRIMARY KEY DEFAULT gen_random_uuid()` | ID du template. |
-| `version` | `TEXT` | `String` | Non | `UNIQUE` (ex: `'v1.0-sn'`) | Version juridique du contrat. |
+| `version` | `INT` | `i32` | Non | `PRIMARY KEY` (ex: `1`, `2`) | Version entière du modèle juridique. |
 | `body_markdown`| `TEXT` | `String` | Non | Texte juridique avec placeholders | Contenu du bail type sénégalais. |
 | `is_active` | `BOOLEAN` | `bool` | Non | `DEFAULT TRUE` | Version active actuelle. |
 
@@ -233,20 +250,30 @@ Ce document constitue la **bible d'implémentation absolue** du backend SAMA LOY
 | Colonne | Type SQL | Type Rust | Nullable | Contrainte / Défaut | Description |
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | `id` | `UUID` | `uuid::Uuid` | Non | `PRIMARY KEY DEFAULT gen_random_uuid()` | ID du contrat. |
-| `contract_number`| `TEXT` | `String` | Non | `UNIQUE` (format: `SL-2026-11-0001`) | Numéro de bail officiel. |
+| `numero` | `TEXT` | `String` | Non | `UNIQUE` (format: `SL-2026-10-0412`) | Numéro de bail officiel. |
 | `logement_id` | `UUID` | `uuid::Uuid` | Non | `REFERENCES logements(id) ON DELETE RESTRICT` | Logement loué. |
+| `bailleur_id` | `UUID` | `uuid::Uuid` | Non | `REFERENCES bailleur_profiles(user_id) ON DELETE RESTRICT` | Propriétaire bailleur. |
 | `locataire_id` | `UUID` | `uuid::Uuid` | Non | `REFERENCES users(id) ON DELETE RESTRICT` | Locataire titulaire. |
-| `bailleur_id` | `UUID` | `uuid::Uuid` | Non | `REFERENCES users(id) ON DELETE RESTRICT` | Bailleur bailleur. |
-| `template_id` | `UUID` | `uuid::Uuid` | Non | `REFERENCES contrat_templates(id)` | Template juridique utilisé. |
-| `status` | `contrat_status`| `enum ContratStatus`| Non | `DEFAULT 'draft'` | `draft`, `pending_signature`, `active`... |
-| `rent_amount` | `BIGINT` | `i64` | Non | Non nul | Loyer contractuel scellé. |
-| `deposit_amount`| `BIGINT` | `i64` | Non | Non nul | Caution séquestrée. |
+| `template_version`| `INT` | `i32` | Non | `REFERENCES contrat_templates(version)` | Version juridique du contrat. |
+| `status` | `contrat_status`| `enum ContratStatus`| Non | `DEFAULT 'pending_signature'` | Machine d'état (`pending_signature`, `active`...). |
+| `via_visit_id` | `UUID` | `Option<uuid::Uuid>` | Oui | `REFERENCES visites(id)` | Visite préalable (NULL si loué sans visite). |
+| `rent_amount` | `BIGINT` | `i64` | Non | `CHECK (rent_amount > 0)` | Loyer mensuel contractuel scellé. |
+| `deposit_amount`| `BIGINT` | `i64` | Non | `CHECK (deposit_amount >= 0)` | Caution séquestrée. |
+| `advance_amount`| `BIGINT` | `i64` | Non | `CHECK (advance_amount > 0)` | Avance obligatoire (1er mois). |
+| `fees_amount` | `BIGINT` | `i64` | Non | `DEFAULT 0` | Frais de dossier / agence. |
+| `due_day` | `SMALLINT` | `i16` | Non | `DEFAULT 5, CHECK (due_day BETWEEN 1 AND 28)` | Jour d'exigibilité mensuelle. |
+| `start_date` | `DATE` | `chrono::NaiveDate` | Non | Date de prise d'effet | Début du bail. |
+| `min_duration_months`| `SMALLINT`| `i16` | Non | `DEFAULT 6` | Durée minimale légale. |
+| `duration_months`| `SMALLINT`| `i16` | Non | `DEFAULT 12` | Durée initiale convenue. |
+| `end_date` | `DATE` | `chrono::NaiveDate` | Non | `CHECK (end_date > start_date)` | Date d'échéance du bail. |
+| `notice_months`| `SMALLINT` | `i16` | Non | `DEFAULT 1` | Délai de préavis en mois. |
+| `auto_renew` | `BOOLEAN` | `bool` | Non | `DEFAULT TRUE` | Tacite reconduction. |
 | `articles_snapshot`| `JSONB` | `serde_json::Value` | Non | JSON complet | Texte exhaustif du contrat scellé. |
-| `content_hash` | `TEXT` | `String` | Non | Hash SHA-256 | Empreinte d'inviolabilité du document. |
-| `bailleur_signed_at`| `TIMESTAMPTZ`| `DateTime<Utc>`| Non | Date publication annonce | Pré-signature du bailleur. |
+| `content_hash` | `TEXT` | `String` | Non | Hash SHA-256 | Empreinte d'inviolabilité du bail. |
+| `bailleur_signed_at`| `TIMESTAMPTZ`| `Option<DateTime<Utc>>`| Oui | Date publication annonce | Pré-signature du bailleur. |
 | `locataire_signed_at`| `TIMESTAMPTZ`| `Option<DateTime<Utc>>`| Oui | Date signature locataire | Signature du locataire dans l'appli. |
-| `start_date` | `DATE` | `chrono::NaiveDate` | Non | Début du bail | Prise d'effet du bail. |
-| `duration_months`| `SMALLINT`| `i16` | Non | `DEFAULT 12, CHECK (duration_months >= 6)`| Durée légale (min 6 mois). |
+| `keys_handed_over_at`| `TIMESTAMPTZ`| `Option<DateTime<Utc>>`| Oui | Date remise des clés | Renseigné quand l'entrée est soldée. |
+| `issue_window_ends_at`| `TIMESTAMPTZ`| `Option<DateTime<Utc>>`| Oui | +48h si loué sans visite | Fenêtre de signalement sans visite. |
 
 ---
 
@@ -258,11 +285,17 @@ Ce document constitue la **bible d'implémentation absolue** du backend SAMA LOY
 | `id` | `UUID` | `uuid::Uuid` | Non | `PRIMARY KEY DEFAULT gen_random_uuid()` | ID de l'échéance. |
 | `contrat_id` | `UUID` | `uuid::Uuid` | Non | `REFERENCES contrats(id) ON DELETE RESTRICT` | Bail lié. |
 | `kind` | `echeance_kind` | `enum EcheanceKind { Entry, Rent }`| Non | Discriminant | Type d'échéance. |
-| `label` | `TEXT` | `String` | Non | Non vide | Ex: `'Frais d''entrée'` ou `'Loyer Novembre 2026'`. |
-| `amount_total` | `BIGINT` | `i64` | Non | `CHECK (amount_total > 0)` | Montant total dû en XOF. |
-| `amount_paid` | `BIGINT` | `i64` | Non | `DEFAULT 0, CHECK (amount_paid <= amount_total)` | Montant déjà encaissé (tranches). |
+| `period` | `CHAR(7)` | `Option<String>` | Oui | `CHECK ((kind = 'rent') = (period IS NOT NULL))` | Mois concerné `'YYYY-MM'` (NULL pour l'entrée). |
+| `amount_due` | `BIGINT` | `i64` | Non | `CHECK (amount_due > 0)` | Montant total exigible en XOF. |
+| `amount_paid` | `BIGINT` | `i64` | Non | `DEFAULT 0, CHECK (amount_paid <= amount_due)` | Montant déjà encaissé (tranches). |
+| `min_first_payment`| `BIGINT`| `Option<i64>` | Oui | Entrée : au moins l'avance | Premier versement minimum. |
 | `due_date` | `DATE` | `chrono::NaiveDate` | Non | Date limite | Date limite d'exigibilité. |
 | `status` | `echeance_status`| `enum EcheanceStatus` | Non | `DEFAULT 'pending'` | `pending`, `partial`, `paid`, `late`. |
+| `paid_at` | `TIMESTAMPTZ` | `Option<DateTime<Utc>>` | Oui | NULL | Quand `amount_paid = amount_due`. |
+
+- **Index Uniques Partiels** :
+  - `CREATE UNIQUE INDEX uq_echeances_period ON echeances (contrat_id, period) WHERE kind = 'rent';` (Une seule échéance mensuelle par contrat).
+  - `CREATE UNIQUE INDEX uq_echeances_entry ON echeances (contrat_id) WHERE kind = 'entry';` (Une seule échéance d'entrée par contrat).
 
 ---
 
@@ -271,16 +304,23 @@ Ce document constitue la **bible d'implémentation absolue** du backend SAMA LOY
 
 | Colonne | Type SQL | Type Rust | Nullable | Contrainte / Défaut | Description |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| `id` | `UUID` | `uuid::Uuid` | Non | `PRIMARY KEY DEFAULT gen_random_uuid()` | ID de transaction. |
+| `id` | `UUID` | `uuid::Uuid` | Non | `PRIMARY KEY DEFAULT gen_random_uuid()` | ID de transaction interne. |
+| `reference` | `TEXT` | `String` | Non | `UNIQUE` (ex: `'TX-26-10-4821'`) | Référence publique unique. |
+| `payer_id` | `UUID` | `uuid::Uuid` | Non | `REFERENCES users(id)` | Utilisateur débiteur. |
+| `purpose` | `payment_purpose`| `enum PaymentPurpose` | Non | Enum | `rent`, `entry`, `subscription`, `boost`, `refund`. |
 | `echeance_id` | `UUID` | `Option<uuid::Uuid>` | Oui | `REFERENCES echeances(id)` | Échéance acquittée. |
-| `user_id` | `UUID` | `uuid::Uuid` | Non | `REFERENCES users(id)` | Utilisateur débiteur. |
+| `refund_of` | `UUID` | `Option<uuid::Uuid>` | Oui | `REFERENCES payments(id)` | En cas de remboursement (ex: rachat solo). |
 | `amount` | `BIGINT` | `i64` | Non | `CHECK (amount > 0)` | Montant débité en XOF. |
-| `purpose` | `payment_purpose`| `enum PaymentPurpose` | Non | Enum | `rent`, `entry`, `subscription`, `boost`. |
-| `method` | `payment_method` | `enum PaymentMethod` | Non | Enum | `'maxit'` (Orange Money) ou `'cash'`. |
-| `status` | `payment_status` | `enum PaymentStatus` | Non | `DEFAULT 'pending'` | `pending`, `succeeded`, `failed`. |
-| `maxit_txnid` | `TEXT` | `Option<String>` | Oui | `UNIQUE` | Identifiant de transaction Orange Money. |
-| `idempotency_key`| `TEXT` | `String` | Non | `UNIQUE` | Clé d'idempotence du client. |
-| `confirmed_at` | `TIMESTAMPTZ` | `Option<DateTime<Utc>>` | Oui | NULL | Date de confirmation télécom. |
+| `method` | `payment_method` | `enum PaymentMethod` | Non | `DEFAULT 'maxit'` | `'maxit'` (Orange Money) ou `'cash'`. |
+| `status` | `payment_status` | `enum PaymentStatus` | Non | `DEFAULT 'pending'` | `pending`, `succeeded`, `failed`, `expired`. |
+| `provider_ref` | `TEXT` | `Option<String>` | Oui | `UNIQUE` | Identifiant de transaction Sonatel / Max It. |
+| `idempotency_key`| `TEXT` | `String` | Non | Non nul | Clé d'idempotence du client. |
+| `confirmed_by` | `UUID` | `Option<uuid::Uuid>` | Oui | `REFERENCES users(id)` | Bailleur confirmant un paiement cash. |
+| `initiated_at` | `TIMESTAMPTZ` | `DateTime<Utc>` | Non | `DEFAULT now()` | Date d'initiation. |
+| `completed_at` | `TIMESTAMPTZ` | `Option<DateTime<Utc>>` | Oui | NULL | Date de confirmation télécom. |
+| `expires_at` | `TIMESTAMPTZ` | `Option<DateTime<Utc>>` | Oui | `initiated_at + 15 min` | Expiration de la session de paiement. |
+
+- **Contrainte d'Unicité Idempotente** : `UNIQUE (payer_id, idempotency_key)` (Bloque tout double débit d'un même utilisateur).
 
 ---
 
@@ -290,13 +330,16 @@ Ce document constitue la **bible d'implémentation absolue** du backend SAMA LOY
 | Colonne | Type SQL | Type Rust | Nullable | Contrainte / Défaut | Description |
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | `id` | `UUID` | `uuid::Uuid` | Non | `PRIMARY KEY DEFAULT gen_random_uuid()` | ID quittance. |
+| `numero` | `TEXT` | `String` | Non | `UNIQUE` (ex: `'REC-NOV-2026-008812'`) | Numéro officiel de quittance / reçu. |
 | `payment_id` | `UUID` | `uuid::Uuid` | Non | `UNIQUE REFERENCES payments(id)` | Transaction parente. |
 | `echeance_id` | `UUID` | `uuid::Uuid` | Non | `REFERENCES echeances(id)` | Échéance soldée. |
 | `contrat_id` | `UUID` | `uuid::Uuid` | Non | `REFERENCES contrats(id)` | Bail associé. |
-| `verify_code` | `TEXT` | `String` | Non | `UNIQUE` (ex: `QT-8F3A2B1C-202611`) | Code d'authenticité vérifiable publiquement. |
+| `amount` | `BIGINT` | `i64` | Non | `CHECK (amount > 0)` | Montant certifié en XOF. |
+| `breakdown` | `JSONB` | `serde_json::Value` | Non | Détail ventilation | Ex: `[{"label": "Avance", "amount": 60000}]`. |
+| `verify_code` | `TEXT` | `String` | Non | `UNIQUE` (ex: `'QT-8F3A2B1C-202611'`) | Code d'authenticité vérifiable publiquement. |
 | `pdf_url` | `TEXT` | `Option<String>` | Oui | URL COS | Fichier PDF généré avec sceau numérique. |
-| `is_final` | `BOOLEAN` | `bool` | Non | `DEFAULT TRUE` | `true` si solde complet, `false` si acompte. |
-| `created_at` | `TIMESTAMPTZ` | `DateTime<Utc>` | Non | `DEFAULT now()` | Date d'émission certifiée. |
+| `is_final` | `BOOLEAN` | `bool` | Non | `DEFAULT TRUE` | `true` si quittance finale, `false` si reçu d'acompte. |
+| `issued_at` | `TIMESTAMPTZ` | `DateTime<Utc>` | Non | `DEFAULT now()` | Date d'émission certifiée. |
 
 ---
 
