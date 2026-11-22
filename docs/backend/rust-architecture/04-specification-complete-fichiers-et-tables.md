@@ -530,3 +530,4 @@ En suivant cette spécification :
 1. **Chaque table** possède son type Rust miroir immuable et ses contraintes SQL validées.
 2. **Chaque use case** métier (verrou 15 min, rachat solo, 4 photos, encaissement espèces) est isolé dans son fichier dédié sans mélange de responsabilités.
 3. **Le compilateur Rust** protège le serveur contre les plantages mémoires, les failles de concurrence et les erreurs de syntaxe SQL.
+
