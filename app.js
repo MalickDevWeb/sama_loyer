@@ -5,6 +5,7 @@
 
 import { Bus } from './utils/event/index';
 import { nativeService } from './utils/apis/native';
+import { miniSDK } from './sdk/index.js';
 
 // Noms des états et événements : source unique dans utils/event/keys.js
 import { STATE_KEYS, EVENTS } from './utils/event/keys';
@@ -22,6 +23,28 @@ App({
    * Pattern: non-blocking launch, no race conditions
    */
   onLaunch() {
+    // Détection DevTools PC pour simuler le pont Max It nativement
+    const isDev = typeof __wxConfig !== 'undefined' && __wxConfig.envVersion === 'develop';
+
+    miniSDK.configure({
+      simulate: isDev,
+      timeoutMs: 30000,
+      log: (level, api, message, ctx) => {
+        if (isDev) {
+          console.log(`[MaxIt-SDK:${api}] ${message}`, ctx || '');
+        }
+      },
+      confirm: async (message) => {
+        const res = await wx.showModal({
+          title: 'Transaction existante',
+          content: message,
+          confirmText: 'Payer quand même',
+          cancelText: 'Annuler',
+          confirmColor: '#F16E00'
+        });
+        return res.confirm;
+      }
+    });
 
     // Bus.setDebug(true);
     Bus.setState(STATE_KEYS.APP_LOADING, true);
@@ -55,14 +78,29 @@ App({
    * 3. Setup background tasks
    */
   async initializeApp() {
-    // Step 1: Get user info from native layer (with retry + backoff)
-    const userInfos = await nativeService.getUserInfos()
-      .catch((error) => {
-        console.warn('[App] getUserInfos failed:', error.message);
-        return { msisdn: null, fullName: null };
-      });
+    // Étape 1 : Récupérer l'identité de l'utilisateur via le SDK officiel Max It
+    let msisdn = null;
+    let fullName = null;
 
-    const { msisdn, fullName } = userInfos;
+    try {
+      const user = await miniSDK.user();
+      if (user && user.msisdn) {
+        msisdn = user.msisdn;
+        fullName = user.fullName || user.name || (user.firstName ? `${user.firstName} ${user.lastName || ''}`.trim() : 'Utilisateur Max it');
+      }
+    } catch (err) {
+      console.warn('[App] miniSDK.user() fallback to nativeService:', err.message);
+    }
+
+    if (!msisdn) {
+      const userInfos = await nativeService.getUserInfos()
+        .catch((error) => {
+          console.warn('[App] getUserInfos failed:', error.message);
+          return { msisdn: '770000000', fullName: 'Dev User' };
+        });
+      msisdn = userInfos.msisdn;
+      fullName = userInfos.fullName;
+    }
 
     if (!msisdn) {
       Bus.emit(EVENTS.USER_NOT_FOUND);

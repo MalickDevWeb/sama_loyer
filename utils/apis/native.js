@@ -1,9 +1,10 @@
 // ============================================================================
 // NATIVE PLUGIN SERVICE
-// Wrapper for wx.invokeNativePlugin calls with typed responses
+// Wrapper for wx.invokeNativePlugin & Sonatel Max It Mini SDK calls
 // ============================================================================
 
 import { __DEV__ } from '../constants/index.js';
+import { miniSDK } from '../../sdk/index.js';
 
 // ============================================================================
 // RETRY HELPERS
@@ -53,18 +54,6 @@ export const withRetry = async (fn, { maxAttempts = 3, baseDelay = 500, shouldRe
 // ============================================================================
 
 /**
- * Generic wrapper for wx.invokeNativePlugin calls.
- * Converts callback-based API to Promise-based with optional response validation.
- *
- * @param {string} apiName - Native plugin API name
- * @param {Object} [data] - Request payload
- * @param {Object} [options] - Invocation options
- * @param {boolean} [options.strict=true] - When true, validates { result, status_code }
- *   envelope and resolves with res.data. When false, resolves with raw res.
- * @returns {Promise<Object>} Plugin response
- * @throws {Error} If plugin call fails or strict validation rejects
- */
-/**
  * Checks if running inside the DevTools simulator or without native bridge.
  * @returns {boolean}
  */
@@ -104,38 +93,35 @@ export const invokePlugin = (apiName, data = {}, { strict = true } = {}) => {
 };
 
 // ============================================================================
-// USER INFO
+// USER INFO (MAX IT SDK FIRST, NATIVE BRIDGE FALLBACK)
 // ============================================================================
 
 /**
- * Retrieves the current user's info from the native layer.
- * Returns user data if authenticated. Override this for your app's user model.
- *
- * Uses initial delay + retry with exponential backoff because the native
- * plugin may not be ready immediately on app launch.
- *
+ * Retrieves the current user's info using official Max It Mini SDK.
  * @async
  * @returns {Promise<{msisdn: string|null, fullName: string|null}>} User info
- *
- * @example
- * const { msisdn, fullName } = await nativeService.getUserInfos();
- * if (!msisdn) {
- *   // Redirect to onboarding flow
- * }
  */
 export const getUserInfos = async () => {
-  // En environnement DevTools / simulateur avec __DEV__ = true, le pont natif Android/iOS
-  // n'est pas présent : on fournit directement le profil de dev sans retries ni warnings bloquants.
-  if (__DEV__ && isDevtools()) {
-    return {
-      msisdn: '770000000',
-      fullName: 'Dev User',
-    };
+  try {
+    const user = await miniSDK.user();
+    if (user && user.msisdn) {
+      return {
+        msisdn: user.msisdn,
+        fullName: user.fullName || user.name || `${user.firstName || ''} ${user.lastName || ''}`.trim() || 'Client Max it',
+      };
+    }
+  } catch (sdkError) {
+    // Si DevTools ou environnement hors Max It, fallback immédiat sans retry intempestif
+    if (isDevtools() || __DEV__) {
+      return {
+        msisdn: '770000001',
+        fullName: 'Dev User',
+      };
+    }
   }
 
+  // Fallback direct sur wx.invokeNativePlugin si le SDK n'a pas répondu
   try {
-    await delay(300);
-
     const res = await withRetry(
       async () => {
         const response = await invokePlugin('userInfos', {}, { strict: false });
@@ -146,51 +132,90 @@ export const getUserInfos = async () => {
         return response;
       },
       {
-        maxAttempts: 4,
-        baseDelay: 500,
+        maxAttempts: 2,
+        baseDelay: 300,
         shouldRetry: (error) => !error.message?.includes('cancelled'),
       },
     );
 
     const user = res?.data?.user;
-
     return {
       msisdn: user?.msisdn || null,
       fullName: user ? `${user.firstName} ${user.lastName}` : null,
     };
   } catch (error) {
-    console.warn('[Native] getUserInfos failed after retries:', error.message);
-
     if (__DEV__) {
       return {
-        msisdn: '770000000',
+        msisdn: '770000001',
         fullName: 'Dev User',
       };
     }
-
     return { msisdn: null, fullName: null };
   }
 };
 
 // ============================================================================
-// ADD YOUR NATIVE PLUGIN WRAPPERS HERE
+// PAIEMENT ORANGE MONEY & BOUCLIER ANTI-DOUBLE DÉBIT (@NATIVE-PAY)
 // ============================================================================
 
-// Example:
-// export const takePhoto = async () => { ... };
-// export const scanDocument = async ({ frontImage, backImage }) => { ... };
-// export const payWithProvider = async ({ amount, orderId }) => { ... };
+/** Cache de confirmation anti-double débit */
+let _confirmedTxnid = null;
+
+/**
+ * Exécute un paiement marchand Orange Money via le SDK Max It officiel.
+ * Protégé par le bouclier bancaire anti-double débit _confirmedTxnid.
+ *
+ * @param {Object} params
+ * @param {number} params.amount - Montant en FCFA
+ * @param {string} [params.receiver='770000000'] - Numéro ou code marchand Sonatel
+ * @param {string} [params.receiverName='SAMA LOYER SARL'] - Raison sociale marchande
+ * @param {string} [params.description] - Description visible du paiement
+ * @param {string} [params.orderId] - Référence unique de commande
+ * @returns {Promise<Object>} Résultat du paiement { txnid, raw, sent }
+ */
+export const payWithOrangeMoney = async ({
+  amount,
+  receiver = '770000000',
+  receiverName = 'SAMA LOYER SARL',
+  description = 'Paiement Loyer / Réservation SAMA LOYER',
+  orderId = `CMD-${Date.now()}`
+} = {}) => {
+  // Bouclier anti-double débit : si déjà confirmé, ne pas re-débiter !
+  if (_confirmedTxnid && _confirmedTxnid.orderId === orderId) {
+    console.log('[Native] Paiement déjà confirmé avec txnid:', _confirmedTxnid.txnid);
+    return _confirmedTxnid;
+  }
+
+  const result = await miniSDK.pay({
+    amount: Number(amount),
+    receiver,
+    receiverName,
+    description,
+    orderId
+  });
+
+  if (result && result.txnid) {
+    _confirmedTxnid = {
+      orderId,
+      txnid: result.txnid,
+      confirmedAt: Date.now()
+    };
+  }
+
+  return result;
+};
 
 // ============================================================================
 // NATIVE SERVICE EXPORT
 // ============================================================================
 
-/**
- * Native plugin service object.
- * Add your native plugin wrappers here.
- */
 export const nativeService = {
   isDevtools,
   invokePlugin,
   getUserInfos,
+  payWithOrangeMoney,
+  getContacts: () => miniSDK.contacts(),
+  scanQRCode: (opts) => miniSDK.scan(opts),
+  protectScreen: (enable) => miniSDK.screen.protect(enable),
+  miniSDK,
 };

@@ -28,12 +28,14 @@ async function main() {
     const { runI18nTests } = await import('./i18n.test.js');
     const { runZipTests } = await import('./zip.test.js');
     const { runShareRedirectTests } = await import('./share-redirect.test.js');
+    const { runMaxItSdkTests } = await import('./sdk-maxit.test.js');
 
     totalPassed += await runEventBusTests();
     totalPassed += await runSculptTests();
     totalPassed += await runI18nTests();
     totalPassed += await runZipTests();
     totalPassed += await runShareRedirectTests();
+    totalPassed += await runMaxItSdkTests();
 
     const duration = ((Date.now() - start) / 1000).toFixed(2);
     console.log('\n====================================================');
