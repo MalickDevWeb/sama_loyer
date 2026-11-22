@@ -1,37 +1,39 @@
-var locales =
-    fr:
-        'app.title': 'Showcase Sonatel Max It',
-        'balance.title': 'Solde Orange Money',
-        'btn.topup': 'Recharger',
-        'btn.offline_test': 'Tester Action Hors-Ligne',
-        'state.loading': 'Mode Chargement (Shimmer)',
-        'state.success': 'Mode Succès (Données)',
-        'state.empty': 'Mode Liste Vide'
-    },
-    wo:
-        'app.title': 'Doolilu Sonatel Max It',
-        'balance.title': 'Khaloiss Orange Money',
-        'btn.topup': 'Doolil',
-        'btn.offline_test': 'Jéem action bi réseau amul',
-        'state.loading': 'Xaaral tuti (Shimmer)',
-        'state.success': 'Baxna (Données)',
-        'state.empty': 'Dara nékkul ci biir'
-    },
-    en:
-        'app.title': 'Sonatel Max It Showcase',
-        'balance.title': 'Orange Money Balance',
-        'btn.topup': 'Top up',
-        'btn.offline_test': 'Test Offline Action',
-        'state.loading': 'Loading State (Shimmer)',
-        'state.success': 'Success State (Data)',
-        'state.empty': 'Empty State'
-    }
+var locales = {
+  fr: {
+    'app.title': 'Showcase Sonatel Max It',
+    'balance.title': 'Solde Orange Money',
+    'btn.topup': 'Recharger',
+    'btn.offline_test': 'Tester Action Hors-Ligne',
+    'state.loading': 'Mode Chargement (Shimmer)',
+    'state.success': 'Mode Succès (Données)',
+    'state.empty': 'Mode Liste Vide'
+  },
+  wo: {
+    'app.title': 'Doolilu Sonatel Max It',
+    'balance.title': 'Khaloiss Orange Money',
+    'btn.topup': 'Doolil',
+    'btn.offline_test': 'Jéem action bi réseau amul',
+    'state.loading': 'Xaaral tuti (Shimmer)',
+    'state.success': 'Baxna (Données)',
+    'state.empty': 'Dara nékkul ci biir'
+  },
+  en: {
+    'app.title': 'Sonatel Max It Showcase',
+    'balance.title': 'Orange Money Balance',
+    'btn.topup': 'Top up',
+    'btn.offline_test': 'Test Offline Action',
+    'state.loading': 'Loading State (Shimmer)',
+    'state.success': 'Success State (Data)',
+    'state.empty': 'Empty State'
+  }
 };
-function t(key,
-lang)
-    var active = lang || 'fr';
-    var dict = locales[active] || locales['fr'];
-    return dict[key] || locales['fr'][key] || key;
-} module.exports =
-    t: t
+
+function t(key, lang) {
+  var active = lang || 'fr';
+  var dict = locales[active] || locales['fr'];
+  return dict[key] || locales['fr'][key] || key;
+}
+
+module.exports = {
+  t: t
 };
