@@ -280,3 +280,178 @@ Ce document détaille **chaque endpoint** du module Locataire ainsi que **toutes
   - Permet aux banques et consulats de valider qu'il ne s'agit pas d'un faux document sans divulguer de données personnelles privées.
 - **Codes d'Erreurs** :
   - `404 QUITTANCE_NOT_FOUND` : Code inexistant ou falsifié.
+
+---
+
+## 2. Invariants Métier & Code Rust du Moteur de Colocation & Loyers
+
+### A. Typage Strict des Politiques de Genre (Prompt Maître)
+
+```rust
+use serde::{Deserialize, Serialize};
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "SCREAMING_SNAKE_CASE")]
+pub enum GenderPolicy {
+    HommesUniquement,
+    FemmesUniquement,
+    CouplesUniquement,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "SCREAMING_SNAKE_CASE")]
+pub enum UserGender {
+    Homme,
+    Femme,
+}
+
+impl GenderPolicy {
+    pub fn is_compatible(&self, user_gender: UserGender, is_couple: bool) -> bool {
+        match self {
+            GenderPolicy::HommesUniquement => user_gender == UserGender::Homme && !is_couple,
+            GenderPolicy::FemmesUniquement => user_gender == UserGender::Femme && !is_couple,
+            GenderPolicy::CouplesUniquement => is_couple,
+        }
+    }
+}
+```
+
+### B. Use Case : Verrou Atomique 15 min d'une Place (`crates/application/src/client/lock_place.rs`)
+
+```rust
+use deadpool_redis::Pool;
+use redis::AsyncCommands;
+use uuid::Uuid;
+use crate::shared::error::AppError;
+
+pub struct LockPlaceUseCase {
+    redis_pool: Pool,
+}
+
+impl LockPlaceUseCase {
+    pub async fn execute(
+        &self,
+        logement_id: Uuid,
+        place_number: u8,
+        user_id: Uuid,
+    ) -> Result<u64, AppError> {
+        let key = format!("lock:place:{}:{}", logement_id, place_number);
+        let mut conn = self.redis_pool.get().await.map_err(|e| anyhow::anyhow!(e))?;
+
+        let acquired: bool = redis::cmd("SET")
+            .arg(&key)
+            .arg(user_id.to_string())
+            .arg("NX")
+            .arg("EX")
+            .arg(900) // 15 minutes = 900 secondes
+            .query_async(&mut conn)
+            .await
+            .map_err(|e| anyhow::anyhow!(e))?;
+
+        if !acquired {
+            let ttl: u64 = conn.ttl(&key).await.unwrap_or(900);
+            return Err(AppError::BedAlreadyLocked { remaining_seconds: ttl });
+        }
+
+        Ok(900)
+    }
+}
+```
+
+### C. Use Case : Rachat Exclusif Solo & Remboursement Intégral 100%
+
+```rust
+use sqlx::{PgPool, Postgres, Transaction};
+use uuid::Uuid;
+use crate::shared::error::AppError;
+
+pub struct PrivatizeSoloUseCase {
+    db_pool: PgPool,
+}
+
+impl PrivatizeSoloUseCase {
+    pub async fn execute(
+        &self,
+        logement_id: Uuid,
+        solo_buyer_id: Uuid,
+    ) -> Result<Vec<Uuid>, AppError> {
+        let mut tx: Transaction<'_, Postgres> = self.db_pool.begin().await
+            .map_err(|e| anyhow::anyhow!(e))?;
+
+        // 1. Verrouillage exclusif pessimiste de la ligne du logement
+        let room = sqlx::query!(
+            r#"
+            SELECT id, is_coloc, status 
+            FROM logements 
+            WHERE id = $1 AND deleted_at IS NULL
+            FOR UPDATE
+            "#,
+            logement_id
+        )
+        .fetch_one(&mut *tx)
+        .await
+        .map_err(|_| AppError::LogementNotFound)?;
+
+        if !room.is_coloc {
+            return Err(AppError::PropertyAlreadyPrivate);
+        }
+
+        // 2. Trouver les colocataires ayant déjà versé un acompte
+        let roommates = sqlx::query!(
+            r#"
+            SELECT p.payer_id, p.amount 
+            FROM payments p
+            JOIN echeances e ON p.echeance_id = e.id
+            JOIN contrats c ON e.contrat_id = c.id
+            WHERE c.logement_id = $1 
+              AND p.payer_id != $2 
+              AND p.status = 'succeeded'
+            "#,
+            logement_id,
+            solo_buyer_id
+        )
+        .fetch_all(&mut *tx)
+        .await
+        .map_err(|e| anyhow::anyhow!(e))?;
+
+        let mut refunded_users = Vec::new();
+
+        // 3. Injection dans notifications_outbox pour remboursement 100% sans frais
+        for rm in roommates {
+            sqlx::query!(
+                r#"
+                INSERT INTO notifications_outbox (id, channel, recipient, payload, status, created_at)
+                VALUES ($1, 'sms', (SELECT phone FROM users WHERE id = $2), $3, 'pending', NOW())
+                "#,
+                Uuid::new_v4(),
+                rm.payer_id,
+                serde_json::json!({
+                    "message_fr": "Votre place de colocation a été remboursée intégralement à 100% suite à la privatisation du bien.",
+                    "message_wo": "Xaalis bi nga feyoon ci néeg bi dagnu la ko dellu 100% ndax kenn nit a ko jël."
+                })
+            )
+            .execute(&mut *tx)
+            .await
+            .map_err(|e| anyhow::anyhow!(e))?;
+
+            refunded_users.push(rm.payer_id);
+        }
+
+        // 4. Basculer le logement en occupation solo
+        sqlx::query!(
+            r#"
+            UPDATE logements 
+            SET is_coloc = FALSE, status = 'reserved', updated_at = NOW()
+            WHERE id = $1
+            "#,
+            logement_id
+        )
+        .execute(&mut *tx)
+        .await
+        .map_err(|e| anyhow::anyhow!(e))?;
+
+        tx.commit().await.map_err(|e| anyhow::anyhow!(e))?;
+        Ok(refunded_users)
+    }
+}
+```

@@ -191,3 +191,196 @@ Ce document détaille **chaque endpoint** du module Bailleur ainsi que **toutes 
   - Pour chaque locataire : affiche l'état de l'échéance du mois en cours (`PAID`, `LATE`, `PENDING`), les retards éventuels accumulés, le montant de la caution séquestrée (`deposit_amount`), et un lien direct vers la messagerie interne.
 - **Codes d'Erreurs** :
   - `403 SUBSCRIPTION_REQUIRED`.
+
+---
+
+## 2. Invariants Métier & Code Rust du Module Bailleur
+
+### A. Calcul Dynamique de l'Abonnement (30 Jours d'Essai Gratuit)
+
+```rust
+use chrono::{DateTime, Duration, Utc};
+
+#[derive(Debug)]
+pub struct BailleurSubscription {
+    pub trial_started_at: DateTime<Utc>,
+    pub is_pro: bool,
+    pub pro_expires_at: Option<DateTime<Utc>>,
+}
+
+impl BailleurSubscription {
+    pub fn is_active(&self) -> bool {
+        if self.is_pro {
+            if let Some(exp) = self.pro_expires_at {
+                return exp > Utc::now();
+            }
+            return true;
+        }
+
+        // Vérification de la période d'essai de 30 jours
+        let trial_limit = self.trial_started_at + Duration::days(30);
+        Utc::now() < trial_limit
+    }
+
+    pub fn days_remaining(&self) -> i64 {
+        let trial_limit = self.trial_started_at + Duration::days(30);
+        let diff = (trial_limit - Utc::now()).num_days();
+        diff.max(0)
+    }
+}
+```
+
+### B. Use Case : Encaissement en Espèces & Émission de Quittance Certifiée
+
+```rust
+use sqlx::{PgPool, Postgres, Transaction};
+use uuid::Uuid;
+use crate::shared::error::AppError;
+
+pub struct RecordCashPaymentUseCase {
+    db_pool: PgPool,
+}
+
+#[derive(serde::Serialize)]
+pub struct QuittanceSummaryDto {
+    pub id: Uuid,
+    pub numero: String,
+    pub verify_code: String,
+    pub issued_at: chrono::DateTime<chrono::Utc>,
+}
+
+impl RecordCashPaymentUseCase {
+    pub async fn execute(
+        &self,
+        echeance_id: Uuid,
+        bailleur_id: Uuid,
+        amount_received: i64,
+    ) -> Result<QuittanceSummaryDto, AppError> {
+        let mut tx: Transaction<'_, Postgres> = self.db_pool.begin().await
+            .map_err(|e| anyhow::anyhow!(e))?;
+
+        // 1. Contrôle d'appartenance et statut de l'échéance
+        let echeance = sqlx::query!(
+            r#"
+            SELECT e.id, e.contrat_id, e.amount_due, e.amount_paid, e.status, c.bailleur_id, c.locataire_id
+            FROM echeances e
+            JOIN contrats c ON e.contrat_id = c.id
+            WHERE e.id = $1
+            FOR UPDATE
+            "#,
+            echeance_id
+        )
+        .fetch_one(&mut *tx)
+        .await
+        .map_err(|_| AppError::NotFound("Échéance introuvable".into()))?;
+
+        // Seul le bailleur propriétaire peut déclarer un paiement cash
+        if echeance.bailleur_id != bailleur_id {
+            return Err(AppError::OnlyBailleurCanDeclareCash);
+        }
+
+        if echeance.status == "paid" {
+            return Err(AppError::EcheanceAlreadyPaid);
+        }
+
+        let remaining = echeance.amount_due - echeance.amount_paid;
+        if amount_received > remaining {
+            return Err(AppError::AmountExceedsRemainingBalance { remaining });
+        }
+
+        let new_amount_paid = echeance.amount_paid + amount_received;
+        let is_soldout = new_amount_paid >= echeance.amount_due;
+        let new_status = if is_soldout { "paid" } else { "partial" };
+
+        // 2. Mise à jour de l'échéance
+        sqlx::query!(
+            r#"
+            UPDATE echeances
+            SET amount_paid = $1, status = $2, paid_at = CASE WHEN $3 THEN NOW() ELSE paid_at END, updated_at = NOW()
+            WHERE id = $4
+            "#,
+            new_amount_paid,
+            new_status as _,
+            is_soldout,
+            echeance_id
+        )
+        .execute(&mut *tx)
+        .await
+        .map_err(|e| anyhow::anyhow!(e))?;
+
+        // 3. Enregistrement du paiement dans la table payments
+        let payment_id = Uuid::new_v4();
+        let reference = format!("TX-CASH-{}", &payment_id.to_string()[..8].to_uppercase());
+        let idempotency_key = format!("CASH-{}-{}", echeance_id, chrono::Utc::now().timestamp());
+
+        sqlx::query!(
+            r#"
+            INSERT INTO payments (id, reference, payer_id, purpose, echeance_id, amount, method, status, idempotency_key, confirmed_by, initiated_at, completed_at)
+            VALUES ($1, $2, $3, 'rent', $4, $5, 'cash', 'succeeded', $6, $7, NOW(), NOW())
+            "#,
+            payment_id,
+            reference,
+            echeance.locataire_id,
+            echeance.id,
+            amount_received,
+            idempotency_key,
+            bailleur_id
+        )
+        .execute(&mut *tx)
+        .await
+        .map_err(|e| anyhow::anyhow!(e))?;
+
+        // 4. Génération de la quittance certifiée avec verify_code
+        let quittance_id = Uuid::new_v4();
+        let numero_recu = format!("REC-CASH-{}", &quittance_id.to_string()[..8].to_uppercase());
+        let verify_code = format!("QT-{}", &quittance_id.to_string()[..12].to_uppercase());
+        let breakdown = serde_json::json!([{ "label": "Loyer encaissé en espèces", "amount": amount_received }]);
+
+        let quittance = sqlx::query!(
+            r#"
+            INSERT INTO quittances (id, numero, payment_id, echeance_id, contrat_id, amount, breakdown, is_final, verify_code, issued_at)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, NOW())
+            RETURNING id, numero, verify_code, issued_at
+            "#,
+            quittance_id,
+            numero_recu,
+            payment_id,
+            echeance.id,
+            echeance.contrat_id,
+            amount_received,
+            breakdown,
+            is_soldout,
+            verify_code
+        )
+        .fetch_one(&mut *tx)
+        .await
+        .map_err(|e| anyhow::anyhow!(e))?;
+
+        // 5. Notification SMS outbox envoyée au locataire
+        sqlx::query!(
+            r#"
+            INSERT INTO notifications_outbox (id, channel, recipient, payload, status, created_at)
+            VALUES ($1, 'sms', (SELECT phone FROM users WHERE id = $2), $3, 'pending', NOW())
+            "#,
+            Uuid::new_v4(),
+            echeance.locataire_id,
+            serde_json::json!({
+                "message_fr": format!("Votre bailleur a confirmé la réception de {} F CFA en espèces. Quittance officielle disponible avec le code {}.", amount_received, verify_code),
+                "message_wo": format!("Sa bailleur nangu na {} F CFA ci loxo. Sa kayitu fey a ngi am kodu {}.", amount_received, verify_code)
+            })
+        )
+        .execute(&mut *tx)
+        .await
+        .map_err(|e| anyhow::anyhow!(e))?;
+
+        tx.commit().await.map_err(|e| anyhow::anyhow!(e))?;
+
+        Ok(QuittanceSummaryDto {
+            id: quittance.id,
+            numero: quittance.numero,
+            verify_code: quittance.verify_code,
+            issued_at: quittance.issued_at,
+        })
+    }
+}
+```
